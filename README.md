@@ -1,4 +1,4 @@
-[<img align="center" src="NBIS.png" width="200" height="100" />](https://nbis.se)   
+[<img align="center" src="img/nbis.png" width="200" height="100" />](https://nbis.se)   
 # NBIS workshop in Neural Nets and Deep Learning
 
 This is the NBIS repository for the Neural Nets and Deep Learning workshop.
