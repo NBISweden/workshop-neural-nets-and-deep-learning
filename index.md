@@ -24,4 +24,5 @@ Held on data TBA, place TBA
 
 ## Course leaders
 
-[Johan Viklund](http://nbis.se/about/staff/johan-viklund/)
+[Claudio Mirabello](http://nbis.se/about/staff/claudio-mirabello/)
+[Bengt Sennblad](http://nbis.se/about/staff/bengt-sennblad/)
