@@ -15,4 +15,4 @@ See the preparation folder for more details TBA.
  
 ## Course Webpage
 
-https://nbisweden.github.io/workshop-neural-nest-and-deep-learning/
+https://nbisweden.github.io/workshop-neural-nets-and-deep-learning/
