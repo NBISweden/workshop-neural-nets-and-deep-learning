@@ -12,7 +12,10 @@ See the preparation folder for more details TBA.
 * Exercises are provided in the **labs** folder.
 * Workshop slides are provided in the **lectures** folder.
 * Images are provided in the **img** folder.
- 
-## Course Webpage
 
+## Course page on Google drive
+
+https://drive.google.com/drive/folders/1d4nfLKnqAjxGJ7E6hdSvTXgQvqk8pOMd
+
+## Course Webpage
 https://nbisweden.github.io/workshop-neural-nest-and-deep-learning/
