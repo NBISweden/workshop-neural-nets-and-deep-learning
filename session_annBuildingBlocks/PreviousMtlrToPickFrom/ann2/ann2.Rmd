@@ -1,0 +1,1474 @@
+---
+title: "Artificial neural networks contd"
+subtitle: "</br>Alternative activation and cost functions"
+author: "Bengt Sennblad"
+institute: "NBIS"
+date: "2020-09-03" #"`r Sys.Date()`"
+header-includes:
+  \usepackage{xcolor}
+  \usepackage{dsfont}
+  \usepackage{relsize}
+  \usepackage{xcolor}
+output:
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: false
+    css: [default, metropolis, metropolis-fonts]
+    lib_dir: 'libs'
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: |
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: calc(%current% / %total% * 100%);">
+          </div>
+        </div>
+---
+class: inverse, middle, center
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=800px></html> 
+
+# Artificial neural networks continued
+## Alternative activation and cost functions
+### Bengt Sennblad, NBIS
+### 2020-09-03
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(echo=FALSE, eval=TRUE,message=FALSE, warning=FALSE, error=FALSE, print=FALSE, out.width='100%', fig.height=3, fig.width=6, cache = FALSE)
+
+Rdir="tmpR-files"
+if(!dir.exists(Rdir)){
+  dir.create(Rdir)
+}
+#options(servr.daemon = TRUE)
+
+```
+
+<style>
+
+.remark-slide-number {
+  position: inherit;
+}
+
+.remark-slide-number .progress-bar-container {
+  position: absolute;
+  bottom: 0;
+  height: 6px;
+  display: block;
+  left: 0;
+  right: 0;
+}
+
+.remark-slide-number .progress-bar {
+  height: 100%;
+  background-color: #EB811B;
+}
+
+.orange {
+  color: #EB811B;
+}
+</style>
+
+```{r, plotfunctions, echo=F, message=F,eval=T}
+
+require(igraph)
+
+plotNeuron<-function(label='p',inv=3, cex=2, wsigma=T, main="", znotb=F){
+  #nodes
+  nodes = c(paste0('a',1:inv), label, 'aout')
+  vertices = vector()
+  for(v in 1:inv){
+    vertices = c(vertices, eval(bquote(expression("a'"[.(v)]))))
+  }
+  if(znotb){
+    vertices = c(vertices,expression('b'*symbol('\336')*'z'))
+  }else{
+    vertices = c(vertices, 'b')
+  } 
+  vertices = c(vertices, expression("a"))
+  # vertex shape
+  shapes = c(rep('none',inv),'circle', 'none')
+  # coordinates
+  x = c(rep(-1,inv), 0, 1)
+  mid = inv-1 # inv/400000
+  y = c((1:inv-1)/mid-0.5, 0,0)
+  #edges
+  edges = vector()
+  for(e in c(1:inv)){
+    edges= c(edges, eval(bquote(expression('w'[.(e)]))))
+  }
+  if(wsigma){
+    edges = c(edges, expression(sigma))
+  }else{
+    edges = c(edges, expression(''))
+  }
+  fromv = c(paste0('a',1:inv), label)
+  tov = c(rep(label,inv), 'aout')
+  # getting it all together
+  NodeList <- data.frame(nodes, x ,y)
+  EdgeList <- data.frame(fromv, tov)
+  # the graph
+  ret<- graph_from_data_frame(vertices = NodeList, d=EdgeList, directed = TRUE)
+  # DEcorate wih names and shapes
+  E(ret)$label = edges
+  V(ret)$shape = shapes
+  #V(ret)$color = colors
+  #V(ret)$frame.color = frame.colors
+  V(ret)$label = vertices
+  #plot
+  par(mar=c(0,0,0,0)+1)
+  plot(ret, scale=F,frame=F,asp=0.5, main=main, #margin=c(-1,-.2,-1,-.2),
+       vertex.size=cex*20,
+       vertex.label.dist=0, 
+       vertex.label.cex=cex,
+#       vertex.color="yellow", 
+       edge.width=3,
+       edge.label.cex =cex,
+       edge.label.dist=-20,
+       edge.arrow.size=cex,
+       edge.color="green"
+  )
+}
+
+
+plotAnn<-function(layers, cex = 2, main="", withY=FALSE, ylab =NULL, highlight=vector()){
+  nodes = vector()
+  x=vector()
+  y=vector()
+  fromv=vector()
+  tov=vector()
+  edges=vector()
+  vertices=vector()
+  prev = vector()
+  shapes = vector()
+  colors = vector()
+  frame.colors = vector()
+  
+  xmid = length(layers) - 1
+  if(withY)
+  {
+    xmid = length(layers)
+  }
+  ymaxmid = max(unlist(layers))-1
+  for(i in 1:length(layers)){
+    l = names(layers)[i]
+    n = layers[[i]]
+    # colors
+    thiscol="green"
+    if(l %in% highlight){
+      thiscol="red"
+    }
+    # all vertices in layer plus layer label
+    curr = paste0(l,seq(1,n))
+    if(withY && i==length(layers)){
+      if(! is.null(ylab) && length(ylab) != n){
+        stop("length of ylab must match length of output layer!")
+      }
+      currY = c(outer(c(l,"y"),seq(1,n), "paste0"))
+      nodes = c(nodes,paste0(l,0), currY)
+    }else{
+      nodes = c(nodes,paste0(l,0), curr)
+    }
+    # layer label and position
+    vertices = c(vertices,  eval(bquote(expression(.(l)))))
+    shapes = c(shapes,'square')
+    colors = c(colors ,NA)
+    frame.colors = c(frame.colors ,NA)
+    x = c(x,2*(i-1)/xmid-1) 
+    y = c(y,0.75) #
+    # each vertex label and position
+    ymid = n-1
+    pref='b'
+    if(withY){
+      pref='a'
+    }
+    if(i == 1){
+      pref='x'
+    }
+    for(v in 1:n){
+      vertices = c(vertices, eval(bquote(expression(.(pref)[.(v)]))))
+      shapes = c(shapes,'circle')
+      colors = c(colors ,thiscol)
+      frame.colors = c(frame.colors ,'black')
+      x = c(x,2*(i-1)/xmid-1) 
+      if(n==1){
+        y = c(y,0)
+      }else{     
+        y = c(y,((v-1)/ymid-0.5)*ymid/ymaxmid)
+      }
+      if(withY && i == length(layers)){
+        if(is.null(ylab)){
+          vertices = c(vertices, eval(bquote(expression('y'[.(v)]))))
+        }else{
+          vertices = c(vertices, ylab[v])
+        }
+        shapes = c(shapes,'square')
+        colors = c(colors ,NA)
+        frame.colors = c(frame.colors ,NA)
+        x = c(x,(2*(i-1)+1)/xmid-1) 
+        if(n==1){
+          y = c(y,0)
+        }else{     
+          y = c(y,((v-1)/ymid-0.5)*ymid/ymaxmid)
+        }
+      }
+    }
+    # edges
+    j = 0
+    for(p in prev){
+      j = j + 1
+      k = 0
+      for(c in curr){
+        k = k + 1 
+        fromv = c(fromv, p)
+        tov = c(tov, c)
+        if(withY){
+          edges = c(edges, "")
+        }else{
+          edges = c(edges, eval(bquote(expression("w"[paste(.(j),',',.(k))]))))
+        }
+      }
+    }
+    prev=curr
+  }
+  NodeList <- data.frame(nodes, x ,y)
+  EdgeList <- data.frame(fromv, tov)
+  ret<- graph_from_data_frame(vertices = NodeList, d=EdgeList, directed = TRUE)
+  E(ret)$label = edges
+  V(ret)$shape = shapes
+  V(ret)$color = colors
+  V(ret)$frame.color = frame.colors
+  V(ret)$label = vertices
+  par(mar=c(0,0,0,0)+1)
+  plot(ret, scale=F, frame=F, asp=0.75, main=main, cex.main=cex, #margin=c(-1,-.2,-1,-.2),
+       vertex.size=60/ymaxmid,
+       vertex.label.dist=0, 
+       vertex.label.cex=cex,
+#       vertex.color="yellow", 
+       edge.label.cex = cex,
+       edge.label.dist=-20,
+       edge.arrow.size = cex/2,
+       edge.width=cex*2,
+       edge.color="green"
+  )
+
+}
+
+```
+
+
+
+---
+class: inverse, middle, center
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=800px></html> 
+
+# Recap
+
+<hr>
+.font70[*Refs*
+- [Neural Networks and Deep Learning](http://neuralnetworksanddeeplearning.com/index.html) by Michael Nielsen 
+- [Colah's blog](http://colah.github.io) by Cristopher Olah
+]
+
+---
+
+
+
+# Sigmoid neuron
+
+.pull-left[
+
+
+We compute the output, $a$ from the input $a'$ and the weights $w$ and bias $b$ in two steps
+
+\begin{eqnarray}
+z &=& \sum_{j=1}^M w_j a'_j + b,\\
+a &=& \sigma(z),
+\end{eqnarray}
+
+where $\sigma(z)$ is a *sigmoid* or *logistic function*:
+    $$\sigma(z) = \frac{1}{1+e^{-z}}$$
+The output is continuous, but *tends* towards either $0$ or $1.$
+The *bias*, $b$, can be viewed as a threshold for *activation*, as it moves the tendency to activation.
+
+]
+.pull-right[
+```{r, sigmaNeuron1, echo = F, out.height=250, out.width=500, fig.align='center', fig.asp=0.5, dpi=600}
+
+plotNeuron(znotb=T)
+
+```
+
+```{r, logistic, echo = F, out.height=300}
+
+curve(1/(1+exp(-x)),from=-10, to=10, xlab="z", ylab="sigma(z)")
+title(main="the logistic function")
+
+```
+
+]
+
+
+
+---
+
+# Sigmoid Feedforward ANN
+
+
+.pull-left[
+
+In a *feedforward* ANN, neurons are arranged into $L+1$ layers: single *input* $(0)$ and *output* $(L)$ layers and a number of *hidden* layers $(0<\ell<L)$.
+
+The output of one layer forms the input of the next layer. 
+
+Each layer can be viewed as transforming the original data to a new multi-dimensional space.
+
+]
+.pull-right[
+```{r, sigmoidAnn2, echo=F,  out.height=300, out.width=900, fig.align='center',fig.asp=0.75, dpi=600}
+
+layers =list("0"=2, "1"=5, "2"=7,"3"=5, "4"=2)
+plotAnn(layers, cex=1.25, main="3 hidden layers function")
+```
+]
+
+
+---
+# Supervised learning
+.pull-left[
+#### Training data sets
+
+- input $X=\{\ldots,x,\ldots\}$ 
+- *true* output $Y=\{\ldots,y,\dots\}$
+
+#### *Quadratic cost function* $Q(w,b)$:
+
+1. For each $x$, use the residual sum of squares, *RSS*, as an error measure
+
+$$Q(w,b|x,y) = \sum_i\frac{1}{2} \left( y_i-a_i^{(L)}\right) ^2$$
+2. Then use the cross-validation Mean Squared Error (MSE)
+\begin{eqnarray}
+Q(w,b) &=&  \frac{1}{|X|} \sum_{x\in X} Q(w,b|x,y)
+\end{eqnarray}
+
+].pull-right[
+
+```{r, sigmoidAnnrep0, echo=F,out.width="100%",fig.align='center',fig.asp=0.75, dpi=600}
+layers =list("0"=1, "l"=3, "L"=1)
+
+plotAnn(layers, cex=2, withY=T)
+
+```
+
+
+
+```{r rss, echo=F, out.height='200', fig.asp=0.6} 
+
+plot(x=c(2,4,6,8), y=c(8,3,7,8), xlim=c(0,10), ylim=c(2.5,9.5), pch=1, xlab="x", ylab="y")
+abline(b=0.5, a=3, col="blue")
+arrows(x1=2,y1=4,x0=2,y0=8, col="darkgray",lwd=5)
+text(x=2, y=6, labels="-4", cex=2, pos=4, col="darkgray")
+arrows(x1=4,y1=5,x0=4,y0=3, col="darkgray", lwd=5)
+text(x=4, y=4, labels="-2", cex=2, pos=4, col="darkgray")
+title("residuals")
+
+```
+
+]
+
+
+???
+* Tells when it does wrong
+* 
+
+---
+
+# Gradient descent -- "clever hillclimbing"
+Optimize for minimum of a cost function.
+.pull-left[
+1. Compute the derivative $\frac{dQ(v|x)}{dv}$ to see which way *down* is
+2. Take a reasonably long step in that direction, $v' = v-\eta\frac{dQ(v|x)}{dv}$
+3. Repeat until good enough
+
+$\eta$ is called the *learning rate*
+
+In higher dimensions, use gradients  with *partial derivatives* for each dimension. 
+
+$\nabla_w Q(w,b|x,y) = \begin{pmatrix}\frac{\partial Q(w,b|x,y)}{\partial w_1}\\\ldots\\\frac{\partial Q(w,b|x,y)}{\partial w_M}\end{pmatrix}$
+]
+
+.pull-right[
+```{r, descent4, echo=F, fig.height=8}
+k=4.5
+f<-function(x){(sin(k*(x)+1.5)+1)/2}
+fp<-function(x){k/2*cos(k*x+1.5)}
+curve(f, from=0, to=1, xlab="v", ylab="C(v|x)", xlim=c(0.2,1),ylim =c(-0.5,1.2), cex.lab=1.5)
+x=0.5
+points(x=x,y=f(x), pch=0)
+y=seq(x-0.2,x+0.2, 0.01)
+lines(x=y, y = fp(x)*y+(f(x)-fp(x)*x), col="blue")
+e = 0.1
+d=0.5
+arrows(x0=x,x1=x+d, y0=f(x)+e, angle=45,col = "red", lwd=5)
+arrows(x0=x,x1=x+e, y0=f(x)-e, angle=45,col = "green", lwd=5)
+```
+]
+
+???
+
+Notice the minus sign: the derivative show which way is up and wewant to go down.
+
+
+---
+# Back-propagation -- use the chain rule
+.pull-left[
+```{r, sigmoidAnn3, echo=F,  out.height=300, out.width=900, fig.align='top',fig.asp=0.75, dpi=600}
+
+layers =list("0"=2, "1"=3, "2"=4,"3"=3, "4"=2)
+plotAnn(layers, cex=1.25)
+```
+].pull-right[
+```{r, sigmaNeuron3, echo = F, out.height=200, out.width=400, fig.align='top', fig.asp=0.5, dpi=600}
+
+plotNeuron(znotb=T)
+
+```
+$$\pmatrix{\cdots\\ a'\\ \cdots}\overset{w, b}{ \Longrightarrow} z \quad \overset{\sigma}\Rightarrow\quad a$$
+]
+
+Dynamic programming for $\frac{\partial Q(v,b|x)}{\partial v}; v\in \{w,b\}$ of any neuron in layer $\ell$ <br>
+
+
+\begin{eqnarray}
+\frac{\partial Q(w,b|x,y)}{\partial v} = \frac{\partial z_i}{\partial v} \times& \underbrace{\frac{\partial \sigma(z_i)}{\partial z_i} \times \frac{\partial Q(w,b|x,y)}{\partial \sigma(z_i)}} \\
+\textrm{Define}&\delta_i
+\end{eqnarray}
+
+???
+
+- DP (backwards from output layer $L$).
+- $z$ is central
+
+---
+
+
+# DP Back-propagation
+
+### Efficient computation of $\frac{\partial Q(w,b|x,y)}{\partial v}$
+#### Compute $\delta$ for each layer $\ell$ backwards from $L$
+
+\begin{eqnarray}
+\delta_i^{(\ell)}
+&=& \begin{cases}
+\sigma(z_i)\left(1-\sigma(z_i\right)) \times \left(y_i-\sigma(z_i)\right) 
+& \textrm{if }\ell=L\\
+\\
+\sigma(z_i)\left(1-\sigma(z_i\right)) \times \left(w_{i,\cdot}^{(\ell+1)}\right)^T\times\delta^{(\ell+1)} 
+& \textrm{if } 0<\ell<L
+&\\
+\end{cases} 
+\end{eqnarray}
+
+<br><br>
+
+#### Compute $\frac{\partial Q(w,b|x,y)}{\partial v}$ for any $v \in w\cup b$ of any neuron $i$ in any layer $\ell$
+\begin{equation}
+\frac{\partial Q(w,b|x,y)}{\partial v}
+= \frac{\partial z_i}{\partial v} \times \delta_i
+= \begin{cases} 
+a'_j \times \delta_i^{(\ell)}& \textrm{if } v=w_j \\
+\delta_i^{(\ell)}  & \textrm{if } v=b 
+\end{cases} 
+\end{equation}
+
+???
+Note derivative of $\sigma(z)$ in $\delta$
+
+
+
+---
+class: inverse, middle, center
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=800px></html> 
+
+# Learning measures -- Cost plots
+
+
+
+---
+
+# Improving the current ANN
+
+```{r keras, print=FALSE}
+pref="keras"
+Rfile=paste(Rdir,"/", pref,".R", sep="")
+if(!file.exists(Rfile)){
+  keras::use_condaenv("/Users/bengtsb/WABI/integrative_JC/ANN_2/local_conda_envs/rstudio", required = TRUE)
+  #library(tensorflow)
+  #install_tensorflow()
+  # install_tensorflow(method="conda",x 
+  #                    conda ="/Users/bengtsb/miniconda3/bin/conda",
+  #                    version = "2.0.0", conda_python_version="3.7.7",
+  #                    envname="/Users/bengtsb/WABI/integrative_JC/ANN_2/local_conda_envs/rstudio/")
+  library(keras)
+
+  # Prepare the MNIST data 
+  mnist <- dataset_mnist()
+  x_train <- mnist$train$x
+  y_train <- mnist$train$y
+  x_test <- mnist$test$x
+  y_test <- mnist$test$y
+  
+  # reshape from 3d array (images,width,height) to 2d (images, row-major flattened pixel vector)
+  x_train <- array_reshape(x_train, c(nrow(x_train), 784))
+  x_test <- array_reshape(x_test, c(nrow(x_test), 784))
+  
+  # rescale grayscale from 0-255 integers to 0-1 floats
+  x_train <- x_train / 255
+  x_test <- x_test / 255
+  
+  # one-hot encode true output
+  y_train <- to_categorical(y_train, 10)
+  y_test <- to_categorical(y_test, 10)
+  
+  #Model
+  model1 <- keras_model_sequential() 
+  
+  w=0.001
+  model1 %>% 
+    layer_dense(units = 30, activation = 'sigmoid', input_shape = c(784), initializer_constant(value = w)) %>% 
+    layer_dense(units = 10, activation = 'sigmoid', kernel_initializer=initializer_constant(value = w))
+  #summary(model)
+  model1 %>% compile(
+    loss = 'mean_squared_error',
+    optimizer = optimizer_sgd(lr=3),
+    metrics = c('accuracy')
+  )
+  
+  # train
+  history1 <- model1 %>% fit(
+    x_train, y_train, 
+    epochs = 30, batch_size = 128, 
+    validation_split = 0
+  )
+  
+  model2 <- keras_model_sequential()
+  w=1.0
+  model2 %>% 
+    layer_dense(units = 30, activation = 'sigmoid', input_shape = c(784), initializer_constant(value = w)) %>% 
+    layer_dense(units = 10, activation = 'sigmoid', kernel_initializer=initializer_constant(value = w))
+  #summary(model)
+  model2 %>% compile(
+    loss = 'mean_squared_error',
+    optimizer = optimizer_sgd(lr=3),
+    metrics = c('accuracy')
+  )
+  
+  # train
+  history2 <- model2 %>% fit(
+    x_train, y_train, 
+    epochs = 30, batch_size = 128, 
+    validation_split = 0
+  )
+  save(x_train, x_test, y_train, y_test, model1, history1, model2, history2,file=Rfile)
+}else{
+  # load expression working data as an R object called exprdata
+  load(Rfile)
+  library(keras)
+  library(ggplot2)
+
+}
+  
+```
+
+## Cost plots
+
+.pull-left[
+
+### fast learning
+```{r loss1, fig.height=5}
+
+plot(history1, metrics = "loss")
+
+```
+]
+--
+.pull-right[
+### Slow learning
+```{r loss2, fig.height=5}
+
+plot(history2, metrics = "loss") 
+
+```
+]
+
+--
+
+
+initial $w\quad \Rightarrow \quad z\approx 0$ $\qquad\qquad\qquad\qquad\quad$ initial $w\quad \Rightarrow \quad z\gg 0$
+
+---
+
+# Why?
+
+Recall that  for $v_i \in \{w, b\}$ in layer $\ell$, 
+
+\begin{eqnarray}
+\delta_i &=& \begin{cases}
+\frac{\partial\sigma(z)}{\partial z_i}\times \left(y_i-\sigma(z_i)\right) & \textrm{if }\ell=L\\ 
+\frac{\partial\sigma(z_i)}{\partial z_i}\times\left(w_{i,\cdot}\right)^T\times\delta'' & \textrm{if } 0<\ell<L
+\end{cases} 
+\\ \\
+\frac{\partial Q(w,b|x,y))}{\partial v_i} &=& \begin{cases}
+\delta_i a_i'&\textrm{if } v_i \in w \\
+\delta_i&\textrm{if } v_i=b
+\end{cases}  
+\end{eqnarray}
+
+<br><br>
+How does $\frac{\partial\sigma(z)}{\partial z} = \sigma(z)\left(1-\sigma(z)\right)$ behave for different values of $z$?
+
+
+--
+
+```{r sigmoid, fig.height = 1.75,fig.retina=3}
+library(ggplot2)
+library(cowplot)
+
+sigma<-function(z){
+  return(1/(1+exp(-z)))
+}
+
+p1<-ggplot(data= data.frame(x=0), mapping=aes(x=x)) +
+  stat_function(fun=sigma) +
+  xlim(-10,10) +
+  xlab("z") +
+  ylab(expression(sigma*"(z)"))
+
+
+library(ggplot2)
+
+dsigma<-function(z){
+  return(exp(-z)/(1+exp(-z))^2)
+}
+
+p2<-ggplot(data= data.frame(x=0), mapping=aes(x=x)) +
+  stat_function(fun=dsigma) +
+  xlim(-10,10) +
+  xlab("z") +
+  ylab(expression("d"*sigma*"(z)/dz"))
+
+
+plot_grid(p1,p2)
+```
+
+???
+
+* $\delta$:
+    - for non-zero z $\sigma(z)$ tends towards 0 - derivative is close to zero
+    - effect increases for multi-layer --  *vanishing gradient problem*
+* gradient for $w$:
+    - $a_i''$ is always positive 
+    - all gradient for a neuron willö have same sign -- *not zero-centered* problem
+* Good points 
+    - clear classification
+    - finite boundaries
+
+---
+# What to do?
+
+- Replace the activation function
+
+- Replace the cost function
+
+- (Replace the optimization approach) 
+
+---
+class: inverse, middle, center
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=800px></html> 
+
+# Alternative activation function
+
+<hr>
+.font70[*Refs*
+- [Understanding Activation Functions in Neural Networks](https://medium.com/the-theory-of-everything/understanding-activation-functions-in-neural-networks-9491262884e0) by Avinash Sharma V
+
+- [7 Types of Neural Network Activation Functions: How to Choose?](https://missinglink.ai/guides/neural-network-concepts/7-types-neural-network-activation-functions-right/) on   MissingLink.ai
+- [Deep Learning Best Practices: Activation Functions & Weight Initialization Methods — Part 1](https://medium.com/datadriveninvestor/deep-learning-best-practices-activation-functions-weight-initialization-methods-part-1-c235ff976ed) by Niranjan Kumar
+- [Searching for activation functions](https://arxiv.org/pdf/1710.05941.pdf) by Ramachandran, Zop, and Lee
+]
+---
+# A general activation function $f(z)$
+
+## Do we have to completely revise our back-propagation framework?
+
+--
+### Not really.
+
+\begin{equation}
+\delta_i^{(\ell)} = \begin{cases}
+\underset{\big\Uparrow}{\frac{\partial f\left(z_i^{(\ell)}\right)}{\partial z_i^{(\ell)}}}
+\times \left(y_i-a_i^{(\ell)}\right) 
+& \textrm{if }\ell=L\\
+\\
+\underset{\big\Uparrow}{\frac{\partial f\left(z_i^{(\ell)}\right)}{\partial z_i^{(\ell)}}}
+\times \left(w_{i,\cdot}^{(\ell+1)}\right)^T\times\delta^{(\ell+1)} 
+& \textrm{if } 0<\ell<L
+&\\
+\end{cases} 
+\end{equation}
+
+
+---
+
+# So, what activation functions are there? 
+##### This is an incomplete list
+### Naive
+- *Binary step*
+- *Linear*
+
+### Sigmoid-ish
+- *Sigmoid* $(\sigma)$
+- *tanh*
+- *Softmax*
+
+### ReLU-ish
+- *ReLU*
+- *Swish*
+
+---
+# Naive activation functions
+
+#### The *Binary step*  activation function is *On* if above a certain threshold (cf. perceptrons)
+- $b(z) =\begin{cases}1 &\textrm{if } z >0\\0 &\textrm{otherwise}\end{cases}$
+- $\frac{\partial b(z)}{\partial z} =0$
+
+--
+
+
+```{r binary, fig.height=1.5, fig.retina=3}
+binary<-function(z){
+  ret=rep(1,length(z))
+  ret[z<=0]=0
+  return(ret)
+}
+
+p1<-ggplot(data= data.frame(x=0), mapping=aes(x=x)) +
+  stat_function(fun=binary) +
+  xlim(-10,10) +
+  xlab("z") +
+  ylab(expression(sigma*"(z)"))
+
+
+dbinary<-function(z){
+  return(0)
+}
+p2<-ggplot(data= data.frame(x=0), mapping=aes(x=x)) +
+  stat_function(fun=dbinary) +
+  xlim(-10,10) +
+  xlab("z") +
+  ylab(expression("d"*sigma*"(z)/dz"))
+
+plot_grid(p1,p2)
+```
+
+
+--
+
+.pull-left[
+
+* Pros
+  - clear classification
+  - computationally efficient
+
+]
+.pull-right[
+
+* Cons
+  - Can't do back-propagation 
+  - Don't allow continuos outputs
+ 
+]
+
+---
+# Naive activation functions
+#### The *Linear* activation function uses the identity function
+- $I(z) = z$
+- $\frac{\partial I(z)}{\partial z} = 1$
+
+--
+```{r linear, fig.height=2, fig.retina=3}
+
+p1<-ggplot(data= data.frame(x=0), mapping=aes(x=x)) +
+  stat_function(fun=function(x) x) +
+  xlim(-10,10) +
+  xlab("z") +
+  ylab(expression(I*"(z)"))
+
+
+p2<-ggplot(data= data.frame(x=0), mapping=aes(x=x)) +
+  stat_function(fun=function(x) 1) +
+  xlim(-10,10) +
+  xlab("z") +
+  ylab(expression("d"*I*"(z)/dz"))
+
+plot_grid(p1,p2)
+```
+--
+.pull-left[
+
+* Pros
+  - Allows continuous outputs
+  - computationally efficient
+]
+.pull-right[
+
+* Cons
+  - Can't do back-propagation
+  - $I(z)$ unbounded - exploding activation
+  - The network collapse into just a single-layer linear model
+]
+
+???
+- The binary step and linear represents extremes
+- All activation functions represent some kind of intermediate between these
+
+---
+# Sigmoid-ish activation functions
+
+#### The *Sigmoid* activation function uses the logistic function
+- $\sigma(z) = \frac{1}{1+e^{-z}}$
+- $\frac{\partial \sigma(z)}{\partial z} = \frac{e^{-z}}{\left(1+e^{-z}\right)^2} = \sigma(z)\left(1-\sigma(z)\right)$
+
+--
+```{r sigmoid2, fig.height=2, fig.retina=3}
+
+p1<-ggplot(data= data.frame(x=0), mapping=aes(x=x)) +
+  stat_function(fun=sigma) +
+  xlim(-10,10) +
+  xlab("z") +
+  ylab(expression(sigma*"(z)"))
+
+
+p2<-ggplot(data= data.frame(x=0), mapping=aes(x=x)) +
+  stat_function(fun=dsigma) +
+  xlim(-10,10) +
+  xlab("z") +
+  ylab(expression("d"*sigma*"(z)/dz"))
+
+plot_grid(p1,p2)
+
+```
+--
+.pull-left[
+
+* Pros
+  - allows back-propagation
+  - Smooth gradient
+  - "Normalized" output in [0,1]
+  - Clear predictions
+]
+.pull-right[
+
+* Cons
+  - Vanishing gradient
+  - output not zero-centered
+  - Computationally expensive
+]
+
+???
+- deifferentiable
+- output between 0 and 1 -- effectively normalizes neuron outputs
+- ouoput either close to 0 or one -- clear predictions
+---
+# Sigmoid-ish activation functions
+#### The *Tanh* activation function uses the hyperbolic tangent function
+
+- $\tanh(z) = \frac{e^z-e^{-z}}{e^z+e^{-z}} = \frac{2}{1+e^{-2z}}-1 = 2\sigma(2z) -1$
+- $\frac{\partial \tanh(z)}{\partial z} =1- \tanh^2(z) = 4\sigma(2x)(1-\sigma(2x))$
+
+--
+```{r tanh, fig.height=2, fig.retina=3}
+
+p1<-ggplot(data= data.frame(x=0), mapping=aes(x=x)) +
+  stat_function(fun=tanh) +
+  xlim(-10,10) +
+  xlab("z") +
+  ylab("tanh(z)")
+
+
+dtanh<-function(z){
+  return(1-tanh(z)^2)
+}
+
+p2<-ggplot(data= data.frame(x=0), mapping=aes(x=x)) +
+  stat_function(fun=dtanh) +
+  xlim(-10,10) +
+  xlab("z") +
+  ylab("dtanh(z)/dz")
+
+plot_grid(p1,p2)
+```
+
+--
+.pull-left[
+
+* Pros
+  - back-propagation
+  - zero-centered
+  - Smooth gradient
+  - clear predictions
+]
+.pull-right[
+
+* Cons
+  - Vanishing gradient
+  - Computationally expensive
+]
+
+---
+# Sigmoid-ish activation functions
+#### The *SoftMax* activation function is typically only used in output layer
+
+- $softmax(z_i) =\frac{e^{z_i}}{\sum_k e^{z_k}} = \frac{e^{z_i}}{S+e^{z_i}}, \textrm{where }S=\sum_{k\neq i} e^{z_k}$
+- $\frac{\partial softmax(z)}{\partial z} = \frac{Se^{x_i}}{\left(S+e^{z_i}\right)^2} = softmax(z_i)\left(1-softmax(z_i)\right)$
+--
+```{r softmax, fig.height=1.75, fig.retina=3}
+library(ggplot2)
+softmax<-function(z, sumotherez){
+  ez = exp(z)
+  return(ez/(sumotherez+ez))
+}
+otherz = c(-5, -1, 0, 1, 5)
+sumotherez = sapply(otherz, function(x)  length(x) * exp(x))
+labelsumotherez = sapply(sumotherez, format, digit=2, scientific=3)
+
+p1=ggplot(data= data.frame(x=0), mapping=aes(x=x)) +
+  xlim(-10,10) +
+  xlab("z") +
+  ylab("softmax(z)")
+
+for(i  in seq(1,5)){
+  mycol = paste(otherz[i])
+  p1 = p1 + stat_function(fun=function (x, i) softmax(x,sumotherez[i]), aes(colour = paste(!!mycol)), args = list(i=i))
+}
+p1 = p1 +  scale_colour_manual(expression("avg "*z), values = c("yellow","orange", "red", "darkgreen","blue"))
+
+dsoftmax<-function(z, sumotherez){
+  x= softmax(z, sumotherez)
+  return(x*(1-x))
+}
+
+p2=ggplot(data= data.frame(x=0), mapping=aes(x=x)) +
+  xlim(-10,10) +
+  xlab("z") +
+  ylab("d softmax(z) / dz")
+
+for(i  in seq(1,5)){
+  mycol = paste(otherz[i])
+  p2 = p2 + stat_function(fun=function (x, i) dsoftmax(x,sumotherez[i]), aes(colour = paste(!!mycol)), args = list(i=i))
+}
+p2 = p2 +  scale_colour_manual(expression("avg"*z), values = c("yellow","orange", "red", "darkgreen","blue"))
+
+plot_grid(p1,p2)
+```
+--
+.pull-left[
+
+* Pros
+  - back-propagation
+  - Smooth gradient
+  - clear predictions
+  - **Outputs "probabilities"**
+]
+.pull-right[
+
+* Cons
+  - Vanishing gradient
+  - Not zero-centered
+  - Computationally expensive
+]
+
+???
+
+---
+# ReLU-ish activation functions
+#### The *Rectified Linear Unit* (*ReLU*) activation function
+
+#### 
+
+- $relu(z) =\begin{cases}z &\textrm{if } z >0\\0 &\textrm{otherwise}\end{cases}$
+- $\frac{\partial relu(z)}{\partial z} =\begin{cases}1 &\textrm{if } z >0\\0 &\textrm{otherwise}\end{cases}$
+
+--
+```{r relu, fig.height=1.75, fig.retina=3}
+library(ggplot2)
+
+relu<-function(z){
+  ret=z
+  ret[z<=0]=0
+  return(ret)
+}
+
+p1<-ggplot(data= data.frame(x=0), mapping=aes(x=x)) +
+  stat_function(fun=relu) +
+  xlim(-10,10) +
+  xlab("z") +
+  ylab("relu(z)")
+
+
+drelu<-function(z){
+  ret=rep(1,length(z))
+  ret[z<=0]=0
+  return(ret)
+}
+
+p2<-ggplot(data= data.frame(x=0), mapping=aes(x=x)) +
+  stat_function(fun=drelu) +
+  xlim(-10,10) +
+  xlab("z") +
+  ylab("drelu(z)/dz")
+
+plot_grid(p1,p2)
+```
+
+--
+.pull-left[
+
+* Pros
+  - back-propagation possible
+  - Fast convergence
+  - Vanishing gradient partly solved
+  - Computationally efficient
+]
+.pull-right[
+
+* Cons
+  - Exploding activation
+  - Not zero-centered
+  - zero gradient/Dead neuron problem
+]
+
+???
+-$z=0\Rightarrow \frac{\partial ReLU(z)}{\partial z} = 0$
+- There are variants and solutions for ReLU
+    - leaky ReLU, parametric ReLU
+
+---
+# ReLU-ish activation functions
+
+#### The *Swish* activation function has a parameter $\beta$ allows various behaviour between *linear* and *ReLU* functions
+
+- $swish(z) = \frac{z}{1+e^{-\beta z}} = z\sigma(\beta z)$
+- $\frac{\partial swish(z)}{\partial z} =\frac{1}{e^{-\beta z}} -\frac{\beta ze^{-\beta z}}{\left(1-e^{-\beta z}\right)^2} = \sigma(\beta z) + \beta z\sigma(\beta z)\left(1-\sigma(\beta z)\right)$
+
+--
+```{r swish, fig.height=2, fig.retina=3}
+library(ggplot2)
+
+swish<-function(z, beta){
+  return(z*sigma(beta *z))
+}
+
+beta = c(0.01, 0.1, 1, 10)
+
+p1=ggplot(data= data.frame(x=0), mapping=aes(x=x)) +
+  xlim(-10,10) +
+  xlab("z") +
+  ylab(expression("swish(z, "*beta*")"))
+for(i  in c(1,2,3,4)){
+  mycol = paste(beta[i])
+  p1 = p1 + stat_function(fun=function (x, i) swish(x,beta[i]), aes(colour = paste(!!mycol)), args = list(i=i))
+}
+p1 = p1 +  scale_colour_manual(expression(beta), values = c("red", "blue", "darkgreen", "orange"))
+
+
+dswish<-function(z, beta){
+  return(sigma(beta*z)+beta*z*sigma(beta*z)*(1-sigma(beta*z)))
+}
+beta = c(0.01, 0.1, 1, 10)
+p2=ggplot(data= data.frame(x=0), mapping=aes(x=x)) +
+  xlim(-5,5) +
+  xlab("z") +
+  ylab(expression("dswish(z, "*beta*")/dz"))
+for(i  in c(1,2,3,4)){
+  mycol = paste(beta[i])
+  p2 = p2 + stat_function(fun=function (x, i) dswish(x,beta[i]), aes(colour = paste(!!mycol)), args = list(i=i)) 
+}
+p2 = p2 +  scale_colour_manual(expression(beta), values = c("red", "blue", "darkgreen", "orange"))
+
+plot_grid(p1,p2)
+```
+
+--
+.pull-left[
+
+* Pros
+  - back-propagation 
+  - No vanishing gradient
+  - Fast convergence
+]
+.pull-right[
+
+* Cons
+  - Computationally expensive
+  - Exploding activation
+  - Not zero-centered
+]
+
+???
+-
+
+---
+# Summary
+## What's a "good" activation function?
+
+.pull-left[
+- Non-linear
+- Allows back-propagation
+- Good classifier
+- Avoids vanishing gradient problem
+- Avoids exploding activation problem
+- zero-centered output
+- Computationally efficient
+- Fast convergence
+]
+.pull-right[
+- $\sigma, tanh, Softmax, ReLU, Swish$
+- $\sigma, tanh, Softmax, ReLU, Swish$
+- $\sigma, tanh, Softmax$
+- $ReLU, Swish$
+- $\sigma, tanh, Softmax$
+- $tanh$
+- $ReLU$
+- $ReLU, Swish$
+]
+
+--
+
+No all-over winner, but will depend on the specific ANN.
+
+- LSTM
+  - $\sigma, tanh$
+- Convolutional
+  - $ReLU$
+
+---
+class: inverse, middle, center
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=800px></html> 
+
+# Alternative cost functions
+
+<hr>
+.font70[*Refs*
+- [Neural Networks and Deep Learning](http://neuralnetworksanddeeplearning.com/index.html) by Michael Nielsen 
+]
+---
+# A general cost function $C(w,b|x,y)$
+
+## Do we have to completely revise our back-propagation framework?
+
+--
+### Affects mainly the output layer!
+
+\begin{equation}
+\delta_i^{(\ell)} = \begin{cases}
+\frac{\partial f\left(z_i^{(L)}\right)}{\partial z_i^{(L)}}
+\times \underset{\big\Uparrow}{\frac{\partial C(w,b|a,y)}{\partial f(z)}}
+& \textrm{if }\ell=L\\
+\\
+\frac{\partial f\left(z_i^{(L)}\right)}{\partial z_i^{(L)}}
+\times \left(w_{i,\cdot}^{(\ell+1)}\right)^T\times\delta^{(\ell+1)} 
+& \textrm{if } 0<\ell<L
+&\\
+\end{cases} 
+\end{equation}
+
+---
+# Two selected cost functions
+
+- ### The *cross entropy*  cost function
+
+- ### The *log-likelihood *cost function
+
+---
+layout: true
+
+# Cross entropy
+
+## Uses cross entropy concept from information theory
+
+---
+
+- The cross entropy function 
+\begin{eqnarray}
+X(w,b|x,y) 
+&=&  \sum_i(1-y_i)\log(1-a_i^{(L)}) - y_i \log{a_i^{(L)}}\\ 
+&& \phantom{\sum_i (1-y_i)\log (1-f(z_i^{(L)})) - y_i \log f(z_i^{(L)})}
+\end{eqnarray}
+???
+- Easiest to understand in the context $y_i$ being either 0 or 1
+- one term cancels
+- but works similrly in the general case
+
+---
+
+- The cross entropy function 
+\begin{eqnarray}
+X(w,b|x,y) 
+&=&  \sum_i(1-y_i)\log(1-a_i^{(L)}) - y_i \log{a_i^{(L)}}\\ 
+&=& \sum_i (1-y_i)\log (1-f(z_i^{(L)})) - y_i \log f(z_i^{(L)})
+\end{eqnarray}
+
+
+---
+- The cross entropy function 
+\begin{eqnarray}
+X(w,b|x,y) 
+&=&  \sum_i(1-y_i)\log(1-a_i^{(L)}) - y_i \log{a_i^{(L)}}\\ 
+&=& \sum_i (1-y_i)\log (1-f(z_i^{(L)})) - y_i \log f(z_i^{(L)})
+\end{eqnarray}
+
+- Its derivative for a neuron $i$ in the output layer $L$
+\begin{eqnarray}
+\frac{\partial X(w,d,b|x,y)}{df(z_i)} &=& \frac{1-y_i}{1-f(z_i)} - \frac{y_i}{f(z_i)} \\
+&& \phantom{\frac{(1-y_i)f(z_i) - \left(1-f(z_i)\right)y_i}{f(z_i)\left(1-f(z_i)\right)} }\\
+&& \phantom{\frac{f(z_i)-y_i}{f(z_i)\left(1-f(z_i)\right)}}
+\end{eqnarray}
+---
+- The cross entropy function 
+\begin{eqnarray}
+X(w,b|x,y) 
+&=&  \sum_i(1-y_i)\log(1-a_i^{(L)}) - y_i \log{a_i^{(L)}}\\ 
+&=& \sum_i (1-y_i)\log (1-f(z_i^{(L)})) - y_i \log f(z_i^{(L)})
+\end{eqnarray}
+
+- Its derivative for a neuron $i$ in the output layer $L$
+\begin{eqnarray}
+\frac{\partial X(w,d,b|x,y)}{df(z_i)} &=& \frac{1-y_i}{1-f(z_i)} - \frac{y_i}{f(z_i)} \\
+&=& \frac{(1-y_i)f(z_i) - \left(1-f(z_i)\right)y_i}{f(z_i)\left(1-f(z_i)\right)} \\
+&& \phantom{\frac{f(z_i)-y_i}{f(z_i)\left(1-f(z_i)\right)}}
+\end{eqnarray}
+---
+- The cross entropy function 
+\begin{eqnarray}
+X(w,b|x,y) 
+&=&  \sum_i(1-y_i)\log(1-a_i^{(L)}) - y_i \log{a_i^{(L)}}\\ 
+&=& \sum_i (1-y_i)\log (1-f(z_i^{(L)})) - y_i \log f(z_i^{(L)})
+\end{eqnarray}
+
+- Its derivative for a neuron $i$ in the output layer $L$
+\begin{eqnarray}
+\frac{\partial X(w,d,b|x,y)}{df(z_i)} &=& \frac{1-y_i}{1-f(z_i)} - \frac{y_i}{f(z_i)} \\
+&=& \frac{(1-y_i)f(z_i) - \left(1-f(z_i)\right)y_i}{f(z_i)\left(1-f(z_i)\right)} \\
+&=& \frac{f(z_i)-y_i}{f(z_i)\left(1-f(z_i)\right)}
+\end{eqnarray}
+
+???
+Hmm we recoghnize the $f(z)(1-f(z))$ pattern
+
+---
+layout: false
+# Hmm...
+Recall the derivative for the $sigma$ and $Softmax$ activation functions, 
+
+\begin{eqnarray}
+\frac{\partial \sigma(z)}{dz} &=& \sigma(z)(1-\sigma(z)) \\
+\frac{\partial softmax(z)}{dz} &=& softmax(z)(1-softmax(z)) 
+\end{eqnarray}
+
+For both, we therefore have,
+
+\begin{eqnarray}
+\frac{\partial f(z)}{dz} &=& f(z)(1-f(z)) 
+\end{eqnarray}
+
+???
+This seems promising
+---
+# Hey, what does this mean, then?
+- Combine cross-entropy cost function with either of the $\sigma$ or $Softmax$ activation functions.
+
+--
+- Then, for a neuron $i$ in the output layer $L$, our $\delta$ in  the back-propagation becomes
+
+\begin{eqnarray}
+\delta_i
+&=& \frac{\partial f(z_i)}{\partial z}\times \frac{\partial X(w,b|a,y)}{\partial f(z)} \\
+&=& f(z_i)\left(1-f(z_i)\right)\frac{f(z_i)-y}{f(z_i)\left(1-f(z_i)\right)} = f(z_i)-y_i
+\end{eqnarray}
+
+--
+Ohh, nice! this gets rid of the problematic $\frac{\partial f(z_i)}{\partial z}$ and, thus, ...
+
+- removes part of the vanishing gradient problem
+- $\delta$ scales with  the error -- learns faster when the error is large
+- partly improves computational efficiency
+
+???
+
+- However, other layers still have $\frac{\partialf(z)}{\partial z}$
+- so main aeffect is on output layer $L$
+- Still, important improvement
+
+--
+
+That's it for the cross entropy. Now over to the log likelihhod
+---
+layout: true
+# The *log-likelihood* cost function
+
+## Setting
+
+- Learn how to classify
+- Use *categorical output* with *one-hot encoded $y$*
+
+---
+
+```{r, loglikenet1, echo=F, out.width="75%", fig.align='center', fig.asp=0.5, dpi=600}
+layers =list("0"=4, "1"=5, "3"=4,"L"=3)
+ylab=c("cat=1", "dog=0", "cow=0")
+plotAnn(layers, cex=1.5, withY=T, ylab=ylab)
+
+```
+
+???
+
+- Input can be pictures or sequeces for threee different species
+---
+
+```{r, loglikenet2, echo=F, out.width="75%", fig.align='center', fig.asp=0.5, dpi=600}
+ylab=c("cat=0", "dog=1", "cow=0")
+plotAnn(layers, cex=1.5, withY=T, ylab=ylab)
+
+```
+
+---
+
+```{r, loglikenet3, echo=F, out.width="75%", fig.align='center', fig.asp=0.5, dpi=600}
+ylab=c("cat=0", "dog=0", "cow=1")
+plotAnn(layers, cex=1.5, withY=T, ylab=ylab)
+
+```
+
+--
+
+- Use *Softmax* activation (in $L$), so that
+  - $a_i$ will be the probability of each class
+  - (although the theory works also for $\sigma$)
+
+---
+layout: false
+
+# The *log-likelihood* cost function
+
+## Theory
+
+## Cost function
+$$\begin{eqnarray}
+L(w,b|x, y) &=& -\sum_i y_i \log{a_i^{(L)}} \\
+&=& -\sum_i y_i \log{softmax\left(z_i^{(L)}\right)}\\
+\end{eqnarray}$$
+
+--
+
+### Its derivative for a neuron $i$ in the output layer $L$
+
+\begin{eqnarray}
+\frac{\partial L(w,b|x,y)}{\partial softmax(z_i)} 
+&=& -\frac{y_i}{softmax(z_i)} \\
+&=& \begin{cases} 
+-\frac{1}{softmax(z_i)} & \textrm{if } y_i=1\\
+0 &\textrm{if }y_i=0
+\end{cases}
+\end{eqnarray} 
+ 
+
+---
+layout:true
+# Combine *Softmax* and *Log likelihood*
+
+### Insert in back-propagation DP
+
+Then for neuron $i$ in output layer $L$
+
+---
+
+\begin{eqnarray}
+\delta_i^{(L)}
+&=& \frac{\partial softmax(z_i)}{\partial z_i} \times \frac{\partial L(w,b|x,y)}{\partial softmax(z_i)}\\ 
+&& \phantom{softmax(z_i)\left(1-softmax(z_i)\right) \times -\frac{y_i}{softmax(z_i)} }\\
+&&\phantom{ -y_i \left(1-softmax(z_i)\right) }\\
+&&\phantom{\begin{cases}
+softmax(z_i)-y_i & \textrm{if }y_i=1\\
+0 & \textrm{if } y_i=0
+\end{cases}}
+\end{eqnarray}
+
+---
+
+\begin{eqnarray}
+\delta_i^{(L)}
+&=& \frac{\partial softmax(z_i)}{\partial z_i} \times \frac{\partial L(w,b|x,y)}{\partial softmax(z_i)}\\ 
+&=& softmax(z_i)\left(1-softmax(z_i)\right) \times -\frac{y_i}{softmax(z_i)} \\
+&&\phantom{ -y_i \left(1-softmax(z_i)\right) }\\
+&&\phantom{\begin{cases}
+softmax(z_i)-y_i & \textrm{if }y_i=1\\
+0 & \textrm{if } y_i=0
+\end{cases}}
+\end{eqnarray}
+
+---
+
+\begin{eqnarray}
+\delta_i^{(L)}
+&=& \frac{\partial softmax(z_i)}{\partial z_i} \times \frac{\partial L(w,b|x,y)}{\partial softmax(z_i)}\\ 
+&=& softmax(z_i)\left(1-softmax(z_i)\right) \times -\frac{y_i}{softmax(z_i)} \\
+&=& -y_i \left(1-softmax(z_i)\right) \\
+&&\phantom{\begin{cases}
+softmax(z_i)-y_i & \textrm{if }y_i=1\\
+0 & \textrm{if } y_i=0
+\end{cases}}
+\end{eqnarray}
+
+---
+
+\begin{eqnarray}
+\delta_i^{(L)}
+&=& \frac{\partial softmax(z_i)}{\partial z_i} \times \frac{\partial L(w,b|x,y)}{\partial softmax(z_i)}\\ 
+&=& softmax(z_i)\left(1-softmax(z_i)\right) \times -\frac{y_i}{softmax(z_i)} \\
+&=& -y_i \left(1-softmax(z_i)\right) \\
+&=&\begin{cases}
+softmax(z_i)-y_i & \textrm{if }y_i=1\\
+0 & \textrm{if } y_i=0
+\end{cases}
+\end{eqnarray} 
+
+--
+Again, we get rid of the problematic $\frac{\partial f(z_i)}{\partial z}$ and 
+- we get the same advantages as for *cross entropy*
+- we will only update weights and bias for neurons that are "relevant" to the current $y$.
+
+.font60[(Note: I played around a bit with the case y_i=1, i.e., y_i(1-softmax(z_i)) <=>  softmax(z_i) -1 <=> softmax(z_i) -y_i -- just to make it similar to cross-entropy:)]
+
+---
+layout: false
+
+# Summary
+### Two example combinations of cost and activation functions
+- *cross entropy* and *sigmoid* or *Softmax*
+- *log likelihood* and *Softmax*
+
+## shown that with clever design, we can
+- get rid of the  $\frac{\partial f(z_i)}{\partial z}$ and
+  - remove at least part of the vanishing gradient problem
+  - obtain faster learning when we're way off 
+  - partly improve computational efficiency
+ 
+
+
+---
+# Thanks!
+
+
+## Questions?

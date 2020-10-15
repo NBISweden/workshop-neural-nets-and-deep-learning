@@ -1,0 +1,1191 @@
+---
+title: "Artificial neural networks (ANNs)"
+subtitle: "</br>An introduction to of their basic underlying theory"
+author: "Bengt Sennblad"
+institute: "NBIS"
+date: "2019-12-18" #"`r Sys.Date()`"
+header-includes:
+  \usepackage{xcolor}
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts]
+    lib_dir: libs
+    nature:
+      beforeInit: "macros.js"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: |
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: calc(%current% / %total% * 100%);">
+          </div>
+        </div>
+    seal: false
+---
+class: inverse, middle, center
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=800px></html> 
+
+# Artificial neural networks (ANNs)
+## An introduction to of their basic underlying theory
+### Bengt Sennblad, NBIS
+### 2019-12-18
+
+
+???
+- frustrated of ANNs
+- black box -- ? under the hood
+- examination committe
+- Many already knows -- apologies
+- hopefully, some benefit
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+<style>
+
+.remark-slide-number {
+  position: inherit;
+}
+
+.remark-slide-number .progress-bar-container {
+  position: absolute;
+  bottom: 0;
+  height: 6px;
+  display: block;
+  left: 0;
+  right: 0;
+}
+
+.remark-slide-number .progress-bar {
+  height: 100%;
+  background-color: #EB811B;
+}
+
+.orange {
+  color: #EB811B;
+}
+</style>
+
+```{r, plotfunctions, echo=F, message=F,eval=T}
+
+require(igraph)
+
+plotNeuron<-function(label='p',inv=3, cex=2, wsigma=T, main="", znotb=F){
+  #nodes
+  nodes = c(paste0('a',1:inv), label, 'aout')
+  vertices = vector()
+  for(v in 1:inv){
+    vertices = c(vertices, eval(bquote(expression("a'"[.(v)]))))
+  }
+  if(znotb){
+    vertices = c(vertices,expression('b'*symbol('\336')*'z'))
+  }else{
+    vertices = c(vertices, 'b')
+  } 
+  vertices = c(vertices, expression("a"))
+  # vertex shape
+  shapes = c(rep('none',inv),'circle', 'none')
+  # coordinates
+  x = c(rep(-1,inv), 0, 1)
+  mid = inv-1 # inv/400000
+  y = c((1:inv-1)/mid-0.5, 0,0)
+  #edges
+  edges = vector()
+  for(e in c(1:inv)){
+    edges= c(edges, eval(bquote(expression('w'[.(e)]))))
+  }
+  if(wsigma){
+    edges = c(edges, expression(sigma))
+  }else{
+    edges = c(edges, expression(''))
+  }
+  fromv = c(paste0('a',1:inv), label)
+  tov = c(rep(label,inv), 'aout')
+  # getting it all together
+  NodeList <- data.frame(nodes, x ,y)
+  EdgeList <- data.frame(fromv, tov)
+  # the graph
+  ret<- graph_from_data_frame(vertices = NodeList, d=EdgeList, directed = TRUE)
+  # DEcorate wih names and shapes
+  E(ret)$label = edges
+  V(ret)$shape = shapes
+  #V(ret)$color = colors
+  #V(ret)$frame.color = frame.colors
+  V(ret)$label = vertices
+  #plot
+  par(mar=c(0,0,0,0)+1)
+  plot(ret, scale=F,frame=F,asp=0.5, main=main, #margin=c(-1,-.2,-1,-.2),
+       vertex.size=cex*20,
+       vertex.label.dist=0, 
+       vertex.label.cex=cex,
+#       vertex.color="yellow", 
+       edge.width=3,
+       edge.label.cex =cex,
+       edge.label.dist=-20,
+       edge.arrow.size=cex,
+       edge.color="green"
+  )
+}
+
+
+plotAnn<-function(layers, cex = 2, main="", withY=FALSE,highlight=vector()){
+  nodes = vector()
+  x=vector()
+  y=vector()
+  fromv=vector()
+  tov=vector()
+  edges=vector()
+  vertices=vector()
+  prev = vector()
+  shapes = vector()
+  colors = vector()
+  frame.colors = vector()
+  
+  xmid = length(layers) - 1
+  if(withY)
+  {
+    xmid = length(layers)
+  }
+  ymaxmid = max(unlist(layers))-1
+  for(i in 1:length(layers)){
+    l = names(layers)[i]
+    n = layers[[i]]
+    # colors
+    thiscol="green"
+    if(l %in% highlight){
+      thiscol="red"
+    }
+    # all vertices in layer plus layer label
+    curr = paste0(l,seq(1,n))
+    if(withY && i==length(layers)){
+      currY = paste0(c(l,'y'),seq(1,n))
+      nodes = c(nodes,paste0(l,0), currY)
+    }else{
+      nodes = c(nodes,paste0(l,0), curr)
+    }
+    # layer label and position
+    vertices = c(vertices,  eval(bquote(expression(.(l)))))
+    shapes = c(shapes,'square')
+    colors = c(colors ,NA)
+    frame.colors = c(frame.colors ,NA)
+    x = c(x,2*(i-1)/xmid-1) 
+    y = c(y,0.75) #
+    # each vertex label and position
+    ymid = n-1
+    pref='b'
+    if(withY){
+      pref='a'
+    }
+    if(i == 1){
+      pref='x'
+    }
+    for(v in 1:n){
+      vertices = c(vertices, eval(bquote(expression(.(pref)[.(v)]))))
+      shapes = c(shapes,'circle')
+      colors = c(colors ,thiscol)
+      frame.colors = c(frame.colors ,'black')
+      x = c(x,2*(i-1)/xmid-1) 
+      if(n==1){
+        y = c(y,0)
+      }else{     
+        y = c(y,((v-1)/ymid-0.5)*ymid/ymaxmid)
+      }
+      if(withY && i == length(layers)){
+        vertices = c(vertices, eval(bquote(expression('y'[.(v)]))))
+        shapes = c(shapes,'square')
+        colors = c(colors ,NA)
+        frame.colors = c(frame.colors ,NA)
+        x = c(x,(2*(i-1)+1)/xmid-1) 
+        if(n==1){
+          y = c(y,0)
+        }else{     
+          y = c(y,((v-1)/ymid-0.5)*ymid/ymaxmid)
+        }
+      }
+    }
+    # edges
+    j = 0
+    for(p in prev){
+      j = j + 1
+      k = 0
+      for(c in curr){
+        k = k + 1 
+        fromv = c(fromv, p)
+        tov = c(tov, c)
+        if(withY){
+          edges = c(edges, "")
+        }else{
+          edges = c(edges, eval(bquote(expression("w"[paste(.(j),',',.(k))]))))
+        }
+      }
+    }
+    prev=curr
+  }
+  NodeList <- data.frame(nodes, x ,y)
+  EdgeList <- data.frame(fromv, tov)
+  ret<- graph_from_data_frame(vertices = NodeList, d=EdgeList, directed = TRUE)
+  E(ret)$label = edges
+  V(ret)$shape = shapes
+  V(ret)$color = colors
+  V(ret)$frame.color = frame.colors
+  V(ret)$label = vertices
+  par(mar=c(0,0,0,0)+1)
+  plot(ret, scale=F, frame=F, asp=0.75, main=main, cex.main=cex, #margin=c(-1,-.2,-1,-.2),
+       vertex.size=60/ymaxmid,
+       vertex.label.dist=0, 
+       vertex.label.cex=cex,
+#       vertex.color="yellow", 
+       edge.label.cex = cex,
+       edge.label.dist=-20,
+       edge.arrow.size = cex/2,
+       edge.width=cex*2,
+       edge.color="green"
+  )
+
+}
+
+```
+
+---
+# Artificial Neural networks jargon terms
+
+.pull-left[
+#### Activation function/Neuron models
+- Perceptron
+- **Sigmoid**
+- ReLu 
+- Tanh
+- SoftMax
+- LSTM
+
+#### Network structure
+- **Feedforward**
+- Recurrent
+- Convolutional
+
+<hr>
+.font70[*Refs*
+- [Neural Networks and Deep Learning](http://neuralnetworksanddeeplearning.com/index.html) by Michael Nielsen 
+- [Colah's blog](http://colah.github.io) by Cristopher Olah]
+]
+].pull-right[
+
+#### Cost functions
+- **Quadratic cost** (MSE)
+- Cross-entropy cost
+- Exponentional cost
+- Kullback–Leibler divergence
+
+#### Optimization
+- **Gradient descent**
+  + **Back-propagation**
+- Adam optimization algorithm
+- Regularization
+
+#### Application
+- Aim (prediction vs explanation)
+- Training set size (dimensionality curse)
+]
+???
+- lot of terms -- difference
+- I'll go through some
+- future JC -- Reading course
+
+---
+class: inverse, middle, center
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=800px></html> 
+
+# Neuron models and networks
+
+---
+
+
+# Background
+
+Inspired by biological neural networks.
+Mimic neurons (at the most basic level):
+
+- Single output *state*
+    + 0 (inactive) or 
+    + 1 (activated)
+- State is a function of 1 - several inputs
+- State transmitted as input of 1 - many downstream neurons.
+
+
+```{r, background, echo=F, out.height=280, out.width=500, fig.align='center'}
+
+knitr::include_graphics("1*vBIWWCFLLzZzGes1HcCJOw.jpg")
+
+```
+
+.footnote[.font70[(c) fig from `https://medium.com/predict/artificial-neural-networks-mapping-the-human-brain-2e0bd4a93160`.]]
+
+---
+
+# Perceptron
+
+A simple neuron model is the perceptron
+```{r, perceptron, echo=F, out.height=250, out.width=500, fig.align='center', fig.asp=0.5, dpi=600}
+
+plotNeuron(wsigma=F, inv=3)
+
+```
+
+
+- *multivariate linear model* $z=\sum_j w_j a'_j + b$ over the inputs $a'$ 
+- use $z$ to determine the output $a$
+$$a = 
+\begin{cases} 
+1 & \quad\textrm{if} \quad z >0\\ 
+0 & \quad\textrm{otherwise} 
+\end{cases}$$
+  + $w$ weights (coefficients)
+  + $b$ bias, threshold for *activation*
+
+???
+
+Models biological neuron as ...
+
+
+Learning benefits from doing small changes. non-active-activated flip is to sensitive to small changes.
+---
+# Sigmoid neuron
+
+It turns out that the perceptorn is a suboptimal for ANN learning. the situation can be substantially improved by relaxing the on/off output of the perceptron -- Enter the *sigmoid neuron*:
+
+```{r, sigmaNeuron, echo = F, out.height=250, out.width=500, fig.align='center', fig.asp=0.5, dpi=600}
+
+plotNeuron()
+
+```
+
+The basis is still a linear model, but the  output is modified by an *activation function* $\sigma$ 
+
+
+---
+
+# Sigmoid neuron
+.pull-left[
+To compute the output, $a$, 
+
+- first let
+$$z = \sum_{j=1}^M w_j a'_j + b$$
+- then determine $a$ from $z.$
+$$a = \sigma(z),$$
+    + $\sigma(z)$ is a *sigmoid function*, more specifically the *logistic function*:
+    $$\sigma(z) = \frac{1}{1+e^{-z}}$$
+]
+.pull-right[
+```{r, logistic, echo = F, out.height=300}
+
+curve(1/(1+exp(-x)),from=-10, to=10, xlab="z", ylab="sigma(z)")
+title(main="the logistic function")
+
+```
+
+]
+
+
+The output is now continuous, but *tends* towards either $0$ or $1.$
+The *bias*, $b$, can still be viewed as a threshold for *activation*, as it moves the tendency to activation.
+
+---
+# Sigmoid neuron
+
+.footnote[.font70[ [1] also the perceptron can be viewed as a GLM. The threshold forms the activation function.]]
+
+In fact, the sigmoid neuron represents a *generalized linear model* (*GLM*)<sup>1</sup>, specifically the logistic model
+
+In logistic regression, it is more common to describe GLMs in terms a link function that transforms the outcome:
+
+$$logit(a) = \sum_{j=1}^M w_ja'_j + b,$$
+
+where $logit(a) = \sigma^{-1}(a)$ is called the link function.
+
+A sigmoid neuron can thus be viewed simply as a multivariate logistic model. 
+
+--
+
+However, connected in a network they can do more.
+
+---
+
+# Sigmoid Feedforward ANN
+
+
+In a *feedforward* ANN, neurons are arranged into layers: single *input* and *output* layers and a number of *hidden* layers.
+
+The output of one layer forms the input of the next layer. 
+.pull-left[
+```{r, sigmoidAnn, echo=F, out.height=300, out.width=700, fig.align='center',fig.asp=0.75, dpi=600}
+layers =list("0"=1, "1"=3, "2"=1)
+
+plotAnn(layers, cex=2, main="single hidden layer")
+```
+]
+.pull-right[
+```{r, sigmoidAnn2, echo=F,  out.height=300, out.width=900, fig.align='center',fig.asp=0.75, dpi=600}
+
+layers =list("0"=2, "1"=5, "2"=7,"3"=5, "4"=2)
+plotAnn(layers, cex=1.25, main="3 hidden layers function")
+```
+]
+
+???
+- DAG
+- Each layers can have any number of neurons.
+- Specially, 
+    + size of input layer should = input size 
+    + size of output layer should = output size 
+
+--
+
+Each layer can be viewed as transforming the original data to a new multi-dimensional space.
+
+???
+So while each neuron performs rather simple transformations, the sum can be very complex
+
+---
+
+# ANN example -- classify _red_ vs _blue_
+
+.footnote[.font70[(c) Figs from [Colah's blog](`colah.github.io/DeepIntro`) ]]
+
+.pull-left[
+#### input
+
+```{r, simple2_data, echo=F, out.width=150}
+knitr::include_graphics('simple2_data.png')
+```
+
+#### linear model fails 
+
+```{r, simple2_linear, echo=F, out.width=150}
+knitr::include_graphics('simple2_linear.png')
+```
+]
+???
+- $r/b = w_0+w_1x+w_2y+b$ ?
+
+--
+.pull-right[
+#### ANN: result as hidden transformation
+
+```{r, simple2_hidden, echo=F, out.width=150}
+knitr::include_graphics('simple2_1.png')
+```
+
+#### ANN: result in original view
+
+```{r, simple2_ann, echo=F, out.width=150}
+knitr::include_graphics('simple2_0.png')
+```
+]
+
+
+---
+
+# Summary Neuron models and networks
+
+#### Sigmoid neuron is a logistic model
+
+\begin{eqnarray}
+z &=& \sum_j w_ja'_j+b\\
+a &=& \sigma(z)
+\end{eqnarray}
+
+#### Feedforward network 
+- Neurons arranged into layers
+    + Input layer (0)
+    + Output layer (L)
+    + Hidden layers $(0<\ell <L)$
+- Each hidden layer transforms the input into a new multi-dimensional space which is fed to the next layer
+
+#### Parameters
+- $\{w_j^{(\ell)}\}$ and $b^{(\ell)}$ for all layers $\ell \in (1,L)$
+
+???
+- Next: how to determine theparameters (learning)
+
+---
+class: inverse, middle, center
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=800px></html> 
+
+# Learning
+## Cost function and Gradient descent
+
+---
+
+# Learning
+
+## Task
+Find optimal values for $w_i$ and $b$ over all neurons
+.pull-left[
+## Data
+Cross-validation approach
+* Training set
+* .orange[Validation set]
+* .orange[Test set]
+].pull-right[
+## Tools
+* Cost function
+* Gradient descent
+  + Back-propagation
+* .orange[Cross-validation]
+]
+
+???
+- orange = not treated
+- gradient descent to optimise fo cost function
+- back-prop to do this efficiently
+---
+
+# Simplifying notation: relaxed indexing
+### Training data sets
+.pull-left[
+
+```{r, sigmoidAnnrep0, echo=F,out.width="100%",fig.align='center',fig.asp=0.75, dpi=600}
+layers =list("0"=1, "l"=3, "L"=1)
+
+plotAnn(layers, cex=2, withY=T)
+
+```
+].pull-right[
+#### Training data:
+
+$X=\{X_1,\ldots, X_k\}$
+
+
+#### Relaxed indexing:
+
+\begin{eqnarray}
+\textrm{Full}
+&:&\begin{cases}
+X_k & \textrm{(input)}\\
+Y(X_k) & \textrm{(true output)}\\ 
+\widehat{Y}(X_k) = a^{(L)}(X_k) & \textrm{(estimated output)}
+\end{cases}\\
+\quad\\
+\quad\\
+\textrm{Simple}
+&:&\begin{cases}
+x & \textrm{(input)}\\
+y &  \textrm{(true output)}\\
+\hat{y} = a^{(L)}&  \textrm{(estimated input)}
+\end{cases}
+\end{eqnarray} 
+]
+
+---
+
+
+# Simplifying notation: relaxed indexing
+#### Variables
+.pull-left[
+```{r, sigmoidAnnrep2, echo=F,out.width="80%",fig.align='left',fig.asp=0.75, dpi=600}
+layers =list("0"=1, "l"=3, "L"=1)
+
+plotAnn(layers, cex=2)
+```
+#### Full
+$\quad\begin{array}{lll}a_i^{(\ell-1)} \qquad& a_i^{(\ell)} \qquad& a_i^{(\ell+1)}\\z_i^{(\ell-1)} & z_i^{(\ell)} & z_i^{(\ell+1)}\\w_{ij}^{(\ell-1)} & w_{ij}^{(\ell)} & w_{ij}^{(\ell+1)}\\b_i^{(\ell-1)} & b_i^{(\ell)} & b_i^{(\ell+1)}\end{array}$
+]
+
+--
+
+.pull-right[
+```{r, sigmaNeuron10, echo = F, out.height=250, out.width=500, fig.align='center', fig.asp=0.5, dpi=600}
+
+plotNeuron(znotb=T)
+
+```
+#### Simple
+
+$\quad\quad\begin{array}{lll}a' \qquad\qquad& a \qquad\qquad& a''\\z' & z & z''\\w'_j & w_j & w''_j\\b' & b & b''\end{array}$
+
+]
+
+---
+
+# Simplifying notation
+
+**Vectors:** We can further remove annoying summing over indices by letting
+\begin{eqnarray}
+w=\begin{pmatrix}w_1\\\vdots\\w_M\end{pmatrix} &\qquad& a'=\begin{pmatrix}a'_1\\\vdots\\a'_M\end{pmatrix}
+\end{eqnarray}
+and use vector multiplication
+$$ z=w^Ta' +b = \sum_i w_ia'_i +b$$
+---
+
+# Simplifying notation
+
+**Vectors:** We can further remove annoying summing over indices by letting
+\begin{eqnarray}
+w=\begin{pmatrix}w_1\\\vdots\\w_M\end{pmatrix} &\qquad& a'=\begin{pmatrix}a'_1\\\vdots\\a'_M\end{pmatrix}
+\end{eqnarray}
+and use vector multiplication
+$$ z=w^Ta' +b = \sum_i w_ia'_i +b$$
+---
+
+# Supervised learning: cost function
+
+Suppose we have training samples $X=(X_1,\ldots,X_K)$ with true classifications $Y=(Y_1,\ldots,Y_K)$. Then the *quadratic cost function* is defined as follows:
+
+???
+Borrow some established concepts
+- RSS from regression
+-MSE from cross-validation
+
+--
+.pull-left[
+
+1 For each $X_k$, use the residual sum of squares, *RSS*, as an error measure
+
+$$C(w,b|X_k) = \sum_i\frac{1}{2} \left( Y_i(X_k)-a_i^{(L)}(X_k)\right) ^2$$
+ 
+]
+
+.pull-right[
+
+```{r rss, echo=F, out.height='200', fig.asp=0.6} 
+
+plot(x=c(2,4,6,8), y=c(8,3,7,8), xlim=c(0,10), ylim=c(2.5,9.5), pch=1, xlab="x", ylab="y")
+abline(b=0.5, a=3, col="blue")
+arrows(x1=2,y1=4,x0=2,y0=8, col="darkgray",lwd=5)
+text(x=2, y=6, labels="-4", cex=2, pos=4, col="darkgray")
+arrows(x1=4,y1=5,x0=4,y0=3, col="darkgray", lwd=5)
+text(x=4, y=4, labels="-2", cex=2, pos=4, col="darkgray")
+
+```
+
+]
+
+???
+* The factor 1/2 is included for convenience  (see later)
+
+--
+
+2 The full quadratic cost function is  simply the Mean Squared Error (MSE) used in cross-validation
+\begin{eqnarray}
+C(w,b) &=&  \frac{1}{K} \sum_{k=1}^K C(w,b|X_k)\\
+%&=& \frac{1}{2K}\sum_{k=1}^K \Vert Y(X_k)-a^{(L)}(X_k)\Vert ^2
+\end{eqnarray}
+
+???
+Now we got something to optimize for , let's optimize
+
+---
+
+# Gradient descent -- "clever hillclimbing"
+Consider inverted hill-climbing in one dimension $v$, i.e., we want to find the minimum instead of the maximum.
+
+.pull-left[
+####*Hill-climbing* 
+1. randomly choose direction and length to change $v$
+2. stay if $C(v|x)$ got better, else go back.
+
+We want to be smarter!
+
+]
+
+.pull-right[
+```{r, descent1, echo=F, fig.height=8}
+k=4.5
+f<-function(x){(sin(k*(x)+1.5)+1)/2}
+fp<-function(x){k/2*cos(k*x+1.5)}
+curve(f, from=0, to=1, xlab="v", ylab="C(v|x)", xlim=c(0.2,1),ylim =c(-0.5,1.2), cex.lab=1.5)
+x=0.5
+points(x=x,y=f(x), pch=0)
+
+e = 0.1
+d=0.2
+arrows(x0=x,x1=x-d, y0=f(x)+e, angle=45,col = "darkgray", lwd=5)
+arrows(x0=x,x1=x+d, y0=f(x)-e, angle=45,col = "darkgray", lwd=5)
+
+```
+]
+
+
+
+---
+
+# Gradient descent -- "clever hillclimbing"
+Consider inverted hill-climbing in one dimension $v$, i.e., we want to find the minimum instead of the maximum.
+
+.pull-left[
+####*Hill-climbing* 
+1. randomly choose direction and length to change $v$
+2. stay if $C(v|x)$ got better, else go back.
+
+We want to be smarter!
+
+####*Gradient descent*
+1. compute the derivative $\frac{dC(v|x)}{dv}$ to see which way *down* is
+
+]
+
+.pull-right[
+```{r, descent3, echo=F, fig.height=8}
+k=4.5
+f<-function(x){(sin(k*(x)+1.5)+1)/2}
+fp<-function(x){k/2*cos(k*x+1.5)}
+curve(f, from=0, to=1, xlab="v", ylab="C(v|x)", xlim=c(0.2,1),ylim =c(-0.5,1.2), cex.lab=1.5)
+x=0.5
+points(x=x,y=f(x), pch=0)
+y=seq(x-0.2,x+0.2, 0.01)
+lines(x=y, y = fp(x)*y+(f(x)-fp(x)*x), col="blue")
+e = 0.1
+d=0.5
+```
+]
+
+---
+
+# Gradient descent -- "clever hillclimbing"
+Consider inverted hill-climbing in one dimension $v$, i.e., we want to find the minimum instead of the maximum.
+
+.pull-left[
+####*Hill-climbing* 
+1. randomly choose direction and length to change $v$
+2. stay if $C(v|x)$ got better, else go back.
+
+We want to be smarter!
+
+####*Gradient descent*
+1. compute the derivative $\frac{dC(v|x)}{dv}$ to see which way *down* is
+2. Take a reasonably long step in that direction, $v' = v-\eta\frac{dC(v|x)}{dv}$
+
+]
+
+.pull-right[
+```{r, descent4, echo=F, fig.height=8}
+k=4.5
+f<-function(x){(sin(k*(x)+1.5)+1)/2}
+fp<-function(x){k/2*cos(k*x+1.5)}
+curve(f, from=0, to=1, xlab="v", ylab="C(v|x)", xlim=c(0.2,1),ylim =c(-0.5,1.2), cex.lab=1.5)
+x=0.5
+points(x=x,y=f(x), pch=0)
+y=seq(x-0.2,x+0.2, 0.01)
+lines(x=y, y = fp(x)*y+(f(x)-fp(x)*x), col="blue")
+e = 0.1
+d=0.5
+arrows(x0=x,x1=x+d, y0=f(x)+e, angle=45,col = "red", lwd=5)
+arrows(x0=x,x1=x+e, y0=f(x)-e, angle=45,col = "green", lwd=5)
+```
+]
+
+???
+
+Notice the minus sign: the derivative show which way is up and wewant to go down.
+
+---
+
+# Gradient descent in higher dimensions
+
+
+.pull-left[
+```{r, twodim, echo=F, out.width=600, warnings=F, output=F, message=F}
+require(magick)
+require(magrittr)
+image_read('valley_with_ball.png') %>%
+  image_flop() %>% 
+  image_crop("600x500+80-90") %>% 
+  image_flop()
+```
+]
+.pull-right[
+Same thing really, but we have to have *partial derivatives* for each dimension, which makes it look more complicated. 
+
+Consider a 2-dimensional case,
+
+1 Find the (partial) derivatives
+
+$$\begin{pmatrix}
+\frac{\partial C(v_1,v_2|x)}{\partial v_1}\\
+\frac{\partial C(v_1,v_2|x)}{\partial v_2}
+\end{pmatrix}$$
+]
+
+???
+- $\partial$ indicates partial derivative on one of the free parameters.
+--
+.pull-right[
+2 Take a resonably long step
+$$\begin{pmatrix} v'_1\\ v'_2\end{pmatrix} = \begin{pmatrix}v_1-\eta\frac{\partial  C(x,w)}{\partial v_1} \\ v_2-\eta\frac{\partial C(x,v)}{\partial v_2} \end{pmatrix}$$
+
+]
+
+---
+
+
+# Gradient descent in higher dimensions 
+### Some notes
+
+1. Defining the gradient $\nabla_w C(w,b|x) = \begin{pmatrix}\frac{\partial C(w,b|x)}{\partial w_1}\\\ldots\\\frac{\partial C(w,b|x)}{\partial w_M}\end{pmatrix}$
+simplifies notation. 
+$$w'=w- \eta \nabla_w C(w,b|x)$$
+<br>
+--
+
+2. The bias $b$ can be treated analogously
+$$b'= b-\eta \nabla_b C(w,b|x)$$
+<br>
+
+---
+
+# Summary Learning
+
+#### Cost function
+\begin{eqnarray}
+C(w,b) &=& \frac{1}{2K}\sum_{k=1}^K  C(w,b|X_k)\\
+C(w,b|x) &=& \sum_i\left(y_i-a_i^{(L)}\right)^2
+\end{eqnarray}
+
+- Mean squared error (MSE)
+- Residual sum of squares (RSS)
+
+#### Gradient descent
+
+- "Clever hill-climbing" in several dimensions
+- Change all variables $v$ by taking a reasonable step in opposite direction to the gradient 
+\begin{equation}
+v' = v-\eta \nabla_{v}C(w,b|x)
+\end{equation}
+
+--
+<br><br>
+For this to work, we need to be able to **compute $\nabla_v C(w,b|x)$ efficiently**
+
+???
+- This is where back-propagation comes in
+---
+class: inverse, middle, center
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=800px></html> 
+
+# Back-propagation
+## Re-inventing the *chain rule*
+
+---
+
+# Chain rule of derivation -- a reminder
+The chain rule simplifies derivation of complex functions and states that
+$$\frac{d f(g(x))}{dx} = \frac{dg(x)}{d x} \times \frac{df(g(x))}{d g(x)}$$
+
+???
+
+- continued fraction
+
+
+--
+This notation is for derivatives of scalar $x$, but for vector $x$, the rule works also for partial derivatives
+
+$$\frac{\partial f(g(x))}{\partial x_i} =  \frac{\partial g(x)}{\partial x_i} \times \frac{\partial f(g(x))}{\partial g(x)} $$
+--
+I will use $\otimes$ to denote the chain rule applied (independently) to a vector of partial derivatives (a gradient):
+
+$$\nabla_x f(g(x)) =  \nabla_x g(x) \otimes \nabla_{g(x)}f(g(x))$$
+--
+BTW, elementwise multiplications will be indicated by, e.g., $\nabla_x g(x) \circ \nabla_{g(x)}f(g(x))$
+---
+
+# Chain rule of derivation -- an example
+The derivative of the sigmoid function $\sigma(z)=\frac{1}{1+e^{-z}}$:
+???
+
+$$\begin{eqnarray*}
+\frac{d\sigma(z)}{d z}
+%&=&\frac{d \frac{1}{1+e^{-z}}}{d z}\\ 
+&=& \frac{d (1+e^{-z})^{-1}}{d z}\\
+&=&  \frac{d (1+e^{-z})}{d z} \quad\times\quad \frac{d (1+e^{-z})^{-1}}{d (1+e^{-z})}\\
+&=& (-e^{-z}) \quad\times\quad -(1+e^{-z})^{-2}\\
+&=& \frac{e^{-z}}{(1+e^{-z})^{2}} \\
+&=& \frac{1}{1+e^{-z}}\quad \left(1-\frac{1}{1+e^{-z}}\right)\\\\
+&=& \sigma(z)\left(1-\sigma(z)\right)
+\end{eqnarray*}$$
+
+--
+
+$$\begin{eqnarray*}
+\frac{d\sigma(z)}{d z}
+%&=&\frac{d \frac{1}{1+e^{-z}}}{d z}\\ 
+&=& \frac{d (1+e^{-z})^{-1}}{d z}\\
+&=&  \frac{d (1+e^{-z})}{d z} \quad\times\quad \frac{d (1+e^{-z})^{-1}}{d (1+e^{-z})}\\
+&=& (-e^{-z}) \quad\times\quad -(1+e^{-z})^{-2}\\
+&=& \frac{e^{-z}}{(1+e^{-z})^{2}} \\
+&=& \frac{1}{1+e^{-z}}\quad \left(1-\frac{1}{1+e^{-z}}\right)\\\\
+&=& \sigma(z)\left(1-\sigma(z)\right)
+\end{eqnarray*}$$
+
+
+---
+
+# Back-propagation -- Strategy
+
+The chain-rule is used to compute $\frac{\partial C(w,b|x)}{\partial v}$, for any $v\in\{w,b\}$ of any neuron in the network, by sequential
+application to each layer $\ell$, starting from the output layer $L$.
+.pull-left[
+```{r, sigmoidAnn3, echo=F,  out.height=300, out.width=900, fig.align='center',fig.asp=0.75, dpi=600}
+
+layers =list("0"=2, "1"=3, "2"=4,"3"=3, "4"=2)
+plotAnn(layers, cex=1.25)
+```
+].pull-right[
+```{r, sigmaNeuron3, echo = F, out.height=250, out.width=500, fig.align='center', fig.asp=0.5, dpi=600}
+
+plotNeuron(znotb=T)
+
+```
+$$\pmatrix{\cdots\\ a''\\ \cdots}\overset{w, b}{ \Longrightarrow} z \quad \overset{\sigma}\Rightarrow\quad a'$$
+
+]
+
+Notice that $z$ is the breaking point between layer dimensions!
+
+???
+- several variables and complicated dependencies
+- but very regular
+- recursion
+
+---
+
+# Back-propagation -- Strategy
+
+We use the chain rule selectively targeting $z$ to get, for $v\in w \cup b$ of neuron $i$ of layer $\ell$,   
+\begin{eqnarray}\frac{\partial C(w,b|x)}{\partial v} &=&\frac{\partial z_i^{(\ell)}}{\partial v} \times \underset{{\Bigg\Uparrow}}{\frac{\partial C(w,b|x)}{\partial z_i^{(\ell)}}}\end{eqnarray}
+
+???
+- Really point out that$v$ belongs to neuron $i$
+
+--
+
+This allows us to use recursion to design a *Dynamic Programming* algorithm:
+--
+
+- For each layer $\ell\in (L,L-1,\ldots, 1)$, i.e., starting with the output layer:
+--
+
+  + Compute $\delta^{(\ell)} = \nabla_{z^{(\ell)}} C(w,b|x)$ recursively, i.e., 
+--
+
+      - Store computed $\delta^{(\ell)}$ in a table $\delta$
+--
+      - Re-use any computed $\delta^{(\ell+1)}$ for computation of  $\delta^{(\ell)}$
+      
+???
+ $\nabla_{z^{(\ell)}} C(w,b|x)$ vector of partial derivatives $\frac{\partial C(w,b|x)}{\partial z_i^{(\ell)}}$
+      
+--
+
+- For any requested $v\in  w\cup b$ of some neuron $i$ in layer $\ell$
+--
+
+  + Look up $\delta^{(\ell)}$ in the a table
+--
+
+      - $\frac{\partial C(w,b|x)}{\partial v} = \frac{\partial z_i^{(\ell)}}{\partial v} \times \delta_i^{(\ell)}$
+
+---
+
+# Back-propagation -- the output layer $L$ 
+
+```{r, sigmoidAnn4, echo=F,  out.height=400, out.width=650, fig.align='left',fig.asp=0.75, dpi=600}
+
+layers =list(" "=2, "  "=3, "   "=4,"    "=3, "L"=2)
+plotAnn(layers, cex=1.25, highlight="L")
+
+```
+$\hspace{9.7cm}\begin{array}{rcccl}&&z_i &\Rightarrow& a_i\\\frac{\partial C(w,b|x)}{\partial z_i} &=&\frac{\partial a_i}{\partial z_i}&\times& \frac{\partial C(w,b|x)}{\partial a_i}\end{array}$
+
+---
+# Back-propagation -- the output layer $L$ 
+
+Recall 
+$$C(w,b|x) = \sum_i\frac{1}{2}\left(y_i-a_i\right)^2
+\qquad \Rightarrow \qquad \frac{\partial C(w,b|x)}{\partial a_i} = y_i-a_i$$
+
+???
+
+\begin{eqnarray}
+\frac{\partial C(w,b|x)}{\partial z_i}
+&=& 
+\frac{\partial a_i}{\partial z_i}
+\quad\times\quad
+\frac{\partial C(w,b|x)}{\partial a_i}
+\\
+&=& 
+\frac{\partial \sigma(z_i)}{\partial z_i}
+\quad\times\quad
+\frac{\partial \frac{1}{2}(y_i-a_i)^2}{\partial a_i}
+\\
+&=&  
+\sigma(z_i)(1-\sigma(z_i))
+\quad\times\quad
+(y_i-a_i)
+\end{eqnarray}
+--
+
+Then for neuron $i$ in $L$
+\begin{eqnarray}
+\frac{\partial C(w,b|x)}{\partial z_i}
+&=& 
+\frac{\partial a_i}{\partial z_i}
+\quad\times\quad
+\frac{\partial C(w,b|x)}{\partial a_i}
+\\
+&=& 
+\frac{\partial \sigma(z_i)}{\partial z_i}
+\quad\times\quad
+\frac{\partial \frac{1}{2}(y_i-a_i)^2}{\partial a_i}
+\\
+&=&  
+\sigma(z_i)(1-\sigma(z_i))
+\quad\times\quad 
+(y_i-a_i)
+\end{eqnarray}
+--
+As a gradient over all neurons
+$$\delta^{(L)} = \nabla_{z^{(L)}} C(w,b|x)
+= \pmatrix{\cdots\\\frac{\partial C(w,b,|x)}{\partial z_i^{(L)}}\\\cdots} 
+=  \nabla_{z^{(L)}}\sigma\left(z^{(L)}\right)\circ\left(y-a^{(L)}\right)$$
+---
+
+# Back-propagation -- any hidden layer $\ell$ 
+
+```{r, sigmoidAnn5, echo=F,  out.height=400, out.width=650, fig.align='left',fig.asp=0.75, dpi=600}
+
+layers =list(" "=2, "  "=3, "l"=4,"l+1"=3, "   "=2)
+plotAnn(layers, cex=1.25, highlight=c('l', 'l+1'))
+```
+$\hspace{3.5cm}\begin{array}{rclcl}&&z_i\ \ \Rightarrow a_i &\Rightarrow& z'' \\\frac{\partial C(w,b|x)}{\partial z_i}&=&\frac{\partial a_i}{\partial z_i} \times\Big(\sum_j \frac{\partial z''_j}{\partial a_i} &\times& \frac{\partial C(w,b|x)}{\partial z''_j} \quad \Big) \end{array}$
+
+---
+
+# Back-propagation -- any hidden layer $\ell$ 
+
+Recall $$\quad z''_j =\sum_i w''_{ij} a_i + b''_j \qquad \Rightarrow \qquad \frac{\partial z''_j }{\partial a_i} = w''_{ij}$$
+
+???
+
+For each neuron $i$ in layer $\ell$
+\begin{eqnarray}
+\frac{\partial C(w,b|x)}{\partial z_i}
+&=&\sum_j 
+\frac{\partial C(w,b|x)}{\partial z''_j} \times
+\frac{\partial z''_j}{\partial a_i}
+\times \frac{\partial a_i}{\partial z_i}\\
+&=&\sum_j 
+\delta''_j
+\times w''_{ij}
+\times \frac{\partial \sigma(z_j)}{\partial z_i}\\
+&=&
+\left(w_{i\cdot}''\right)^T 
+\times\delta''
+\times \sigma(z_j)(1-\sigma(z_j))
+\end{eqnarray}
+--
+
+For each neuron $i$ in layer $\ell$
+\begin{eqnarray}
+\frac{\partial C(w,b|x)}{\partial z_i}
+&=&
+ \frac{\partial a_i}{\partial z_i}
+\quad\times\quad
+\left(\sum_j \frac{\partial z''_j}{\partial a_i}
+\quad\times\quad
+\frac{\partial C(w,b|x)}{\partial z''_j} \right) \\
+&=&
+\frac{\partial \sigma(z_i)}{\partial z_i}
+\quad\times\quad 
+\left(\sum_j w''_{ij}
+\quad\times\quad  \delta''_j \right)
+\\
+&=&
+\sigma(z_i)(1-\sigma(z_i))
+\quad\times\quad 
+\left({w_{i\cdot}''}^T 
+\quad\times\quad \delta''\right)
+\end{eqnarray}
+--
+
+.pull-left[
+
+If we define 
+$$W^{(\ell)} = \pmatrix{w_{ij}^{(\ell)}&\cdots\\\vdots&\ddots}$$
+].pull-right[
+
+Then we can write
+\begin{eqnarray}
+\delta^{(\ell)}&=&\nabla_{z} C(w,b,|x)\\
+&=& \nabla_{z^{(\ell)}}\sigma(z^{(\ell)}) \circ W^{(\ell)}\times\delta^{(\ell+1)}
+\end{eqnarray}
+]
+---
+
+# Back-propagation -- tying it up 
+
+For any layer $\ell \in \{1,\cdots,L\}$ and any neuron $i \in \ell$
+
+$$z = w^T a' +b = \sum_j w_ja'_j+b.$$ 
+
+--
+
+which gives the partial derivative $\frac{\partial z}{\partial v}$:
+
+\begin{equation}
+\frac{\partial z}{\partial v}  
+= \sum_j\frac{  \partial w_{j}a'_j+b}{\partial v}
+= \begin{cases} 
+a'_j & \textrm{if } v =  w_j \\
+1 & \textrm{if }v= b\\
+\end{cases} 
+\end{equation}
+
+--
+and hence, for $v\in w\cup b$ of neuron $i$
+
+\begin{eqnarray}
+\frac{\partial C(w,b|x)}{\partial{v}} =  \frac{\partial z_i}{\partial v}\times \delta_i
+&=& \begin{cases} 
+a'_i\times \delta_i & \textrm{if } v=w\\
+\delta_i  & \textrm{if } v=b
+\end{cases} 
+\end{eqnarray}
+
+---
+
+# Summary -- Back-propagation
+
+### Efficient computation of $\nabla_{v} C(w,b|x)$
+#### Compute $\delta$
+\begin{equation}
+\delta^{(\ell)} = \begin{cases}
+\left(y-a^{(L)}\right) \circ \nabla_{z^{(L)}}\sigma\left(z^{(L)}\right)
+& \textrm{if }\ell=L\\
+\\
+W^{(\ell+1)}\times\delta^{(\ell+1)}\circ\nabla_{z^{(\ell)}}\sigma(z^{(\ell)}) 
+& \textrm{if } 0<\ell<L
+&\\
+\end{cases} 
+\end{equation}
+
+<br><br>
+
+#### Compute $\nabla_{v} C(w,b|x)$ for any $v \in w\cup b$ of any neuron $i$ in any layer $\ell$
+\begin{equation}
+\nabla_{v} C(w,b|x) 
+= \begin{cases} 
+\delta_i^{(\ell)} \times a' & \textrm{if } v=w \\
+\delta_i^{(\ell)}  & \textrm{if } v=b 
+\end{cases} 
+\end{equation}
+
+
+
+---
+
+# Thanks!
+
+Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan).
+
+The chakra comes from [remark.js](https://remarkjs.com), [**knitr**](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).

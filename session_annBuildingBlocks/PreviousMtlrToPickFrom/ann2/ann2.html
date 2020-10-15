@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Artificial neural networks contd</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bengt Sennblad" />
+    <meta name="date" content="2020-09-03" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Artificial neural networks contd
+## </br>Alternative activation and cost functions
+### Bengt Sennblad
+### NBIS
+### 2020-09-03
+
+---
+
+class: inverse, middle, center
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=800px&gt;&lt;/html&gt; 
+
+# Artificial neural networks continued
+## Alternative activation and cost functions
+### Bengt Sennblad, NBIS
+### 2020-09-03
+
+
+
+&lt;style&gt;
+
+.remark-slide-number {
+  position: inherit;
+}
+
+.remark-slide-number .progress-bar-container {
+  position: absolute;
+  bottom: 0;
+  height: 6px;
+  display: block;
+  left: 0;
+  right: 0;
+}
+
+.remark-slide-number .progress-bar {
+  height: 100%;
+  background-color: #EB811B;
+}
+
+.orange {
+  color: #EB811B;
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+class: inverse, middle, center
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=800px&gt;&lt;/html&gt; 
+
+# Recap
+
+&lt;hr&gt;
+.font70[*Refs*
+- [Neural Networks and Deep Learning](http://neuralnetworksanddeeplearning.com/index.html) by Michael Nielsen 
+- [Colah's blog](http://colah.github.io) by Cristopher Olah
+]
+
+---
+
+
+
+# Sigmoid neuron
+
+.pull-left[
+
+
+We compute the output, `\(a\)` from the input `\(a'\)` and the weights `\(w\)` and bias `\(b\)` in two steps
+
+`\begin{eqnarray}
+z &amp;=&amp; \sum_{j=1}^M w_j a'_j + b,\\
+a &amp;=&amp; \sigma(z),
+\end{eqnarray}`
+
+where `\(\sigma(z)\)` is a *sigmoid* or *logistic function*:
+    `$$\sigma(z) = \frac{1}{1+e^{-z}}$$`
+The output is continuous, but *tends* towards either `\(0\)` or `\(1.\)`
+The *bias*, `\(b\)`, can be viewed as a threshold for *activation*, as it moves the tendency to activation.
+
+]
+.pull-right[
+&lt;img src="ann2_files/figure-html/sigmaNeuron1-1.png" width="500" height="250" style="display: block; margin: auto;" /&gt;
+
+&lt;img src="ann2_files/figure-html/logistic-1.png" width="100%" height="300" /&gt;
+
+]
+
+
+
+---
+
+# Sigmoid Feedforward ANN
+
+
+.pull-left[
+
+In a *feedforward* ANN, neurons are arranged into `\(L+1\)` layers: single *input* `\((0)\)` and *output* `\((L)\)` layers and a number of *hidden* layers `\((0&lt;\ell&lt;L)\)`.
+
+The output of one layer forms the input of the next layer. 
+
+Each layer can be viewed as transforming the original data to a new multi-dimensional space.
+
+]
+.pull-right[
+&lt;img src="ann2_files/figure-html/sigmoidAnn2-1.png" width="900" height="300" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+# Supervised learning
+.pull-left[
+#### Training data sets
+
+- input `\(X=\{\ldots,x,\ldots\}\)` 
+- *true* output `\(Y=\{\ldots,y,\dots\}\)`
+
+#### *Quadratic cost function* `\(Q(w,b)\)`:
+
+1. For each `\(x\)`, use the residual sum of squares, *RSS*, as an error measure
+
+`$$Q(w,b|x,y) = \sum_i\frac{1}{2} \left( y_i-a_i^{(L)}\right) ^2$$`
+2. Then use the cross-validation Mean Squared Error (MSE)
+`\begin{eqnarray}
+Q(w,b) &amp;=&amp;  \frac{1}{|X|} \sum_{x\in X} Q(w,b|x,y)
+\end{eqnarray}`
+
+].pull-right[
+
+&lt;img src="ann2_files/figure-html/sigmoidAnnrep0-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+
+
+&lt;img src="ann2_files/figure-html/rss-1.png" width="100%" height="200" /&gt;
+
+]
+
+
+???
+* Tells when it does wrong
+* 
+
+---
+
+# Gradient descent -- "clever hillclimbing"
+Optimize for minimum of a cost function.
+.pull-left[
+1. Compute the derivative `\(\frac{dQ(v|x)}{dv}\)` to see which way *down* is
+2. Take a reasonably long step in that direction, `\(v' = v-\eta\frac{dQ(v|x)}{dv}\)`
+3. Repeat until good enough
+
+`\(\eta\)` is called the *learning rate*
+
+In higher dimensions, use gradients  with *partial derivatives* for each dimension. 
+
+`\(\nabla_w Q(w,b|x,y) = \begin{pmatrix}\frac{\partial Q(w,b|x,y)}{\partial w_1}\\\ldots\\\frac{\partial Q(w,b|x,y)}{\partial w_M}\end{pmatrix}\)`
+]
+
+.pull-right[
+&lt;img src="ann2_files/figure-html/descent4-1.png" width="100%" /&gt;
+]
+
+???
+
+Notice the minus sign: the derivative show which way is up and wewant to go down.
+
+
+---
+# Back-propagation -- use the chain rule
+.pull-left[
+&lt;img src="ann2_files/figure-html/sigmoidAnn3-1.png" width="900" height="300" /&gt;
+].pull-right[
+&lt;img src="ann2_files/figure-html/sigmaNeuron3-1.png" width="400" height="200" /&gt;
+`$$\pmatrix{\cdots\\ a'\\ \cdots}\overset{w, b}{ \Longrightarrow} z \quad \overset{\sigma}\Rightarrow\quad a$$`
+]
+
+Dynamic programming for `\(\frac{\partial Q(v,b|x)}{\partial v}; v\in \{w,b\}\)` of any neuron in layer `\(\ell\)` &lt;br&gt;
+
+
+`\begin{eqnarray}
+\frac{\partial Q(w,b|x,y)}{\partial v} = \frac{\partial z_i}{\partial v} \times&amp; \underbrace{\frac{\partial \sigma(z_i)}{\partial z_i} \times \frac{\partial Q(w,b|x,y)}{\partial \sigma(z_i)}} \\
+\textrm{Define}&amp;\delta_i
+\end{eqnarray}`
+
+???
+
+- DP (backwards from output layer `\(L\)`).
+- `\(z\)` is central
+
+---
+
+
+# DP Back-propagation
+
+### Efficient computation of `\(\frac{\partial Q(w,b|x,y)}{\partial v}\)`
+#### Compute `\(\delta\)` for each layer `\(\ell\)` backwards from `\(L\)`
+
+`\begin{eqnarray}
+\delta_i^{(\ell)}
+&amp;=&amp; \begin{cases}
+\sigma(z_i)\left(1-\sigma(z_i\right)) \times \left(y_i-\sigma(z_i)\right) 
+&amp; \textrm{if }\ell=L\\
+\\
+\sigma(z_i)\left(1-\sigma(z_i\right)) \times \left(w_{i,\cdot}^{(\ell+1)}\right)^T\times\delta^{(\ell+1)} 
+&amp; \textrm{if } 0&lt;\ell&lt;L
+&amp;\\
+\end{cases} 
+\end{eqnarray}`
+
+&lt;br&gt;&lt;br&gt;
+
+#### Compute `\(\frac{\partial Q(w,b|x,y)}{\partial v}\)` for any `\(v \in w\cup b\)` of any neuron `\(i\)` in any layer `\(\ell\)`
+`\begin{equation}
+\frac{\partial Q(w,b|x,y)}{\partial v}
+= \frac{\partial z_i}{\partial v} \times \delta_i
+= \begin{cases} 
+a'_j \times \delta_i^{(\ell)}&amp; \textrm{if } v=w_j \\
+\delta_i^{(\ell)}  &amp; \textrm{if } v=b 
+\end{cases} 
+\end{equation}`
+
+???
+Note derivative of `\(\sigma(z)\)` in `\(\delta\)`
+
+
+
+---
+class: inverse, middle, center
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=800px&gt;&lt;/html&gt; 
+
+# Learning measures -- Cost plots
+
+
+
+---
+
+# Improving the current ANN
+
+
+
+## Cost plots
+
+.pull-left[
+
+### fast learning
+&lt;img src="ann2_files/figure-html/loss1-1.png" width="100%" /&gt;
+]
+--
+.pull-right[
+### Slow learning
+&lt;img src="ann2_files/figure-html/loss2-1.png" width="100%" /&gt;
+]
+
+--
+
+
+initial `\(w\quad \Rightarrow \quad z\approx 0\)` `\(\qquad\qquad\qquad\qquad\quad\)` initial `\(w\quad \Rightarrow \quad z\gg 0\)`
+
+---
+
+# Why?
+
+Recall that  for `\(v_i \in \{w, b\}\)` in layer `\(\ell\)`, 
+
+`\begin{eqnarray}
+\delta_i &amp;=&amp; \begin{cases}
+\frac{\partial\sigma(z)}{\partial z_i}\times \left(y_i-\sigma(z_i)\right) &amp; \textrm{if }\ell=L\\ 
+\frac{\partial\sigma(z_i)}{\partial z_i}\times\left(w_{i,\cdot}\right)^T\times\delta'' &amp; \textrm{if } 0&lt;\ell&lt;L
+\end{cases} 
+\\ \\
+\frac{\partial Q(w,b|x,y))}{\partial v_i} &amp;=&amp; \begin{cases}
+\delta_i a_i'&amp;\textrm{if } v_i \in w \\
+\delta_i&amp;\textrm{if } v_i=b
+\end{cases}  
+\end{eqnarray}`
+
+&lt;br&gt;&lt;br&gt;
+How does `\(\frac{\partial\sigma(z)}{\partial z} = \sigma(z)\left(1-\sigma(z)\right)\)` behave for different values of `\(z\)`?
+
+
+--
+
+&lt;img src="ann2_files/figure-html/sigmoid-1.png" width="100%" /&gt;
+
+???
+
+* `\(\delta\)`:
+    - for non-zero z `\(\sigma(z)\)` tends towards 0 - derivative is close to zero
+    - effect increases for multi-layer --  *vanishing gradient problem*
+* gradient for `\(w\)`:
+    - `\(a_i''\)` is always positive 
+    - all gradient for a neuron willö have same sign -- *not zero-centered* problem
+* Good points 
+    - clear classification
+    - finite boundaries
+
+---
+# What to do?
+
+- Replace the activation function
+
+- Replace the cost function
+
+- (Replace the optimization approach) 
+
+---
+class: inverse, middle, center
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=800px&gt;&lt;/html&gt; 
+
+# Alternative activation function
+
+&lt;hr&gt;
+.font70[*Refs*
+- [Understanding Activation Functions in Neural Networks](https://medium.com/the-theory-of-everything/understanding-activation-functions-in-neural-networks-9491262884e0) by Avinash Sharma V
+
+- [7 Types of Neural Network Activation Functions: How to Choose?](https://missinglink.ai/guides/neural-network-concepts/7-types-neural-network-activation-functions-right/) on   MissingLink.ai
+- [Deep Learning Best Practices: Activation Functions &amp; Weight Initialization Methods — Part 1](https://medium.com/datadriveninvestor/deep-learning-best-practices-activation-functions-weight-initialization-methods-part-1-c235ff976ed) by Niranjan Kumar
+- [Searching for activation functions](https://arxiv.org/pdf/1710.05941.pdf) by Ramachandran, Zop, and Lee
+]
+---
+# A general activation function `\(f(z)\)`
+
+## Do we have to completely revise our back-propagation framework?
+
+--
+### Not really.
+
+`\begin{equation}
+\delta_i^{(\ell)} = \begin{cases}
+\underset{\big\Uparrow}{\frac{\partial f\left(z_i^{(\ell)}\right)}{\partial z_i^{(\ell)}}}
+\times \left(y_i-a_i^{(\ell)}\right) 
+&amp; \textrm{if }\ell=L\\
+\\
+\underset{\big\Uparrow}{\frac{\partial f\left(z_i^{(\ell)}\right)}{\partial z_i^{(\ell)}}}
+\times \left(w_{i,\cdot}^{(\ell+1)}\right)^T\times\delta^{(\ell+1)} 
+&amp; \textrm{if } 0&lt;\ell&lt;L
+&amp;\\
+\end{cases} 
+\end{equation}`
+
+
+---
+
+# So, what activation functions are there? 
+##### This is an incomplete list
+### Naive
+- *Binary step*
+- *Linear*
+
+### Sigmoid-ish
+- *Sigmoid* `\((\sigma)\)`
+- *tanh*
+- *Softmax*
+
+### ReLU-ish
+- *ReLU*
+- *Swish*
+
+---
+# Naive activation functions
+
+#### The *Binary step*  activation function is *On* if above a certain threshold (cf. perceptrons)
+- `\(b(z) =\begin{cases}1 &amp;\textrm{if } z &gt;0\\0 &amp;\textrm{otherwise}\end{cases}\)`
+- `\(\frac{\partial b(z)}{\partial z} =0\)`
+
+--
+
+
+&lt;img src="ann2_files/figure-html/binary-1.png" width="100%" /&gt;
+
+
+--
+
+.pull-left[
+
+* Pros
+  - clear classification
+  - computationally efficient
+
+]
+.pull-right[
+
+* Cons
+  - Can't do back-propagation 
+  - Don't allow continuos outputs
+ 
+]
+
+---
+# Naive activation functions
+#### The *Linear* activation function uses the identity function
+- `\(I(z) = z\)`
+- `\(\frac{\partial I(z)}{\partial z} = 1\)`
+
+--
+&lt;img src="ann2_files/figure-html/linear-1.png" width="100%" /&gt;
+--
+.pull-left[
+
+* Pros
+  - Allows continuous outputs
+  - computationally efficient
+]
+.pull-right[
+
+* Cons
+  - Can't do back-propagation
+  - `\(I(z)\)` unbounded - exploding activation
+  - The network collapse into just a single-layer linear model
+]
+
+???
+- The binary step and linear represents extremes
+- All activation functions represent some kind of intermediate between these
+
+---
+# Sigmoid-ish activation functions
+
+#### The *Sigmoid* activation function uses the logistic function
+- `\(\sigma(z) = \frac{1}{1+e^{-z}}\)`
+- `\(\frac{\partial \sigma(z)}{\partial z} = \frac{e^{-z}}{\left(1+e^{-z}\right)^2} = \sigma(z)\left(1-\sigma(z)\right)\)`
+
+--
+&lt;img src="ann2_files/figure-html/sigmoid2-1.png" width="100%" /&gt;
+--
+.pull-left[
+
+* Pros
+  - allows back-propagation
+  - Smooth gradient
+  - "Normalized" output in [0,1]
+  - Clear predictions
+]
+.pull-right[
+
+* Cons
+  - Vanishing gradient
+  - output not zero-centered
+  - Computationally expensive
+]
+
+???
+- deifferentiable
+- output between 0 and 1 -- effectively normalizes neuron outputs
+- ouoput either close to 0 or one -- clear predictions
+---
+# Sigmoid-ish activation functions
+#### The *Tanh* activation function uses the hyperbolic tangent function
+
+- `\(\tanh(z) = \frac{e^z-e^{-z}}{e^z+e^{-z}} = \frac{2}{1+e^{-2z}}-1 = 2\sigma(2z) -1\)`
+- `\(\frac{\partial \tanh(z)}{\partial z} =1- \tanh^2(z) = 4\sigma(2x)(1-\sigma(2x))\)`
+
+--
+&lt;img src="ann2_files/figure-html/tanh-1.png" width="100%" /&gt;
+
+--
+.pull-left[
+
+* Pros
+  - back-propagation
+  - zero-centered
+  - Smooth gradient
+  - clear predictions
+]
+.pull-right[
+
+* Cons
+  - Vanishing gradient
+  - Computationally expensive
+]
+
+---
+# Sigmoid-ish activation functions
+#### The *SoftMax* activation function is typically only used in output layer
+
+- `\(softmax(z_i) =\frac{e^{z_i}}{\sum_k e^{z_k}} = \frac{e^{z_i}}{S+e^{z_i}}, \textrm{where }S=\sum_{k\neq i} e^{z_k}\)`
+- `\(\frac{\partial softmax(z)}{\partial z} = \frac{Se^{x_i}}{\left(S+e^{z_i}\right)^2} = softmax(z_i)\left(1-softmax(z_i)\right)\)`
+--
+&lt;img src="ann2_files/figure-html/softmax-1.png" width="100%" /&gt;
+--
+.pull-left[
+
+* Pros
+  - back-propagation
+  - Smooth gradient
+  - clear predictions
+  - **Outputs "probabilities"**
+]
+.pull-right[
+
+* Cons
+  - Vanishing gradient
+  - Not zero-centered
+  - Computationally expensive
+]
+
+???
+
+---
+# ReLU-ish activation functions
+#### The *Rectified Linear Unit* (*ReLU*) activation function
+
+#### 
+
+- `\(relu(z) =\begin{cases}z &amp;\textrm{if } z &gt;0\\0 &amp;\textrm{otherwise}\end{cases}\)`
+- `\(\frac{\partial relu(z)}{\partial z} =\begin{cases}1 &amp;\textrm{if } z &gt;0\\0 &amp;\textrm{otherwise}\end{cases}\)`
+
+--
+&lt;img src="ann2_files/figure-html/relu-1.png" width="100%" /&gt;
+
+--
+.pull-left[
+
+* Pros
+  - back-propagation possible
+  - Fast convergence
+  - Vanishing gradient partly solved
+  - Computationally efficient
+]
+.pull-right[
+
+* Cons
+  - Exploding activation
+  - Not zero-centered
+  - zero gradient/Dead neuron problem
+]
+
+???
+-$z=0\Rightarrow \frac{\partial ReLU(z)}{\partial z} = 0$
+- There are variants and solutions for ReLU
+    - leaky ReLU, parametric ReLU
+
+---
+# ReLU-ish activation functions
+
+#### The *Swish* activation function has a parameter `\(\beta\)` allows various behaviour between *linear* and *ReLU* functions
+
+- `\(swish(z) = \frac{z}{1+e^{-\beta z}} = z\sigma(\beta z)\)`
+- `\(\frac{\partial swish(z)}{\partial z} =\frac{1}{e^{-\beta z}} -\frac{\beta ze^{-\beta z}}{\left(1-e^{-\beta z}\right)^2} = \sigma(\beta z) + \beta z\sigma(\beta z)\left(1-\sigma(\beta z)\right)\)`
+
+--
+&lt;img src="ann2_files/figure-html/swish-1.png" width="100%" /&gt;
+
+--
+.pull-left[
+
+* Pros
+  - back-propagation 
+  - No vanishing gradient
+  - Fast convergence
+]
+.pull-right[
+
+* Cons
+  - Computationally expensive
+  - Exploding activation
+  - Not zero-centered
+]
+
+???
+-
+
+---
+# Summary
+## What's a "good" activation function?
+
+.pull-left[
+- Non-linear
+- Allows back-propagation
+- Good classifier
+- Avoids vanishing gradient problem
+- Avoids exploding activation problem
+- zero-centered output
+- Computationally efficient
+- Fast convergence
+]
+.pull-right[
+- `\(\sigma, tanh, Softmax, ReLU, Swish\)`
+- `\(\sigma, tanh, Softmax, ReLU, Swish\)`
+- `\(\sigma, tanh, Softmax\)`
+- `\(ReLU, Swish\)`
+- `\(\sigma, tanh, Softmax\)`
+- `\(tanh\)`
+- `\(ReLU\)`
+- `\(ReLU, Swish\)`
+]
+
+--
+
+No all-over winner, but will depend on the specific ANN.
+
+- LSTM
+  - `\(\sigma, tanh\)`
+- Convolutional
+  - `\(ReLU\)`
+
+---
+class: inverse, middle, center
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=800px&gt;&lt;/html&gt; 
+
+# Alternative cost functions
+
+&lt;hr&gt;
+.font70[*Refs*
+- [Neural Networks and Deep Learning](http://neuralnetworksanddeeplearning.com/index.html) by Michael Nielsen 
+]
+---
+# A general cost function `\(C(w,b|x,y)\)`
+
+## Do we have to completely revise our back-propagation framework?
+
+--
+### Affects mainly the output layer!
+
+`\begin{equation}
+\delta_i^{(\ell)} = \begin{cases}
+\frac{\partial f\left(z_i^{(L)}\right)}{\partial z_i^{(L)}}
+\times \underset{\big\Uparrow}{\frac{\partial C(w,b|a,y)}{\partial f(z)}}
+&amp; \textrm{if }\ell=L\\
+\\
+\frac{\partial f\left(z_i^{(L)}\right)}{\partial z_i^{(L)}}
+\times \left(w_{i,\cdot}^{(\ell+1)}\right)^T\times\delta^{(\ell+1)} 
+&amp; \textrm{if } 0&lt;\ell&lt;L
+&amp;\\
+\end{cases} 
+\end{equation}`
+
+---
+# Two selected cost functions
+
+- ### The *cross entropy*  cost function
+
+- ### The *log-likelihood *cost function
+
+---
+layout: true
+
+# Cross entropy
+
+## Uses cross entropy concept from information theory
+
+---
+
+- The cross entropy function 
+`\begin{eqnarray}
+X(w,b|x,y) 
+&amp;=&amp;  \sum_i(1-y_i)\log(1-a_i^{(L)}) - y_i \log{a_i^{(L)}}\\ 
+&amp;&amp; \phantom{\sum_i (1-y_i)\log (1-f(z_i^{(L)})) - y_i \log f(z_i^{(L)})}
+\end{eqnarray}`
+???
+- Easiest to understand in the context `\(y_i\)` being either 0 or 1
+- one term cancels
+- but works similrly in the general case
+
+---
+
+- The cross entropy function 
+`\begin{eqnarray}
+X(w,b|x,y) 
+&amp;=&amp;  \sum_i(1-y_i)\log(1-a_i^{(L)}) - y_i \log{a_i^{(L)}}\\ 
+&amp;=&amp; \sum_i (1-y_i)\log (1-f(z_i^{(L)})) - y_i \log f(z_i^{(L)})
+\end{eqnarray}`
+
+
+---
+- The cross entropy function 
+`\begin{eqnarray}
+X(w,b|x,y) 
+&amp;=&amp;  \sum_i(1-y_i)\log(1-a_i^{(L)}) - y_i \log{a_i^{(L)}}\\ 
+&amp;=&amp; \sum_i (1-y_i)\log (1-f(z_i^{(L)})) - y_i \log f(z_i^{(L)})
+\end{eqnarray}`
+
+- Its derivative for a neuron `\(i\)` in the output layer `\(L\)`
+`\begin{eqnarray}
+\frac{\partial X(w,d,b|x,y)}{df(z_i)} &amp;=&amp; \frac{1-y_i}{1-f(z_i)} - \frac{y_i}{f(z_i)} \\
+&amp;&amp; \phantom{\frac{(1-y_i)f(z_i) - \left(1-f(z_i)\right)y_i}{f(z_i)\left(1-f(z_i)\right)} }\\
+&amp;&amp; \phantom{\frac{f(z_i)-y_i}{f(z_i)\left(1-f(z_i)\right)}}
+\end{eqnarray}`
+---
+- The cross entropy function 
+`\begin{eqnarray}
+X(w,b|x,y) 
+&amp;=&amp;  \sum_i(1-y_i)\log(1-a_i^{(L)}) - y_i \log{a_i^{(L)}}\\ 
+&amp;=&amp; \sum_i (1-y_i)\log (1-f(z_i^{(L)})) - y_i \log f(z_i^{(L)})
+\end{eqnarray}`
+
+- Its derivative for a neuron `\(i\)` in the output layer `\(L\)`
+`\begin{eqnarray}
+\frac{\partial X(w,d,b|x,y)}{df(z_i)} &amp;=&amp; \frac{1-y_i}{1-f(z_i)} - \frac{y_i}{f(z_i)} \\
+&amp;=&amp; \frac{(1-y_i)f(z_i) - \left(1-f(z_i)\right)y_i}{f(z_i)\left(1-f(z_i)\right)} \\
+&amp;&amp; \phantom{\frac{f(z_i)-y_i}{f(z_i)\left(1-f(z_i)\right)}}
+\end{eqnarray}`
+---
+- The cross entropy function 
+`\begin{eqnarray}
+X(w,b|x,y) 
+&amp;=&amp;  \sum_i(1-y_i)\log(1-a_i^{(L)}) - y_i \log{a_i^{(L)}}\\ 
+&amp;=&amp; \sum_i (1-y_i)\log (1-f(z_i^{(L)})) - y_i \log f(z_i^{(L)})
+\end{eqnarray}`
+
+- Its derivative for a neuron `\(i\)` in the output layer `\(L\)`
+`\begin{eqnarray}
+\frac{\partial X(w,d,b|x,y)}{df(z_i)} &amp;=&amp; \frac{1-y_i}{1-f(z_i)} - \frac{y_i}{f(z_i)} \\
+&amp;=&amp; \frac{(1-y_i)f(z_i) - \left(1-f(z_i)\right)y_i}{f(z_i)\left(1-f(z_i)\right)} \\
+&amp;=&amp; \frac{f(z_i)-y_i}{f(z_i)\left(1-f(z_i)\right)}
+\end{eqnarray}`
+
+???
+Hmm we recoghnize the `\(f(z)(1-f(z))\)` pattern
+
+---
+layout: false
+# Hmm...
+Recall the derivative for the `\(sigma\)` and `\(Softmax\)` activation functions, 
+
+`\begin{eqnarray}
+\frac{\partial \sigma(z)}{dz} &amp;=&amp; \sigma(z)(1-\sigma(z)) \\
+\frac{\partial softmax(z)}{dz} &amp;=&amp; softmax(z)(1-softmax(z)) 
+\end{eqnarray}`
+
+For both, we therefore have,
+
+`\begin{eqnarray}
+\frac{\partial f(z)}{dz} &amp;=&amp; f(z)(1-f(z)) 
+\end{eqnarray}`
+
+???
+This seems promising
+---
+# Hey, what does this mean, then?
+- Combine cross-entropy cost function with either of the `\(\sigma\)` or `\(Softmax\)` activation functions.
+
+--
+- Then, for a neuron `\(i\)` in the output layer `\(L\)`, our `\(\delta\)` in  the back-propagation becomes
+
+`\begin{eqnarray}
+\delta_i
+&amp;=&amp; \frac{\partial f(z_i)}{\partial z}\times \frac{\partial X(w,b|a,y)}{\partial f(z)} \\
+&amp;=&amp; f(z_i)\left(1-f(z_i)\right)\frac{f(z_i)-y}{f(z_i)\left(1-f(z_i)\right)} = f(z_i)-y_i
+\end{eqnarray}`
+
+--
+Ohh, nice! this gets rid of the problematic `\(\frac{\partial f(z_i)}{\partial z}\)` and, thus, ...
+
+- removes part of the vanishing gradient problem
+- `\(\delta\)` scales with  the error -- learns faster when the error is large
+- partly improves computational efficiency
+
+???
+
+- However, other layers still have `\(\frac{\partialf(z)}{\partial z}\)`
+- so main aeffect is on output layer `\(L\)`
+- Still, important improvement
+
+--
+
+That's it for the cross entropy. Now over to the log likelihhod
+---
+layout: true
+# The *log-likelihood* cost function
+
+## Setting
+
+- Learn how to classify
+- Use *categorical output* with *one-hot encoded `\(y\)`*
+
+---
+
+&lt;img src="ann2_files/figure-html/loglikenet1-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+???
+
+- Input can be pictures or sequeces for threee different species
+---
+
+&lt;img src="ann2_files/figure-html/loglikenet2-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+---
+
+&lt;img src="ann2_files/figure-html/loglikenet3-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Use *Softmax* activation (in `\(L\)`), so that
+  - `\(a_i\)` will be the probability of each class
+  - (although the theory works also for `\(\sigma\)`)
+
+---
+layout: false
+
+# The *log-likelihood* cost function
+
+## Theory
+
+## Cost function
+`$$\begin{eqnarray}
+L(w,b|x, y) &amp;=&amp; -\sum_i y_i \log{a_i^{(L)}} \\
+&amp;=&amp; -\sum_i y_i \log{softmax\left(z_i^{(L)}\right)}\\
+\end{eqnarray}$$`
+
+--
+
+### Its derivative for a neuron `\(i\)` in the output layer `\(L\)`
+
+`\begin{eqnarray}
+\frac{\partial L(w,b|x,y)}{\partial softmax(z_i)} 
+&amp;=&amp; -\frac{y_i}{softmax(z_i)} \\
+&amp;=&amp; \begin{cases} 
+-\frac{1}{softmax(z_i)} &amp; \textrm{if } y_i=1\\
+0 &amp;\textrm{if }y_i=0
+\end{cases}`
+\end{eqnarray} 
+ 
+
+---
+layout:true
+# Combine *Softmax* and *Log likelihood*
+
+### Insert in back-propagation DP
+
+Then for neuron `\(i\)` in output layer `\(L\)`
+
+---
+
+`\begin{eqnarray}
+\delta_i^{(L)}
+&amp;=&amp; \frac{\partial softmax(z_i)}{\partial z_i} \times \frac{\partial L(w,b|x,y)}{\partial softmax(z_i)}\\ 
+&amp;&amp; \phantom{softmax(z_i)\left(1-softmax(z_i)\right) \times -\frac{y_i}{softmax(z_i)} }\\
+&amp;&amp;\phantom{ -y_i \left(1-softmax(z_i)\right) }\\
+&amp;&amp;\phantom{\begin{cases}
+softmax(z_i)-y_i &amp; \textrm{if }y_i=1\\
+0 &amp; \textrm{if } y_i=0
+\end{cases}}
+\end{eqnarray}`
+
+---
+
+`\begin{eqnarray}
+\delta_i^{(L)}
+&amp;=&amp; \frac{\partial softmax(z_i)}{\partial z_i} \times \frac{\partial L(w,b|x,y)}{\partial softmax(z_i)}\\ 
+&amp;=&amp; softmax(z_i)\left(1-softmax(z_i)\right) \times -\frac{y_i}{softmax(z_i)} \\
+&amp;&amp;\phantom{ -y_i \left(1-softmax(z_i)\right) }\\
+&amp;&amp;\phantom{\begin{cases}
+softmax(z_i)-y_i &amp; \textrm{if }y_i=1\\
+0 &amp; \textrm{if } y_i=0
+\end{cases}}
+\end{eqnarray}`
+
+---
+
+`\begin{eqnarray}
+\delta_i^{(L)}
+&amp;=&amp; \frac{\partial softmax(z_i)}{\partial z_i} \times \frac{\partial L(w,b|x,y)}{\partial softmax(z_i)}\\ 
+&amp;=&amp; softmax(z_i)\left(1-softmax(z_i)\right) \times -\frac{y_i}{softmax(z_i)} \\
+&amp;=&amp; -y_i \left(1-softmax(z_i)\right) \\
+&amp;&amp;\phantom{\begin{cases}
+softmax(z_i)-y_i &amp; \textrm{if }y_i=1\\
+0 &amp; \textrm{if } y_i=0
+\end{cases}}
+\end{eqnarray}`
+
+---
+
+`\begin{eqnarray}
+\delta_i^{(L)}
+&amp;=&amp; \frac{\partial softmax(z_i)}{\partial z_i} \times \frac{\partial L(w,b|x,y)}{\partial softmax(z_i)}\\ 
+&amp;=&amp; softmax(z_i)\left(1-softmax(z_i)\right) \times -\frac{y_i}{softmax(z_i)} \\
+&amp;=&amp; -y_i \left(1-softmax(z_i)\right) \\
+&amp;=&amp;\begin{cases}
+softmax(z_i)-y_i &amp; \textrm{if }y_i=1\\
+0 &amp; \textrm{if } y_i=0
+\end{cases}`
+\end{eqnarray} 
+
+--
+Again, we get rid of the problematic `\(\frac{\partial f(z_i)}{\partial z}\)` and 
+- we get the same advantages as for *cross entropy*
+- we will only update weights and bias for neurons that are "relevant" to the current `\(y\)`.
+
+.font60[(Note: I played around a bit with the case y_i=1, i.e., y_i(1-softmax(z_i)) &lt;=&gt;  softmax(z_i) -1 &lt;=&gt; softmax(z_i) -y_i -- just to make it similar to cross-entropy:)]
+
+---
+layout: false
+
+# Summary
+### Two example combinations of cost and activation functions
+- *cross entropy* and *sigmoid* or *Softmax*
+- *log likelihood* and *Softmax*
+
+## shown that with clever design, we can
+- get rid of the  `\(\frac{\partial f(z_i)}{\partial z}\)` and
+  - remove at least part of the vanishing gradient problem
+  - obtain faster learning when we're way off 
+  - partly improve computational efficiency
+ 
+
+
+---
+# Thanks!
+
+
+## Questions?
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "<div class=\"progress-bar-container\">   <div class=\"progress-bar\" style=\"width: calc(%current% / %total% * 100%);\">   </div> </div>"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
