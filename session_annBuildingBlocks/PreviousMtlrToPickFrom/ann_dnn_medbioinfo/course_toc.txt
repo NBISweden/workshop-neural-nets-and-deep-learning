@@ -1,0 +1,47 @@
+# Neural networks and Deep Learning for ammbio school
+
+Part 1
+* Neurons and perceptrons
+* Why perceptrons only separate linear patterns
+* Two ingredients for non-linear separation:
+	* Non-linear activation functions:
+		* Sigmoid
+		* Tanh
+		* ReLU
+		* Softmax for classification
+	* Multiple layer perceptrons (MLP) and hidden layers
+* Deep networks as MLPs with > 1 hidden layer
+
+Review part 1 on TensorFlow playground
+* Build a perceptron
+* Use perceptron to try and classify non-linearly separable problem (XOR pattern)
+* Try different activations and see if that fixes it
+* Try adding extra layers and see if that fixes it
+
+Part 2
+* Linear regression is optimized in closed form, that doesn't work with MLPs
+* Introduce the concept of Loss
+* We want to minimize the loss
+* Optimal weights as argmin(loss)
+* Introduce gradient descent on the loss function (algorithm)
+* Why we use the non-linear activations we picked before
+* Introduce learning rate
+* Introduced backpropagation algorithm (example on whiteboard with simple net):
+	* Forward pass
+	* Backward pass
+	* Oh, no! Gradient vanishing!
+	* Oh, no! Local minima!
+	* Picking the right learning rate is tricky
+* Adaptive learning rate
+* Stochastic gradient descent to get out of local minima
+* Under/overfitting and how to fix it:
+	* Regularisation (L1, L2)
+	* Early stopping
+	* Dropout
+
+Review part 2 on TensorFlow playground
+* Change learning rate
+* Change minibatches (stochastic learning)
+* Try to cause over/underfitting by varying number of layers/neurons
+* Change regularisation
+
