@@ -52,8 +52,8 @@ and recurrent anns, respectively?
   - ML
   - ANN/DL
 - ...
-## ANN BB !
-### Biological neurons
+### ANN BB !
+#### Biological neurons
 - Bengt's or claudio's fig
 #### First artificial neuron model: perceptron (not here?)
 - linear model
@@ -139,6 +139,7 @@ and recurrent anns, respectively?
 #### Alternative activation functions
 - naive
   - step
+    - details of perceptron shortciómings -- maybe history ghere?
     - not meaningfully differentiable
     - ...
   - linear
