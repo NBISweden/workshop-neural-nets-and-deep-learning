@@ -12,7 +12,7 @@ feed-forward neural net,
     - back-propagation
 2. Performance measures for
     - cost-plots
-    -
+    - Accuracy plots
     - ...?
 3. Selected additional activation functions and their
 main properties (pros/cons):
@@ -134,9 +134,11 @@ and recurrent anns, respectively?
 #### Evaluating learning
 - cost plots
   - slow learning...
+- Accuracy plots
 - ...
 - how improve?
 #### Alternative activation functions
+- pick mtrl from Claudio's [neural_networks](<http://.PreviousMtlrToPickFrom/ann_dnn_medbioinfo/neural_networks.pdf>) and Bengt's [ann2](./PreviousMtlrToPickFrom/ann2/ann2.html)
 - naive
   - step
     - details of perceptron shortciómings -- maybe history ghere?
