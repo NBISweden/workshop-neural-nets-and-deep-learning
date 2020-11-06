@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 from matplotlib import patches as mpatches
 import numpy as np
 import numbers
+import re
 
 
 def lenMathString(s):
@@ -16,22 +17,23 @@ def lenMathString(s):
                 inMath=False
         elif i == "\\":
            inMath = True
-        elif i not in [ "_", "^" ]:
+        elif i not in [ "_", "^", "$", "{", "}", "," ]:
             ret += 1
     return ret
 
 def draw_neural_net(ax,
-                    left= 0.1, right= 0.9, bottom= 0.1, top= 0.9,
+                    left= 0.0, right= 1., bottom= 0.0, top= 1.,
                     layerSizes= [2,3,1], weights = None, biases = None,
                     epoch = "", loss = "",
-                    inPrefix = "x", outPrefix = "y", nodePrefix = r"z_{m}\rightarrow a_{m}",
-                    hideInOutPutNodes = False, inNodePrefix = "I", outNodePrefix = "O",
+                    inPrefix = "x", outPrefix = "\hat{y}_{m}", nodePrefix = r"z_{m}\rightarrow a_{m}",
+                    biasNodePrefix = r"b_{m}", inNodePrefix = "I", outNodePrefix = "O",
+                    hideInOutPutNodes = False, inputOutputColor = "blue",
                     weightPrefix = "w", biasPrefix = "b", hiddenNodePrefix = "H", 
                     showLayerIndex = True, hideBias = False, 
-                    nodeColor= "lightgreen", biasNodeColor = "lightblue",
+                    nodeColor= "lightgreen", biasNodeColor = "lightcyan",
                     edgeColor = "black", biasEdgeColor = "gray",
-                    weightsColor = "green", biasColor = "blue",
-                    nodeFontSize = 15, edgeFontSize = 10
+                    weightsColor = "green", biasColor = "purple",
+                    nodeFontSize = 15, edgeFontSize = 10, edgeWidth = 1
                     ):
     '''
     Draw a neural network cartoon using matplotilb.
@@ -55,71 +57,121 @@ def draw_neural_net(ax,
             List of layer sizes, including input and output dimensionality
     '''
     n_layers = len(layerSizes)
-    v_spacing = (top - bottom)/float(max(layerSizes))
-    h_spacing = (right - left)/float(len(layerSizes) - 1)
-
-    letterWidth= 0.004
+    vSpacing = (top - bottom)/float(max(layerSizes))
+    hSpacing = (right - left)/float(len(layerSizes) - 1)
+    
+    input = inPrefix
+    if not isinstance(input, list): 
+        input = [ r'${}_{}$'.format(inPrefix, m+1) for m in range(layerSizes[0]) ]
+    
+        
+    output = outPrefix
+    if not isinstance(output, list): 
+        output = [ r'${}$'.format(re.sub("m", "{}".format(m+1), outPrefix)) for m in range(layerSizes[-1]) ]
+    
+    nodeLetterWidth= 0.0007 * nodeFontSize
+    edgeLetterWidth= 0.0007 * edgeFontSize
     if "{" in nodePrefix:
         node_txt = '${}$'.format(nodePrefix.format(m=9))
     else:
         node_txt = '${}$'.format(nodePrefix)
-    radius = max(h_spacing /8., (lenMathString(node_txt)+2) * letterWidth)
+        
+    nodeRadius = max(hSpacing /8., (lenMathString(node_txt))/2 * nodeLetterWidth)
+    biasRadius = max(hSpacing /12., (lenMathString(biasNodePrefix))/2 * nodeLetterWidth)
+
+    nodePlusArrow = 2*nodeRadius
+    if hideInOutPutNodes:
+        nodePlusArrow = 0
+    # adjust left, right, bottom, top and spacing to fit input text
+    inPad = (lenMathString(max(input,key=lenMathString))+2)*nodeLetterWidth
+    left = max(nodePlusArrow+inPad, left)
     
+    outPad = (lenMathString(max(output,key=lenMathString))+2)*nodeLetterWidth
+    right = min(1.0-nodePlusArrow-outPad, right)
+
+    bottom = max(nodeRadius, bottom)
+    top = min(1.0-nodeRadius, top)
+    
+    vSpacing = (top - bottom)/float(max(layerSizes))
+    hSpacing = (right - left)/float(len(layerSizes) - 1)
+
+ 
     # Input-Arrows
-    layer_top_0 = v_spacing*(layerSizes[0] - 1)/2. + (top + bottom)/2.
-    for m in range(layerSizes[0]):
-        xtail = left-2*radius 
-        ytail = layer_top_0 - m*v_spacing
-        dx= radius # h_spacing - v_spacing/8. #0.3*h_spacing
-        dy = 0
-        xhead = xtail + dx
-        yhead = ytail + dy
-        arrow = mpatches.FancyArrowPatch((xtail, ytail), (xhead, yhead),
-                                         mutation_scale=25)
-        ax.add_patch(arrow)
+    if not hideInOutPutNodes:
+        layer_top_0 = vSpacing*(layerSizes[0] - 1)/2. + (top + bottom)/2.
+        for m in range(layerSizes[0]):
+            xhead = left-nodeRadius 
+            yhead = layer_top_0 - m*vSpacing
+            dx= nodeRadius # hSpacing - vSpacing/8. #0.3*hSpacing
+            dy = 0 #2*nodeLetterWidth
+            xtail = xhead - dx
+            ytail = yhead - dy
+            # arrow = mpatches.FancyArrowPatch((xtail, ytail), (xhead, yhead),
+            #                                  mutation_scale=25, zorder = 10)
+            # ax.add_patch(arrow)
+            line1 = plt.annotate("", xy=(xhead, yhead), xytext=(xtail, ytail), xycoords = 'data',
+                                     arrowprops=dict(arrowstyle=mpatches.ArrowStyle("simple",
+                                                                                    head_length=0.4,
+                                                                                    head_width=0.4
+                                                                                    ),
+                                                     color=inputOutputColor, lw=edgeWidth)) 
+            ax.add_artist(line1)
     # Nodes
     for n, layer_size in enumerate(layerSizes):
-        layer_top = v_spacing*(layer_size - 1)/2. + (top + bottom)/2.
+        layer_top = vSpacing*(layer_size - 1)/2. + (top + bottom)/2.
         for m in range(layer_size):
-            x_node = n*h_spacing + left
-            y_node = layer_top - m*v_spacing
-            circle = mpatches.Circle((x_node, y_node), radius, #v_spacing/8.,
+            x_node = n*hSpacing + left
+            y_node = layer_top - m*vSpacing
+            circle = mpatches.Circle((x_node, y_node), nodeRadius, #vSpacing/8.,
                                      facecolor = nodeColor, edgecolor = 'k', zorder=4)
-#            circle = plt.Circle((x_node, y_node), radius, #v_spacing/8.,
+#            circle = plt.Circle((x_node, y_node), nodeRadius, #vSpacing/8.,
 #                                facecolor = nodeColor, edgecolor = 'k', zorder=0)
             if "{" in nodePrefix:
                 txt = r'${}$'.format(nodePrefix.format(m=m+1))              # Change format of hidden  node text here
             else:
                 txt = nodePrefix                                            # Change format of hidden  node text here
-            x_label = x_node-lenMathString(txt)*letterWidth
+            x_label = x_node-lenMathString(txt)*nodeLetterWidth/2
             y_label = y_node-0.01
-            layerTxt = '${}$'.format(inNodePrefix)
+            layerTxt = ""
+            inputOutputPad = nodeRadius * 2 
+            if hideInOutPutNodes:
+                inputOutputPad = 0
+            
             if n == 0:
-                plt.text(left-radius*2-0.03, #0.125,
-                         y_node, r'${}_{}$'.format(inPrefix, m+1), fontsize=15)
+                if inNodePrefix != "":
+                    layerTxt = '${}$'.format(inNodePrefix)
+                plt.text(left - inputOutputPad - inPad, #left-nodeRadius*2-0.03, #0.125,
+                         y_node - nodeLetterWidth,
+                         input[m], #r'${}_{}$'.format(inPrefix, m+1),
+                         fontsize=nodeFontSize, zorder=2)
                 txt = r'$i_{}$'.format(m+1)                                  # Change format of inout  node text here
                 if not hideInOutPutNodes:
                     ax.add_artist(circle)
-                    x_label = x_node - lenMathString(txt) * letterWidth
+                    x_label = x_node - lenMathString(txt) * nodeLetterWidth/2
                     plt.text(x_label, y_label, 
-                             txt, fontsize=nodeFontSize, zorder=8, color='k')            # Change txt position here
+                             txt, fontsize=nodeFontSize, zorder=8, color='k')# Change txt position here
             else:
                 if n == n_layers - 1 :
-                    layerTxt = r"${}$".format(outNodePrefix)   
-                    plt.text(right+2*radius+0.01, y_node, r'${}_{}$'.format(outPrefix, m+1), fontsize=15)
+                    if outNodePrefix != "":
+                        layerTxt = r"${}$".format(outNodePrefix)
+                    plt.text(right + inputOutputPad, # +outPad/2, #+ 0.01, #right+2*nodeRadius+0.01,
+                             y_node - nodeLetterWidth,
+                             output[m], #r'${}_{}$'.format(outPrefix, m+1),
+                             fontsize=nodeFontSize)
                     #txt = r'o_{}'.format(m+1)                                  # Change format of output  node text here
                     if not hideInOutPutNodes:
                         ax.add_artist(circle)
-                        #x_label = x_node-lenMathString(txt) * letterWidth
+                        #x_label = x_node-lenMathString(txt) * nodeLetterWidth
                         plt.text(x_label, y_label, 
-                                 txt, fontsize=nodeFontSize, zorder=8, color='k')           # Change txt position here
+                                 txt, fontsize=nodeFontSize, zorder=8, color='k') # Change txt position here
                 else:
-                    layerTxt = r'$'+hiddenNodePrefix+'_{'+"{}".format(n)+'}$'
+                    if hiddenNodePrefix != "":
+                        layerTxt = r'$'+hiddenNodePrefix+'_{'+"{}".format(n)+'}$'
                     ax.add_artist(circle)
                     plt.text(x_label, y_label, 
-                             txt, fontsize=15, zorder=8, color='k')               # Change txt position here
+                             txt, fontsize=nodeFontSize, zorder=8, color='k')      # Change txt position here
             if showLayerIndex and m == 0: 
-                plt.text(x_node + 0.00, y_node + max(v_spacing/8.+0.01*v_spacing, radius+0.01),
+                plt.text(x_node + 0.00, y_node + max(vSpacing/8.+0.01*vSpacing, nodeRadius+0.01),
                          layerTxt, zorder=8, fontsize=nodeFontSize)
 
     # Bias-Nodes
@@ -129,59 +181,67 @@ def draw_neural_net(ax,
             if hideInOutPutNodes:
                 skip = 2
             if n < n_layers -skip:
-                x_bias = (n+0.5)*h_spacing + left
+                x_bias = (n+0.5)*hSpacing + left
                 y_bias = top - 0.005
-                circle = plt.Circle((x_bias, y_bias), radius, #v_spacing/8.,
-                                    label="b",
+                circle = plt.Circle((x_bias, y_bias), biasRadius, #vSpacing/8.,
+#                                    label="b",
                                     facecolor=biasNodeColor, edgecolor='k', zorder=4)
                 ax.add_artist(circle)
-                plt.text(x_bias-0.015, y_bias-0.01, r'$b${}'.format(n+1), fontsize=15, zorder=8, color='k') # Change format of bias text here
+                txt = biasNodePrefix
+                if "{" in biasNodePrefix:
+                    txt = r'${}$'.format(biasNodePrefix.format(m=m+1))              # Change format of hidden  node text here
+                r'$b${}'.format(n+1)
+                plt.text(x_bias-0.015, y_bias-0.01, txt, fontsize=nodeFontSize, zorder=8, color='k') # Change format of bias text here
 
             
     # Edges
     # Edges between nodes
     for n, (layer_size_a, layer_size_b) in enumerate(zip(layerSizes[:-1], layerSizes[1:])):
-        layer_top_a = v_spacing*(layer_size_a - 1)/2. + (top + bottom)/2.
-        layer_top_b = v_spacing*(layer_size_b - 1)/2. + (top + bottom)/2.
+        layer_top_a = vSpacing*(layer_size_a - 1)/2. + (top + bottom)/2.
+        layer_top_b = vSpacing*(layer_size_b - 1)/2. + (top + bottom)/2.
         for m in range(layer_size_a):
             for o in range(layer_size_b):
-                xm = n * h_spacing + left
-                xo = (n + 1) * h_spacing + left
-                ym = layer_top_a - m*v_spacing
-                yo = (layer_top_b - o*v_spacing)
+                xm = n * hSpacing + left
+                xo = (n + 1) * hSpacing + left
+                ym = layer_top_a - m*vSpacing
+                yo = (layer_top_b - o*vSpacing)
                 delta_x = xo - xm
                 delta_y = yo - ym
                 length = np.sqrt(delta_x**2+delta_y**2)
                 
                 line1 = plt.annotate("", xy=(xo, yo), xytext=(xm, ym), xycoords = 'data',
-                                     arrowprops=dict(arrowstyle=mpatches.ArrowStyle("->",head_length=2, head_width=1), shrinkB=radius *700,
-                                     color=edgeColor)) #*(radius+2)/length)) #, head_length=0.8, head_width=0.8))#fc = edgeColor)
+                                     arrowprops=dict(arrowstyle=mpatches.ArrowStyle("->",
+                                                                                    head_length=10*min(0.2, hSpacing/5.),
+                                                                                    head_width=10*min(0.1, hSpacing/5.)),
+                                                     shrinkB=nodeRadius *700,
+                                                     color=edgeColor, lw=edgeWidth))
                 ax.add_artist(line1)
                 if weights != None:
                     rot_mo_rad = np.arctan((yo-ym)/(xo-xm))
                     rot_mo_deg = rot_mo_rad*180./np.pi
                     label = weights[n][m, o]
-                    if isinstance(label, numbers.Number):
-                        label = round(label,4)
-                    label = "${}$".format(label)
-                    letterwidth= 0.01
+                    if label != "":
+                        if isinstance(label, numbers.Number):
+                            label = round(label,4)
+                        label = "${}$".format(label)
 
-                    delta_x = v_spacing/8.# + radius
+                    delta_x = vSpacing/8.# + nodeRadius
+                    delta_x = max(delta_x, nodeRadius + 0.001)
                     delta_y = delta_x * abs(np.tan(rot_mo_rad))
                     epsilon = 0.01/abs(np.cos(rot_mo_rad))
-                    xm1 = xm + max(delta_x, radius + 0.001)
+                    xm1 = xm + delta_x
                     if yo > ym:
-                        label_skew = letterwidth * abs(np.sin(rot_mo_rad))
-                        ym1 = ym + label_skew + delta_y + epsilon
+                        label_skew = edgeLetterWidth * abs(np.sin(rot_mo_rad))
+                        ym1 = ym + label_skew + delta_y + epsilon 
                     elif yo < ym:
-                        label_skew = len(label)* letterwidth * abs(np.sin(rot_mo_rad))
+                        label_skew = lenMathString(label)* edgeLetterWidth * abs(np.sin(rot_mo_rad))
                         ym1 = ym - label_skew - delta_y + epsilon
                     else:
                         ym1 = ym + epsilon
 
                     plt.text(xm1, ym1, label,
                              rotation = rot_mo_deg, 
-                             fontsize = edgeFontSize, color = weightsColor)
+                             fontsize = edgeFontSize, color = weightsColor, zorder=10)
 
 
     # Edges between bias and nodes
@@ -190,16 +250,16 @@ def draw_neural_net(ax,
             if hideInOutPutNodes and n == n_layers - 2:
                 continue
             if n < n_layers-1:
-                layer_top_a = v_spacing*(layer_size_a - 1)/2. + (top + bottom)/2.
-                layer_top_b = v_spacing*(layer_size_b - 1)/2. + (top + bottom)/2.
-            x_bias = (n+0.5)*h_spacing + left
+                layer_top_a = vSpacing*(layer_size_a - 1)/2. + (top + bottom)/2.
+                layer_top_b = vSpacing*(layer_size_b - 1)/2. + (top + bottom)/2.
+            x_bias = (n+0.5)*hSpacing + left
             y_bias = top + 0.005 
             for o in range(layer_size_b):
-                xo = left + (n + 1)*h_spacing
-                yo = (layer_top_b - o*v_spacing)
-                line = plt.Line2D([x_bias, xo], #(n + 1)*h_spacing + left],
-                                  [y_bias, yo], #layer_top_b - o*v_spacing],
-                                  c = biasEdgeColor)
+                xo = left + (n + 1)*hSpacing
+                yo = (layer_top_b - o*vSpacing)
+                line = plt.Line2D([x_bias, xo], #(n + 1)*hSpacing + left],
+                                  [y_bias, yo], #layer_top_b - o*vSpacing],
+                                  c = biasEdgeColor, lw=edgeWidth)
                 ax.add_artist(line)
                 if biases != None:
                     rot_bo_rad = np.arctan((yo-y_bias)/(xo-x_bias))
@@ -209,37 +269,52 @@ def draw_neural_net(ax,
                         label = round(label,4)
                     label = "${}$".format(label)
 
-                    letterwidth= 0.01
-                    label_skew = len(label)* letterwidth * abs(np.sin(rot_bo_rad))            
-                    delta_x = max(v_spacing/8., + radius+0.001)
+
+                    label_skew = len(label)* edgeLetterWidth * abs(np.sin(rot_bo_rad))            
+                    delta_x = max(vSpacing/8., + nodeRadius+0.001)
                     delta_y = delta_x * abs(np.tan(rot_bo_rad))
                     epsilon = 0.01/abs(np.cos(rot_bo_rad))
 
 
-                    xo1 = xo - delta_x #(v_spacing/8.+0.01)*np.cos(rot_bo_rad)
+                    xo1 = xo - delta_x #(vSpacing/8.+0.01)*np.cos(rot_bo_rad)
                     yo1 = yo -label_skew + delta_y +epsilon
                     plt.text( xo1, yo1, label,
                               rotation = rot_bo_deg, 
                               fontsize = edgeFontSize, color=biasColor)    
                 
     # Output-Arrows
-    layer_top_0 = v_spacing*(layerSizes[-1] - 1)/2. + (top + bottom)/2.
-    for m in range(layerSizes[-1]):
-        xtail = right+radius #0.015
-        ytail = layer_top_0 - m*v_spacing
-        dx = radius #0.2*h_spacing
-        dy = 0
-        xhead = xtail + dx
-        yhead = ytail + dy
-        arrow = mpatches.FancyArrowPatch((xtail, ytail), (xhead, yhead),
-                                         mutation_scale=25)
-        ax.add_patch(arrow)
+    if not hideInOutPutNodes:
+        layer_top_0 = vSpacing*(layerSizes[-1] - 1)/2. + (top + bottom)/2.
+        for m in range(layerSizes[-1]):
+            xtail = right+nodeRadius #0.015
+            ytail = layer_top_0 - m*vSpacing
+            dx = nodeRadius #0.2*hSpacing
+            dy = 0 #-2*nodeLetterWidth
+            xhead = xtail + dx
+            yhead = ytail + dy
+            # arrow = mpatches.FancyArrowPatch((xtail, ytail), (xhead, yhead),
+            #                                  mutation_scale=25, zorder=8)
+            # ax.add_patch(arrow)
+            line1 = plt.annotate("", fontsize=nodeFontSize, xy=(xhead, yhead), xytext=(xtail, ytail), xycoords = 'data',
+                                     arrowprops=dict(arrowstyle=mpatches.ArrowStyle("simple",
+                                                                                    head_length=0.4,
+                                                                                    head_width=0.4
+                                                                                    ),
+                                                     color=inputOutputColor, lw=edgeWidth), zorder=0) 
+            ax.add_artist(line1)
+        
     # Record the epoch and loss
     if isinstance(epoch, numbers.Number):
         round(epoch, 6)
     if isinstance(loss, numbers.Number):
         round(loss, 6)
-    
-    plt.text(left + (right-left)/3., bottom - 0.005*v_spacing, \
-             'Steps:' + "{}".format(epoch) + '    Loss: ' + "{}".format(loss), fontsize = 15)
+    txt = ""
+    if epoch != "":
+        txt = "Steps: {}".format(epoch)
+    if loss != "":
+        txt = "{}    Loss: {}".format(txt,loss)
+    plt.text(left + (right-left)/3., bottom - 0.005*vSpacing, \
+             txt,
+             #'Steps:' + "{}".format(epoch) + '    Loss: ' + "{}".format(loss),
+             fontsize = nodeFontSize)
 

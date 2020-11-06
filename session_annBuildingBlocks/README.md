@@ -53,6 +53,7 @@ and recurrent anns, respectively?
   - ANN/DL
 - ...
 ### ANN BB !
+- pick mtrl from Claudio's [neural_networks](<http://.PreviousMtlrToPickFrom/ann_dnn_medbioinfo/neural_networks.pdf>) and Bengt's [ann1](./PreviousMtlrToPickFrom/ann1/ann1.html)
 #### Biological neurons
 - Bengt's or claudio's fig
 #### First artificial neuron model: perceptron (not here?)
