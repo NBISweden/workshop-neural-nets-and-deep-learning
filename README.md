@@ -31,8 +31,8 @@ also Jupyter notebooks.
 
 
 ## Contact
-* Contact course leaders ([Paulo](claudio.mirabello@scilifelab.se),
-[Bengt](bengt.sennblad@scilifelab.se) if you have questions
+* Contact course leaders ([Claudio](claudio.mirabello@scilifelab.se),
+[Bengt](bengt.sennblad@scilifelab.se)) if you have questions
 
 
 ## Course page on Google drive
