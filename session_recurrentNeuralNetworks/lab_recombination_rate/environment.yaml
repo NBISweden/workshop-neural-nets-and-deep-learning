@@ -1,0 +1,10 @@
+channels:
+  - conda-forge
+  - bioconda
+  - default
+dependencies:
+  - bcftools
+  - cython
+  - keras
+  - msprime
+  - scikit-allel
