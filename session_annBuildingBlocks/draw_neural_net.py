@@ -1,4 +1,4 @@
-## Gist originally developed by @craffel and improved by @ljhuang2017
+ ## Gist originally developed by @craffel and improved by @ljhuang2017 and @bsennblad
 
 from matplotlib import pyplot as plt
 from matplotlib import patches as mpatches
@@ -23,13 +23,15 @@ def lenMathString(s):
 
 def draw_neural_net(ax,
                     left= 0.0, right= 1., bottom= 0.0, top= 1.,
-                    layerSizes= [2,3,1], weights = None, biases = None,
+                    layerSizes= [2,3,1],
+                    inputPrefix = "x", outputPrefix = "\hat{y}_{m}", 
+                    inLayerPrefix = "I", outLayerPrefix = "O", hiddenLayerPrefix = "H", 
+                    inNodePrefix = "i", otherNodePrefix = r"z_{m}\rightarrow a_{m}",
+                    biasNodePrefix = r"b_{m}", 
+                    weights = None, biases = None,
                     epoch = "", loss = "",
-                    inPrefix = "x", outPrefix = "\hat{y}_{m}", nodePrefix = r"z_{m}\rightarrow a_{m}",
-                    biasNodePrefix = r"b_{m}", inNodePrefix = "I", outNodePrefix = "O",
-                    hideInOutPutNodes = False, inputOutputColor = "blue",
-                    weightPrefix = "w", biasPrefix = "b", hiddenNodePrefix = "H", 
-                    showLayerIndex = True, hideBias = False, 
+                    hideInOutPutNodes = False, hideBias = False, showLayerIndex = True, 
+                    inputOutputColor = "blue",
                     nodeColor= "lightgreen", biasNodeColor = "lightcyan",
                     edgeColor = "black", biasEdgeColor = "gray",
                     weightsColor = "green", biasColor = "purple",
@@ -53,31 +55,86 @@ def draw_neural_net(ax,
             The center of the bottommost node(s) will be placed here
         - top : float
             The center of the topmost node(s) will be placed here
-        - layerSizes : list of int
-            List of layer sizes, including input and output dimensionality
+        - inputPrefix : string
+            Prefix of input; a prefix p will show as $p_i$ where i is an index
+        - outputPrefix : string
+            Prefix of output; a prefix p will show as $p_i$ where i is an index
+        - inLayerPrefix : string
+            string used to denote input layer
+        - outLayerPrefix : string
+            string used to denote output layer
+        - hiddenLayerPrefix : string
+            string used to denote hidden layers
+        - inNodePrefix : string
+            string used for text in input nodes.; a prefix p will show as $p_i$ where i is an index
+        - otherNodePrefix : string or list of list of strings
+            Prefix used for text in all nodes but the input and bias nodes.
+            If string, this will be reused for all nodes; to get automatic indexing 
+            include "_{m}" (must use 'm').
+            If list of list, then outer list must conform to number of layers (excepting 
+            input layer) and inner lists to the number of nodes in the respective layers;
+            NB! use raw strings when including latex math notation
+        - biasNodePrefix : string
+            string used for text in bias nodes.; to get automatic indexing include "_{m}" 
+            (must use 'm'). NB! use raw strings when including latex math notation
+        - weights : None or list of numpy.array of strings or floats
+            If list of list, then outer list must conform to number of layers (excepting 
+            input layer) and inner numpy.array must take an indexing 'from node', 'to node',
+            denoting the weight for that edge; strings may include latex math notation; 
+            numbers will be rounded to 4 decimals.
+        - bias : None or list of lists of strings or floats
+            If list of list, then outer list must conform to number of layers (excepting 
+            input layer) and inner lists to the number of nodes in the respective layers.
+        - epoch : int
+            The epoch number
+        - loss : float
+            The value of the Loss/Cost function
+        - hideInOutPutNodes : True/False
+            Hide inout and output nodes (e.g., when drawing only a nenuron
+        - hideBias : True/False
+            Hide bias nodes and edges
+        - showLayerIndex = True/False
+            Whether to show layer names 
+        - inputOutputColor : valid MatPlotLib color name
+            Color of input output arrows
+        - nodeColor : valid MatPlotLib color name
+            Background color of layer nodes
+        - biasNodeColor : valid MatPlotLib color name
+            Background color of bias nodes
+        - edgeColor : valid MatPlotLib color name
+            Color of weight text
+        - biasEdgeColor : valid MatPlotLib color name
+            Color of bias text
+        - nodeFontSize : int
+            Fontsize text inside nodes
+        - edgeFontSize : int
+            Fontsize of edge text
+        - edgeWidth : int
+            Width of edge lines
+
     '''
     n_layers = len(layerSizes)
     vSpacing = (top - bottom)/float(max(layerSizes))
     hSpacing = (right - left)/float(len(layerSizes) - 1)
     
-    input = inPrefix
+    input = inputPrefix
     if not isinstance(input, list): 
-        input = [ r'${}_{}$'.format(inPrefix, m+1) for m in range(layerSizes[0]) ]
+        input = [ r'${}_{}$'.format(inputPrefix, m+1) for m in range(layerSizes[0]) ]
     
-        
-    output = outPrefix
+    output = outputPrefix
     if not isinstance(output, list): 
-        output = [ r'${}$'.format(re.sub("m", "{}".format(m+1), outPrefix)) for m in range(layerSizes[-1]) ]
+        output = [ r'${}$'.format(re.sub("m", "{}".format(m+1), outputPrefix)) for m in range(layerSizes[-1]) ]
+
+    hidden = otherNodePrefix
+    if not isinstance(hidden, list): 
+        hidden = [ [ r'${}$'.format(otherNodePrefix.format(m=m+1)) if "{" in otherNodePrefix else  otherNodePrefix for m in list(range(layerSizes[n])) ] for n in list(range(len(layerSizes))) ]
     
     nodeLetterWidth= 0.0007 * nodeFontSize
     edgeLetterWidth= 0.0007 * edgeFontSize
-    if "{" in nodePrefix:
-        node_txt = '${}$'.format(nodePrefix.format(m=9))
-    else:
-        node_txt = '${}$'.format(nodePrefix)
-        
-    nodeRadius = max(hSpacing /8., (lenMathString(node_txt))/2 * nodeLetterWidth)
-    biasRadius = max(hSpacing /12., (lenMathString(biasNodePrefix))/2 * nodeLetterWidth)
+    nodeRadius =  max(hSpacing /8.,
+                      (max([ lenMathString(max(x,key=lenMathString))for x in hidden ])+1)*nodeLetterWidth/2)
+    #nodeRadius = max(hSpacing /8., (lenMathString(node_txt))/2 * nodeLetterWidth)
+    biasRadius = max(hSpacing /12., (lenMathString(biasNodePrefix)+1)/2 * nodeLetterWidth)
 
     nodePlusArrow = 2*nodeRadius
     if hideInOutPutNodes:
@@ -126,10 +183,7 @@ def draw_neural_net(ax,
                                      facecolor = nodeColor, edgecolor = 'k', zorder=4)
 #            circle = plt.Circle((x_node, y_node), nodeRadius, #vSpacing/8.,
 #                                facecolor = nodeColor, edgecolor = 'k', zorder=0)
-            if "{" in nodePrefix:
-                txt = r'${}$'.format(nodePrefix.format(m=m+1))              # Change format of hidden  node text here
-            else:
-                txt = nodePrefix                                            # Change format of hidden  node text here
+            txt = hidden[n][m]
             x_label = x_node-lenMathString(txt)*nodeLetterWidth/2
             y_label = y_node-0.01
             layerTxt = ""
@@ -138,13 +192,13 @@ def draw_neural_net(ax,
                 inputOutputPad = 0
             
             if n == 0:
-                if inNodePrefix != "":
-                    layerTxt = '${}$'.format(inNodePrefix)
+                if inLayerPrefix != "":
+                    layerTxt = '${}$'.format(inLayerPrefix)
                 plt.text(left - inputOutputPad - inPad, #left-nodeRadius*2-0.03, #0.125,
                          y_node - nodeLetterWidth,
-                         input[m], #r'${}_{}$'.format(inPrefix, m+1),
+                         input[m], #r'${}_{}$'.format(inputPrefix, m+1),
                          fontsize=nodeFontSize, zorder=2)
-                txt = r'$i_{}$'.format(m+1)                                  # Change format of inout  node text here
+                txt = r'${}_{}$'.format(inNodePrefix, m+1) if inNodePrefix != "" else inNodePrefix
                 if not hideInOutPutNodes:
                     ax.add_artist(circle)
                     x_label = x_node - lenMathString(txt) * nodeLetterWidth/2
@@ -152,11 +206,11 @@ def draw_neural_net(ax,
                              txt, fontsize=nodeFontSize, zorder=8, color='k')# Change txt position here
             else:
                 if n == n_layers - 1 :
-                    if outNodePrefix != "":
-                        layerTxt = r"${}$".format(outNodePrefix)
+                    if outLayerPrefix != "":
+                        layerTxt = r"${}$".format(outLayerPrefix)
                     plt.text(right + inputOutputPad, # +outPad/2, #+ 0.01, #right+2*nodeRadius+0.01,
                              y_node - nodeLetterWidth,
-                             output[m], #r'${}_{}$'.format(outPrefix, m+1),
+                             output[m], #r'${}_{}$'.format(outputPrefix, m+1),
                              fontsize=nodeFontSize)
                     #txt = r'o_{}'.format(m+1)                                  # Change format of output  node text here
                     if not hideInOutPutNodes:
@@ -165,8 +219,8 @@ def draw_neural_net(ax,
                         plt.text(x_label, y_label, 
                                  txt, fontsize=nodeFontSize, zorder=8, color='k') # Change txt position here
                 else:
-                    if hiddenNodePrefix != "":
-                        layerTxt = r'$'+hiddenNodePrefix+'_{'+"{}".format(n)+'}$'
+                    if hiddenLayerPrefix != "":
+                        layerTxt = r'$'+hiddenLayerPrefix+'_{'+"{}".format(n)+'}$'
                     ax.add_artist(circle)
                     plt.text(x_label, y_label, 
                              txt, fontsize=nodeFontSize, zorder=8, color='k')      # Change txt position here
