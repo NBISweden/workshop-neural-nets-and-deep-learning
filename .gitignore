@@ -1,4 +1,4 @@
 *.pic
 *.hdf5
 *.tsv
-.ipynb_checkpoints/*
+*/.ipynb_checkpoints/*
