@@ -17,4 +17,3 @@ dependencies:
   - graphviz
   - scikit-learn
   - mpld3
-prefix: /home/claudio/anaconda3/envs/nn_dl_python
