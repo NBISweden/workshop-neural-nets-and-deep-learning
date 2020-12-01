@@ -128,9 +128,12 @@ def draw_neural_net(ax,
     hidden = otherNodePrefix
     if not isinstance(hidden, list): 
         hidden = [ [ r'${}$'.format(otherNodePrefix.format(m=m+1)) if "{" in otherNodePrefix else  otherNodePrefix for m in list(range(layerSizes[n])) ] for n in list(range(len(layerSizes))) ]
-    
-    nodeLetterWidth= 0.0007 * nodeFontSize
-    edgeLetterWidth= 0.0007 * edgeFontSize
+
+
+
+    widthLimit = ax.get_window_extent().width # widthLimit for figsize=(12,12)=669.6
+    nodeLetterWidth= 0.0007 * nodeFontSize * 669.6/widthLimit
+    edgeLetterWidth= 0.0007 * edgeFontSize * 669.6/widthLimit
     nodeRadius =  max(hSpacing /8.,
                       (max([ lenMathString(max(x,key=lenMathString))for x in hidden ])+1)*nodeLetterWidth/2)
     #nodeRadius = max(hSpacing /8., (lenMathString(node_txt))/2 * nodeLetterWidth)
@@ -267,7 +270,7 @@ def draw_neural_net(ax,
                                      arrowprops=dict(arrowstyle=mpatches.ArrowStyle("->",
                                                                                     head_length=10*min(0.2, hSpacing/5.),
                                                                                     head_width=10*min(0.1, hSpacing/5.)),
-                                                     shrinkB=nodeRadius *700,
+                                                     shrinkB=nodeRadius * widthLimit,
                                                      color=edgeColor, lw=edgeWidth))
                 ax.add_artist(line1)
                 if weights != None:
