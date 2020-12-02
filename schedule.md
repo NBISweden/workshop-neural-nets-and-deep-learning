@@ -15,7 +15,7 @@ Contact: [olga.dethlefsen@nbis.se](olga.dethlefsen@gmail.com); 0720 492 082
 
 **09:00 - 10.00** [Introduction](session_introduction/session_introduction.html) (Bengt, Claudio)
 
-**10:00 - 11:00** [Setting up: Conda environment, Jupyter notebooks/lab](session_setup/setup) (Paulo, Bengt)
+**10:00 - 11:00** Setting up: Conda environment [Jupyter notebooks/lab](session_setup/setup) (Paulo, Bengt)
 
 **11.00 - 12.00** ANN building blocks 1 [Jupyter notebook](session_annBuildingBlocks/session_annBuildingBlock_1.ipnyb) (Bengt)
 
