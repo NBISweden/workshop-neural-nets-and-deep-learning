@@ -3,6 +3,12 @@ layout: default
 title:  'Schedule'
 ---
 
+Course is held at SciLifeLab, Tomtebodavagen 23A, 171 65 Solna
+
+Contact: [olga.dethlefsen@nbis.se](olga.dethlefsen@gmail.com); 0720 492 082
+
+----
+
 ##### <img border="0" src="icons/schedule-02.svg" width="40" height="40"> Schedule
 <br/>
 ##### Monday 2020-12-07
