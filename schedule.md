@@ -17,7 +17,7 @@ Contact: [claudio.mirabello@scilifelab.se](claudio.mirabello@scilifelab.se); [be
 
 **10:00 - 11:00** Setting up: Conda environment [Jupyter notebooks/lab](session_setup/setup) (Paulo, Bengt)
 
-**11.00 - 12.00** ANN building blocks 1 [Jupyter notebook](session_annBuildingBlocks/session_annBuildingBlock_1.ipnyb) (Bengt)
+**11.00 - 12.00** ANN building blocks 1 [Jupyter notebook](session_annBuildingBlocks/session_annBuildingBlock_1) (Bengt)
 
 *12:00 - 13:00 lunch*
 
