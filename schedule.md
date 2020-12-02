@@ -3,9 +3,9 @@ layout: default
 title:  'Schedule'
 ---
 
-Course is held at SciLifeLab, Tomtebodavagen 23A, 171 65 Solna
+Course is held online at zoom
 
-Contact: [olga.dethlefsen@nbis.se](olga.dethlefsen@gmail.com); 0720 492 082
+Contact: [claudio.mirabello@scilifelab.se](claudio.mirabello@scilifelab.se); [bengt.sennblad@scilifelab.se](bengt.sennblad@scilifelab.se)
 
 ----
 
