@@ -8,7 +8,6 @@ Held online, zoom, 2020-12-07 -- 2020-12-11
 
 
 ## Course Links
-[Pre-course material](precourse)   
 [Schedule](schedule)  
 
 
