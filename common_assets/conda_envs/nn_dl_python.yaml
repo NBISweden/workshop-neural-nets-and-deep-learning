@@ -1,0 +1,22 @@
+name: nn_dl_python
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7.6
+  - jupyterlab
+  - jupyterthemes
+  - jupyter_contrib_nbextensions
+  - matplotlib
+  - nb_conda
+  - nb_conda_kernels
+  - pandas
+  - rise
+  - tabulate
+  - keras #=2.4.3
+  - tensorflow >=2.0.0
+  - pydot
+  - graphviz
+  - scikit-learn
+  - mpld3
+  - msprime

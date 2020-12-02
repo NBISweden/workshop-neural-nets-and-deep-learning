@@ -19,13 +19,9 @@ menu:
     url:
   - title: Schedule
     url: schedule
-  - title: Pre-course material
-    url: precourse
-  - title: Travel info
-    url: travel
-  - title: Labs
-    submenus:
-      - title: Lab 1
-        url: labs/lab1
-      - title: Lab 2
-        url: labs/lab2
+#  - title: Labs
+#    submenus:
+#      - title: Lab 1
+#        url: labs/lab1
+#      - title: Lab 2
+#        url: labs/lab2
