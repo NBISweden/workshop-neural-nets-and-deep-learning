@@ -1,4 +1,4 @@
-### Proposed prequisites for the NBIS Neural Nest & Deep Learning workshop
+### Proposed pre-course knowledge
 
 - Basic python skills (possibly NBIS python workshop?)
 [maybe prepare a questionnaire to evaluate actual skills]

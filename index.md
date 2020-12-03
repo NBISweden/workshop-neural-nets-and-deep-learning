@@ -3,23 +3,23 @@ layout: default
 title: NBIS workshop in Neural Nets and Deep Learning
 ---
 
-# About the course
+### About the course
 Held online, zoom [TBA](TBA), 2020-12-07 -- 2020-12-11
 
 [Learning outcomes](learningOutcomes)
 
 [Prerequisites](prerequisites)
 
-## Course Links
+### Course Links
 [Schedule](schedule)
 
 [Online classroom](classroom)
 
+<!--
+### Labs links
+-->
 
-## Labs links
-
-
-## Course leaders
+### Course leaders
 
 [Claudio Mirabello](http://nbis.se/about/staff/claudio-mirabello/)
 
