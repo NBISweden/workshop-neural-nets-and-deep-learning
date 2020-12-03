@@ -19,7 +19,7 @@ Held online, zoom [TBA](TBA), 2020-12-07 -- 2020-12-11
 ##### Labs links
 -->
 
-##### Course leaders
+##### <img border="0" src="icons/education.svg" width="40" height="40"> Course leaders
 
 [Claudio Mirabello](http://nbis.se/about/staff/claudio-mirabello/)
 
