@@ -14,3 +14,14 @@ https://nbisweden.slack.com/app_redirect?channel=nn_dl_students
 ### HackMD:
 [TBA](TBA)
 - working area for exercises, etc.
+
+
+## Practical issues
+- Try to keep your **cameras on**, but **microphone muted**
+- Lectures with many breaks
+- Take lots of small breaks also when working with the exercises
+- We will try to stick to the schedule, but it's only preliminary
+until it's happened
+- If you have any questions during the lecture, feel free to unmute
+ and ask. If you don't want to ask in the Zoom meeting, write the
+  question in the chat or on slack
