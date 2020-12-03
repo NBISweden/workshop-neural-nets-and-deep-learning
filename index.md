@@ -19,9 +19,9 @@ Held online, zoom [TBA](TBA), 2020-12-07 -- 2020-12-11
 [Online classroom](classroom)
 
 <br>
-<!--
+<!---
 ##### <img border="0" src="icons/precourse.svg" width="40" height="40"> Labs links
--->
+--->
 
 <br>
 ##### <img border="0" src="icons/education.svg" width="40" height="40"> Course teachers
