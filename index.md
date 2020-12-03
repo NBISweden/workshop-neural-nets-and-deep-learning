@@ -3,24 +3,32 @@ layout: default
 title: NBIS workshop in Neural Nets and Deep Learning
 ---
 
-### <img border="0" src="icons/info.svg" width="40" height="40">  About the course
+##### <img border="0" src="icons/info.svg" width="40" height="40">  About the course
 Held online, zoom [TBA](TBA), 2020-12-07 -- 2020-12-11
 
-<img border="0" src="icons/content.svg" width="40" height="40"> [Learning outcomes](learningOutcomes)
+[Learning outcomes](learningOutcomes)
 
-<img border="0" src="icons/precourse.svg" width="40" height="40">[Prerequisites](prerequisites)
+[Prerequisites](prerequisites)
 
-### Course Links
-<img border="0" src="icons/schedule-02.svg" width="40" height="40">[Schedule](schedule)
+##### <img border="0" src="icons/content.svg" width="40" height="40"> Course Links
 
-<img border="0" src="icons/classroom.svg" width="40" height="40"> [Online classroom](classroom)
+[Schedule](schedule)
+
+[Online classroom](classroom)
 
 <!--
-### Labs links
+##### <img border="0" src="icons/precourse.svg" width="40" height="40"> Labs links
 -->
 
-### <img border="0" src="icons/education.svg" width="40" height="40"> Course leaders
+##### <img border="0" src="icons/education.svg" width="40" height="40"> Course teachers
 
-[Claudio Mirabello](http://nbis.se/about/staff/claudio-mirabello/)
-
-[Bengt Sennblad](http://nbis.se/about/staff/bengt-sennblad/)
+- [Claudio Mirabello](http://nbis.se/about/staff/claudio-mirabello/) (course leader)
+- [Bengt Sennblad](http://nbis.se/about/staff/bengt-sennblad/) (course leader)
+- [Christophe Avenel](https://katalog.uu.se/empinfo/?id=N13-1716)
+- [Marcin Kierczak](http://nbis.se/about/staff/marcin-kierczak/)
+- [Dan Rosén](http://nbis.se/about/staff/dan-rosen/)
+- [Per Unneberg](http://nbis.se/about/staff/per-unneberg/)
+- [Nikolay Oskolkov](http://nbis.se/about/staff/nikolay-oskolkov/)
+- [Carl Nettelblad](https://www.scilifelab.se/researchers/carl-nettelblad/)
+- [Olga Dethlefsen](http://nbis.se/about/staff/olga-dethlefsen/)
+- [Eva Freyhult](http://nbis.se/about/staff/eva-freyhult/)
