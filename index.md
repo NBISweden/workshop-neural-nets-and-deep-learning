@@ -3,12 +3,14 @@ layout: default
 title: NBIS workshop in Neural Nets and Deep Learning
 ---
 
-##### <img border="0" src="icons/info.svg" width="40" height="40">  About the course
+##### <img border="0" src="icons/info.svg" width="40" height="40"> NBIS workshop in Neural Nets and Deep Learning
 Held online, zoom [TBA](TBA), 2020-12-07 -- 2020-12-11
 
 [Learning outcomes](learningOutcomes)
 
 [Prerequisites](prerequisites)
+
+<br>
 
 ##### <img border="0" src="icons/content.svg" width="40" height="40"> Course Links
 
@@ -16,10 +18,12 @@ Held online, zoom [TBA](TBA), 2020-12-07 -- 2020-12-11
 
 [Online classroom](classroom)
 
+<br>
 <!--
 ##### <img border="0" src="icons/precourse.svg" width="40" height="40"> Labs links
 -->
 
+<br>
 ##### <img border="0" src="icons/education.svg" width="40" height="40"> Course teachers
 
 - [Claudio Mirabello](http://nbis.se/about/staff/claudio-mirabello/) (course leader)
@@ -32,3 +36,5 @@ Held online, zoom [TBA](TBA), 2020-12-07 -- 2020-12-11
 - [Carl Nettelblad](https://www.scilifelab.se/researchers/carl-nettelblad/)
 - [Olga Dethlefsen](http://nbis.se/about/staff/olga-dethlefsen/)
 - [Eva Freyhult](http://nbis.se/about/staff/eva-freyhult/)
+
+<br>
