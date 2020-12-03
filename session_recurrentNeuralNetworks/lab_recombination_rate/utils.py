@@ -271,6 +271,23 @@ def plot_recombination_map(recomb_map):
     ax.set_xlabel("Chromosome position")
     return fig, ax
 
+def plot_history(history, show=True):
+    """Plot history - training and/or test accuracy and loss values"""
+    datalabels = ["Training", "Test"]
+    metrics_labels = {'loss': "loss", 'acc': "accuracy", 'accuracy': "accuracy"}
+    hkeys = history.history.keys()
+    labels = ["{} {}".format(x, y) for x, y in zip([datalabels[u.startswith("val_")] for u in hkeys],
+                                                  [metrics_labels[v.replace("val_", "")] for v in hkeys])]
+    h = np.array([history.history[k] for k in hkeys])
+    plt.plot(np.array(range(0, h.shape[1])), h.T)
+    plt.title('Model metrics')
+    plt.ylabel('Metric')
+    plt.xlabel('Epoch')
+    plt.legend([l for l in labels], loc='upper left')
+    if show:
+        plt.show()
+
+
 ##############################
 # FIXME: implement functions below for lab
 ##############################
