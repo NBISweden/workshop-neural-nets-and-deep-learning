@@ -5,10 +5,12 @@ title: NBIS workshop in Neural Nets and Deep Learning
 
 # About the course
 Held online, zoom, 2020-12-07 -- 2020-12-11
-
+[Learning outcomes](learningOutcomes)
+[Prerequisites](prerequisites)
 
 ## Course Links
-[Schedule](schedule)  
+[Schedule](schedule)
+[Online classroom](classroom)
 
 
 ## Labs links
