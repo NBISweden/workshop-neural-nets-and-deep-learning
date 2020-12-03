@@ -11,7 +11,8 @@
 [https://nbisweden.github.io/workshop-neural-nets-and-deep-learning/schedule](schedule)
 <br>
 
-#### The Zoom Main room: [zoom TBA](zoom TBA)
+#### The Zoom Main room:  
+[zoom TBA](zoom TBA)
 - lectures
 - questions during exercises
 - Zoom breakout rooms will be used for discussions in smaller groups
