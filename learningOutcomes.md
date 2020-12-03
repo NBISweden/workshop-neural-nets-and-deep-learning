@@ -1,4 +1,4 @@
-#### <img border="0" src="icons/content.svg" width="40" height="40"> Learning Outcomes
+#### <img border="0" src="icons/content.svg" width="40" height="40"> Proposed learning Outcomes
 
 ###### Students that complete this course will be able to:
 
