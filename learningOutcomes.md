@@ -1,5 +1,7 @@
 # Learning Outcomes
-## Students that complete this course will be able to:
+
+### Students that complete this course will be able to:
+
 ### ML 'philosophy'/variants
 - Understand the difference between the concepts of "Artificial Intelligence",
  "Machine Learning", "Neural Networks", "Deep Learning"
@@ -9,6 +11,7 @@
 - Understand the difference between linear and non-linear approaches and
 recognise which is best suited for application to their own problem
 - Understand the difference between classification and regression
+
 ### ANN building blocks
 - Describe what a feed-forward neural network (FFNN) is, along with its
 components (neurons, layers, weights, bias, activation functions,
@@ -22,6 +25,7 @@ linear optimisation
 - Understand the difference between a shallow and a deep network
 - Implement and train on given data sets simple FFNNs in python with
 Keras and tensorflow
+
 ### Programming packages
 - Remember how to set up a conda environment, including installation of
 relevant packages (R/python, keras, tensorflow, etc.) to perform own
@@ -31,6 +35,7 @@ train and test neural networks either on Jupyter Notebook or with
 custom scripts
 - (optionally) translate python code that implements architectures in
 Keras to R
+
 ### Other network architectures
 - Explain broadly how different NN architectures (convolutional,
   recurrent, autoencoders, GANs, etc) are wired and how they work
@@ -40,6 +45,7 @@ on given datasets
 - Analyze training curves and prediction outputs to evaluate if the
 training has been successful
 - Debug possible issues with the training and suggest changes to fix them
+
 ### Good practices in project design
 - Understand how cross-validation is using in NN training
 - Understand the difference between training, validation and testing
