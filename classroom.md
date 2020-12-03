@@ -1,28 +1,34 @@
+
+
 #### <img border="0" src="icons/classroom.svg" width="40" height="40"> Online classroom
 
 
-###### Course website:  
+##### Course website:  
 [https://nbisweden.github.io/workshop-neural-nets-and-deep-learning/](index)
+<br>
 
-###### Schedule with links to lectures and exercises:  
+##### Schedule with links to lectures and exercises:  
 [https://nbisweden.github.io/workshop-neural-nets-and-deep-learning/schedule](schedule)
+<br>
 
-###### The Zoom Main room: [zoom TBA](zoom TBA)
+##### The Zoom Main room: [zoom TBA](zoom TBA)
 - lectures
 - questions during exercises
 - Zoom breakout rooms will be used for discussions in smaller groups
+<br>
 
-###### Student slack channel  
+##### Student slack channel  
 [https://nbisweden.slack.com/app_redirect?channel=nn_dl_students](https://nbisweden.slack.com/app_redirect?channel=nn_dl_students)
 - questions during lectures or exercises
+<br>
 
-###### HackMD:
+##### HackMD:
 [https://hackmd.io/fZc9DFyDSOO5Kd4RORb4Uw](https://hackmd.io/fZc9DFyDSOO5Kd4RORb4Uw)
 - *Important information* on how to setting up your laptop for the course.
 - working area for exercises, communication, etc.
+<br>
 
-
-###### Practical issues
+##### Practical issues
 - Try to keep your **cameras on**, but **microphone muted**
 - Lectures with many breaks
 - Take lots of small breaks also when working with the exercises
