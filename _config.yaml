@@ -9,6 +9,11 @@ sass:
 
 plugins:
   - jemoji
+  - jekyll-relative-links
+
+relative_links:
+  enabled: true
+  collections: true
 
 defaults:
   - values:
@@ -19,6 +24,13 @@ menu:
     url:
   - title: Schedule
     url: schedule
+  - title: Online classroom
+    url: classroom
+  - title: Prerequisites
+    url: prerequisites
+  - title: Learning outcomes
+    url: learningOutcomes
+    
 #  - title: Labs
 #    submenus:
 #      - title: Lab 1
