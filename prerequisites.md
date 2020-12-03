@@ -1,4 +1,4 @@
-### Proposed pre-course knowledge
+#### <img border="0" src="icons/precourse.svg" width="40" height="40"> Proposed pre-course knowledge
 
 - Basic python skills (possibly NBIS python workshop?)
 [maybe prepare a questionnaire to evaluate actual skills]
