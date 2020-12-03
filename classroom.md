@@ -10,10 +10,11 @@
 - questions during exercises
 - Zoom breakout rooms will be used for discussions in smaller groups
 ###### Student slack channel  
-https://nbisweden.slack.com/app_redirect?channel=nn_dl_students
+[https://nbisweden.slack.com/app_redirect?channel=nn_dl_students](https://nbisweden.slack.com/app_redirect?channel=nn_dl_students)
     - questions during lectures or exercises
 ###### HackMD:
-[TBA](TBA)
+[https://hackmd.io/fZc9DFyDSOO5Kd4RORb4Uw](https://hackmd.io/fZc9DFyDSOO5Kd4RORb4Uw)
+- *Important information* on how to setting up your laptop for the course.
 - working area for exercises, etc.
 
 
