@@ -16,53 +16,34 @@ Contact: [claudio.mirabello@scilifelab.se](claudio.mirabello@scilifelab.se); [be
 **09:00 - 10.00** Introduction
 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_introduction/session_introduction.ipynb) / [html](session_introduction/session_introduction.html)
 (**Bengt**, Claudio, Olga)  
-<font size=2>
-```
-gwd path: session_introduction/session_introduction.ipynb
-```
-</font>
+_gwd path: session_introduction/session_introduction.ipynb_
 
 
-**10:00 - 11:00** Setting up: Conda environment and GitHub repository. ''(**Claudio**, Bengt, Olga)  
+**10:00 - 11:00** Setting up: Conda environment and GitHub repository.
+(**Claudio**, Bengt, Olga)  
 Instructions on [HackMD](https://hackmd.io/fZc9DFyDSOO5Kd4RORb4Uw)
 
 **11.00 - 12.00** ANN building blocks 1
 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/session_annBuildingBlocks/session_annBuildingBlocks_1.ipynb) / [html](session_annBuildingBlocks/session_annBuildingBlocks_1.html)
 (**Bengt**, Claudio, Olga)  
-<font size=2>
-```
-gwd path: session_annBuildingBlocks/session_annBuildingBlocks_1.ipynb
-```
-</font>
+_gwd path: session_annBuildingBlocks/session_annBuildingBlocks_1.ipynb_
 
 *12:00 - 13:00 lunch*
 
 **13.00 - 14.00** ANN building blocks 2
 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/session_annBuildingBlocks/session_annBuildingBlocks_2.ipynb) / [html](session_annBuildingBlocks/session_annBuildingBlocks_2.html)
 (**Bengt**, Claudio, Olga)  
-<font size=2>
-```
-gwd path: session_annBuildingBlocks/session_annBuildingBlocks_2.ipynb
-```
-</font>
+_gwd path: session_annBuildingBlocks/session_annBuildingBlocks_2.ipynb_
 
 **14.00 - 15.00** ANN building blocks 3
 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/session_annBuildingBlocks/session_annBuildingBlocks_3.ipynb) / [html](session_annBuildingBlocks_3.html)
 (**Bengt**, Claudio, Olga)  
-<font size=2>
-```
-gwd path: session_annBuildingBlocks/session_annBuildingBlocks_1.ipynb
-```
-</font>
+_gwd path: session_annBuildingBlocks/session_annBuildingBlocks_1.ipynb_
 
 **15.00 - 17.00** ANN building blocks Lab keras
 [gh](session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb)
 (**Claudio**, Bengt, Olga)  
-<font size=2>
-```
-gwd path: session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb
-```
-</font>
+_gwd path: session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb_
 
 <br/>
 ##### Tuesday 2020-11-17
@@ -70,28 +51,16 @@ gwd path: session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb
 **9.00 - 12.00** ANN building blocks Lab keras cntd.
 [gh](session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb)
 (**Claudio**, Bengt, Olga)  
-<font size=2>
-```
-gwd path: session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb
-```
-</font>
+_gwd path: session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb_
 
 
 *12:00 - 13:00 lunch*
 
-**13.00 - 15.00** Convolutional Neural Networks 1 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/tree/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_1.ipynb) (**Christophe**, Claudio, Bengt)
-<font size=2>
-```
-gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_1.ipynb
-```
-</font>
+**13.00 - 15.00** Convolutional Neural Networks 1 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/tree/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_1.ipynb) (**Christophe**, Claudio, Bengt)  
+_gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_1.ipynb_
 
-**15.00 - 17.00** Convolutional Neural Networks 2 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/tree/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb) (**Christophe**, Claudio, Bengt)
-<font size=2>
-```
-gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb
-```
-</font>
+**15.00 - 17.00** Convolutional Neural Networks 2 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/tree/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb) (**Christophe**, Claudio, Bengt)  
+_gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb_
 
 
 <br/>
@@ -100,52 +69,32 @@ gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb
 **9.00 - 12.00** Keras in R -- autoencoders Lab1 [gh](session_AutoencodersInR/lab_autoencoder_hapmap.html)
 [gh TBA](TBA)  
 (**Marcin**, Claudio, Bengt)  
-<font size=2>
-```
-gwd path: TBA
-```
-</font>
+_gwd path: TBA_
 
 *12:00 - 13:00 lunch*
 
 **13.00 - 15.00** Recurrent Neural Networks 1
 [gh TBA](b)
-(**Dan**, Per, Claudio, Bengt)
-<font size=2>
-```
-gwd path: TBA
-```
-</font>
+(**Dan**, Per, Claudio, Bengt)  
+_gwd path: TBA_
 
 **15.00 - 17.00** Recurrent Neural Networks 2 Lab
 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_recurrentNeuralNetworks/lab_recombination_rate/recrate_exercise.ipynb)
-(**Per**, Dan, Claudio, Bengt)
-<font size=2>
-```
-gwd path: session_recurrentNeuralNetworks/lab_recombination_rate/recrate_exercise.ipynb
-```
-</font>
+(**Per**, Dan, Claudio, Bengt)  
+_gwd path: session_recurrentNeuralNetworks/lab_recombination_rate/recrate_exercise.ipynb_
 
 
 <br/>
 ##### Thursday 2020-11-19
 
 **9.00 - 12.00** *Good practices for datasets and design Lab Validation 2* [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb) (**Claudio**, Bengt, Eva)  
-<font size=2>
-```
-gwd path: session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb
-```
-</font>
+_gwd path: session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb_
 
 *12:00 - 13:00 lunch*
 
 
-**13.00 - 17.00** *Good practices for datasets and design Lab Validation 2* [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb) (**Claudio**, Bengt, Eva)
-<font size=2>
-```
-gwd path: session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb
-```
-</font>
+**13.00 - 17.00** *Good practices for datasets and design Lab Validation 2* [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb) (**Claudio**, Bengt, Eva)  
+_gwd path: session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb_
 
 <br/>
 
