@@ -66,7 +66,7 @@ _gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb_
 <br/>
 ##### Wednesday 2020-11-18
 
-**9.00 - 12.00** Keras in R -- autoencoders Lab1 [gh](session_rAutoencoders/session_rAutoencoders.ipynb)
+**9.00 - 12.00** Keras in R -- autoencoders Lab1 [gh](session_AutoencodersInR/lab_autoencoder_hapmap.html)
 [gh TBA](TBA)  
 (**Marcin**, Claudio, Bengt)  
 _gwd path: TBA_
