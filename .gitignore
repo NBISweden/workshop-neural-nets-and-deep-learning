@@ -1,5 +1,0 @@
-*.pic
-*.hdf5
-*.tsv
-**/.ipynb_checkpoints/*
-**/__pycache__/*
