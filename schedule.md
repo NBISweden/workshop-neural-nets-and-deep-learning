@@ -16,7 +16,7 @@ Contact: [claudio.mirabello@scilifelab.se](claudio.mirabello@scilifelab.se); [be
 **09:00 - 10.00** Introduction
 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_introduction/session_introduction.ipynb) / [html](session_introduction/session_introduction.html)
 (**Bengt**, Claudio, Olga)  
-<font size=2>_gwd path: session_introduction/session_introduction.ipynb_</font>
+<font size=2>*gwd path: session_introduction/session_introduction.ipynb*</font>
 
 
 **10:00 - 11:00** Setting up: Conda environment and GitHub repository.
