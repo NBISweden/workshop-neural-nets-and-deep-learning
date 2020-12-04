@@ -17,7 +17,9 @@ Contact: [claudio.mirabello@scilifelab.se](claudio.mirabello@scilifelab.se); [be
 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_introduction/session_introduction.ipynb) / [html](session_introduction/session_introduction.html)
 (**Bengt**, Claudio, Olga)  
 <font size=2>
-`gwd path: session_introduction/session_introduction.ipynb`
+```
+gwd path: session_introduction/session_introduction.ipynb
+```
 </font>
 
 
@@ -28,7 +30,9 @@ Instructions on [HackMD](https://hackmd.io/fZc9DFyDSOO5Kd4RORb4Uw)
 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/session_annBuildingBlocks/session_annBuildingBlocks_1.ipynb) / [html](session_annBuildingBlocks/session_annBuildingBlocks_1.html)
 (**Bengt**, Claudio, Olga)  
 <font size=2>
-`gwd path: session_annBuildingBlocks/session_annBuildingBlocks_1.ipynb`
+```
+gwd path: session_annBuildingBlocks/session_annBuildingBlocks_1.ipynb
+```
 </font>
 
 *12:00 - 13:00 lunch*
@@ -37,21 +41,27 @@ Instructions on [HackMD](https://hackmd.io/fZc9DFyDSOO5Kd4RORb4Uw)
 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/session_annBuildingBlocks/session_annBuildingBlocks_2.ipynb) / [html](session_annBuildingBlocks/session_annBuildingBlocks_2.html)
 (**Bengt**, Claudio, Olga)  
 <font size=2>
-`gwd path: session_annBuildingBlocks/session_annBuildingBlocks_2.ipynb`
+```
+gwd path: session_annBuildingBlocks/session_annBuildingBlocks_2.ipynb
+```
 </font>
 
 **14.00 - 15.00** ANN building blocks 3
 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/session_annBuildingBlocks/session_annBuildingBlocks_3.ipynb) / [html](session_annBuildingBlocks_3.html)
 (**Bengt**, Claudio, Olga)  
 <font size=2>
-`gwd path: session_annBuildingBlocks/session_annBuildingBlocks_1.ipynb`
+```
+gwd path: session_annBuildingBlocks/session_annBuildingBlocks_1.ipynb
+```
 </font>
 
 **15.00 - 17.00** ANN building blocks Lab keras
 [gh](session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb)
 (**Claudio**, Bengt, Olga)  
 <font size=2>
-`gwd path: session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb`
+```
+gwd path: session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb
+```
 </font>
 
 <br/>
@@ -61,7 +71,9 @@ Instructions on [HackMD](https://hackmd.io/fZc9DFyDSOO5Kd4RORb4Uw)
 [gh](session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb)
 (**Claudio**, Bengt, Olga)  
 <font size=2>
-`gwd path: session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb`
+```
+gwd path: session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb
+```
 </font>
 
 
@@ -69,12 +81,16 @@ Instructions on [HackMD](https://hackmd.io/fZc9DFyDSOO5Kd4RORb4Uw)
 
 **13.00 - 15.00** Convolutional Neural Networks 1 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/tree/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_1.ipynb) (**Christophe**, Claudio, Bengt)
 <font size=2>
-`gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_1.ipynb`
+```
+gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_1.ipynb
+```
 </font>
 
 **15.00 - 17.00** Convolutional Neural Networks 2 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/tree/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb) (**Christophe**, Claudio, Bengt)
 <font size=2>
-`gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb`
+```
+gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb
+```
 </font>
 
 
@@ -85,7 +101,9 @@ Instructions on [HackMD](https://hackmd.io/fZc9DFyDSOO5Kd4RORb4Uw)
 [gh TBA](TBA)  
 (**Marcin**, Claudio, Bengt)  
 <font size=2>
-`gwd path: TBA`
+```
+gwd path: TBA
+```
 </font>
 
 *12:00 - 13:00 lunch*
@@ -94,14 +112,18 @@ Instructions on [HackMD](https://hackmd.io/fZc9DFyDSOO5Kd4RORb4Uw)
 [gh TBA](b)
 (**Dan**, Per, Claudio, Bengt)
 <font size=2>
-`gwd path: TBA`
+```
+gwd path: TBA
+```
 </font>
 
 **15.00 - 17.00** Recurrent Neural Networks 2 Lab
 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_recurrentNeuralNetworks/lab_recombination_rate/recrate_exercise.ipynb)
 (**Per**, Dan, Claudio, Bengt)
 <font size=2>
-`gwd path: session_recurrentNeuralNetworks/lab_recombination_rate/recrate_exercise.ipynb`
+```
+gwd path: session_recurrentNeuralNetworks/lab_recombination_rate/recrate_exercise.ipynb
+```
 </font>
 
 
@@ -110,15 +132,19 @@ Instructions on [HackMD](https://hackmd.io/fZc9DFyDSOO5Kd4RORb4Uw)
 
 **9.00 - 12.00** *Good practices for datasets and design Lab Validation 2* [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb) (**Claudio**, Bengt, Eva)  
 <font size=2>
-`gwd path: session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb`
+```
+gwd path: session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb
+```
 </font>
 
 *12:00 - 13:00 lunch*
 
 
-**13.00 - 17.00** *Good practices for datasets and design Lab Validation 2* [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb) (**Claudio**, Bengt, Eva) 
+**13.00 - 17.00** *Good practices for datasets and design Lab Validation 2* [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb) (**Claudio**, Bengt, Eva)
 <font size=2>
-`gwd path: session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb`
+```
+gwd path: session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb
+```
 </font>
 
 <br/>
