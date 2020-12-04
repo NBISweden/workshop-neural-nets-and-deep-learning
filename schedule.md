@@ -56,10 +56,10 @@ _gwd path: session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb_
 
 *12:00 - 13:00 lunch*
 
-**13.00 - 15.00** Convolutional Neural Networks 1 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/tree/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_1.ipynb) (**Christophe**, Claudio, Bengt)
+**13.00 - 15.00** Convolutional Neural Networks 1 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/tree/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_1.ipynb) (**Christophe**, Claudio, Bengt)  
 _gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_1.ipynb_
 
-**15.00 - 17.00** Convolutional Neural Networks 2 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/tree/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb) (**Christophe**, Claudio, Bengt)
+**15.00 - 17.00** Convolutional Neural Networks 2 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/tree/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb) (**Christophe**, Claudio, Bengt)  
 _gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb_
 
 
@@ -75,12 +75,12 @@ _gwd path: TBA_
 
 **13.00 - 15.00** Recurrent Neural Networks 1
 [gh TBA](b)
-(**Dan**, Per, Claudio, Bengt)
+(**Dan**, Per, Claudio, Bengt)  
 _gwd path: TBA_
 
 **15.00 - 17.00** Recurrent Neural Networks 2 Lab
 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_recurrentNeuralNetworks/lab_recombination_rate/recrate_exercise.ipynb)
-(**Per**, Dan, Claudio, Bengt)
+(**Per**, Dan, Claudio, Bengt)  
 _gwd path: session_recurrentNeuralNetworks/lab_recombination_rate/recrate_exercise.ipynb_
 
 
@@ -93,7 +93,7 @@ _gwd path: session_goodPracticesDatasetDesign/lab_validation/rigorous_train_vali
 *12:00 - 13:00 lunch*
 
 
-**13.00 - 17.00** *Good practices for datasets and design Lab Validation 2* [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb) (**Claudio**, Bengt, Eva)
+**13.00 - 17.00** *Good practices for datasets and design Lab Validation 2* [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb) (**Claudio**, Bengt, Eva)  
 _gwd path: session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb_
 
 <br/>
