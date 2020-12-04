@@ -11,8 +11,8 @@
 [https://nbisweden.github.io/workshop-neural-nets-and-deep-learning/schedule](schedule)
 <br>
 
-#### The Zoom Main room:  
-[zoom TBA](zoom TBA)
+#### The Zoom Main room:
+*The link to the zoom room is pinned in the student slack channel (see below)*
 - lectures
 - questions during exercises
 - Zoom breakout rooms will be used for discussions in smaller groups
@@ -24,7 +24,7 @@
 <br>
 
 #### HackMD:
-[https://hackmd.io/fZc9DFyDSOO5Kd4RORb4Uw](https://hackmd.io/fZc9DFyDSOO5Kd4RORb4Uw)
+*The link to the HackMD page room is pinned in the student slack channel (see above)*
 - *Important information* on how to setting up your laptop for the course.
 - working area for exercises, communication, etc.
 <br>
