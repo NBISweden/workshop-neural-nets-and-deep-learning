@@ -66,10 +66,9 @@ _gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb_
 <br/>
 ##### Wednesday 2020-11-18
 
-**9.00 - 12.00** Keras in R -- autoencoders Lab1 [gh](session_AutoencodersInR/lab_autoencoder_hapmap.html)
-[gh TBA](TBA)  
+**9.00 - 12.00** Keras in R -- autoencoders Lab1 [html](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_rAutoencoders/lab_autoencoder_hapmap.html)  
 (**Marcin**, Claudio, Bengt)  
-_gwd path: TBA_
+_gwd path: session_rAutoencoders/lab_autoencoder_hapmap.html_
 
 *12:00 - 13:00 lunch*
 
