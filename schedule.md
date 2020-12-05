@@ -24,24 +24,24 @@ _gwd path: session_introduction/session_introduction.ipynb_
 Instructions on [HackMD](https://hackmd.io/fZc9DFyDSOO5Kd4RORb4Uw)
 
 **11.00 - 12.00** ANN building blocks 1
-[gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/session_annBuildingBlocks/session_annBuildingBlocks_1.ipynb) / [html](session_annBuildingBlocks/session_annBuildingBlocks_1.html)
+[gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_annBuildingBlocks/session_annBuildingBlocks_1.ipynb) / [html](session_annBuildingBlocks/session_annBuildingBlocks_1.html)
 (**Bengt**, Claudio, Olga)  
 _gwd path: session_annBuildingBlocks/session_annBuildingBlocks_1.ipynb_
 
 *12:00 - 13:00 lunch*
 
 **13.00 - 14.00** ANN building blocks 2
-[gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/session_annBuildingBlocks/session_annBuildingBlocks_2.ipynb) / [html](session_annBuildingBlocks/session_annBuildingBlocks_2.html)
+[gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_annBuildingBlocks/session_annBuildingBlocks_2.ipynb) / [html](session_annBuildingBlocks/session_annBuildingBlocks_2.html)
 (**Bengt**, Claudio, Olga)  
 _gwd path: session_annBuildingBlocks/session_annBuildingBlocks_2.ipynb_
 
 **14.00 - 15.00** ANN building blocks 3
-[gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/session_annBuildingBlocks/session_annBuildingBlocks_3.ipynb) / [html](session_annBuildingBlocks_3.html)
+[gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_annBuildingBlocks/session_annBuildingBlocks_3.ipynb) / [html](session_annBuildingBlocks_3.html)
 (**Bengt**, Claudio, Olga)  
 _gwd path: session_annBuildingBlocks/session_annBuildingBlocks_1.ipynb_
 
 **15.00 - 17.00** ANN building blocks Lab keras
-[gh](session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb)
+[gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb)
 (**Claudio**, Bengt, Olga)  
 _gwd path: session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb_
 
@@ -56,17 +56,17 @@ _gwd path: session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb_
 
 *12:00 - 13:00 lunch*
 
-**13.00 - 15.00** Convolutional Neural Networks 1 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/tree/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_1.ipynb) (**Christophe**, Claudio, Bengt)  
+**13.00 - 15.00** Convolutional Neural Networks 1 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_1.ipynb) (**Christophe**, Claudio, Bengt)  
 _gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_1.ipynb_
 
-**15.00 - 17.00** Convolutional Neural Networks 2 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/tree/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb) (**Christophe**, Claudio, Bengt)  
+**15.00 - 17.00** Convolutional Neural Networks 2 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb) (**Christophe**, Claudio, Bengt)  
 _gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb_
 
 
 <br/>
 ##### Wednesday 2020-11-18
 
-**9.00 - 12.00** Keras in R -- autoencoders Lab1 [html](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_rAutoencoders/lab_autoencoder_hapmap.html)  
+**9.00 - 12.00** Keras in R -- autoencoders Lab1 [html](https://nbisweden.github.io/workshop-neural-nets-and-deep-learning/blob/master/session_rAutoencoders/lab_autoencoder_hapmap.html)  
 (**Marcin**, Claudio, Bengt)  
 _gwd path: session_rAutoencoders/lab_autoencoder_hapmap.html_
 
@@ -99,9 +99,9 @@ _gwd path: session_goodPracticesDatasetDesign/lab_validation/rigorous_train_vali
 
 ##### Friday 2020-11-20
 
-**9.00 - 10.00 (preliminary)** Bayesian Neural Networks [gh](session_bnn/session_bnn.ipynb) (**Nikolay**, Claudio, Bengt)
+**9.00 - 10.00 (preliminary)** Bayesian Neural Networks [gh TBA](TBA) (**Nikolay**, Claudio, Bengt)
 
-**10.00 - 11.00 (preliminary)** convolutional Autoencoders  [gh](session_ca/session_ca.ipynb) (**Carl**, Claudio, Bengt)
+**10.00 - 11.00 (preliminary)** convolutional Autoencoders  [gh TBA](TBA) (**Carl**, Claudio, Bengt)
 
 **11.00 - 12.00** Buffert time/Extra lab time (Claudio, Bengt,...)
 
