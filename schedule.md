@@ -49,7 +49,7 @@ _gwd path: session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb_
 ##### Tuesday 2020-11-17
 
 **9.00 - 12.00** ANN building blocks Lab keras cntd.
-[gh](session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb)
+[gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb)
 (**Claudio**, Bengt, Olga)  
 _gwd path: session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb_
 
@@ -59,14 +59,14 @@ _gwd path: session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb_
 **13.00 - 15.00** Convolutional Neural Networks 1 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_1.ipynb) (**Christophe**, Claudio, Bengt)  
 _gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_1.ipynb_
 
-**15.00 - 17.00** Convolutional Neural Networks 2 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb) (**Christophe**, Claudio, Bengt)  
-_gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb_
+**15.00 - 17.00** Convolutional Neural Networks 2 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_targetLeakage/investigating_target_leakage.ipynb) (**Christophe**, Claudio, Bengt)  
+_gwd path: session_goodPracticesDatasetDesign/lab_targetLeakage/investigating_target_leakage.ipynb_
 
 
 <br/>
 ##### Wednesday 2020-11-18
 
-**9.00 - 12.00** Keras in R -- autoencoders Lab1 [html](https://nbisweden.github.io/workshop-neural-nets-and-deep-learning/blob/master/session_rAutoencoders/lab_autoencoder_hapmap.html)  
+**9.00 - 12.00** Keras in R -- autoencoders Lab1 [html](session_rAutoencoders/lab_autoencoder_hapmap.html)  
 (**Marcin**, Claudio, Bengt)  
 _gwd path: session_rAutoencoders/lab_autoencoder_hapmap.html_
 
