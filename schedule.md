@@ -56,13 +56,16 @@ _gwd path: session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb_
 
 *12:00 - 13:00 lunch*
 
-**13.00 - 14.00** Convolutional Neural Networks 1 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_convolutionalNeuralNetworks/Lecture/CNN_lecture_1_segmentation.ipynb) [html](session_convolutionalNeuralNetworks/Lecture/CNN_lecture_1_segmentation.html) (**Christophe**, Claudio, Bengt)  
-_gwd path: session_convolutionalNeuralNetworks/Lecture/CNN_lecture_1_segmentation.ipynb_
+**13.00 - 14.00** Convolutional Neural Networks 1 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_convolutionalNeuralNetworks/Lecture/CNN_lecture_1_classification.ipynb) [html](session_convolutionalNeuralNetworks/Lecture/CNN_lecture_1_classification.html) (**Christophe**, Claudio, Bengt)  
+_gwd path: session_convolutionalNeuralNetworks/Lecture/CNN_lecture_1_classification.ipynb_
 
 **14.00 - 15.30** Convolutional Neural Networks 1 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_1.ipynb) (**Christophe**, Claudio, Bengt)  
 _gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_1.ipynb_
 
-**15.30 - 17.00** Convolutional Neural Networks 2 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb) (**Christophe**, Claudio, Bengt)  
+**15.30 - 16.00** Convolutional Neural Networks 2 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_convolutionalNeuralNetworks/Lecture/CNN_lecture_2_segmentation.ipynb) [html](session_convolutionalNeuralNetworks/Lecture/CNN_lecture_2_segmentation.html) (**Christophe**, Claudio, Bengt)  
+_gwd path: session_convolutionalNeuralNetworks/Lecture/CNN_lecture_2_segmentation.ipynb_
+
+**16.00 - 17.00** Convolutional Neural Networks 2 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb) (**Christophe**, Claudio, Bengt)  
 _gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb_
 
 

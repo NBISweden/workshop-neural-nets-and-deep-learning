@@ -24,4 +24,4 @@ In this notebook we will solve the classification of small images task with conv
 
 <a href="https://colab.research.google.com/github/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
-In this notebook we will solve try to do semantic segmentation of Blood Cell images.
+In this notebook we will try to do semantic segmentation of Blood Cell images.
