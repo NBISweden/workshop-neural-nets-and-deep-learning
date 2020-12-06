@@ -1,5 +1,11 @@
-*.pic
-*.hdf5
-*.tsv
-**/.ipynb_checkpoints/*
-**/__pycache__/*
+
+session_convolutionalNeuralNetworks/Labs/.ipynb_checkpoints/CNN_Keras_lab_1-checkpoint.ipynb
+session_convolutionalNeuralNetworks/Labs/.ipynb_checkpoints/CNN_Keras_lab_2-checkpoint.ipynb
+session_convolutionalNeuralNetworks/Lecture/.ipynb_checkpoints/CNN_lecture_1_segmentation-checkpoint.ipynb
+session_convolutionalNeuralNetworks/Lecture/.ipynb_checkpoints/image_convolution_demo-checkpoint.ipynb
+session_convolutionalNeuralNetworks/Lecture/.ipynb_checkpoints/showflow-checkpoint.ipynb
+**/.ipynb_checkpoints
+**/__pycache__
+session_goodPracticesDatasetDesign/lab_validation/data/*.tsv
+session_goodPracticesDatasetDesign/lab_validation/data/*.pic
+session_goodPracticesDatasetDesign/lab_validation/data/*.hdf5
