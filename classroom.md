@@ -27,6 +27,7 @@
 *The link to the HackMD page room is pinned in the student slack channel (see above)*
 - *Important information* on how to setting up your laptop for the course.
 - working area for exercises, communication, etc.
+- Start with adding you autobiography
 <br>
 
 #### Practical issues
