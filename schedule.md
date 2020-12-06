@@ -89,13 +89,13 @@ _gwd path: session_recurrentNeuralNetworks/lab_recombination_rate/recrate_exerci
 <br/>
 ##### Thursday 2020-11-19
 
-**9.00 - 12.00** *Good practices for datasets and design Lab Validation 2* [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb) (**Claudio**, Bengt, Eva)  
+**9.00 - 12.00** Good practices for datasets and design Lab Validation 2 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb) (**Claudio**, Bengt, Eva)  
 _gwd path: session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb_
 
 *12:00 - 13:00 lunch*
 
 
-**13.00 - 17.00** *Good practices for datasets and design Lab Validation 2* [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_targetLeakage/investigating_target_leakage.ipynb) (**Claudio**, Bengt, Eva)  
+**13.00 - 17.00** Good practices for datasets and design Lab Validation 2 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_targetLeakage/investigating_target_leakage.ipynb) (**Claudio**, Bengt, Eva)  
 _gwd path: session_goodPracticesDatasetDesign/lab_targetLeakage/investigating_target_leakage.ipynb_
 
 <br/>
