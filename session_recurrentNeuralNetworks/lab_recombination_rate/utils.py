@@ -174,6 +174,32 @@ def simulate(nreps, outdir, seed=42, murange=(0, 2e-7), rhorange=(0, 2e-7), samp
     with open(os.path.join(outdir, "info.p"), "wb") as fh:
         pickle.dump(info, fh)
 
+
+def simulate_map(nreps, outdir, recombination_map, seed=42, murange=(0, 2e-7), sample_size=10, Ne=1e4, **kwargs):
+    """Simulate tree sequences with msprime and save genotype matrix and positions to outdir
+
+    :params int nreps: number of simulations
+    :params str outdir: output directory
+    :params msprime.simulations.RecombinationMap recmap: recombination map
+    :params int seed: seed for simulations
+    :params tuple murange: range of mutation values
+    :params int sample_size: number of chromosomes to sample
+    :params int Ne: effective population size
+    :params dict kwargs: keyword arguments passed to msprime
+    """
+    if not os.path.exists(outdir):
+        os.makedirs(outdir)
+    mu = [np.random.uniform(murange[0], murange[1]) for _ in range(nreps)]
+    for i in range(nreps):
+        ts = msprime.simulate(random_seed=seed,
+                              sample_size=sample_size, Ne=Ne,
+                              mutation_rate=mu[i],
+                              recombination_map=recombination_map, **kwargs)
+        np.save(os.path.join(outdir, f"{i}_haps.npy"), ts.genotype_matrix())
+        np.save(os.path.join(outdir, f"{i}_pos.npy"),
+                np.array([s.position for s in ts.sites()], dtype="float32"))
+
+
 def GRU(x, y):
     """Gated recurrent unit model.
 
@@ -270,6 +296,29 @@ def plot_recombination_map(recomb_map):
     ax.set_ylabel("Recombination rate")
     ax.set_xlabel("Chromosome position")
     return fig, ax
+
+def plot_history(history, show=True, xlim=None, ylim=None):
+    """Plot history - training and/or test accuracy and loss values"""
+    datalabels = ["Training", "Test"]
+    metrics_labels = {'loss': "loss", 'acc': "accuracy", 'accuracy': "accuracy"}
+    if not isinstance(history, dict):
+        history = history.history
+    hkeys = history.keys()
+    labels = ["{} {}".format(x, y) for x, y in zip([datalabels[u.startswith("val_")] for u in hkeys],
+                                                  [metrics_labels[v.replace("val_", "")] for v in hkeys])]
+    h = np.array([history[k] for k in hkeys])
+    plt.plot(np.array(range(0, h.shape[1])), h.T)
+    plt.title('Model metrics')
+    plt.ylabel('Metric')
+    plt.xlabel('Epoch')
+    if xlim is not None:
+        plt.xlim(xlim)
+    if ylim is not None:
+        plt.ylim(ylim)
+    plt.legend([l for l in labels], loc='upper left')
+    if show:
+        plt.show()
+
 
 ##############################
 # FIXME: implement functions below for lab
