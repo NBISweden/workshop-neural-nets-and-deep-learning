@@ -36,7 +36,7 @@ _gwd path: session_annBuildingBlocks/session_annBuildingBlocks_1.ipynb_
 _gwd path: session_annBuildingBlocks/session_annBuildingBlocks_2.ipynb_
 
 **14.00 - 15.00** ANN building blocks 3
-[gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_annBuildingBlocks/session_annBuildingBlocks_3.ipynb) / [html](session_annBuildingBlocks_3.html)
+[gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_annBuildingBlocks/session_annBuildingBlocks_3.ipynb) / [html](session_annBuildingBlocks/session_annBuildingBlocks_3.html)
 (**Bengt**, Claudio, Olga)  
 _gwd path: session_annBuildingBlocks/session_annBuildingBlocks_1.ipynb_
 
