@@ -83,10 +83,14 @@ _gwd path: session_rAutoencoders/lab_autoencoder_hapmap.html_
 (**Dan**, Per, Claudio, Bengt)  
 _gwd path: session_recurrentNeuralNetworks/lecture-and-exercises.ipynb_
 
+
 **15.00 - 17.00** Recurrent Neural Networks 2 Lab
-[gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_recurrentNeuralNetworks/lab_recombination_rate/recrate_exercise.ipynb)
+[Introduction gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_recurrentNeuralNetworks/lab_recombination_rate/slides.ipynb)  
+[Lab gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_recurrentNeuralNetworks/lab_recombination_rate/recrate_exercise.ipynb)
+
 (**Per**, Dan, Claudio, Bengt)  
-_gwd path: session_recurrentNeuralNetworks/lab_recombination_rate/recrate_exercise.ipynb_
+_gwd path Introduction: session_recurrentNeuralNetworks/lab_recombination_rate/slides.ipynb_  
+_gwd path Lab: session_recurrentNeuralNetworks/lab_recombination_rate/recrate_exercise.ipynb_
 
 
 <br/>
