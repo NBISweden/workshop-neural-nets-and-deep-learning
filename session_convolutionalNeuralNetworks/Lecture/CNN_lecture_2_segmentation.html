@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>CNN_lecture_1_classification</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>CNN_lecture_2_segmentation</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -14272,7 +14272,7 @@ a.anchor-link {
 
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Convolutional-Neural-Networks-for-Image-Classification">Convolutional Neural Networks for Image Classification<a class="anchor-link" href="#Convolutional-Neural-Networks-for-Image-Classification">&#182;</a></h1><p><br/>
+<h1 id="Convolutional-Neural-Networks-for-Image-Segmentation">Convolutional Neural Networks for Image Segmentation<a class="anchor-link" href="#Convolutional-Neural-Networks-for-Image-Segmentation">&#182;</a></h1><p><br/>
 <br/>
 <br/>
 <small>Some of the material from this lecture comes from online courses of Charles Ollion and Olivier Grisel - Master Datascience Paris Saclay.</small></p>
@@ -14281,696 +14281,338 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="CNNs-for-computer-vision">CNNs for computer vision<a class="anchor-link" href="#CNNs-for-computer-vision">&#182;</a></h2><center>
+<h2 id="CNNs-for-computer-Vision">CNNs for computer Vision<a class="anchor-link" href="#CNNs-for-computer-Vision">&#182;</a></h2><center>
     <img src="illustrations/vision.png" style="max-height:700px;width:auto;"/>
 </center>
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="CNN-for-image-classification">CNN for image classification<a class="anchor-link" href="#CNN-for-image-classification">&#182;</a></h2><h3 id="CNN-=-Convolutional-Neural-Networks-(or-ConvNets)">CNN = Convolutional Neural Networks (or ConvNets)<a class="anchor-link" href="#CNN-=-Convolutional-Neural-Networks-(or-ConvNets)">&#182;</a></h3><p><img src="illustrations/LeNet.png"/></p>
-<p><small>LeCun, Y., Bottou, L., Bengio, Y., and Haffner, P. (1998). LeNet: gradient-based learning applied to document recognition.</small></p>
+<h2 id="Beyond-Image-Classification">Beyond Image Classification<a class="anchor-link" href="#Beyond-Image-Classification">&#182;</a></h2><h3 id="CNNs">CNNs<a class="anchor-link" href="#CNNs">&#182;</a></h3><ul>
+<li>Previous lecture: image classification</li>
+</ul>
+<h3 id="Limitations">Limitations<a class="anchor-link" href="#Limitations">&#182;</a></h3><ul>
+<li>Mostly on centered images</li>
+<li>Only a single object per image</li>
+<li>Not enough for many real world vision tasks</li>
+</ul>
 
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Outline-of-the-lecture">Outline of the lecture<a class="anchor-link" href="#Outline-of-the-lecture">&#182;</a></h2><ul>
-<li>Convolutions</li>
-<li>Convolutions in Neural Networks<ul>
-<li>Motivations</li>
-<li>Layers</li>
-</ul>
+<h2 id="Beyond-Image-Classification">Beyond Image Classification<a class="anchor-link" href="#Beyond-Image-Classification">&#182;</a></h2><center>
+          <br/>
+          <img src="illustrations/cls_1.png" style="width: 1200px;" />
+</center>
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Beyond-Image-Classification">Beyond Image Classification<a class="anchor-link" href="#Beyond-Image-Classification">&#182;</a></h2><center>
+          <br/>
+          <img src="illustrations/cls_2.png" style="width: 1200px;" />
+</center>
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Beyond-Image-Classification">Beyond Image Classification<a class="anchor-link" href="#Beyond-Image-Classification">&#182;</a></h2><center>
+          <br/>
+          <img src="illustrations/cls_3.png" style="width: 1200px;" />
+</center>
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Beyond-Image-Classification">Beyond Image Classification<a class="anchor-link" href="#Beyond-Image-Classification">&#182;</a></h2><center>
+          <br/>
+          <img src="illustrations/cls_4_2.png" style="width: 1200px;" />
+</center>
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Beyond-Image-Classification">Beyond Image Classification<a class="anchor-link" href="#Beyond-Image-Classification">&#182;</a></h2><center>
+          <br/>
+          <img src="illustrations/cls_4_3.png" style="width: 1200px;" />
+</center>
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Outline">Outline<a class="anchor-link" href="#Outline">&#182;</a></h2><h3 id="Simple-Localisation-as-regression">Simple Localisation as regression<a class="anchor-link" href="#Simple-Localisation-as-regression">&#182;</a></h3><h3 id="Detection-Algorithms">Detection Algorithms<a class="anchor-link" href="#Detection-Algorithms">&#182;</a></h3><h3 id="Fully-convolutional-Networks">Fully convolutional Networks<a class="anchor-link" href="#Fully-convolutional-Networks">&#182;</a></h3><h3 id="Semantic-&amp;-Instance-Segmentation">Semantic &amp; Instance Segmentation<a class="anchor-link" href="#Semantic-&amp;-Instance-Segmentation">&#182;</a></h3>
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Localisation">Localisation<a class="anchor-link" href="#Localisation">&#182;</a></h2><center>
+          <img src="illustrations/dog.jpg" style="width: 400px;" />
+</center><ul>
+<li>Single object per image</li>
+<li><p>Predict coordinates of a bounding box <code>(x, y, w, h)</code></p>
 </li>
-<li>Architectures<ul>
-<li>Classic CNN Architecture</li>
-<li>AlexNet</li>
-<li>VGG16</li>
-<li>ResNet</li>
-</ul>
+<li><p>Evaluate via Interection over Union (IoU)</p>
 </li>
-<li>Data augmentation</li>
-<li>Grad-CAM ?</li>
 </ul>
 
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Convolution">Convolution<a class="anchor-link" href="#Convolution">&#182;</a></h2><ul>
-<li>A mathematical operation that combines two functions to form a third function.</li>
-<li>The feature map (or input data) and the kernel are combined to form a transformed feature map.</li>
-<li>Often interpreted as a filter: the kernel filters the feature map for certain information (edges, etc.)</li>
+<h2 id="Localisation-as-regression">Localisation as regression<a class="anchor-link" href="#Localisation-as-regression">&#182;</a></h2><center>
+          <img src="illustrations/regression_dog_1.svg" style="width: 700px;" />
+</center>
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Localisation-as-regression">Localisation as regression<a class="anchor-link" href="#Localisation-as-regression">&#182;</a></h2><center>
+          <img src="illustrations/regression_dog.svg" style="width: 700px;" />
+</center>
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Classification-+-Localisation">Classification + Localisation<a class="anchor-link" href="#Classification-+-Localisation">&#182;</a></h2><center>
+          <img src="illustrations/doublehead.svg" style="width: 900px;" />
+</center><ul>
+<li>Use a pre-trained CNN on ImageNet (ex. ResNet)</li>
+<li>The "localisation head" is trained seperately with regression</li>
+<li>At test time, use both heads</li>
 </ul>
-<center>
-    <img src="illustrations/convolution-1.png" style="width:450px;"/>
-    <small>Figure 1: Convolving an image with an edge detector kernel.</small>
-</center><p>The mathematical definition of convolution of two functions f and x over a range t is:</p>
-<center>
-    $y(t) = f \otimes x = \int_{-\inf}^{\inf}f(k) \cdot x(t-k) \mathrm{d}k$
-</center><p>where the symbol ⊗ denotes convolution.</p>
-<p><small>https://developer.nvidia.com/discover/convolution</small></p>
+<p>$C$ classes, $4$ output dimensions ($1$ box)</p>
+<p><strong>Predict exactly $N$ objects:</strong> predict $(N \times 4)$ coordinates and $(N \times K)$ class scores</p>
 
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Convolution">Convolution<a class="anchor-link" href="#Convolution">&#182;</a></h2><p>Convolutional filters can be interpreted as feature detectors:</p>
+<h2 id="Object-detection">Object detection<a class="anchor-link" href="#Object-detection">&#182;</a></h2><p>We don't know in advance the number of objects in the image. Object detection relies on <em>object proposal</em> and <em>object classification</em></p>
+<p><strong>Object proposal:</strong> find regions of interest (RoIs) in the image</p>
+<p><strong>Object classification:</strong> classify the object in these regions</p>
+<h3 id="Two-main-families:">Two main families:<a class="anchor-link" href="#Two-main-families:">&#182;</a></h3><ul>
+<li>Single-Stage: A grid in the image where each cell is a proposal (SSD, YOLO, RetinaNet)</li>
+<li>Two-Stage: Region proposal then classification (Faster-RCNN)</li>
+</ul>
+
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="YOLO--(You-Only-Look-Once)">YOLO  (You Only Look Once)<a class="anchor-link" href="#YOLO--(You-Only-Look-Once)">&#182;</a></h2><center>
+          <img src="illustrations/yolo1.png" style="width: 700px;" />
+</center><p>For each cell of the $S \times S$ predict:</p>
 <ul>
-<li>The input (feature map) is filtered for a certain feature (the kernel).</li>
-<li>The output is large if the feature is detected in the image.</li>
+<li>$B$ <strong>boxes</strong> and <strong>confidence scores</strong> $C$ ($5 \times B$ values) + <strong>classes</strong> $c$</li>
+<li>Final detections: $C_j * prob(c) &gt; \text{threshold}$</li>
 </ul>
-<center>
-    <img src="illustrations/convolution-3.png" style="width:650px;"/>
-    <small>The kernel can be interpreted as a feature detector where a detected feature results in large outputs (white) and small outputs if no feature is present (black).</small>
-</center>
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Convolution-in-a-neural-network">Convolution in a neural network<a class="anchor-link" href="#Convolution-in-a-neural-network">&#182;</a></h2><center>
-<img src="illustrations/numerical_no_padding_no_strides.gif" style="width:450px;"/>
-</center><ul>
-<li><p>$x$ is a $3 \times 3$ chunk (yellow area) of the image (green array)</p>
-</li>
-<li><p>Each output neuron is parametrized with the $3 \times 3$ weight matrix $w$ (small numbers)</p>
-</li>
-</ul>
-<p>The activation obtained by sliding the $3 \times 3$ window and computing:</p>
-<center>
-$z(x) = relu(\mathbf{w}^T x + b)$
-</center>
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Motivations">Motivations<a class="anchor-link" href="#Motivations">&#182;</a></h2><p>Standard Dense Layer for an image input:</p>
-<div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">Input</span><span class="p">((</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
-<span class="c1"># shape of x is: (None, 640, 480, 3)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">Flatten</span><span class="p">()(</span><span class="n">x</span><span class="p">)</span>
-<span class="c1"># shape of y is: (None, 640 x 480 x 3)</span>
-<span class="n">z</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">1000</span><span class="p">)(</span><span class="n">y</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>$640 \times 480 \times 3 \times 1000 + 1000 = 922M$</p>
-
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>No spatial organization of the input</p>
-
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Dense layers are never used directly on large images. Most standard solution is to use <b>convolution layers</b>.</p>
-
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Motivations">Motivations<a class="anchor-link" href="#Motivations">&#182;</a></h2><h3 id="Local-connectivity">Local connectivity<a class="anchor-link" href="#Local-connectivity">&#182;</a></h3><ul>
-<li>A neuron depends only on a few local input neurons</li>
-<li>Translation invariance</li>
-</ul>
-<h3 id="Comparison-to-Fully-connected">Comparison to Fully connected<a class="anchor-link" href="#Comparison-to-Fully-connected">&#182;</a></h3><ul>
-<li>Parameter sharing: reduce overfitting</li>
-<li>Make use of spatial structure: strong prior for vision!</li>
-</ul>
-<h3 id="Animal-Vision-Analogy">Animal Vision Analogy<a class="anchor-link" href="#Animal-Vision-Analogy">&#182;</a></h3><ul>
-<li><i>Hubel & Wiesel, RECEPTIVE FIELDS OF SINGLE NEURONES IN THE CAT'S STRIATE CORTEX (1959)</i></li>
-</ul>
-
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Channels">Channels<a class="anchor-link" href="#Channels">&#182;</a></h2><p>Colored image = tensor of shape (height, width, channels)</p>
-<p>Convolutions are usually computed for each channel, and summed:</p>
-<center>
-<img src="illustrations/convmap1_dims.svg" width="500px"/>
-</center><center>$(k \star im^{color}) = \sum\limits_{c=0}^2 k^c \star im^c
-$</center>
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Multiple-convolutions">Multiple convolutions<a class="anchor-link" href="#Multiple-convolutions">&#182;</a></h2><center>
-<img src="illustrations/convmap_dims.svg" width="500px"/>
-</center><ul>
-<li>Kernel size aka receptive field (usually 1, 3, 5, 7, 11)</li>
-<li>Output dimension: length - kernel_size + 1</li>
-</ul>
-
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Strides">Strides<a class="anchor-link" href="#Strides">&#182;</a></h2><ul>
-<li>Strides: increment step size for the convolution operator</li>
-<li>Reduces the size of the output map</li>
-</ul>
-<center>
-          <img src="illustrations/no_padding_strides.gif" style="width: 260px;" />
-</center><p><center><small>
-Example with kernel size $3 \times 3$ and a stride of $2$ (image in blue)
-</small></center>
+<p><small>
 <br/><br/>
-<small><i>Convolution visualization by V. Dumoulin https://github.com/vdumoulin/conv_arithmetic</i></small></p>
+    Redmon, Joseph, et al. "You only look once: Unified, real-time object detection." CVPR (2016)
+</small></p>
 
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Padding">Padding<a class="anchor-link" href="#Padding">&#182;</a></h2><ul>
-<li>Padding: artificially fill borders of image</li>
-<li>Useful to keep spatial dimension constant across filters</li>
-<li>Useful with strides and large receptive fields</li>
-<li>Usually: fill with 0s</li>
-</ul>
-<center>
-          <img src="illustrations/same_padding_no_strides.gif" style="width: 260px;" />
-</center>
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Shapes-of-convolution-layers">Shapes of convolution layers<a class="anchor-link" href="#Shapes-of-convolution-layers">&#182;</a></h2><div class="row">
-    <div class="column">
-        <br/><b>Kernel</b> or <b>Filter</b> shape $(F, F, C^i, C^o)$</div>
-    <div class="column">
-        <img src="illustrations/kernel.svg" style="width: 100px;"/>
-    </div>
-</div><ul>
-<li>$F \times F$ kernel size,</li>
-<li>$C^i$ input channels</li>
-<li>$C^o$ output channels</li>
-</ul>
-<p>Number of parameters: $(F \times F \times C^i + 1) \times C^o$</p>
-<p><strong>Activations</strong> or <strong>Feature maps</strong> shape:</p>
-<ul>
-<li>Input $(W^i, H^i, C^i)$</li>
-<li>Output $(W^o, H^o, C^o)$</li>
-</ul>
-<p>$W^o = (W^i - F + 2P) / S + 1$</p>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[36]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">IFrame</span> <span class="c1"># loading animation from https://cs231n.github.io</span>
-<span class="n">IFrame</span><span class="p">(</span><span class="s1">&#39;https://cs231n.github.io/assets/conv-demo/index.html&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span> 
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[36]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-
-        <iframe
-            width="100%"
-            height="700"
-            src="https://cs231n.github.io/assets/conv-demo/index.html"
-            frameborder="0"
-            allowfullscreen
-        ></iframe>
-        
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>$W^o = (W^i - F + 2P) / S + 1$</p>
-
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Pooling">Pooling<a class="anchor-link" href="#Pooling">&#182;</a></h2><ul>
-<li>Spatial dimension reduction</li>
-<li>Local invariance</li>
-<li>No parameters: max or average of 2x2 units</li>
-</ul>
-<p><br/><br/></p>
-<center>
-          <img src="illustrations/max-pooling.png" style="width: 560px;" />
-</center>
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Pooling">Pooling<a class="anchor-link" href="#Pooling">&#182;</a></h2><ul>
-<li>Spatial dimension reduction</li>
-<li>Local invariance</li>
-<li>No parameters: max or average of 2x2 units</li>
-</ul>
-<center>
-          <img src="illustrations/maxpool.svg" style="width: 380px;" />
-</center>
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="In-Keras">In Keras<a class="anchor-link" href="#In-Keras">&#182;</a></h2><h4 id="Fully-Connected-Network:-Multilayer-Perceptron">Fully Connected Network: Multilayer Perceptron<a class="anchor-link" href="#Fully-Connected-Network:-Multilayer-Perceptron">&#182;</a></h4><div class="highlight"><pre><span></span><span class="n">input_image</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">Flatten</span><span class="p">()(</span><span class="n">input_image</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">mlp</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">input_image</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="In-Keras">In Keras<a class="anchor-link" href="#In-Keras">&#182;</a></h2><h4 id="Convolutional-Network">Convolutional Network<a class="anchor-link" href="#Convolutional-Network">&#182;</a></h4><div class="highlight"><pre><span></span><span class="n">input_image</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">)(</span><span class="n">input_image</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">MaxPooling2D</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="mi">2</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">MaxPooling2D</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="mi">2</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">Flatten</span><span class="p">()(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">convnet</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">input_image</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
-</pre></div>
-<p><strong>2D spatial organization of features preserved untill Flatten.</strong></p>
-
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Feature-visualization">Feature visualization<a class="anchor-link" href="#Feature-visualization">&#182;</a></h2><p><br/></p>
-<center>
-          <img src="illustrations/lecunconv.png" style="width: 960px;" />
-</center>
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="DeepDream">DeepDream<a class="anchor-link" href="#DeepDream">&#182;</a></h2><p><br/></p>
-<center>
-          <img src="illustrations/deepdream.png" style="width: 960px;" />
-</center>
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="DeepDream">DeepDream<a class="anchor-link" href="#DeepDream">&#182;</a></h2><p><br/></p>
-<center>
-          <img src="illustrations/deepdream.gif" style="width: 960px;" />
-</center>
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><br/><br/><br/><br/><br/></p>
-<center>
-    <h1>Architectures</h1>
-</center>
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Classic-ConvNet-Architecture">Classic ConvNet Architecture<a class="anchor-link" href="#Classic-ConvNet-Architecture">&#182;</a></h2><h3 id="Input">Input<a class="anchor-link" href="#Input">&#182;</a></h3><h3 id="Conv-blocks">Conv blocks<a class="anchor-link" href="#Conv-blocks">&#182;</a></h3><ul>
-<li>Convolution + activation (relu)</li>
-<li>Convolution + activation (relu)</li>
-<li>...</li>
-<li>Maxpooling 2x2</li>
-</ul>
-<h3 id="Output">Output<a class="anchor-link" href="#Output">&#182;</a></h3><ul>
-<li>Fully connected layers</li>
-<li>Softmax</li>
-</ul>
-
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="AlexNet">AlexNet<a class="anchor-link" href="#AlexNet">&#182;</a></h2><center>
-          <img src="illustrations/alexNet.jpg" style="width: 700px;" />
+<h2 id="RetinaNet">RetinaNet<a class="anchor-link" href="#RetinaNet">&#182;</a></h2><center>
+          <img src="illustrations/retinanet.png" style="width: 700px;" />
 </center><p><small>
-Simplified version of Krizhevsky, Alex, Sutskever, and Hinton. "Imagenet classification with deep convolutional neural networks." NIPS 2012
+Lin, Tsung-Yi, et al. "Focal loss for dense object detection." ICCV 2017.
 </small></p>
-<p>Input: 227x227x3 image
-First conv layer: kernel 11x11x3x96 stride 4</p>
+<p>Single stage detector with:</p>
 <ul>
-<li>Kernel shape: <code>(11,11,3,96)</code></li>
-<li>Output shape: <code>(55,55,96)</code></li>
-<li>Number of parameters: <code>34,944</code></li>
-<li>Equivalent MLP parameters: <code>43.7 x 1e9</code></li>
+<li>Multiple scales through a <em>Feature Pyramid Network</em></li>
+<li>Focal loss to manage imbalance between background and real objects</li>
+</ul>
+<p>See this <a href="https://towardsdatascience.com/review-retinanet-focal-loss-object-detection-38fba6afabe4">post</a> for more information</p>
+
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Box-Proposals">Box Proposals<a class="anchor-link" href="#Box-Proposals">&#182;</a></h2><p>Instead of having a predefined set of box proposals, find them on the image:</p>
+<ul>
+<li><strong>Selective Search</strong> - from pixels (not learnt)</li>
+<li><strong>Faster - RCNN</strong> - Region Proposal Network (RPN)</li>
+</ul>
+<p><strong>Crop-and-resize</strong> operator (<strong>RoI-Pooling</strong>):</p>
+<ul>
+<li>Input: convolutional map + $N$ regions of interest</li>
+<li>Output: tensor of $N \times 7 \times 7 \times \text{depth}$ boxes</li>
+<li>Allows to propagate gradient only on interesting regions, and efficient computation</li>
 </ul>
 
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="AlexNet">AlexNet<a class="anchor-link" href="#AlexNet">&#182;</a></h2><center>
-          <img src="illustrations/alexNet.jpg" style="width: 700px;" />
-</center><div class="small" style="margin-left:450px;">
-
-```md
-INPUT:     [227x227x3]
-CONV1:     [55x55x96]   96 11x11 filters at stride 4, pad 0
-MAX POOL1: [27x27x96]      3x3   filters at stride 2
-CONV2:     [27x27x256] 256 5x5   filters at stride 1, pad 2
-MAX POOL2: [13x13x256]     3x3   filters at stride 2
-CONV3:     [13x13x384] 384 3x3   filters at stride 1, pad 1
-CONV4:     [13x13x384] 384 3x3   filters at stride 1, pad 1
-CONV5:     [13x13x256] 256 3x3   filters at stride 1, pad 1
-MAX POOL3: [6x6x256]       3x3   filters at stride 2
-FC6:       [4096]      4096 neurons
-FC7:       [4096]      4096 neurons
-FC8:       [1000]      1000 neurons (softmax logits)
-
-Total params: 28,054,497
-Trainable params: 28,054,497
-Non-trainable params: 0
-```
-
-</div>
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="VGG16">VGG16<a class="anchor-link" href="#VGG16">&#182;</a></h2><center>
-          <img src="illustrations/vgg16.png" style="width: 1300px;" />
+<h2 id="Fast-RCNN">Fast-RCNN<a class="anchor-link" href="#Fast-RCNN">&#182;</a></h2><center>
+          <img src="illustrations/fastRCNN.png" style="width: 650px;" />
 </center><p><small>
-Simonyan, Karen, and Zisserman. "Very deep convolutional networks for large-scale image recognition." (2014)
+Girshick, Ross, et al. "Fast r-cnn." ICCV 2015
+</small></p>
+<ul>
+<li><p><strong>Selective Search</strong> + Crop-and-resize (RoI pooling)</p>
+</li>
+<li><p>Output: Softmax over $(K + 1)$ classes, and $4$ box offsets</p>
+</li>
+<li><p>Positive box are the ones with largest Intersection over Union <strong>IoU</strong> with ground truth</p>
+</li>
+</ul>
+
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Faster-RCNN">Faster-RCNN<a class="anchor-link" href="#Faster-RCNN">&#182;</a></h2><center>
+          <img src="illustrations/fasterrcnn.png" style="width: 300px;" />
+</center><p><small>
+Ren, Shaoqing, et al. "Faster r-cnn: Towards real-time object detection with region proposal networks." NIPS 2015
+</small></p>
+<ul>
+<li><p>Replace <strong>Selective Search</strong> with <strong>RPN</strong>, train jointly</p>
+</li>
+<li><p>Region proposal is translation invariant, compared to YOLO</p>
+</li>
+</ul>
+
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Segmentation">Segmentation<a class="anchor-link" href="#Segmentation">&#182;</a></h2><p>Output a class map for each pixel (here: dog vs background)</p>
+<center>
+          <img src="illustrations/dog_segment.jpg" style="width: 400px;" />
+</center><ul>
+<li><p><strong>Instance segmentation</strong>: specify each object instance as well (two dogs have different instances)</p>
+</li>
+<li><p>This can be done through <strong>object detection</strong> + <strong>segmentation</strong></p>
+</li>
+</ul>
+
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Convolutionize">Convolutionize<a class="anchor-link" href="#Convolutionize">&#182;</a></h2><center>
+          <img src="illustrations/convolutionalization.png" style="width: 400px;" />
+</center><p><small>
+Long, Jonathan, et al. "Fully convolutional networks for semantic segmentation." CVPR 2015
+</small></p>
+<ul>
+<li><p>Slide the network with an input of <code>(224, 224)</code> over a larger image. Output of varying spatial size</p>
+</li>
+<li><p><strong>Convolutionize</strong>: change Dense <code>(4096, 1000)</code> to $1 \times 1$ Convolution, with <code>4096, 1000</code> input and output channels</p>
+</li>
+<li><p>Gives a coarse <strong>segmentation</strong> (no extra supervision)</p>
+</li>
+</ul>
+
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Fully-Convolutional-Network">Fully Convolutional Network<a class="anchor-link" href="#Fully-Convolutional-Network">&#182;</a></h2><center>
+          <img src="illustrations/densefc.png" style="width: 500px;" />
+</center><p><small>
+Long, Jonathan, et al. "Fully convolutional networks for semantic segmentation." CVPR 2015
+</small></p>
+<ul>
+<li><p>Predict / backpropagate for every output pixel</p>
+</li>
+<li><p>Aggregate maps from several convolutions at different scales for more robust results</p>
+</li>
+</ul>
+
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Deconvolution">Deconvolution<a class="anchor-link" href="#Deconvolution">&#182;</a></h2><center>
+          <img src="illustrations/deconv.png" style="width: 650px;" />
+</center><p><small>
+Noh, Hyeonwoo, et al. "Learning deconvolution network for semantic segmentation." ICCV 2015
+</small></p>
+<ul>
+<li>"Deconvolution": transposed convolutions</li>
+</ul>
+<center>
+          <img src="illustrations/conv_deconv.png" style="width: 350px;" />
+</center>
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Deconvolution">Deconvolution<a class="anchor-link" href="#Deconvolution">&#182;</a></h2><center>
+          <img src="illustrations/deconv.png" style="width: 650px;" />
+</center><p><small>
+Noh, Hyeonwoo, et al. "Learning deconvolution network for semantic segmentation." ICCV 2015
+</small></p>
+<ul>
+<li><p><strong>skip connections</strong> between corresponding convolution and deconvolution layers</p>
+</li>
+<li><p><strong>sharper masks</strong> by using precise spatial information (early layers)</p>
+</li>
+<li><p><strong>better object detection</strong> by using semantic information (late layers)</p>
+</li>
+</ul>
+
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Hourglass-network">Hourglass network<a class="anchor-link" href="#Hourglass-network">&#182;</a></h2><center>
+          <img src="illustrations/hourglass.png" style="width: 650px;" />
+</center><p><small>
+Newell, Alejandro, et al. "Stacked Hourglass Networks for Human Pose Estimation." ECCV 2016
+</small></p>
+<ul>
+<li><p>U-Net like architectures repeated sequentially</p>
+</li>
+<li><p>Each block refines the segmentation for the following</p>
+</li>
+<li><p>Each block has a segmentation loss</p>
+</li>
+</ul>
+
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Mask-RCNN">Mask-RCNN<a class="anchor-link" href="#Mask-RCNN">&#182;</a></h2><center>
+          <img src="illustrations/maskrcnn.png" style="width: 760px;" />
+</center><p><small>
+K. He and al. Mask Region-based Convolutional Network (Mask R-CNN) NIPS 2017
+</small></p>
+<p>Faster-RCNN architecture with a third, binary mask head</p>
+
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Results">Results<a class="anchor-link" href="#Results">&#182;</a></h2><center>
+          <img src="illustrations/maskrcnnresults.png" style="width: 760px;" />
+</center><p><small>
+K. He and al. Mask Region-based Convolutional Network (Mask R-CNN) NIPS 2017
+</small></p>
+<ul>
+<li>Mask results are still coarse (low mask resolution)</li>
+<li>Excellent instance generalization</li>
+</ul>
+
+</div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Results">Results<a class="anchor-link" href="#Results">&#182;</a></h2><center>
+          <img src="illustrations/maskrcnnresults2.png" style="width: 760px;" />
+</center><p><small>
+He, Kaiming, et al. "Mask r-cnn." Internal Conference on Computer Vision (ICCV), 2017.
 </small></p>
 
 </div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="VGG-in-Keras">VGG in Keras<a class="anchor-link" href="#VGG-in-Keras">&#182;</a></h2><div class="small">
-
-```Python
-    model.add(Convolution2D(64, 3, 3, activation='relu',input_shape=(3,224,224)))
-    model.add(Convolution2D(64, 3, 3, activation='relu'))
-    model.add(MaxPooling2D((2,2), strides=(2,2)))
-
-    model.add(Convolution2D(128, 3, 3, activation='relu'))
-    model.add(Convolution2D(128, 3, 3, activation='relu'))
-    model.add(MaxPooling2D((2,2), strides=(2,2)))
-
-    model.add(Convolution2D(256, 3, 3, activation='relu'))
-    model.add(Convolution2D(256, 3, 3, activation='relu'))
-    model.add(Convolution2D(256, 3, 3, activation='relu'))
-    model.add(MaxPooling2D((2,2), strides=(2,2)))
-
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(MaxPooling2D((2,2), strides=(2,2)))
-
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(MaxPooling2D((2,2), strides=(2,2)))
-
-    model.add(Flatten())
-    model.add(Dense(4096, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(4096, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(1000, activation='softmax'))
-```
-
-</div>
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Memory-and-Parameters">Memory and Parameters<a class="anchor-link" href="#Memory-and-Parameters">&#182;</a></h2><div class="small">
-
-```md
-           Activation maps          Parameters
-INPUT:     [224x224x3]   = 150K     0
-CONV3-64:  [224x224x64]  = 3.2M     (3x3x3)x64    =       1,728
-CONV3-64:  [224x224x64]  = 3.2M     (3x3x64)x64   =      36,864
-POOL2:     [112x112x64]  = 800K     0
-CONV3-128: [112x112x128] = 1.6M     (3x3x64)x128  =      73,728
-CONV3-128: [112x112x128] = 1.6M     (3x3x128)x128 =     147,456
-POOL2:     [56x56x128]   = 400K     0
-CONV3-256: [56x56x256]   = 800K     (3x3x128)x256 =     294,912
-CONV3-256: [56x56x256]   = 800K     (3x3x256)x256 =     589,824
-CONV3-256: [56x56x256]   = 800K     (3x3x256)x256 =     589,824
-POOL2:     [28x28x256]   = 200K     0
-CONV3-512: [28x28x512]   = 400K     (3x3x256)x512 =   1,179,648
-CONV3-512: [28x28x512]   = 400K     (3x3x512)x512 =   2,359,296
-CONV3-512: [28x28x512]   = 400K     (3x3x512)x512 =   2,359,296
-POOL2:     [14x14x512]   = 100K     0
-CONV3-512: [14x14x512]   = 100K     (3x3x512)x512 =   2,359,296
-CONV3-512: [14x14x512]   = 100K     (3x3x512)x512 =   2,359,296
-CONV3-512: [14x14x512]   = 100K     (3x3x512)x512 =   2,359,296
-POOL2:     [7x7x512]     =  25K     0
-FC:        [1x1x4096]    = 4096     7x7x512x4096  = 102,760,448
-FC:        [1x1x4096]    = 4096     4096x4096     =  16,777,216
-FC:        [1x1x1000]    = 1000     4096x1000     =   4,096,000
-
-TOTAL activations: 24M x 4 bytes ~=  93MB / image (x2 for backward)
-TOTAL parameters: 138M x 4 bytes ~= 552MB (x2 for plain SGD, x4 for Adam)
-```
-
-</div>
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<div class="row">
-<div class="column">
-
-## ResNet
-
-Even deeper models:
-
-34, 50, 101, 152 layers
-
-<br/>
-<br/>
-<br/>
-<br/>
-
-<small>
-He, Kaiming, et al. "Deep residual learning for image recognition." CVPR. 2016.
-</small>
-
-</div>
-<div class="column">
-
-<center>
-          <img src="illustrations/resnet.png" style="height: 900px" />
-</center>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<div class="row">
-<div class="column">
-
-## ResNet
-
-A block learns the residual w.r.t. identity 
-
-<center>
-          <img src="illustrations/residualblock.png" style="width: 290px;" />
-</center>
-
-- Good optimization properties
-
-</div>
-<div class="column">
-
-<center>
-          <img src="illustrations/resnet.png" style="height: 900px" />
-</center>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<div class="row">
-<div class="column">
-
-## ResNet
-
-ResNet50 Compared to VGG:
-
- - Superior accuracy in all vision tasks
-    - **5.25%** top-5 error vs 7.1%
-
- - Less parameters
-    - **25M** vs 138M
-
- - Computational complexity
-    - **3.8B Flops** vs 15.3B Flops
-
- - Fully Convolutional until the last layer
-
-</div>
-<div class="column">
-
-<center>
-          <img src="illustrations/resnet.png" style="height: 900px" />
-</center>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Benchmarks">Benchmarks<a class="anchor-link" href="#Benchmarks">&#182;</a></h2><p><center>
-          <img src="illustrations/accuracy_vs_speed.png" style="width: 50%;" />
-</center>
-<small>
-    Top-1 accuracy vs. number of images processed per second (with batch size 1) using the Titan Xp <i>(S. Bianco, R. Cadene, L. Celona, and P. Napoletano, “Benchmark analysis of representative deep neural network architectures,” IEEE Access, vol. 6, 2018.)</i>
-</small></p>
-
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Generators-in-Keras">Generators in Keras<a class="anchor-link" href="#Generators-in-Keras">&#182;</a></h2><div class="row">
-<div class="column">
-
-Real-world datasets are rarely simple:
- - Too large to fit into memory.
- - Require data augmentation to avoid overfitting.
-
-Solution: Data Generators
- - Real-time data feeding to your Keras model.
- - Do augmentation on the fly.
-
-</div><div class="column small">
-
-```Python
-from keras.preprocessing.image import ImageDataGenerator
-image_gen = ImageDataGenerator(
-    rescale=1. / 255,
-    rotation_range=40,
-    width_shift_range=0.2,
-    height_shift_range=0.2,
-    shear_range=0.2,
-    zoom_range=0.2,
-    horizontal_flip=True,
-    channel_shift_range=9,
-    fill_mode='nearest'
-)
-train_flow = image_gen.flow_from_directory(train_folder)
-model.fit(train_flow, train_flow.n)
-```
-
-</div>
-</div><center>
-<b>See example in lab 1!</b>
-</center>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[34]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Just tuning some CSS for better display of columns and small code</span>
-
-<span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">HTML</span>
-<span class="n">HTML</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">&lt;style&gt;</span>
-<span class="s2">.column {</span>
-<span class="s2">  float: left;</span>
-<span class="s2">  width: 50%;</span>
-<span class="s2">}</span>
-<span class="s2">/* Clear floats after the columns */</span>
-<span class="s2">.row:after {</span>
-<span class="s2">  content: &quot;&quot;;</span>
-<span class="s2">  display: table;</span>
-<span class="s2">  clear: both;</span>
-<span class="s2">}</span>
-<span class="s2">.reveal .small pre code{</span>
-<span class="s2">    max-height: 700px;</span>
-<span class="s2">    font-size: 16px;</span>
-<span class="s2">    line-height: 21px;</span>
-<span class="s2">}&lt;/style&gt;</span>
-<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[34]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-
-<style>
-.column {
-  float: left;
-  width: 50%;
-}
-/* Clear floats after the columns */
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-.reveal .small pre code{
-    max-height: 700px;
-    font-size: 16px;
-    line-height: 21px;
-}</style>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
 </div>
 </body>
 
