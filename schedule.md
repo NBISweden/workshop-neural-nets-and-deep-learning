@@ -102,16 +102,17 @@ _gwd path Lab: session_recurrentNeuralNetworks/lab_recombination_rate/recrate_ex
 <br/>
 ##### Thursday 2020-11-19
 
-**9.00 - 12.00** Good practices for datasets and design Lab Validation 2 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb) (**Claudio**, Bengt, Eva)  
+**9.00 - 12.00** Good practices of project design lecture [lecture gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/good_practices_project_design.ipynb) 
+Lab on Train/Validation splitting [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb) (**Claudio**, Bengt, Eva)  
 _gwd path: session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb_
 
 *12:00 - 13:00 lunch*
 
 
-**13.00 - 15.00** Good practices for datasets and design Lab Validation 2 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_targetLeakage/investigating_target_leakage.ipynb) (**Claudio**, Bengt, Eva)  
+**13.00 - 15.00** Good practices of project design: Lab on target leakage [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_targetLeakage/investigating_target_leakage.ipynb) (**Claudio**, Bengt, Eva)  
 _gwd path: session_goodPracticesDatasetDesign/lab_targetLeakage/investigating_target_leakage.ipynb_
 
-**15.00 - 17.00** Good practices for datasets and design Lab Validation 3 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_transferLearning/transfer_learning.ipynb) (**Claudio**, Bengt, Eva)  
+**15.00 - 17.00** Good practices of project design: Lab on transfer learning [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_transferLearning/transfer_learning.ipynb) (**Claudio**, Bengt, Eva)  
 _gwd path: session_goodPracticesDatasetDesign/lab_transferLearning/transfer_learning.ipynb_
 
 <br/>
