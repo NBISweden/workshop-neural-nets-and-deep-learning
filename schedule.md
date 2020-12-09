@@ -104,7 +104,7 @@ _gwd path Lab: session_recurrentNeuralNetworks/lab_recombination_rate/recrate_ex
 
 **9.00 - 12.00** Good practices of project design lecture [lecture gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/good_practices_project_design.ipynb)  
 Lab on Train/Validation splitting [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb)  
-(**Claudio**, Bengt, Eva)
+(**Claudio**, Bengt, Eva)  
 _lecture gwd path: session_goodPracticesDatasetDesign/good_practices_project_design.ipynb_
 _gwd path: session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb_
 
