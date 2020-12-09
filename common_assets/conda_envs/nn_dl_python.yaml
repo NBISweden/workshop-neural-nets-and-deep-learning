@@ -20,3 +20,4 @@ dependencies:
   - scikit-learn
   - mpld3
   - msprime
+  - seaborn >= 0.11.0
