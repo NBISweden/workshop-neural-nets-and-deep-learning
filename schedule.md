@@ -46,7 +46,7 @@ _gwd path: session_annBuildingBlocks/session_annBuildingBlocks_1.ipynb_
 _gwd path: session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb_
 
 <br/>
-##### Tuesday 2020-11-17
+##### Tuesday 2020-12-08
 
 **9.00 - 12.00** ANN building blocks Lab keras cntd.
 [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_annBuildingBlocks/lab_keras/introduction_to_keras.ipynb)
@@ -70,7 +70,7 @@ _gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb_
 
 
 <br/>
-##### Wednesday 2020-11-18
+##### Wednesday 2020-12-09
 
 **9.00 - 10.00** Keras in R -- autoencoders Lecture [lecture html](session_rAutoencoders/lecture_autoencoders_r/lecture_autoencoders.html)  
 [lab html](session_rAutoencoders/lab_autoencoder_hapmap.html)  
@@ -100,7 +100,7 @@ _gwd path Lab: session_recurrentNeuralNetworks/lab_recombination_rate/recrate_ex
 
 
 <br/>
-##### Thursday 2020-11-19
+##### Thursday 2020-12-10
 
 **9.00 - 12.00** Good practices of project design lecture [lecture gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/good_practices_project_design.ipynb)  
 Lab on Train/Validation splitting [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_goodPracticesDatasetDesign/lab_validation/rigorous_train_validation_splitting.ipynb)  
@@ -119,7 +119,7 @@ _gwd path: session_goodPracticesDatasetDesign/lab_transferLearning/transfer_lear
 
 <br/>
 
-##### Friday 2020-11-20
+##### Friday 2020-12-11
 
 **9.00 - 10.00 (preliminary)** Bayesian Neural Networks [gh TBA](TBA) (**Nikolay**, Claudio, Bengt)
 
