@@ -72,21 +72,31 @@ _gwd path: session_convolutionalNeuralNetworks/Labs/CNN_Keras_lab_2.ipynb_
 <br/>
 ##### Wednesday 2020-11-18
 
-**9.00 - 12.00** Keras in R -- autoencoders Lab1 [html](session_rAutoencoders/lab_autoencoder_hapmap.html)  
+**9.00 - 10.00** Keras in R -- autoencoders Lecture [lecture html](session_rAutoencoders/lecture_autoencoders_r/lecture_autoencoders.html)  
+[lab html](session_rAutoencoders/lab_autoencoder_hapmap.html)  
+(**Marcin**, Claudio, Bengt)  
+_lecture gwd path: session_rAutoencoders/lecture_autoencoders_r/lecture_autoencoders.html_
+_lecture gwd path: session_rAutoencoders/lab_autoencoder_hapmap.html_
+
+**10.00 - 12.00** Keras in R -- autoencoders Lab1 [html](session_rAutoencoders/lab_autoencoder_hapmap.html)  
 (**Marcin**, Claudio, Bengt)  
 _gwd path: session_rAutoencoders/lab_autoencoder_hapmap.html_
 
 *12:00 - 13:00 lunch*
 
 **13.00 - 15.00** Recurrent Neural Networks 1
-[gh TBA](b)
+[gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_recurrentNeuralNetworks/lecture-and-exercises.ipynb)
 (**Dan**, Per, Claudio, Bengt)  
-_gwd path: TBA_
+_gwd path: session_recurrentNeuralNetworks/lecture-and-exercises.ipynb_
+
 
 **15.00 - 17.00** Recurrent Neural Networks 2 Lab
-[gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_recurrentNeuralNetworks/lab_recombination_rate/recrate_exercise.ipynb)
+[Introduction gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_recurrentNeuralNetworks/lab_recombination_rate/slides.ipynb)  
+[Lab gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_recurrentNeuralNetworks/lab_recombination_rate/recrate_exercise.ipynb)
+
 (**Per**, Dan, Claudio, Bengt)  
-_gwd path: session_recurrentNeuralNetworks/lab_recombination_rate/recrate_exercise.ipynb_
+_gwd path Introduction: session_recurrentNeuralNetworks/lab_recombination_rate/slides.ipynb_  
+_gwd path Lab: session_recurrentNeuralNetworks/lab_recombination_rate/recrate_exercise.ipynb_
 
 
 <br/>
