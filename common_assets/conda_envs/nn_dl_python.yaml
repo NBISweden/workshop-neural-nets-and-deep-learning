@@ -21,3 +21,4 @@ dependencies:
   - mpld3
   - msprime
   - seaborn >= 0.11.0
+  - wget
