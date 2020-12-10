@@ -123,7 +123,7 @@ _gwd path: session_goodPracticesDatasetDesign/lab_transferLearning/transfer_lear
 
 **9.00 - 10.00 (preliminary)** Bayesian Neural Networks [gh TBA](TBA) (**Nikolay**, Claudio, Bengt)
 
-**10.00 - 11.00 (preliminary)** convolutional Autoencoders  [gh TBA](TBA) (**Carl**, Claudio, Bengt)
+**10.00 - 11.00 (preliminary)** convolutional Autoencoders [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_gcae/lecture.ipynb) [html](session_gcae/lecture.slides.html) (**Carl**, Claudio, Bengt)
 
 **11.00 - 12.00** Buffert time/Extra lab time (Claudio, Bengt,...)
 
