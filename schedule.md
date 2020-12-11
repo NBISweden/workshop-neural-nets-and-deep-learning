@@ -121,10 +121,10 @@ _gwd path: session_goodPracticesDatasetDesign/lab_transferLearning/transfer_lear
 
 ##### Friday 2020-12-11
 
-**9.00 - 10.00 (preliminary)** Bayesian Neural Networks (**Nikolay**, Claudio, Bengt)  
+**9.00 - 10.00** Bayesian Neural Networks (**Nikolay**, Claudio, Bengt)  
 [html BayesianDeepLearning](session_BNN/BayesianDeepLearning.html)
 _gwd path: session_BNN/BayesianDeepLearning.ipynb_  
-[html CIFAR10_Bayesian](session_BNN/CIFAR10_Bayesian.html)
+[html CIFAR10\_Bayesian](session_BNN/CIFAR10_Bayesian.html)
 _gwd path: session_BNN/CIFAR10_Bayesian.ipynb_  
 [html DeepLearningAncientDNA](session_BNN/DeepLearningAncientDNA.html)
 _gwd path:session_BNN/DeepLearningAncientDNA.ipynb_  
@@ -146,7 +146,7 @@ _gwd path: session_BNN/segmentation_maskrcnn.ipynb_
 _gwd path: session_BNN/DeepLearningForLifeSciences_Oskolkov.ppt_
 
 
-**10.00 - 11.00 (preliminary)** convolutional Autoencoders [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_gcae/lecture.ipynb) [html](session_gcae/lecture.slides.html) (**Carl**, Claudio, Bengt)
+**10.00 - 11.00** convolutional Autoencoders [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_gcae/lecture.ipynb) [html](session_gcae/lecture.slides.html) (**Carl**, Claudio, Bengt)
 
 **11.00 - 12.00** Buffert time/Extra lab time (Claudio, Bengt,...)
 
