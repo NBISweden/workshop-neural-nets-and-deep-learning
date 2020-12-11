@@ -121,7 +121,30 @@ _gwd path: session_goodPracticesDatasetDesign/lab_transferLearning/transfer_lear
 
 ##### Friday 2020-12-11
 
-**9.00 - 10.00 (preliminary)** Bayesian Neural Networks [gh TBA](TBA) (**Nikolay**, Claudio, Bengt)
+**9.00 - 10.00 (preliminary)** Bayesian Neural Networks (**Nikolay**, Claudio, Bengt)  
+[html BayesianDeepLearning](session_BNN/BayesianDeepLearning.html)
+_gwd path: session_BNN/BayesianDeepLearning.ipynb_  
+[html CIFAR10_Bayesian](session_BNN/CIFAR10_Bayesian.html)
+_gwd path: session_BNN/CIFAR10_Bayesian.ipynb_  
+[html DeepLearningAncientDNA](session_BNN/DeepLearningAncientDNA.html)
+_gwd path:session_BNN/DeepLearningAncientDNA.ipynb_  
+[html DeepLearningDataIntegration](session_BNN/DeepLearningDataIntegration.html)
+_gwd path: session_BNN/DeepLearningDataIntegration.ipynb_  
+[html DeepLearningMetagenomics](session_BNN/DeepLearningMetagenomics.html)
+_gwd path:session_BNN/DeepLearningMetagenomics.ipynb_  
+[html DeepLearningNeanderthalIntrogression](session_BNN/DeepLearningNeanderthalIntrogression.html)
+_gwd path: session_BNN/DeepLearningNeanderthalIntrogression.ipynb_  
+[html DeepLearningSingleCellipynb](session_BNN/DeepLearningSingleCell.html)
+_gwd_path: session_BNN/DeepLearningSingleCellipynb_  
+[html HumanProteinAtlas](session_BNN/HumanProteinAtlas.html)  
+_gwd path: session_BNN/HumanProteinAtlas.ipynb_  
+[html MO_Melander_DeepLearning](session_BNN/MO_Melander_DeepLearning.html)    
+_gwd path: session_BNN/MO_Melander_DeepLearning.ipynb_  
+[html segmentation_maskrcnn](session_BNN/segmentation_maskrcnn.html)
+_gwd path: session_BNN/segmentation_maskrcnn.ipynb_  
+[html DeepLearningForLifeSciences_Oskolkov](session_BNN/DeepLearningForLifeSciences_Oskolkov.pdf)
+_gwd path: session_BNN/DeepLearningForLifeSciences_Oskolkov.ppt_
+
 
 **10.00 - 11.00 (preliminary)** convolutional Autoencoders [gh](https://github.com/NBISweden/workshop-neural-nets-and-deep-learning/blob/master/session_gcae/lecture.ipynb) [html](session_gcae/lecture.slides.html) (**Carl**, Claudio, Bengt)
 
