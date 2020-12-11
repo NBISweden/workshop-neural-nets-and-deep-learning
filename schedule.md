@@ -122,8 +122,10 @@ _gwd path: session_goodPracticesDatasetDesign/lab_transferLearning/transfer_lear
 ##### Friday 2020-12-11
 
 **9.00 - 10.00** Bayesian Neural Networks (**Nikolay**, Claudio, Bengt)  
+###### Main lecture file:
 [html DeepLearningForLifeSciences_Oskolkov](session_BNN/DeepLearningForLifeSciences_Oskolkov.pdf)
-_gwd path: session_BNN/DeepLearningForLifeSciences_Oskolkov.ppt_  
+_gwd path: session_BNN/DeepLearningForLifeSciences_Oskolkov.ppt_
+###### Cited notebooks:
 [html BayesianDeepLearning](session_BNN/BayesianDeepLearning.html)
 _gwd path: session_BNN/BayesianDeepLearning.ipynb_  
 [html CIFAR10\_Bayesian](session_BNN/CIFAR10_Bayesian.html)
