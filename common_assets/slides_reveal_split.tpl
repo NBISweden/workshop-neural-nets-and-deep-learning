@@ -1,6 +1,13 @@
 {%- extends 'basic.tpl' -%}
 {% from 'mathjax.tpl' import mathjax %}
 
+{% block input_group -%}
+{%- if cell.metadata.hide_input or nb.metadata.hide_input -%}
+{%- else -%}
+{{ super() }}
+{%- endif -%}
+{% endblock input_group %}
+
 {%- block any_cell scoped -%}
 {%- if cell.metadata.get('slide_start', False) -%}
 <section>
@@ -11,6 +18,7 @@
 {%- if cell.metadata.get('fragment_start', False) -%}
 <div class="fragment">
 {%- endif -%}
+
 {%- if cell.metadata.slide_type == 'notes' -%}
 <aside class="notes">
 {{ super() }}

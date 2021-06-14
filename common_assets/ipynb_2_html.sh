@@ -6,11 +6,7 @@ for notebook in $notebooks; do
     isslide=$(grep "\"slide_type\": \"slide\"" $notebook)
     
     if [[ ! -z $isslide ]]; then
-        if [[ $notebook == *"session_annBuildingBlocks_"* ]]; then
-            jupyter nbconvert --to slides $notebook --no-input --template slides_reveal_split.tpl
-        else
-            jupyter nbconvert --to slides $notebook --template slides_reveal_split.tpl
-        fi
+        jupyter nbconvert --to slides $notebook --template slides_reveal_split.tpl
     else
         jupyter nbconvert --to html $notebook
     fi
