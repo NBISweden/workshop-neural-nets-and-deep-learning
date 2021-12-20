@@ -4,8 +4,8 @@ on: [push]
 
 jobs:
 
-  test:
-    runs-on: windows-latest
+  ubu:
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
       # conda activation requires bash instead of sh
@@ -15,6 +15,23 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
+      - name: install mamba
+        uses: mamba-org/provision-with-micromamba@main
+        with:
+          environment-file: common_assets/conda_envs/nn_dl_python.yaml
+          environment-name: nn_dl_python
+      - name: Test imports
+        run: |
+          pip install pytest
+          pytest --disable-warnings common_assets/conda_envs/test_imports.py
+          
+  win:
+    runs-on: windows-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v2
+
       - name: install mamba
         uses: mamba-org/provision-with-micromamba@main
         with:
