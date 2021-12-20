@@ -10,4 +10,5 @@ from tensorflow.keras.optimizers import Adam
 
 from tensorflow.keras.applications import VGG16
 
-assert True
+def test_function():
+    assert True
