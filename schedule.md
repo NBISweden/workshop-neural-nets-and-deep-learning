@@ -154,7 +154,7 @@ _gwd path: session_BNN/segmentation_maskrcnn.ipynb_
 
 *12:00 - 13:00 lunch*
 
-**13.00 - 14.00** Feedback session [hackmd](session_feedback/session_feedback.xx) (**Claudio**, **Bengt**)
+**13.00 - 14.00** Feedback session (HackMD documetn will be posted on the course slack channel) (**Claudio**, **Bengt**, ...)
 
 **14.00 - 15.00** Extra lab time (Claudio, Bengt,...)
 
