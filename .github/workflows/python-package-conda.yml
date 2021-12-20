@@ -22,5 +22,5 @@ jobs:
           environment-name: nn_dl_python
       - name: Test imports
         run: |
-          mamba install pytest
+          pip install pytest
           pytest common_assets/conda_envs/test_imports.py
