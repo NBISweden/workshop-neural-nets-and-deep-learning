@@ -14,13 +14,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: conda-incubator/setup-miniconda@v2
+      
+      - name: install mamba
+        uses: mamba-org/provision-with-micromamba@main
         with:
-          channel-priority: strict  
-          activate-environment: nn_dl_python
           environment-file: common_assets/conda_envs/nn_dl_python.yaml
-          auto-activate-base: false
-          use-only-tar-bz2: true
+          environment-name: nn_dl_python
       - name: Test imports
         run: |
           mamba install pytest
