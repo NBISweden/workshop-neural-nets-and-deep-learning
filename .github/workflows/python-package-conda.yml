@@ -37,8 +37,9 @@ jobs:
     - name: Install dependencies
       run: |
         C:\Miniconda\condabin\conda.bat install mamba -n base -c conda-forge
-        mamba env update --file common_assets/conda_envs/nn_dl_python_win.yaml --name nn_dl_python
         C:\Miniconda\condabin\conda.bat init powershell
+        C:\Miniconda\condabin\conda.bat activate base
+        mamba env update --file common_assets/conda_envs/nn_dl_python_win.yaml --name nn_dl_python
         # Activate the base environment
         C:\Miniconda\condabin\conda.bat activate nn_dl_python
         # stop the build if there are Python syntax errors or undefined names
