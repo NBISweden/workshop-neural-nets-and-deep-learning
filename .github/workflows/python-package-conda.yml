@@ -45,4 +45,4 @@ jobs:
         #where pytest
         C:\Miniconda\condabin\conda.bat init powershell
         C:\Miniconda\condabin\conda.bat activate nn_dl_python
-        C:\Miniconda\condabin\python.exe common_assets/conda_envs/test_imports.py
+        C:\Miniconda\python.exe common_assets/conda_envs/test_imports.py
