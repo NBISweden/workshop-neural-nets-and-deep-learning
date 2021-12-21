@@ -44,4 +44,4 @@ jobs:
         #C:\Miniconda\condabin\pytest --disable-warnings common_assets/conda_envs/test_imports.py
         #where pytest
         C:\Miniconda\condabin\conda.bat activate nn_dl_python
-        python common_assets/conda_envs/test_imports.py
+        C:\Miniconda\condabin\python common_assets/conda_envs/test_imports.py
