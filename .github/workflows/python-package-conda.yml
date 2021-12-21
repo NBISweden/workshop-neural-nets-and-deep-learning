@@ -36,7 +36,7 @@ jobs:
         python-version: 3.x
     - name: Install dependencies
       run: |
-        C:\Miniconda\condabin\conda.bat env update --file common_assets/conda_envs/nn_dl_python.yaml --name nn_dl_python
+        C:\Miniconda\condabin\conda.bat env update --file common_assets/conda_envs/nn_dl_python_win.yaml --name nn_dl_python
         C:\Miniconda\condabin\conda.bat init powershell
         # Activate the base environment
         C:\Miniconda\condabin\conda.bat activate nn_dl_python
