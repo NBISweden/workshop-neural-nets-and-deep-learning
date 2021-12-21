@@ -28,16 +28,20 @@ jobs:
   win:
     runs-on: windows-latest
     timeout-minutes: 10
-
     steps:
-      - uses: actions/checkout@v2
-
-      - name: install mamba
-        uses: mamba-org/provision-with-micromamba@main
-        with:
-          environment-file: common_assets/conda_envs/nn_dl_python.yaml
-          environment-name: nn_dl_python
-      - name: Test imports
-        run: |
-          pip install pytest
-          pytest --disable-warnings common_assets/conda_envs/test_imports.py
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+    - name: Install dependencies
+      run: |
+        C:\Miniconda\condabin\conda.bat env update --file common_assets/conda_envs/nn_dl_python.yaml --name nn_dl_python
+        C:\Miniconda\condabin\conda.bat init powershell
+        # Activate the base environment
+        C:\Miniconda\condabin\conda.bat activate nn_dl_python
+        # stop the build if there are Python syntax errors or undefined names
+    - name: Test with pytest
+      run: |
+        C:\Miniconda\condabin\conda.bat install pytest
+        pytest  --disable-warnings common_assets/conda_envs/test_imports.py
