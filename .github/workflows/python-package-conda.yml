@@ -38,10 +38,10 @@ jobs:
       run: |
         C:\Miniconda\condabin\conda.bat install mamba -n base -c conda-forge
         C:\Miniconda\condabin\mamba env update --file common_assets/conda_envs/nn_dl_python_win.yaml --name nn_dl_python
-        C:\Miniconda\condabin\conda.bat activate nn_dl_python
     - name: Test with pytest
       run: |
-        C:\Miniconda\condabin\conda.bat install pytest
+        #C:\Miniconda\condabin\conda.bat install pytest
         #C:\Miniconda\condabin\pytest --disable-warnings common_assets/conda_envs/test_imports.py
         #where pytest
+        C:\Miniconda\condabin\conda.bat activate nn_dl_python
         python common_assets/conda_envs/test_imports.py
