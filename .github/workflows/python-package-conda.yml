@@ -43,4 +43,5 @@ jobs:
       run: |
         C:\Miniconda\condabin\conda.bat install pytest
         #C:\Miniconda\condabin\pytest --disable-warnings common_assets/conda_envs/test_imports.py
-        where pytest
+        #where pytest
+        python common_assets/conda_envs/test_imports.py
