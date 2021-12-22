@@ -42,4 +42,4 @@ jobs:
         C:\Miniconda\condabin\mamba env update --file common_assets/conda_envs/nn_dl_python_win.yaml --name nn_dl_python
         $env:Path = "C:\Miniconda;C:\Miniconda\condabin\;$env:Path"
         conda activate nn_dl_python
-        python common_assets/conda_envs/test_imports.py
+        C:\Miniconda\envs\nn_dl_python\bin\python common_assets/conda_envs/test_imports.py
