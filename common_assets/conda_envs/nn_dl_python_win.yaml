@@ -13,6 +13,7 @@ dependencies:
   - pandas
   - rise
   - tabulate
+  - numpy==1.19.5
   - keras #=2.4.3
   - tensorflow >=2.0.0
   - pydot
