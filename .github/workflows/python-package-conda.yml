@@ -40,5 +40,6 @@ jobs:
       run: |
         C:\Miniconda\condabin\conda.bat install mamba -n base -c conda-forge
         C:\Miniconda\condabin\mamba env update --file common_assets/conda_envs/nn_dl_python_win.yaml --name nn_dl_python
+        set PATH=%PATH%;C:\Miniconda;C:\Miniconda\condabin\
         conda activate nn_dl_python
         python common_assets/conda_envs/test_imports.py
