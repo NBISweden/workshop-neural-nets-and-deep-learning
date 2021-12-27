@@ -1,0 +1,245 @@
+/* -*- mode: css -*- */
+/* Author: Per Unneberg */
+
+/* CSS style general NBIS presentations using Revealjs and RMarkdown */
+
+/* Import Google font */
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
+
+.reveal body,p,h1,h2,h3,h4,h5,h6 {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    color: #333333;
+}
+/* From Rstudio revealjs package */
+/* <!-- some tweaks to reveal css --> */
+.reveal h1 { font-size: 2.0em; }
+.reveal h2 { font-size: 1.5em;  }
+.reveal h3 { font-size: 1.25em;
+             padding-top: 30px;}
+.reveal h4 { font-size: 1em;        }
+
+.reveal .slides>section,
+.reveal .slides>section>section {
+    padding: 0px 0px;
+    min-height: 100%;
+}
+
+.reveal .slides img{
+    border: 0px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    /* -moz-box-shadow: 0px 0px 0px transparent !important; */
+    /* -webkit-box-shadow: 0px 0px 0px transparent !important; */
+    /* box-shadow: 0px 0px 0px transparent !important; */
+}
+
+/* Make sure code blocks are filled */
+.reveal pre code {
+    max-height: 100%;
+}
+.reveal section pre code {
+    max-height: 100%;
+    font-size: 1.2em;
+}
+.scroll-1000 {
+    max-height: 1000px;
+    overflow-y: auto;
+    background-color: inherit;
+}
+.scroll-400  {
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: inherit;
+}
+
+/* Better alignment of numbered source blocks */
+pre.numberSource code > span > a:first-child::before {
+    left: -0.3em;
+    padding-left: 1.3em;
+}
+
+/* div.sourceCode { background-color: white } */
+
+
+.sourceWide {
+    max-width: 1600px;
+    overflow-y: auto;
+    background-color: inherit;
+}
+
+.flush-left {
+    text-align: left;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
+/* Custom font sizes */
+.micro { font-size: 25% }
+.tiny { font-size: 50% }
+.small { font-size: 75% }
+.little { font-size: 90% }
+.large { font-size: 125% }
+.huge { font-size: 150% }
+.Huge { font-size: 200% }
+.HUGE { font-size: 250% }
+
+.remark-code { font-size: 50% }
+
+/* Custom colours */
+.green { color: #85be42; font-weight: bold }
+.dark-green { color: #487a2d; font-weight: bold }
+.blue { color: #0099c2; font-weight: bold }
+.dark-blue { color: #015491; font-weight: bold }
+.light-grey { color: #999999 }
+.grey { color: #666666 }
+.dark-grey { color: #333333 }
+
+/* Set the maximum figure size to 100% of the slide */
+img, video, iframe {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Blockquotes */
+blockquote {
+    border-left: 5px solid #85be42;
+    background: #f9f9f9;
+    font-style: italic;
+    padding: 0.01em;
+    padding-left: 12px;
+    padding-right: 12px;
+    margin-left: 12px;
+    margin-right: 12px;
+    border-radius: 0 5px 5px 0;
+}
+
+/* Link colour */
+a {
+    color: #85be42;
+    text-decoration: none;
+}
+
+/* Underline links when hovering */
+a:hover {
+    text-decoration: underline;
+}
+
+/* Inline code color and border */
+.remark-inline-code {
+  background: #f2f2f2;
+  border-radius: 3px;
+  margin-right: 2px;
+  padding: 2px 3px 1px;
+  font-size: 80% !important;
+}
+
+.image-with-text {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+
+/* Multicolumn divs */
+#fourcol {
+    -webkit-column-gap: 2em;
+    -moz-column-gap: 2em;
+    column-gap: 2em;
+    -webkit-column-count: 4;
+    -moz-column-count: 4;
+    column-count: 4;
+}
+
+#threecol {
+    -webkit-column-gap: 2em;
+    -moz-column-gap: 2em;
+    column-gap: 2em;
+    -webkit-column-count: 3;
+    -moz-column-count: 3;
+    column-count: 3;
+    align-items: flex-start;
+}
+
+
+#twocol {
+    -webkit-column-gap: 2em;
+    -moz-column-gap: 2em;
+    column-gap: 2em;
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+    column-count: 2;
+}
+
+
+/* From http://stackoverflow.com/questions/5573855/how-to-make-a-stable-two-column-layout-in-html-css */
+#container {
+    display: table;
+    border-spacing: 10px;
+    border-collapse: separate;
+    text-align: center;
+    padding: 0px;
+    width: 1600px;
+}
+
+#left, #mid, #midright, #right {
+    display: table-cell;
+    vertical-align: top;
+    border-spacing: 10px;
+    padding: 0px;
+    border-collapse: separate;
+}
+
+#left {
+    width: 800px;
+}
+
+#right {
+    width: 800px;
+}
+
+#mid {
+    width: 400px;
+}
+
+#midright {
+    width: 400px;
+}
+
+
+
+/* Font sizes */
+.tiny {
+  font-size: 0.6em;
+  line-height: 1.2em;
+  vertical-align: top; }
+
+
+/* Taken from ../templates.css */
+div.scilife-logo {
+    content: "";
+    background-image: url("https://www.scilifelab.se/wp-content/uploads/2020/09/SciLifeLab_Logotype_Green_POS_large-copy-1536x334.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    position: absolute;
+    bottom: 10px;
+    left: 150px;
+    height: 50px;
+    width: 200px;
+}
+
+/* NBIS logo in bottom right corner  */
+div.nbis-logo {
+    content: "";
+    background-image: url("https://nbis.se/assets/img/logos/nbislogo-green.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    position: absolute;
+    bottom: 23px;
+    right: 150px;
+    height: 35px;
+    width: 100px;
+}

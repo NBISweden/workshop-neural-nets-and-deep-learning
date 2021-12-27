@@ -5,6 +5,8 @@ that estimates the recombination rate landscape in population
 variation data.
 
 
+## Intended learning outcomes
+
 
 ## References
 

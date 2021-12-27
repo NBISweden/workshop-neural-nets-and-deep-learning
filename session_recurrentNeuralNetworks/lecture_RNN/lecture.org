@@ -1,0 +1,280 @@
+#+STARTUP: indent
+#+OPTIONS: toc:nil num:t  \n:nil @:t ::t |:t ^:{} -:t f:t *:t <:nil H:4 rmd_yaml:nil
+#+EXPORT_FILE_NAME: lecture.Rmd
+
+* Header                                                             :ignore:
+#+begin_export markdown
+---
+title: "Recurrent neural networks"
+author:
+  - Per Unneberg
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  revealjs::revealjs_presentation:
+    css: revealjs.css
+    includes:
+      in_header: footer.html
+    self_contained: true
+    highlight: breezedark
+    fig_caption: false
+    toc: false
+    toc_depth: 2
+    slide_level: 2
+    transition: none
+    reveal_options:
+      slideNumber: true
+      previewLinks: true
+      minScale: 1
+      maxScale: 1
+      height: 800
+      width: 1200
+bibliography: references.bib
+---
+#+end_export
+* Knitr setup                                                        :ignore:
+#+name: knitr-setup
+#+begin_src R :ravel echo=FALSE, include=FALSE
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+library(reticulate)
+options(browser="firefox")
+knitr::opts_chunk$set(warning = FALSE, message = FALSE,
+                      autodep=TRUE, echo=FALSE, 
+                      cache=FALSE, include=TRUE, eval=TRUE, tidy=FALSE, error=TRUE)
+#class.source = "numberLines lineAnchors", comment="",
+#                      class.output = c("numberLines lineAnchors chunkout"))
+knitr::knit_hooks$set(inline = function(x) {
+                      prettyNum(x, big.mark=" ")
+})
+#+end_src
+
+#+name: load-python-libraries
+#+begin_src jupyter-python :ravel
+import os
+import sys
+import pandas as pd
+import bokeh
+from bokeh.models import ColumnDataSource, HoverTool
+from bokeh import plotting
+from bokeh.io import output_notebook
+from bokeh.embed import components
+#+end_src
+
+
+#+name: python-load-bokeh-scripts
+#+begin_src python :ravel results="asis"
+print("""
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-2.4.0.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.4.0.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.4.0.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-gl-2.4.0.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-2.4.0.min.js"
+        crossorigin="anonymous"></script>
+""")
+#+end_src
+
+* Overview
+
+<h3>Sequential models</h3>
+<h3>Recurrent neural networks (RNNs)</h3>
+<h3>LSTMs and GRUs</h3>
+<h3>Practical applications</h3>
+
+** Outline                                                        :noexport:
+1. Recap perceptron
+   - Even if it has been done before recap perceptron with my notation
+   - want to show what it looks like with a perceptron in a sequential
+     model
+2. Sequential models
+   - begin with simple model, e.g. sinus time series
+   - DNA sequence characteristics, language processing, time series (maybe intuitively simplest)
+   - solve with perceptron
+   - highlight problems with perceptron
+3. RNNs
+   - 
+4. LSTMs and GRUs
+   - solution to vanishing gradients
+   - need to explain *what* they do and *how* they solve the issue:
+     - gated inputs / outputs
+     - ReLUs (indep from above or part of?)
+5. Practical applications
+   - look in literature to focus on life sciences; possibly also languages as this is interesting in itself (e.g. google translate)
+
+
+
+* Sandbox slides
+FIXME: Remove this section; for testing purposes only
+
+cite:bourgeois_overview_2021
+
+cite:aiml_vanishing_2018
+
+
+** Motivation
+Show images of some sequential models
+
+$$f(x) = \sum_{i=1}^n x_iw_i$$
+
+#+name: tikz-perceptron
+#+begin_src tikz :ravel cache=TRUE, fig.width=3, fig.ext="svg"
+\usetikzlibrary{RNN}
+\begin{tikzpicture}[node distance=2cm, auto, >=latex', thick]
+\draw[draw=white,use as bounding box](0,0) rectangle (4, 7);
+\path (0, 0)  rectangle (4, 7);
+\node[node](x0) at (1, 6) {$x_0$};
+\node[input] (x1) [below of=x0] {$x_1$};
+\node[input, draw=none, fill=none] (x2) [below of=x1] {};
+\node[output, draw=none, fill=none] (y) [right of=x1] {};
+\end{tikzpicture}
+#+end_src
+
+
+** Motivation
+Show images of some sequential models
+
+$$f(x) = \sum_{i=1}^n x_iw_i$$
+
+#+name: tikz-perceptron-2
+#+begin_src tikz :ravel cache=TRUE, fig.width=3, fig.ext="svg"
+\usetikzlibrary{RNN}
+\begin{tikzpicture}[node distance=2cm, auto, >=latex', thick]
+\draw[draw=white,use as bounding box](0,0) rectangle (4, 7);
+\node[node](x0) at (1, 6) {$x_0$};
+\node[input] (x1) [below of=x0] {$x_1$};
+\node[input] (x2) [below of=x1] {$x_2$};
+\node[output] (y) [right of=x1] {$y$};
+\end{tikzpicture}
+#+end_src
+** Alternative motivation
+Show simple example, e.g. of a time series with 1, 2, or 3 points
+#+name: tensorflow-block
+#+begin_src jupyter-python :ravel echo=TRUE, eval=FALSE
+import tensorflow as tf
+
+rnn = tf.layer.SimpleRNN()
+#+end_src
+** Bokeh plot
+#+name: bokeh-test-plot
+#+begin_src jupyter-python :ravel results="asis", fig.align="right", out.width="800px"
+# prepare some data
+x = [1, 2, 3, 4, 5]
+y1 = [4, 5, 5, 7, 2]
+y2 = [2, 3, 4, 5, 6]
+
+# create a new plot
+p = plotting.figure(title="Legend example")
+
+# add circle renderer with legend_label arguments
+line = p.line(x, y1, legend_label="Temp.", line_color="blue", line_width=2)
+circle = p.circle(
+    x,
+    y2,
+    legend_label="Objects",
+    fill_color="red",
+    fill_alpha=0.5,
+    line_color="blue",
+    size=80,
+)
+
+# display legend in top left corner (default is top right corner)
+p.legend.location = "top_left"
+
+# add a title to your legend
+p.legend.title = "Obervations"
+
+# change appearance of legend text
+p.legend.label_text_font = "times"
+p.legend.label_text_font_style = "italic"
+p.legend.label_text_color = "navy"
+
+# change border and background of legend
+p.legend.border_line_width = 3
+p.legend.border_line_color = "navy"
+p.legend.border_line_alpha = 0.8
+p.legend.background_fill_color = "navy"
+p.legend.background_fill_alpha = 0.2
+
+script, div = components(p)
+print(script)
+print(div)
+#+end_src
+* Sequential models
+
+** Motivation
+FIXME: show incremental figure of time series (e.g. sinus) and
+highlight
+- dependency on previous time point
+- (weaker) dependency on more distant time points
+  
+
+** Why standard perceptrons/FFNs don't work
+
+
+** Concrete models
+FIXME: add examples from
+- genomics
+- time series
+- language processing
+- ...
+
+
+** Temporal aspects
+Provide the alphabet example from https://towardsdatascience.com/illustrated-guide-to-recurrent-neural-networks-79e5eb8049c9
+
+A -> Z: easy, given one letter the other follows
+
+Z -> A: try do enumerate alphabet in reverse; non-trivial
+
+** Types of models
+*** one-to-one
+*** one-to-many
+*** many-to-many
+* RNNs
+** Why we need them and what they are
+** Parameter sharing
+contrast with FFNs
+** Examples
+Examples using vanilla RNNs
+
+e.g. Box & Jenkins airline passenger data set
+* Training
+** Backpropagation in time
+** (Exploding)/Vanishing gradients
+** Problems with Vanilla RNNs
+* LSTMs / GRU
+** Intuition
+Example on cereal ad really good (we remember the important parts):
+
+https://towardsdatascience.com/illustrated-guide-to-lstms-and-gru-s-a-step-by-step-explanation-44e9eb85bf21
+
+** Gating (forget / remember)
+** Long term memory
+#+name: tikz-lstm
+#+begin_src tikz :ravel cache=TRUE, fig.ext="svg"
+\usetikzlibrary{RNN}
+\begin{tikzpicture}[node distance=2, auto, >=latex', thick]
+\draw[draw=white, use as bounding box](0,0) rectangle (4, 7);
+\node[scale=.2] (x0) at (1, 6) {\vanillarnn}
+                
+\end{tikzpicture}
+#+end_src
+* Applications
+** Google translate
+feels like one of the more obvious language applications that people use in everyday life
+** Time series
+** Recombination rate estimation in genomics
+segway to practical
+** Attention networks
+Mention attention networks as a next step generalisation?
+
+
+
+* Bibliography                                                       :ignore:
+** Bibliography {.allowframebreaks}
+<div id="refs" class="references hanging-indent" role="doc-bibliography" style="font-size: 70%;">
+
