@@ -28,6 +28,8 @@ output:
       maxScale: 1
       height: 800
       width: 1200
+mainfont: Liberation Serif
+monofont: Liberation Mono
 bibliography: references.bib
 ---
 #+end_export
@@ -47,6 +49,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE,
 knitr::knit_hooks$set(inline = function(x) {
                       prettyNum(x, big.mark=" ")
 })
+knitr::opts_chunk$set(engine.opts=list(template="tikzfig.tex", dvisvgm.opts = "--font-format=woff"))
 #+end_src
 
 #+name: load-python-libraries
@@ -121,15 +124,14 @@ Show images of some sequential models
 $$f(x) = \sum_{i=1}^n x_iw_i$$
 
 #+name: tikz-perceptron
-#+begin_src tikz :ravel cache=TRUE, fig.width=3, fig.ext="svg"
-\usetikzlibrary{RNN}
+#+begin_src tikz :ravel cache=FALSE, fig.width=3, fig.ext="svg"
 \begin{tikzpicture}[node distance=2cm, auto, >=latex', thick]
 \draw[draw=white,use as bounding box](0,0) rectangle (4, 7);
-\path (0, 0)  rectangle (4, 7);
-\node[node](x0) at (1, 6) {$x_0$};
-\node[input] (x1) [below of=x0] {$x_1$};
-\node[input, draw=none, fill=none] (x2) [below of=x1] {};
-\node[output, draw=none, fill=none] (y) [right of=x1] {};
+                     % \path (0, 0)  rectangle (4, 7);
+\node[ionode={16pt}{black}{$\boldsymbol{x_{0}}$}] (x0) at (1, 6) {};
+\node[input={$\boldsymbol{x_1}$}] (x1) [below of=x0] {};
+\node[input={}, draw=none, fill=none] (x2) [below of=x1] {};
+\node[output={}, draw=none, fill=none] (y) [right of=x1] {};
 \end{tikzpicture}
 #+end_src
 
@@ -140,14 +142,14 @@ Show images of some sequential models
 $$f(x) = \sum_{i=1}^n x_iw_i$$
 
 #+name: tikz-perceptron-2
-#+begin_src tikz :ravel cache=TRUE, fig.width=3, fig.ext="svg"
-\usetikzlibrary{RNN}
+#+begin_src tikz :ravel cache=FALSE, fig.width=3, fig.ext="svg"
 \begin{tikzpicture}[node distance=2cm, auto, >=latex', thick]
 \draw[draw=white,use as bounding box](0,0) rectangle (4, 7);
-\node[node](x0) at (1, 6) {$x_0$};
-\node[input] (x1) [below of=x0] {$x_1$};
-\node[input] (x2) [below of=x1] {$x_2$};
-\node[output] (y) [right of=x1] {$y$};
+                     % \path (0, 0)  rectangle (4, 7);
+\node[ionode={16pt}{black}{$\boldsymbol{x_{0}}$}] (x0) at (1, 6) {};
+\node[input={$\boldsymbol{x_1}$}] (x1) [below of=x0] {};
+\node[input={$\boldsymbol{x_1}$}] (x2) [below of=x1] {};
+\node[output={$\boldsymbol{y}$}] (y) [right of=x1] {};
 \end{tikzpicture}
 #+end_src
 ** Alternative motivation
@@ -246,23 +248,75 @@ e.g. Box & Jenkins airline passenger data set
 ** Backpropagation in time
 ** (Exploding)/Vanishing gradients
 ** Problems with Vanilla RNNs
-* LSTMs / GRU
+* LSTMs and GRUs
+** Motivation behind LSTMs and GRUs
+
+::::::::::::::::::: {style="display: flex;"}
+
+:::: {}
+
+#+name: tikz-lstm
+#+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=8
+\tikzset{legend/.style={
+        font=\sffamily\bfseries\tiny,
+        text width=1.4cm,
+        align=center
+        }
+}
+\begin{tikzpicture}[node distance=1cm]
+ 
+\node[anchor=west] (lstm) at (0, 0) {\lstm};
+
+\node[pwise=X, below of=lstm, node distance=2cm, label={[legend]below:pointwise multiplication}] (pmult) {};
+\node[tanhnode, left of=pmult, label={[legend]below:tanh}] (tanh) {};
+\node[signode, left of=tanh, label={[legend]below:sigmoid}] (sigmoid) {};
+\node[pwise=+, right of=pmult, label={[legend]below:pointwise addition}] (padd) {};
+\node[vcon=1cm, right of=padd, label={[legend]below:vector concatenation}] (vconcat) {};
+\end{tikzpicture}
+#+end_src
+
+::::
+
+:::: {}
+
+#+name: tikz-gru
+#+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=8
+\tikzset{legend/.style={
+        font=\sffamily\bfseries\tiny,
+        text width=1.4cm,
+        align=center
+        }
+}
+\begin{tikzpicture}[node distance=1cm]
+ 
+\node[anchor=west] (lstm) at (0, 0) {\lstm};
+
+\node[pwise=X, below of=lstm, node distance=2cm, label={[legend]below:pointwise multiplication}] (pmult) {};
+\node[tanhnode, left of=pmult, label={[legend]below:tanh}] (tanh) {};
+\node[signode, left of=tanh, label={[legend]below:sigmoid}] (sigmoid) {};
+\node[pwise=+, right of=pmult, label={[legend]below:pointwise addition}] (padd) {};
+\node[vcon=1cm, right of=padd, label={[legend]below:vector concatenation}] (vconcat) {};
+\end{tikzpicture}
+#+end_src
+
+::::
+
+:::::::::::::::::::
+
+
+Long Short Term Memory (LSTM) cite:hochreiter_long_1997 and Gated
+Recurrent Unit (GRU) cite:cho_learning_2014 architectures were
+proposed to solve the vanishing gradient problem.
+
+
 ** Intuition
 Example on cereal ad really good (we remember the important parts):
 
 https://towardsdatascience.com/illustrated-guide-to-lstms-and-gru-s-a-step-by-step-explanation-44e9eb85bf21
 
 ** Gating (forget / remember)
-** Long term memory
-#+name: tikz-lstm
-#+begin_src tikz :ravel cache=TRUE, fig.ext="svg"
-\usetikzlibrary{RNN}
-\begin{tikzpicture}[node distance=2, auto, >=latex', thick]
-\draw[draw=white, use as bounding box](0,0) rectangle (4, 7);
-\node[scale=.2] (x0) at (1, 6) {\vanillarnn}
-                
-\end{tikzpicture}
-#+end_src
+** A closer look at LSTM architecture
+
 * Applications
 ** Google translate
 feels like one of the more obvious language applications that people use in everyday life
