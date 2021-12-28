@@ -84,7 +84,7 @@
     \node[connode, left of=con1] (con2) {};
 
     \node[input={$\boldsymbol{x_t}$}, node distance=\nodesep cm, below of=con2] (xt) {};
-    \draw (xt) -- ($ (xt) !.8! (con2) $) to [out=90, in=180] ($ (xt|-con1.east) !.2! (con1.east) $) -- (con1) -| (s1);
+    \draw (xt) -- ($ (xt) !.9! (con2) $) to [out=90, in=180] ($ (xt|-con1.east) !.1! (con1.east) $) -- (con1) -| (s1);
 
     %% Hidden state
     \node[connode, node distance=\consep * 2 cm, left of=con2, anchor=east] (htminus1) {$\boldsymbol{h_{t-1}}$};
@@ -112,4 +112,63 @@
      \draw[red] (0,0) -- (2,0) -- (2, 4) -- (0, 4);
    \end{tikzpicture}
  
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% GRU
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand*{\gru}{
+  \begin{tikzpicture}[>=latex, thick, node distance=\nodesep cm]
+    \draw[rounded corners, fill=green!30] (0,0) rectangle (6*\nodesep, 3*\nodesep);
+    \node[signode] (s1) at (2*\nodesep, 1.25*\nodesep) {};
+    \node[signode, right of=s1] (s2) {};
+    \node[connode, above of=s1, node distance=1.5*\consep cm] (cs1p1) {};
+    \node[pwise=X, left of=cs1p1] (p1) {};
+    \node[pwise={1-}, above of=s2] (p2) {};
+    \node[pwise={X}, above of=p2, node distance=\consep cm] (p3) {};
+    \node[tanhnode, right of=s2, node distance=1.5*\nodesep cm] (t1) {};
+    \node[pwise=X, above of=t1, node distance=1.5*\consep cm] (p4) {};
+    \node[pwise=+, right of=p3, node distance=1.5*\nodesep cm] (p5) {};
+
+    %% Invisible nodes
+    \node[connode, above of=s2, node distance=1.5*\consep cm] (p2b) {};
+    % Row 2
+    \node[connode, below of=s1] (s32) {};
+    \node[connode, left of=s32, node distance=\nodesep cm] (s22) {};
+    \node[connode, left of=s22] (s12) {};
+
+    % Row 1
+    \node[connode, below of=s12] (s11) {};
+    \node[connode, right of=s11] (s21) {};
+    \node[connode, right of=s21] (s31) {};
+    \node[connode, right of=s21, node distance=3*\nodesep cm] (s51) {};
+    
+    %% Input
+    \node[input={$\boldsymbol{x_t}$}, node distance=.75*\nodesep cm, below of=s11] (xt) {};
+    
+    %% Cell state
+    \node[connode, node distance=3.5*\nodesep cm, left of=p3, anchor=east] (ctminus1) {$\boldsymbol{c_{t-1}}$};
+    \node[connode, node distance=2*\nodesep cm, right of=p5, anchor=west] (ct) {$\boldsymbol{c_t}$};
+    \draw[->] (ctminus1) -- (p3) -- (p5) -- (ct);
+
+    %% Edges
+    
+    % Tanh to +
+    \draw[->] (p4) -- (p5);
+    \draw (t1) -- (p4);
+
+    % xt to t1 and others
+    \draw (xt) |- (s11-|t1) -| (t1);
+    \draw (xt) -- ($ (xt) !.9! (s12) $) to [out=90, in=180] ($ (xt|-s22.east) !.1! (s22.east) $) -| (s1);
+    \draw (ctminus1) -| ($ (xt) !1.1! (s12) $) to [out=270, in=180] ($ (xt|-s22.east) !.1! (s22.east) $) -| (s1);
+    \draw (s32) -| (s2);
+    \draw[->] (s1) |- (p1);
+    \draw (ctminus1) -| (p1);
+    \draw[shorten >= 0.05*\consep cm] (p1) -- (s22);
+    \draw[shorten <= 0.05*\consep cm] (s22) -- ($ (s22) !.9! (s21) $) to[out=270, in=180] ($ (s21) !.1! (s31) $);
+    \draw (s2) -- (p2);
+    \draw[->] (p2) -- (p3);
+    \draw[->] (p2b) -- (p4);
+
+  \end{tikzpicture}  
 }

@@ -255,23 +255,14 @@ e.g. Box & Jenkins airline passenger data set
 
 :::: {}
 
+<h6 align="center">LSTM</h6>
+
 #+name: tikz-lstm
 #+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=8
-\tikzset{legend/.style={
-        font=\sffamily\bfseries\tiny,
-        text width=1.4cm,
-        align=center
-        }
-}
 \begin{tikzpicture}[node distance=1cm]
  
 \node[anchor=west] (lstm) at (0, 0) {\lstm};
 
-\node[pwise=X, below of=lstm, node distance=2cm, label={[legend]below:pointwise multiplication}] (pmult) {};
-\node[tanhnode, left of=pmult, label={[legend]below:tanh}] (tanh) {};
-\node[signode, left of=tanh, label={[legend]below:sigmoid}] (sigmoid) {};
-\node[pwise=+, right of=pmult, label={[legend]below:pointwise addition}] (padd) {};
-\node[vcon=1cm, right of=padd, label={[legend]below:vector concatenation}] (vconcat) {};
 \end{tikzpicture}
 #+end_src
 
@@ -279,23 +270,14 @@ e.g. Box & Jenkins airline passenger data set
 
 :::: {}
 
+<h6 align="center">GRU</h6>
+
 #+name: tikz-gru
 #+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=8
-\tikzset{legend/.style={
-        font=\sffamily\bfseries\tiny,
-        text width=1.4cm,
-        align=center
-        }
-}
 \begin{tikzpicture}[node distance=1cm]
  
-\node[anchor=west] (lstm) at (0, 0) {\lstm};
+\node[anchor=west] (gru) at (0, 0) {\gru};
 
-\node[pwise=X, below of=lstm, node distance=2cm, label={[legend]below:pointwise multiplication}] (pmult) {};
-\node[tanhnode, left of=pmult, label={[legend]below:tanh}] (tanh) {};
-\node[signode, left of=tanh, label={[legend]below:sigmoid}] (sigmoid) {};
-\node[pwise=+, right of=pmult, label={[legend]below:pointwise addition}] (padd) {};
-\node[vcon=1cm, right of=padd, label={[legend]below:vector concatenation}] (vconcat) {};
 \end{tikzpicture}
 #+end_src
 
@@ -303,6 +285,22 @@ e.g. Box & Jenkins airline passenger data set
 
 :::::::::::::::::::
 
+#+name: tikz-gru-lstm-legend
+#+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=6
+\tikzset{legend/.style={
+        font=\sffamily\bfseries\tiny,
+        text width=1.4cm,
+        align=center
+        }
+}
+\begin{tikzpicture}[node distance=1cm]
+\node[pwise=X, node distance=2cm, label={[legend]below:pointwise multiplication}] (pmult) {};
+\node[tanhnode, left of=pmult, label={[legend]below:tanh}] (tanh) {};
+\node[signode, left of=tanh, label={[legend]below:sigmoid}] (sigmoid) {};
+\node[pwise=+, right of=pmult, label={[legend]below:pointwise addition}] (padd) {};
+\node[vcon=1cm, right of=padd, label={[legend]below:vector concatenation}] (vconcat) {};
+\end{tikzpicture}
+#+end_src
 
 Long Short Term Memory (LSTM) cite:hochreiter_long_1997 and Gated
 Recurrent Unit (GRU) cite:cho_learning_2014 architectures were
