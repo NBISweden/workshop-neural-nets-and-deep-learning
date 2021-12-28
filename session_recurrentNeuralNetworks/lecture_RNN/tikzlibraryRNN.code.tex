@@ -6,6 +6,7 @@
 \usepackage{xargs}
 \usepackage{ifthen}
 \usepackage{bm}
+\usepackage{etoolbox}
 
 %% Tikz libraries
 \usetikzlibrary{automata,arrows,shapes,matrix,trees,calc,fit,backgrounds,math}
@@ -46,6 +47,7 @@
     fill=black,
     label={[pwiselabel]center:#1}
   },
+  %% vector connection
   vcon/.style={
     label={center:\tikz\draw[->, thick, >=latex'] (0, 0.2*#1) to[out=300, in=180] (0.2*#1, 0) to[out=180, in=60] (0, -0.2#1) to[out=60, in=180] (0.2*#1, 0) -- (0.5#1, 0);}
   },
@@ -60,7 +62,8 @@
   tanhnode/.style={sigtan={12pt}{blue}{3pt}},
   connode/.style={inner sep=0pt, outer sep=0pt, node distance=\consep cm},
 }
-\newcommand*{\lstm}{
+
+\newcommandx*{\lstm}[5][1=,2=,3=,4=,5=]{%
   \begin{tikzpicture}[>=latex, thick, node distance=\nodesep cm]
     \draw[rounded corners, fill=green!30] (0,0) rectangle (6*\nodesep, 3*\nodesep);
     \node[signode] (s1) at (\nodesep, \nodesep) {};
@@ -74,8 +77,8 @@
     \node[pwise=+, right of=p1, node distance=2*\nodesep cm] (p4) {};
 
     %% Cell state
-    \node[connode, node distance=1.5*\nodesep cm, left of=p1, anchor=east] (ctminus1) {$\boldsymbol{c_{t-1}}$};
-    \node[connode, node distance=3.5*\nodesep cm, right of=p4, anchor=west] (ct) {$\boldsymbol{c_t}$};
+    \node[connode, node distance=1.5*\nodesep cm, left of=p1, anchor=east] (ctminus1) {#1};
+    \node[connode, node distance=3.5*\nodesep cm, right of=p4, anchor=west] (ct) {#2};
     \draw[shorten >= 0.2*\consep cm] (t2) |- (ct);
     \draw[->] (ctminus1) -- (p1) -- (p4) -- (ct);
 
@@ -83,12 +86,18 @@
     \node[connode, below of=s1] (con1) {};
     \node[connode, left of=con1] (con2) {};
 
-    \node[input={$\boldsymbol{x_t}$}, node distance=\nodesep cm, below of=con2] (xt) {};
+    \ifstrempty{#3}%
+    {%
+      \node[input={}, node distance=\nodesep cm, below of=con2, draw=none, fill=none] (xt) {};      
+    }{%
+      \node[input={#3}, node distance=\nodesep cm, below of=con2] (xt) {};
+    }
+
     \draw (xt) -- ($ (xt) !.9! (con2) $) to [out=90, in=180] ($ (xt|-con1.east) !.1! (con1.east) $) -- (con1) -| (s1);
 
     %% Hidden state
-    \node[connode, node distance=\consep * 2 cm, left of=con2, anchor=east] (htminus1) {$\boldsymbol{h_{t-1}}$};
-    \node[connode, node distance=\nodesep * 6 cm, right of=con2, anchor=west] (ht) {$\boldsymbol{h_{t}}$};
+    \node[connode, node distance=\consep * 2 cm, left of=con2, anchor=east] (htminus1) {#4};
+    \node[connode, node distance=\nodesep * 6 cm, right of=con2, anchor=west] (ht) {#5};
     \draw (htminus1) -| (s1);
     \draw (htminus1) -| (t1);
     \draw (htminus1) -| (s2);
@@ -106,18 +115,27 @@
   \end{tikzpicture}  
 }
 
-\newcommand*{\lstmforgetstate}{
-   \begin{tikzpicture}[>=latex, thick, node distance=\nodesep cm]
-     \node {\lstm};
-     \draw[red] (0,0) -- (2,0) -- (2, 4) -- (0, 4);
+\newcommand*{\lstmforgetgate}{
+   \begin{tikzpicture}
+     \node[anchor=west] {\lstm};
+     \node (rect) at (1.7*\nodesep, 0.65*\nodesep) [draw=red, thick, dotted, minimum width=0.7*\nodesep cm, minimum height=2.25*\nodesep cm]  {};
+     \node[above of=rect, red, font=\sffamily\tiny\bfseries, anchor=south] {forget gate};
    \end{tikzpicture}
- 
 }
+
+\newcommand*{\lstminputgate}{
+   \begin{tikzpicture}
+     \node[anchor=west] {\lstm};
+     \node (rect) at (1.7*\nodesep, 0.65*\nodesep) [draw=red, thick, dotted, minimum width=0.7*\nodesep cm, minimum height=2.25*\nodesep cm]  {};
+     \node[above of=rect, red, font=\sffamily\tiny\bfseries, anchor=south] {forget gate};
+   \end{tikzpicture}
+}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %% GRU
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand*{\gru}{
+\newcommandx*{\gru}[3][1=,2=,3=]{
   \begin{tikzpicture}[>=latex, thick, node distance=\nodesep cm]
     \draw[rounded corners, fill=green!30] (0,0) rectangle (6*\nodesep, 3*\nodesep);
     \node[signode] (s1) at (2*\nodesep, 1.25*\nodesep) {};
@@ -144,11 +162,17 @@
     \node[connode, right of=s21, node distance=3*\nodesep cm] (s51) {};
     
     %% Input
-    \node[input={$\boldsymbol{x_t}$}, node distance=.75*\nodesep cm, below of=s11] (xt) {};
+    \ifstrempty{#3}%
+    {%
+      \node[input={}, node distance=.75*\nodesep cm, below of=s11, draw=none, fill=none] (xt) {};      
+    }{%
+      \node[input={#3}, node distance=.75*\nodesep cm, below of=s11] (xt) {};
+    }
+    %%\node[input={$\boldsymbol{x_t}$}, node distance=.75*\nodesep cm, below of=s11] (xt) {};
     
     %% Cell state
-    \node[connode, node distance=3.5*\nodesep cm, left of=p3, anchor=east] (ctminus1) {$\boldsymbol{c_{t-1}}$};
-    \node[connode, node distance=2*\nodesep cm, right of=p5, anchor=west] (ct) {$\boldsymbol{c_t}$};
+    \node[connode, node distance=3.5*\nodesep cm, left of=p3, anchor=east] (ctminus1) {#1};
+    \node[connode, node distance=2*\nodesep cm, right of=p5, anchor=west] (ct) {#2};
     \draw[->] (ctminus1) -- (p3) -- (p5) -- (ct);
 
     %% Edges
