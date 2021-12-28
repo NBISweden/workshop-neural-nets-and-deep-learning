@@ -14,7 +14,8 @@ output:
     css: revealjs.css
     includes:
       in_header: footer.html
-    self_contained: true
+    self_contained: false
+    reveal_plugins: []
     highlight: breezedark
     fig_caption: false
     toc: false
@@ -42,7 +43,7 @@ library(kableExtra)
 library(reticulate)
 options(browser="firefox")
 knitr::opts_chunk$set(warning = FALSE, message = FALSE,
-                      autodep=TRUE, echo=FALSE, 
+                      autodep=TRUE, echo=FALSE,
                       cache=FALSE, include=TRUE, eval=TRUE, tidy=FALSE, error=TRUE)
 #class.source = "numberLines lineAnchors", comment="",
 #                      class.output = c("numberLines lineAnchors chunkout"))
@@ -83,6 +84,7 @@ print("""
 
 * Overview
 
+<h3>Recap</h3>
 <h3>Sequential models</h3>
 <h3>Recurrent neural networks (RNNs)</h3>
 <h3>LSTMs and GRUs</h3>
@@ -99,7 +101,7 @@ print("""
    - solve with perceptron
    - highlight problems with perceptron
 3. RNNs
-   - 
+   -
 4. LSTMs and GRUs
    - solution to vanishing gradients
    - need to explain *what* they do and *how* they solve the issue:
@@ -205,14 +207,112 @@ script, div = components(p)
 print(script)
 print(div)
 #+end_src
+* Recap
+** Perceptron
+#+name: tikz-rnn-motivation-perceptron
+#+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=4
+\begin{tikzpicture}[node distance=2*\nodesep cm, >=latex]
+\node[ionode={16pt}{black}{$x_0$}] (x0) {};
+\node[input={$x_1$}, below of=x0] (x1) {};
+\node[input={$x_2$}, below of=x1] (x2) {};
+\node[below of=x2] (vdots) {$\vdots$};
+\node[input={$x_n$}, below of=vdots] (xn) {};
+
+\node[circle, draw=black, thick, minimum size=16pt, right of=x2] (sum) {};
+
+\node[output={$y$}, right of=sum, node distance=4*\nodesep cm] (y) {};
+
+\draw[->] (x0) -- (sum) node [midway, above right] {$w_0=1$};
+\draw[->] (x1) -- (sum) node [midway, above] {$w_1$};
+\draw[->] (x2) -- (sum) node [midway, above] {$w_2$};
+\draw[->] (xn) -- (sum) node [midway, above left] {$w_n$};
+\draw[->] (sum) -- (y);
+\end{tikzpicture}
+#+end_src
+
+::: {.notes}
+
+
+:::
+
+** Notation
 * Sequential models
 
 ** Motivation
-FIXME: show incremental figure of time series (e.g. sinus) and
-highlight
+
+#+name: tikz-rnn-motivation-time-series
+#+begin_src tikz :ravel cache=TRUE, fig.ext="svg", fig.width=8
+\begin{tikzpicture}
+\node[obs, fill=black!50] (x0) at (100pt, 0pt) {};
+\node[obs, fill=white] (x1) at (50pt, 50pt) {};
+\node[obs, fill=white] (x2) at (0pt, 0pt) {};
+\end{tikzpicture}
+#+end_src
+
+::: {.notes}
+
+incremental figure showing time series (e.g. sinus) that highlights
 - dependency on previous time point
 - (weaker) dependency on more distant time points
-  
+
+:::
+** Motivation
+
+#+name: tikz-rnn-motivation-time-series-1
+#+begin_src tikz :ravel cache=TRUE, fig.ext="svg", fig.width=8
+\begin{tikzpicture}
+\node[obs, fill=black!50] (x0) at (100pt, 0pt) {};
+\node[obs, fill=black!20] (x1) at (50pt, 50pt) {};
+\node[obs, fill=white] (x2) at (0pt, 0pt) {};
+\end{tikzpicture}
+#+end_src
+
+::: {.notes}
+
+incremental figure showing time series (e.g. sinus) that highlights
+- dependency on previous time point
+- (weaker) dependency on more distant time points
+
+:::
+
+** Motivation
+
+#+name: tikz-rnn-motivation-time-series-2
+#+begin_src tikz :ravel cache=TRUE, fig.ext="svg", fig.width=8
+\begin{tikzpicture}
+\node[obs, fill=black!50] (x0) at (100pt, 0pt) {};
+\node[obs, fill=black!20] (x1) at (50pt, 50pt) {};
+\node[obs, fill=black!20] (x2) at (0pt, 0pt) {};
+\end{tikzpicture}
+#+end_src
+
+::: {.notes}
+
+incremental figure showing time series (e.g. sinus) that highlights
+- dependency on previous time point
+- (weaker) dependency on more distant time points
+
+:::
+
+** Motivation
+
+#+name: tikz-rnn-motivation-time-series-3
+#+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=8
+\begin{tikzpicture}[>=latex]
+\node[obs, fill=black!50] (x0) at (100pt, 0pt) {};
+\node[obs, fill=black!20] (x1) at (50pt, 50pt) {};
+\node[obs, fill=black!20] (x2) at (0pt, 0pt) {};
+\draw[->, thick, black!50, dotted] (x2) to[out=90, in=180] (x1) to[out=0, in=90] (x0);
+\end{tikzpicture}
+#+end_src
+
+::: {.notes}
+
+incremental figure showing time series (e.g. sinus) that highlights
+- dependency on previous time point
+- (weaker) dependency on more distant time points
+
+:::
 
 ** Why standard perceptrons/FFNs don't work
 
@@ -240,17 +340,22 @@ Z -> A: try do enumerate alphabet in reverse; non-trivial
 ** Why we need them and what they are
 ** Parameter sharing
 contrast with FFNs
+** RNN basic architecture
+cite:olah_christopher_understanding_nodate
 ** Examples
 Examples using vanilla RNNs
 
 e.g. Box & Jenkins airline passenger data set
+** Exercise
+Segway into exercise with co2 data
 * Training
 ** Backpropagation in time
-** (Exploding)/Vanishing gradients
+** Exploding and vanishing gradients
 ** Problems with Vanilla RNNs
 * LSTMs and GRUs
 ** Motivation behind LSTMs and GRUs
 
+<div class="based-on">Based on cite:phi_illustrated_2020</div>
 ::::::::::::::::::: {style="display: flex;"}
 
 :::: {}
@@ -260,9 +365,7 @@ e.g. Box & Jenkins airline passenger data set
 #+name: tikz-lstm
 #+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=8
 \begin{tikzpicture}[node distance=1cm]
- 
-\node[anchor=west] (lstm) at (0, 0) {\lstm};
-
+\node (lstm) at (0, 0) {\lstm[$\boldsymbol{c_{t-1}}$][$\boldsymbol{c_{t}}$][$\boldsymbol{x_t}$][$\boldsymbol{h_{t-1}}$][$\boldsymbol{h_{t}}$]};
 \end{tikzpicture}
 #+end_src
 
@@ -275,9 +378,7 @@ e.g. Box & Jenkins airline passenger data set
 #+name: tikz-gru
 #+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=8
 \begin{tikzpicture}[node distance=1cm]
- 
-\node[anchor=west] (gru) at (0, 0) {\gru};
-
+\node (gru) at (0, 0) {\gru[$\boldsymbol{c_{t-1}}$][$\boldsymbol{c_{t}}$][$\boldsymbol{x_t}$]};
 \end{tikzpicture}
 #+end_src
 
@@ -305,7 +406,16 @@ e.g. Box & Jenkins airline passenger data set
 Long Short Term Memory (LSTM) cite:hochreiter_long_1997 and Gated
 Recurrent Unit (GRU) cite:cho_learning_2014 architectures were
 proposed to solve the vanishing gradient problem.
+*** Notes                                                          :ignore:
 
+::: {.notes}
+Here are some notes...
+- explain pseudo-targets
+- point out the two common idioms for collecting targets:
+  1. expand
+  2. input functions
+
+:::
 
 ** Intuition
 Example on cereal ad really good (we remember the important parts):
@@ -313,20 +423,83 @@ Example on cereal ad really good (we remember the important parts):
 https://towardsdatascience.com/illustrated-guide-to-lstms-and-gru-s-a-step-by-step-explanation-44e9eb85bf21
 
 ** Gating (forget / remember)
-** A closer look at LSTM architecture
+** A closer look at LSTM architecture - the forget gate
 
+
+#+name: tikz-lstm-forget-gate
+#+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=8
+\begin{tikzpicture}
+\node (lstm) at (0, 0) {\lstmforgetgate};
+\end{tikzpicture}
+#+end_src
+
+*Purpose*: decide what information to keep or throw away
+
+Sigmoid squishes vector $[\boldsymbol{h_{t-1}}, \boldsymbol{x_t}]$
+(previous hidden state + input) to $(0, 1)$, where 0=forget, 1=keep.
+
+
+** A closer look at LSTM architecture - the forget gate
+
+
+#+name: tikz-lstm-forget-gate-1
+#+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=8
+\begin{tikzpicture}
+\node (lstm) at (0, 0) {\lstmforgetgate};
+\node[packet, scale=.3] (ht) at (-2.7, -.53) {$h_{t-1}$};
+\node[packet, scale=.3] (xt) at (-2.2, -.7) {$h_{t-1}$};
+\end{tikzpicture}
+#+end_src
+
+*Purpose*: decide what information to keep or throw away
+
+Sigmoid squishes vector $[\boldsymbol{h_{t-1}}, \boldsymbol{x_t}]$
+(previous hidden state + input) to $(0, 1)$, where 0=forget, 1=keep.
+
+\[
+f_t = \sigma()
+\]
+
+** The input gate
+
+#+name: tikz-lstm-input-gate
+#+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=8
+\begin{tikzpicture}
+\node (lstm) at (0, 0) {\lstminputgate};
+\end{tikzpicture}
+#+end_src
+
+*Purpose*:
+** The cell state
+
+#+name: tikz-lstm-cell-state
+#+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=8
+\begin{tikzpicture}
+\node (lstm) {\lstmcellstate};
+\end{tikzpicture}
+#+end_src
+*Purpose*:
+** The output gate
+
+#+name: tikz-lstm-output-gate
+#+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=8
+\begin{tikzpicture}
+\node (lstm) {\lstmoutputgate};
+\end{tikzpicture}
+#+end_src
+
+*Purpose*:
+** Exercise
+Exercise that compares vanilla RNN to LSTMs
 * Applications
 ** Google translate
-feels like one of the more obvious language applications that people use in everyday life
+feels like one of the more obvious language applications that people
+use in everyday life
 ** Time series
-** Recombination rate estimation in genomics
-segway to practical
 ** Attention networks
 Mention attention networks as a next step generalisation?
-
-
-
+** Recombination rate estimation in genomics
+segway to practical
 * Bibliography                                                       :ignore:
 ** Bibliography {.allowframebreaks}
 <div id="refs" class="references hanging-indent" role="doc-bibliography" style="font-size: 70%;">
-

@@ -7,6 +7,7 @@
 \usepackage{ifthen}
 \usepackage{bm}
 \usepackage{etoolbox}
+\usepackage{sansmath}
 
 %% Tikz libraries
 \usetikzlibrary{automata,arrows,shapes,matrix,trees,calc,fit,backgrounds,math}
@@ -26,9 +27,17 @@
 \tikzset{input/.style={ionode={16pt}{blue}{#1}}}
 \tikzset{output/.style={ionode={16pt}{red}{#1}}}
 
+%% Time series observation
+\tikzset{
+  obs/.style={
+    circle, thick,
+    minimum size=10pt,
+    node distance=50pt
+  }
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% LSTM command
+%% LSTM command and components
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Base on https://duckduckgo.com/?t=ffab&q=lstm+illustration&atb=v1-1&iax=images&ia=images&iai=https%3A%2F%2Fwww.herongyang.com%2FNeural-Network%2FLSTM-Long-Short-Term-Memory-github.png
 \def\nodesep{0.8}
@@ -37,8 +46,13 @@
   pwiselabel/.style={
     white,
     font=\sffamily\bfseries\tiny
-  }
+  },
+  packetlabel/.style={
+    white,
+    font=\sffamily\bfseries\tiny\sansmath
+  },
 }
+
 \tikzset{
   pwise/.style={
     rectangle,
@@ -61,6 +75,7 @@
   signode/.style={sigtan={12pt}{red}{3pt}},
   tanhnode/.style={sigtan={12pt}{blue}{3pt}},
   connode/.style={inner sep=0pt, outer sep=0pt, node distance=\consep cm},
+  packet/.style={circle, fill=black, text=white, inner sep=0pt, minimum size=12pt,  font=\sffamily\bfseries\tiny\sansmath}
 }
 
 \newcommandx*{\lstm}[5][1=,2=,3=,4=,5=]{%
@@ -126,11 +141,26 @@
 \newcommand*{\lstminputgate}{
    \begin{tikzpicture}
      \node[anchor=west] {\lstm};
-     \node (rect) at (1.7*\nodesep, 0.65*\nodesep) [draw=red, thick, dotted, minimum width=0.7*\nodesep cm, minimum height=2.25*\nodesep cm]  {};
-     \node[above of=rect, red, font=\sffamily\tiny\bfseries, anchor=south] {forget gate};
+     \node (rect) at (2.7*\nodesep, 0.25*\nodesep) [draw=red, thick, dotted, minimum width=0.7*\nodesep cm, minimum height=1.5*\nodesep cm]  {};
+     \node[above of=rect, red, font=\sffamily\tiny\bfseries, anchor=north] {input gate};
    \end{tikzpicture}
 }
 
+\newcommand*{\lstmcellstate}{
+   \begin{tikzpicture}
+     \node[anchor=west] {\lstm};
+     \node (rect) at (0.2*\nodesep, 1.6*\nodesep) [draw=red, thick, dotted, minimum width=7*\nodesep cm, minimum height=0.4*\nodesep cm, anchor=west]  {};
+     \node[below of=rect, red, font=\sffamily\tiny\bfseries, anchor=north west, node distance=0.2*\nodesep cm] {cell state};
+   \end{tikzpicture}
+}
+
+\newcommand*{\lstmoutputgate}{
+   \begin{tikzpicture}
+     \node[anchor=west] {\lstm};
+     \node (rect) at (4.25*\nodesep, -0.25 * \nodesep) [draw=red, thick, dotted, minimum width=1.25*\nodesep cm, minimum height=\nodesep cm, anchor=west]  {};
+     \node[above of=rect, red, font=\sffamily\tiny\bfseries, anchor=south, node distance=0.5*\nodesep cm] {output gate};
+   \end{tikzpicture}
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %% GRU
