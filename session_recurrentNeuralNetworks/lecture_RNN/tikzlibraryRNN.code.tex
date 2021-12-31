@@ -9,10 +9,43 @@
 \usepackage{etoolbox}
 \usepackage{sansmath}
 
+
 %% Tikz libraries
 \usetikzlibrary{automata,arrows,shapes,matrix,trees,calc,fit,backgrounds,math}
 
-%% Simple network nodes
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Basic units and config
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\def\baseunit{1cm}
+%% \def\baseunit{28pt} 1cm ~ 28pt
+\def\basenodesep{\baseunit}
+\def\baseconsep{\basenodesep/2}
+%% node sizes
+\def\ionodesize{0.6*\baseunit}
+
+
+%% Basic config
+\tikzset{node distance=\basenodesep}
+\tikzset{>=latex}
+
+%% Colors
+\tikzset{
+  nngreen/.style={thick, rounded corners, fill=green!30},
+  nnbox/.style={nngreen, draw=black}
+}
+
+%% Font config, labels
+\tikzset{
+  iolabel/.style={
+    font=\bfseries\small\sffamily\sansmath
+  },
+  nnlabel/.style={
+    font=\bfseries\Huge\sffamily\sansmath
+  },
+}
+
+%% Simple input/output nodes
 \tikzset{
   ionode/.style n args={3}{
     circle, thick,
@@ -21,11 +54,158 @@
     outer sep=0pt,
     draw=#2!80,
     fill=#2!20,
-    label=center:#3,
+    label=[iolabel]center:#3,
   }
 }
-\tikzset{input/.style={ionode={16pt}{blue}{#1}}}
-\tikzset{output/.style={ionode={16pt}{red}{#1}}}
+\tikzset{input/.style={ionode={\ionodesize}{blue}{#1}}}
+\tikzset{output/.style={ionode={\ionodesize}{red}{#1}}}
+
+%% Pointwise operation style
+\tikzset{
+  pwiselabel/.style={
+    white,
+    font=\sffamily\bfseries\tiny
+  },
+  packetlabel/.style={
+    white,
+    font=\sffamily\bfseries\tiny\sansmath
+  },
+  pwise/.style={
+    rectangle,
+    inner sep=2.5pt,
+    rounded corners=1pt,
+    fill=black,
+    label={[pwiselabel]center:#1}
+  },
+}
+
+%% sigmoid / tanh symbols
+\tikzset{
+    sigtan/.style n args={3}{
+    circle,
+    minimum size=#1,
+    inner sep=0pt,
+    fill=#2!80,
+    label={center:\tikz\draw[white, thick]  (-#3, -#3) .. controls (#3, -#3) and (-#3, #3) .. (#3, #3);}
+  },
+  sigmoid/.style={sigtan={14pt}{red}{4pt}},
+  tanh/.style={sigtan={14pt}{blue}{4pt}},
+}
+
+%% Legend symbols
+\tikzset{
+  %% vector connection
+  vcon/.style={
+    label={center:\tikz\draw[->, thick, >=latex'] (0, 0.2*#1) to[out=300, in=180] (0.2*#1, 0) [out=180, in=60] (0, -0.2#1) to[out=60, in=180] (0.2*#1, 0) -- (0.5#1, 0);}
+  },
+}
+
+
+\tikzset{
+  znode/.style={inner sep=0pt, outer sep=0pt},
+  cnode/.style={znode, node distance=\baseconsep},
+  Cnode/.style={znode, node distance=\basenodesep},
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% RNN - smallest unit
+%%
+%% Input, network (represented as box), output
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\rnninnerwidth{2*\basenodesep}
+\def\rnninnerheight{\basenodesep}
+\def\rnnouterwidth{2*\basenodesep}
+\def\rnnouterheight{3*\basenodesep}
+
+\tikzset{
+  pics/rnn/.style= {
+    code = {
+      \begin{scope}[xshift=\rnnouterwidth/2, yshift=\rnnouterheight/2]
+        \node[nnbox, rectangle, nnlabel, minimum width=\rnninnerwidth, minimum height=\rnninnerheight] (center) at (0, 0) {#1};
+        \node[znode, below of=center, node distance=\basenodesep + \baseconsep] (input) {};
+        \node[znode, above of=center, node distance=\basenodesep + \baseconsep] (output) {};
+        \node[znode, right of=center] (right) {};
+        \node[znode, left of=center] (left) {};
+      \end{scope}
+    }
+  },
+  pics/rnn/.default={A},
+  pics/rnnio/.style n args={3}{
+    code = {
+      \pic{rnn={#1}};
+      \node[input={#2}] (xt) at (input) {};
+      \node[output={#3}] (ht) at (output) {};
+      \draw[->] (xt) to (center);
+      \draw[->] (center) to (ht);
+    }
+  },
+  pics/rnnio/.default={A}{$X_t$}{$H_t$},
+  pics/rnniofolded/.style={
+    code = {
+      \pic (foldedrnn_) {rnnio};
+      \draw[->] (foldedrnn_right) -- ++(\baseconsep, 0) -- ++(0, 1.5*\baseconsep) -- ++(-\sep, 0) -- ++(0, -1.5\baseconsep) --(foldedrnn_left);
+    }
+  }
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Bare RNN - building block for rnn figures
+%% 
+%% FIXME: ascii drawing of diagram
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\basernnwidth{5*\basenodesep}
+\def\basernnheight{3*\basenodesep}
+\def\basernnfigwidth{7*\basenodesep}
+\def\basernnfigheight{5*\basenodesep}
+\tikzset{
+  pics/basernn/.style = {
+    code = {
+      \begin{scope}[xshift=\basernnfigwidth/2, yshift=\basernnfigheight/2]
+        \draw[thick] (-\basernnfigwidth/2, -\basernnfigheight/2) rectangle (\basernnfigwidth/2, \basernnfigheight/2);
+        \draw[thick, rounded corners, fill=green!30] (-\basernnwidth/2, -\basernnheight/2) rectangle (\basernnwidth/2, \basernnheight/2);
+        \node (cm) at (0, 0) {};
+        \node[cnode, below of=cm] (cb1) {};
+        \node[cnode, below of=cb1] (cb2) {};
+        \node[cnode, above of=cm] (ca1) {};
+        \node[cnode, below of=ca1] (ca2) {};
+        \node (x) at (-\basernnfigwidth/2 + 3 * \baseconsep, -\basernnfigheight/2 + \baseconsep) {};
+        \node (h) at (\basernnfigwidth/2 - 3 * \baseconsep, \basernnfigheight/2 - \baseconsep) {};
+      \end{scope}
+    }
+  }
+}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% OBSOLETE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Constants, sizes, units, ...
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \def\baseunit{1cm}
+\def\nodesepunit{\baseunit}
+\def\rnnwidth{4*\baseunit}
+\def\rnnheight{2*\baseunit}
+\def\rnnfigwidth{5*\baseunit}
+\def\rnnfigheight{4.5*\baseunit}
+%% Similarly for lstm and gru
+
+
+\tikzset{node distance=\nodesepunit}
+\tikzset{>=latex}
+
+%% Connection nodes
+\tikzset{
+  connode2/.style={inner sep=0pt, outer sep=0pt, node distance=\consep cm},
+  connode/.style={inner sep=0pt, outer sep=0pt},
+  connodew/.style={inner sep=0pt, outer sep=0pt, node distance=1.5*\nodesepunit},
+  connodeW/.style={inner sep=0pt, outer sep=0pt, node distance=2*\nodesepunit},
+  conline/.style={>=latex, thick}
+}
 
 %% Time series observation
 \tikzset{
@@ -42,64 +222,30 @@
 %% Base on https://duckduckgo.com/?t=ffab&q=lstm+illustration&atb=v1-1&iax=images&ia=images&iai=https%3A%2F%2Fwww.herongyang.com%2FNeural-Network%2FLSTM-Long-Short-Term-Memory-github.png
 \def\nodesep{0.8}
 \def\consep{0.4}
-\tikzset{
-  pwiselabel/.style={
-    white,
-    font=\sffamily\bfseries\tiny
-  },
-  packetlabel/.style={
-    white,
-    font=\sffamily\bfseries\tiny\sansmath
-  },
-}
 
-\tikzset{
-  pwise/.style={
-    rectangle,
-    inner sep=2.5pt,
-    rounded corners=1pt,
-    fill=black,
-    label={[pwiselabel]center:#1}
-  },
-  %% vector connection
-  vcon/.style={
-    label={center:\tikz\draw[->, thick, >=latex'] (0, 0.2*#1) to[out=300, in=180] (0.2*#1, 0) to[out=180, in=60] (0, -0.2#1) to[out=60, in=180] (0.2*#1, 0) -- (0.5#1, 0);}
-  },
-  sigtan/.style n args={3}{
-    circle,
-    minimum size=#1,
-    inner sep=0pt,
-    fill=#2!80,
-    label={center:\tikz\draw[white, thick]  (-#3, -#3) .. controls (#3, -#3) and (-#3, #3) .. (#3, #3);}
-  },
-  signode/.style={sigtan={12pt}{red}{3pt}},
-  tanhnode/.style={sigtan={12pt}{blue}{3pt}},
-  connode/.style={inner sep=0pt, outer sep=0pt, node distance=\consep cm},
-  packet/.style={circle, fill=black, text=white, inner sep=0pt, minimum size=12pt,  font=\sffamily\bfseries\tiny\sansmath}
-}
 
 \newcommandx*{\lstm}[5][1=,2=,3=,4=,5=]{%
   \begin{tikzpicture}[>=latex, thick, node distance=\nodesep cm]
     \draw[rounded corners, fill=green!30] (0,0) rectangle (6*\nodesep, 3*\nodesep);
-    \node[signode] (s1) at (\nodesep, \nodesep) {};
-    \node[signode, right of=s1] (s2) {};
+    \node[sigmoid] (s1) at (\nodesep, \nodesep) {};
+    \node[sigmoid, right of=s1] (s2) {};
     \node[pwise=X, above of=s1, node distance=1.7*\nodesep cm] (p1) {};
-    \node[tanhnode, right of=s2] (t1) {};
-    \node[signode, right of=t1] (s3) {};
+    \node[tanh, right of=s2] (t1) {};
+    \node[sigmoid, right of=t1] (s3) {};
     \node[pwise=X, right of=s3] (p2) {};
-    \node[tanhnode, above of=p2] (t2) {};
+    \node[tanh, above of=p2] (t2) {};
     \node[pwise=X, above of=t1] (p3) {};
     \node[pwise=+, right of=p1, node distance=2*\nodesep cm] (p4) {};
 
     %% Cell state
-    \node[connode, node distance=1.5*\nodesep cm, left of=p1, anchor=east] (ctminus1) {#1};
-    \node[connode, node distance=3.5*\nodesep cm, right of=p4, anchor=west] (ct) {#2};
+    \node[connode2, node distance=1.5*\nodesep cm, left of=p1, anchor=east] (ctminus1) {#1};
+    \node[connode2, node distance=3.5*\nodesep cm, right of=p4, anchor=west] (ct) {#2};
     \draw[shorten >= 0.2*\consep cm] (t2) |- (ct);
     \draw[->] (ctminus1) -- (p1) -- (p4) -- (ct);
 
     %% Input state
-    \node[connode, below of=s1] (con1) {};
-    \node[connode, left of=con1] (con2) {};
+    \node[connode2, below of=s1] (con1) {};
+    \node[connode2, left of=con1] (con2) {};
 
     \ifstrempty{#3}%
     {%
@@ -111,8 +257,8 @@
     \draw (xt) -- ($ (xt) !.9! (con2) $) to [out=90, in=180] ($ (xt|-con1.east) !.1! (con1.east) $) -- (con1) -| (s1);
 
     %% Hidden state
-    \node[connode, node distance=\consep * 2 cm, left of=con2, anchor=east] (htminus1) {#4};
-    \node[connode, node distance=\nodesep * 6 cm, right of=con2, anchor=west] (ht) {#5};
+    \node[connode2, node distance=\consep * 2 cm, left of=con2, anchor=east] (htminus1) {#4};
+    \node[connode2, node distance=\nodesep * 6 cm, right of=con2, anchor=west] (ht) {#5};
     \draw (htminus1) -| (s1);
     \draw (htminus1) -| (t1);
     \draw (htminus1) -| (s2);
@@ -168,28 +314,28 @@
 \newcommandx*{\gru}[3][1=,2=,3=]{
   \begin{tikzpicture}[>=latex, thick, node distance=\nodesep cm]
     \draw[rounded corners, fill=green!30] (0,0) rectangle (6*\nodesep, 3*\nodesep);
-    \node[signode] (s1) at (2*\nodesep, 1.25*\nodesep) {};
-    \node[signode, right of=s1] (s2) {};
-    \node[connode, above of=s1, node distance=1.5*\consep cm] (cs1p1) {};
+    \node[sigmoid] (s1) at (2*\nodesep, 1.25*\nodesep) {};
+    \node[sigmoid, right of=s1] (s2) {};
+    \node[connode2, above of=s1, node distance=1.5*\consep cm] (cs1p1) {};
     \node[pwise=X, left of=cs1p1] (p1) {};
     \node[pwise={1-}, above of=s2] (p2) {};
     \node[pwise={X}, above of=p2, node distance=\consep cm] (p3) {};
-    \node[tanhnode, right of=s2, node distance=1.5*\nodesep cm] (t1) {};
+    \node[tanh, right of=s2, node distance=1.5*\nodesep cm] (t1) {};
     \node[pwise=X, above of=t1, node distance=1.5*\consep cm] (p4) {};
     \node[pwise=+, right of=p3, node distance=1.5*\nodesep cm] (p5) {};
 
     %% Invisible nodes
-    \node[connode, above of=s2, node distance=1.5*\consep cm] (p2b) {};
+    \node[connode2, above of=s2, node distance=1.5*\consep cm] (p2b) {};
     % Row 2
-    \node[connode, below of=s1] (s32) {};
-    \node[connode, left of=s32, node distance=\nodesep cm] (s22) {};
-    \node[connode, left of=s22] (s12) {};
+    \node[connode2, below of=s1] (s32) {};
+    \node[connode2, left of=s32, node distance=\nodesep cm] (s22) {};
+    \node[connode2, left of=s22] (s12) {};
 
     % Row 1
-    \node[connode, below of=s12] (s11) {};
-    \node[connode, right of=s11] (s21) {};
-    \node[connode, right of=s21] (s31) {};
-    \node[connode, right of=s21, node distance=3*\nodesep cm] (s51) {};
+    \node[connode2, below of=s12] (s11) {};
+    \node[connode2, right of=s11] (s21) {};
+    \node[connode2, right of=s21] (s31) {};
+    \node[connode2, right of=s21, node distance=3*\nodesep cm] (s51) {};
     
     %% Input
     \ifstrempty{#3}%
@@ -201,8 +347,8 @@
     %%\node[input={$\boldsymbol{x_t}$}, node distance=.75*\nodesep cm, below of=s11] (xt) {};
     
     %% Cell state
-    \node[connode, node distance=3.5*\nodesep cm, left of=p3, anchor=east] (ctminus1) {#1};
-    \node[connode, node distance=2*\nodesep cm, right of=p5, anchor=west] (ct) {#2};
+    \node[connode2, node distance=3.5*\nodesep cm, left of=p3, anchor=east] (ctminus1) {#1};
+    \node[connode2, node distance=2*\nodesep cm, right of=p5, anchor=west] (ct) {#2};
     \draw[->] (ctminus1) -- (p3) -- (p5) -- (ct);
 
     %% Edges
@@ -226,3 +372,44 @@
 
   \end{tikzpicture}  
 }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Vanilla RNNs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  xtlabel/.initial = $X_t$,
+  htlabel/.initial  = $H_t$,
+  pics/vanillarnn/.style 2 args = {
+    code = {
+      \tikzset{xtlabel/.get=\xtlabel}
+      \tikzset{htlabel/.get=\htlabel}
+      \begin{scope}[xshift=\rnnfigwidth/2, yshift=\rnnfigheight/2]
+        \draw[thick] (-\rnnfigwidth/2, -\rnnfigheight/2) rectangle (\rnnfigwidth/2, \rnnfigheight/2);
+        \draw[thick, rounded corners, fill=green!30] (-\rnnwidth/2, -\rnnheight/2) rectangle (\rnnwidth/2, \rnnheight/2);
+        \node[tanh] (t1) at (0, 0) {};
+        \node[input={\xtlabel}] (xt) at (-\rnnwidth/2 + \baseunit/2, -\rnnheight/2 - 3*\baseunit/4) {};    
+        \node[output={\htlabel}] (ht) at (\rnnwidth/2 - \baseunit/2, \rnnheight/2 + 3*\baseunit/4) {};
+
+        %% Connection nodes
+        \node[connodew, above of=xt] (xta) {};
+        \node[connode, below of=t1] (t1b) {};
+        \node[connode, above of=t1] (t1a) {};
+        \node[connodew, below of=ht] (htb) {};
+        \node[connode] (x) at ($ (t1a) !.5! (htb) $) {};
+        \node[connodew, right of=x] (htr) {};        
+
+        \draw[->, conline] (xt) |- ($ (xta) !.5! (t1b) $) -| (t1);
+        \draw[->, conline] (t1) |- ($ (t1a) !.5! (htb) $) -| (ht);
+        \draw[->, conline] (x) -- (htr);
+      \end{scope}
+    }
+  },
+  vanillarnnoverlay/.pic={%%
+    \pic{vanillarnn};
+    \begin{scope}[xshift=\rnnfigwidth/2, yshift=\rnnfigheight/2]
+      \draw[ultra thick, rounded corners, fill=green!30, opacity=0.8] (-\rnnwidth/2, -\rnnheight/2) rectangle (\rnnwidth/2, \rnnheight/2);
+      \node[font=\sffamily\Huge] (A) at (0, 0) {A};
+    \end{scope}
+  }
+}
+
+
