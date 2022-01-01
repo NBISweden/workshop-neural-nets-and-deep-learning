@@ -11,7 +11,7 @@
 
 
 %% Tikz libraries
-\usetikzlibrary{automata,arrows,shapes,matrix,trees,calc,fit,backgrounds,math}
+\usetikzlibrary{automata,arrows,shapes,matrix,trees,calc,fit,backgrounds,math,quotes}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -38,7 +38,7 @@
 %% Font config, labels
 \tikzset{
   iolabel/.style={
-    font=\bfseries\small\sffamily\sansmath
+    font=\bfseries\small\sffamily\sansmath,
   },
   nnlabel/.style={
     font=\bfseries\Huge\sffamily\sansmath
@@ -52,13 +52,15 @@
     minimum size=#1,
     inner sep=0pt,
     outer sep=0pt,
-    draw=#2!80,
-    fill=#2!20,
+    draw=#2!70,
+    fill=#2!30,
     label=[iolabel]center:#3,
   }
 }
 \tikzset{input/.style={ionode={\ionodesize}{blue}{#1}}}
 \tikzset{output/.style={ionode={\ionodesize}{red}{#1}}}
+\tikzset{state/.style={ionode={\ionodesize}{purple}{#1}}}
+\tikzset{hidden/.style={ionode={\ionodesize}{green}{#1}}}
 
 %% Pointwise operation style
 \tikzset{
@@ -106,6 +108,130 @@
   cnode/.style={znode, node distance=\baseconsep},
   Cnode/.style={znode, node distance=\basenodesep},
 }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Perceptron
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Mackay style
+\tikzset{
+  pics/mackayperceptron/.style={
+    code = {
+      \begin{scope}[node distance=2*\basenodesep]
+        \node[ionode={32pt}{black}{{$x_0=1$}}] (x0) {};
+        \node[input={$x_1$}, below left of=x0] (x1) {};
+        \node[input={$x_2$}, below of=x1] (x2) {};
+        \node[below of=x2] (vdots) {$\vdots$};
+        \node[input={$x_n$}, below of=vdots] (xn) {};
+        
+        \node[circle, draw=black, thick, minimum size=32pt, right of=x2] (sum) {$\mathrm{f(a)}$};
+        
+        \node[output={$y$}, right of=sum, node distance=4*\nodesep cm] (y) {};
+        
+        \draw[->] (x0) -- (sum) node [midway, right] {$w_0$};
+        \draw[->] (x1) -- (sum) node [midway, above] {$w_1$};
+        \draw[->] (x2) -- (sum) node [midway, above] {$w_2$};
+        \draw[->] (xn) -- (sum) node [midway, right] {$w_n$};
+        \draw[->] (sum) -- (y);
+      \end{scope}
+    }
+  }
+}
+
+\tikzset{
+  pics/nnlayer/.default={3}{input}{},
+  pics/nnlayer/.style n args = {3}{
+    code = {
+      \begin{scope}[yshift=#1*\basenodesep/2]
+        \pgfmathparse{#1} \pgfmathresult \let\nnodes\pgfmathresult
+        \foreach \n in {1, 2, ..., \nnodes} {
+          \ifstrempty{#3}%
+          {%
+            \node[#2, yshift=-\n*\basenodesep] (n\n) {};
+          }{%
+            \node[#2={$#3_\n$}, yshift=-\n*\basenodesep] (n\n) {};
+          }
+        }
+      \end{scope}
+    }
+  }
+}
+\tikzset{
+  pics/nnlayerdots/.default={3}{input}{}{m},
+  pics/nnlayerdots/.style n args = {4}{
+    code =  {
+      \tikzmath{
+        int \ninner, \nmax, \nvdot;
+        \ninner = #1 - 1;
+        \nmax = #1;
+        \nall = #1 + 1;
+        \offset=\ninner;
+      }
+      \pic {nnlayer={\ninner}{#2}{#3}};
+      \begin{scope}[yshift=\offset*\basenodesep/2]
+        \ifstrempty{#3}%
+        {%
+          \node[#2, yshift=-\nall*\basenodesep] (n\nmax) {};
+        }{%
+          \node[#2={$#3_{#4}$}, yshift=-\nall*\basenodesep] (n\nmax) {};
+        }
+        \node[yshift=-\nmax*\basenodesep, text height=2.5ex, text depth=.5ex] (vdots) {$\vdots$};
+      \end{scope}
+    }
+  }
+}
+%% FIXME: Add possibility to connect one-to-many, many-to-one?
+\tikzset{
+  pics/connectlayers/.style n args = {4}{
+    code = {
+      \foreach \i in {1, 2, ..., #1} {
+        \foreach \j in {1, ..., #2} {
+          \draw[->] (#3n\i) -- (#4n\j);
+        }
+      }
+    }
+  },
+  pics/connectlayersonetoone/.style n args = {3}{
+    code = {
+      \foreach \i in {1, 2, ..., #1} {
+        \draw[->] (#2n\i) -- (#3n\i);
+      }
+    }
+  }
+}
+%% Boxed hidden layer
+\tikzset{
+  pics/boxednnlayer/.default={3}{hidden}{}{m}{green},
+  pics/boxednnlayer/.style n args = {5}{
+    code = {
+      \tikzmath{
+        int \nnodes, \offset;
+        \offset = #1 + 1;
+        %% Offset depends on nodes; if odd:
+        \nnodes = #1;
+        %% if even
+        \nnodes = #1 - 1;
+      }
+      \begin{scope}[yshift=-\nnodes*\basenodesep / 2]
+        \draw[rounded corners, draw=#5!80, fill=#5!50, opacity=0.8] (-\basenodesep/2, \offset * \basenodesep/2) rectangle (\basenodesep/2, -\offset * \basenodesep / 2);
+      \end{scope}
+      \pic {nnlayerdots={#1}{#2}{#3}{#4}};
+    }
+  }
+}
+
+
+\tikzset{
+  pics/ffn/.style = {
+    code = {
+      \pic (i_) {nnlayerdots={4}{input}{X}{m}};
+      % \node[input={$x_1$}] (x1) {};
+      % \node[input={$x_2$}, below of=x1] (x2) {};
+      % \node[below of=x2] (xvdots) {$\vdots$};
+      % \node[input={$x_m$}, below of=xvdots] (xn) {};
+    }
+  }
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% RNN - smallest unit
 %%
@@ -133,12 +259,12 @@
     code = {
       \pic{rnn={#1}};
       \node[input={#2}] (xt) at (input) {};
-      \node[output={#3}] (ht) at (output) {};
+      \node[output={#3}] (yt) at (output) {};
       \draw[->] (xt) to (center);
-      \draw[->] (center) to (ht);
+      \draw[->] (center) to (yt);
     }
   },
-  pics/rnnio/.default={A}{$X_t$}{$H_t$},
+  pics/rnnio/.default={A}{$X_t$}{$Y_t$},
   pics/rnniofolded/.style={
     code = {
       \pic (foldedrnn_) {rnnio};

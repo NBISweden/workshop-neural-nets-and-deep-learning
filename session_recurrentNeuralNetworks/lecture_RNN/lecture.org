@@ -227,22 +227,8 @@ print(div)
 
 #+name: tikz-rnn-recap-perceptron-1
 #+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=4
-\begin{tikzpicture}[node distance=2*\nodesep cm, >=latex]
-\node[ionode={32pt}{black}{{$x_0=1$}}] (x0) {};
-\node[input={$x_1$}, below left of=x0] (x1) {};
-\node[input={$x_2$}, below of=x1] (x2) {};
-\node[below of=x2] (vdots) {$\vdots$};
-\node[input={$x_n$}, below of=vdots] (xn) {};
-
-\node[circle, draw=black, thick, minimum size=32pt, right of=x2] (sum) {$\mathrm{f(a)}$};
-
-\node[output={$y$}, right of=sum, node distance=4*\nodesep cm] (y) {};
-
-\draw[->] (x0) -- (sum) node [midway, right] {$w_0$};
-\draw[->] (x1) -- (sum) node [midway, above] {$w_1$};
-\draw[->] (x2) -- (sum) node [midway, above] {$w_2$};
-\draw[->] (xn) -- (sum) node [midway, right] {$w_n$};
-\draw[->] (sum) -- (y);
+\begin{tikzpicture}
+  \pic {mackayperceptron};
 \end{tikzpicture}
 #+end_src
 
@@ -282,7 +268,32 @@ Draw bottom-up; then dimensions are in "correct" order
 :::
 ** Feed forward network
 
-several inputs and outputs
+#+name: tikz-rnn-recap-perceptron-multiout
+#+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=4
+\begin{tikzpicture}
+  \pic {ffn};
+ % \node[input={$x_1$}] (x1) {};
+%   \node[input={$x_2$}, below of=x1] (x2) {};
+%   \node[below of=x2] (vdots) {$\vdots$};
+%   \node[input={$x_m$}, below of=vdots] (xn) {};
+
+%   \node[circle, draw=black, thick, minimum size=32pt, right of=x2] (sum) {$\mathrm{f(a)}$};
+
+%   \node[output={$y_3$}, right of=sum, node distance=4*\nodesep cm] (y3) {};
+%   \node[output={$y_2$}, above of=y3] (y2) {};
+%   \node[output={$y_1$}, above of=y2] (y1) {};
+%   \node[below of=x2] (vdots_y) {$\vdots$};
+%   \node[input={$x_m$}, below of=vdots_y] (xn) {};
+  
+
+%   \draw[->] (x1) -- (sum) node [midway, above] {$w_1$};
+%   \draw[->] (x2) -- (sum) node [midway, above] {$w_2$};
+%   \draw[->] (xn) -- (sum) node [midway, right] {$w_n$};
+%   \draw[->] (sum) -- (y);
+\end{tikzpicture}
+#+end_src
+
+
 
 *** Notes                                                          :ignore:
 :::: {.notes}
