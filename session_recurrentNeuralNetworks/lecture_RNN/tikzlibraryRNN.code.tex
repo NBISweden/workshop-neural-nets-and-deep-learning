@@ -8,28 +8,117 @@
 \usepackage{bm}
 \usepackage{etoolbox}
 \usepackage{sansmath}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{pgfplots}
 
-
-%% Tikz libraries
-\usetikzlibrary{automata,arrows,shapes,matrix,trees,calc,fit,backgrounds,math}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\rnntikzbasekey{/rnn/group}
+\pgfkeys{\rnntikzbasekey/.is family}
+\def\rnntikzset#1{\pgfkeys{\rnntikzbasekey,#1}}
+\def\rnntikzvalof#1{\pgfkeysvalueof{\rnntikzbasekey/#1}}
+\def\rnntikzsetvalof#1#2{\pgfkeyssetvalue{\rnntikzbasekey/#1}{#2}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Custom keys
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\rnn@group@highlight{}
+\rnntikzset{highlight/.is choice}
+\rnntikzset{highlight/.default={}}
+\rnntikzset{highlight/.initial={.default}}
+\rnntikzset{highlight/forgetgate/.code={\def\rnn@group@highlight{forgetgate}}}
+\rnntikzset{highlight/inputgate/.code={\def\rnn@group@highlight{inputgate}}}
+\rnntikzset{highlight/outputgate/.code={\def\rnn@group@highlight{outputgate}}}
+\rnntikzset{highlight/updategate/.code={\def\rnn@group@highlight{updategate}}}
+\rnntikzset{highlight/resetgate/.code={\def\rnn@group@highlight{resetgate}}}
+\rnntikzset{highlight/candidatecellstate/.code={\def\rnn@group@highlight{candidatecellstate}}}
+\rnntikzset{highlight/updatecellstate/.code={\def\rnn@group@highlight{updatecellstate}}}
+\rnntikzset{highlight/cellstateflow/.code={\def\rnn@group@highlight{cellstateflow}}}
+\rnntikzset{highlight/celloutput/.code={\def\rnn@group@highlight{celloutput}}}
+
+\def\rnn@group@shade{}
+\rnntikzset{shade/.is choice}
+\rnntikzset{shade/.default={}}
+\rnntikzset{shade/.initial={}}
+\rnntikzset{shade/input/.code={\def\rnn@group@shade{input}}}
+\rnntikzset{shade/output/.code={\def\rnn@group@shade{output}}}
+\rnntikzset{shade/both/.code={\def\rnn@group@shade{both}}}
+
+\newif\ifpgf@rnn@group@dotted
+\rnntikzset{dotted/.is choice}
+\rnntikzset{dotted/true/.code={\pgf@rnn@group@dottedtrue}}
+\rnntikzset{dotted/false/.code={\pgf@rnn@group@dottedfalse}}
+
+\newif\ifpgf@rnn@group@boxed
+\rnntikzset{boxed/.is choice}
+\rnntikzset{boxed/true/.code={\pgf@rnn@group@boxedtrue}}
+\rnntikzset{boxed/false/.code={\pgf@rnn@group@boxedfalse}}
+
+\newif\ifpgf@rnn@group@rotate
+\rnntikzset{rotate/.is choice}
+\rnntikzset{rotate/true/.code={\pgf@rnn@group@rotatetrue}}
+\rnntikzset{rotate/false/.code={\pgf@rnn@group@rotatefalse}}
+
+\newif\ifpgf@rnn@group@folded
+\rnntikzset{folded/.is choice}
+\rnntikzset{folded/true/.code={\pgf@rnn@group@foldedtrue}}
+\rnntikzset{folded/false/.code={\pgf@rnn@group@foldedfalse}}
+
+\newif\ifpgf@rnn@group@addlabels
+\rnntikzset{add labels/.is choice}
+\rnntikzset{add labels/true/.code={\pgf@rnn@group@addlabelstrue}}
+\rnntikzset{add labels/false/.code={\pgf@rnn@group@addlabelsfalse}}
+
+\newif\ifpgf@rnn@group@addweights@whh
+\rnntikzset{add weights/.is choice}
+\rnntikzset{shade/.default={none}}
+\rnntikzset{shade/.initial={none}}
+\rnntikzset{add weights/all/.code={\pgf@rnn@group@addweights@whhtrue%
+    \pgf@rnn@group@addweights@wxhtrue\pgf@rnn@group@addweights@whytrue}}
+\rnntikzset{add weights/none/.code={\pgf@rnn@group@addweights@whhfalse%
+    \pgf@rnn@group@addweights@wxhfalse\pgf@rnn@group@addweights@whyfalse}}
+
+
+\newif\ifpgf@rnn@group@addweights@whh
+\rnntikzset{add weights/whh/.is choice}
+\rnntikzset{add weights/whh/true/.code={\pgf@rnn@group@addweights@whhtrue}}
+\rnntikzset{add weights/whh/false/.code={\pgf@rnn@group@addweights@whhfalse}}
+
+\newif\ifpgf@rnn@group@addweights@wxh
+\rnntikzset{add weights/wxh/.is choice}
+\rnntikzset{add weights/wxh/true/.code={\pgf@rnn@group@addweights@wxhtrue}}
+\rnntikzset{add weights/wxh/false/.code={\pgf@rnn@group@addweights@wxhfalse}}
+
+\newif\ifpgf@rnn@group@addweights@why
+\rnntikzset{add weights/why/.is choice}
+\rnntikzset{add weights/why/true/.code={\pgf@rnn@group@addweights@whytrue}}
+\rnntikzset{add weights/why/false/.code={\pgf@rnn@group@addweights@whyfalse}}
+
+%% Tikz libraries
+\usetikzlibrary{automata,arrows,shapes,matrix,trees,calc,fit,backgrounds,math,quotes,shadows,tikzmark}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Basic units and config
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\baseunit{1cm}
 %% \def\baseunit{28pt} 1cm ~ 28pt
+
+%% FIXME: change these poor names!
+%% Base node separation
 \def\basenodesep{\baseunit}
+%% Base connection separation
 \def\baseconsep{\basenodesep/2}
 %% node sizes
 \def\ionodesize{0.6*\baseunit}
-
 
 %% Basic config
 \tikzset{node distance=\basenodesep}
 \tikzset{>=latex}
 
-%% Colors
+%% Custom color styles
 \tikzset{
   nngreen/.style={thick, rounded corners, fill=green!30},
   nnbox/.style={nngreen, draw=black}
@@ -38,11 +127,18 @@
 %% Font config, labels
 \tikzset{
   iolabel/.style={
-    font=\bfseries\small\sffamily\sansmath
+    font=\bfseries\small\sffamily\sansmath,
   },
   nnlabel/.style={
-    font=\bfseries\Huge\sffamily\sansmath
+    font=\bfseries\Huge\sffamily\sansmath,
   },
+  weightlabel/.style={
+    font=\bfseries\scriptsize\sffamily\sansmath,
+  },
+  nncon/.style={thick, rounded corners=3pt},
+  nnconarr/.style={>=latex, thick, rounded corners=3pt, ->},
+  lstmlabel/.style = {node distance=\RNNdeltaunit, font=\small},
+  lstmflowlabel/.style = {node distance=1.5*\RNNdeltaunit, font=\small},
 }
 
 %% Simple input/output nodes
@@ -52,13 +148,27 @@
     minimum size=#1,
     inner sep=0pt,
     outer sep=0pt,
-    draw=#2!80,
-    fill=#2!20,
+    draw=#2!70,
+    fill=#2!30,
     label=[iolabel]center:#3,
-  }
+  },
 }
 \tikzset{input/.style={ionode={\ionodesize}{blue}{#1}}}
 \tikzset{output/.style={ionode={\ionodesize}{red}{#1}}}
+\tikzset{state/.style={ionode={\ionodesize}{purple}{#1}}}
+\tikzset{hidden/.style={ionode={\ionodesize}{green}{#1}}}
+\tikzset{activation/.style={ionode={\ionodesize}{black}{#1}}}
+
+%% loss node
+\tikzset{
+  loss/.style = {
+    rectangle,
+    rounded corners,
+    thick,
+    fill=orange!50,
+    draw=black,
+  }
+}
 
 %% Pointwise operation style
 \tikzset{
@@ -92,119 +202,12 @@
   tanh/.style={sigtan={14pt}{blue}{4pt}},
 }
 
-%% Legend symbols
-\tikzset{
-  %% vector connection
-  vcon/.style={
-    label={center:\tikz\draw[->, thick, >=latex'] (0, 0.2*#1) to[out=300, in=180] (0.2*#1, 0) [out=180, in=60] (0, -0.2#1) to[out=60, in=180] (0.2*#1, 0) -- (0.5#1, 0);}
-  },
-}
-
-
 \tikzset{
   znode/.style={inner sep=0pt, outer sep=0pt},
+  zionode/.style={inner sep=0pt, outer sep=0pt, minimum size=\ionodesize, circle},
+  zsmallionode/.style={inner sep=0pt, outer sep=0pt, minimum size=\ionodesize / 2, circle},
   cnode/.style={znode, node distance=\baseconsep},
   Cnode/.style={znode, node distance=\basenodesep},
-}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% RNN - smallest unit
-%%
-%% Input, network (represented as box), output
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\rnninnerwidth{2*\basenodesep}
-\def\rnninnerheight{\basenodesep}
-\def\rnnouterwidth{2*\basenodesep}
-\def\rnnouterheight{3*\basenodesep}
-
-\tikzset{
-  pics/rnn/.style= {
-    code = {
-      \begin{scope}[xshift=\rnnouterwidth/2, yshift=\rnnouterheight/2]
-        \node[nnbox, rectangle, nnlabel, minimum width=\rnninnerwidth, minimum height=\rnninnerheight] (center) at (0, 0) {#1};
-        \node[znode, below of=center, node distance=\basenodesep + \baseconsep] (input) {};
-        \node[znode, above of=center, node distance=\basenodesep + \baseconsep] (output) {};
-        \node[znode, right of=center] (right) {};
-        \node[znode, left of=center] (left) {};
-      \end{scope}
-    }
-  },
-  pics/rnn/.default={A},
-  pics/rnnio/.style n args={3}{
-    code = {
-      \pic{rnn={#1}};
-      \node[input={#2}] (xt) at (input) {};
-      \node[output={#3}] (ht) at (output) {};
-      \draw[->] (xt) to (center);
-      \draw[->] (center) to (ht);
-    }
-  },
-  pics/rnnio/.default={A}{$X_t$}{$H_t$},
-  pics/rnniofolded/.style={
-    code = {
-      \pic (foldedrnn_) {rnnio};
-      \draw[->] (foldedrnn_right) -- ++(\baseconsep, 0) -- ++(0, 1.5*\baseconsep) -- ++(-\sep, 0) -- ++(0, -1.5\baseconsep) --(foldedrnn_left);
-    }
-  }
-}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Bare RNN - building block for rnn figures
-%% 
-%% FIXME: ascii drawing of diagram
-%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\basernnwidth{5*\basenodesep}
-\def\basernnheight{3*\basenodesep}
-\def\basernnfigwidth{7*\basenodesep}
-\def\basernnfigheight{5*\basenodesep}
-\tikzset{
-  pics/basernn/.style = {
-    code = {
-      \begin{scope}[xshift=\basernnfigwidth/2, yshift=\basernnfigheight/2]
-        \draw[thick] (-\basernnfigwidth/2, -\basernnfigheight/2) rectangle (\basernnfigwidth/2, \basernnfigheight/2);
-        \draw[thick, rounded corners, fill=green!30] (-\basernnwidth/2, -\basernnheight/2) rectangle (\basernnwidth/2, \basernnheight/2);
-        \node (cm) at (0, 0) {};
-        \node[cnode, below of=cm] (cb1) {};
-        \node[cnode, below of=cb1] (cb2) {};
-        \node[cnode, above of=cm] (ca1) {};
-        \node[cnode, below of=ca1] (ca2) {};
-        \node (x) at (-\basernnfigwidth/2 + 3 * \baseconsep, -\basernnfigheight/2 + \baseconsep) {};
-        \node (h) at (\basernnfigwidth/2 - 3 * \baseconsep, \basernnfigheight/2 - \baseconsep) {};
-      \end{scope}
-    }
-  }
-}
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% OBSOLETE
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Constants, sizes, units, ...
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \def\baseunit{1cm}
-\def\nodesepunit{\baseunit}
-\def\rnnwidth{4*\baseunit}
-\def\rnnheight{2*\baseunit}
-\def\rnnfigwidth{5*\baseunit}
-\def\rnnfigheight{4.5*\baseunit}
-%% Similarly for lstm and gru
-
-
-\tikzset{node distance=\nodesepunit}
-\tikzset{>=latex}
-
-%% Connection nodes
-\tikzset{
-  connode2/.style={inner sep=0pt, outer sep=0pt, node distance=\consep cm},
-  connode/.style={inner sep=0pt, outer sep=0pt},
-  connodew/.style={inner sep=0pt, outer sep=0pt, node distance=1.5*\nodesepunit},
-  connodeW/.style={inner sep=0pt, outer sep=0pt, node distance=2*\nodesepunit},
-  conline/.style={>=latex, thick}
 }
 
 %% Time series observation
@@ -216,200 +219,881 @@
   }
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% LSTM command and components
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Base on https://duckduckgo.com/?t=ffab&q=lstm+illustration&atb=v1-1&iax=images&ia=images&iai=https%3A%2F%2Fwww.herongyang.com%2FNeural-Network%2FLSTM-Long-Short-Term-Memory-github.png
-\def\nodesep{0.8}
-\def\consep{0.4}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% rnnlegend: legend describing layers and connections
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-\newcommandx*{\lstm}[5][1=,2=,3=,4=,5=]{%
-  \begin{tikzpicture}[>=latex, thick, node distance=\nodesep cm]
-    \draw[rounded corners, fill=green!30] (0,0) rectangle (6*\nodesep, 3*\nodesep);
-    \node[sigmoid] (s1) at (\nodesep, \nodesep) {};
-    \node[sigmoid, right of=s1] (s2) {};
-    \node[pwise=X, above of=s1, node distance=1.7*\nodesep cm] (p1) {};
-    \node[tanh, right of=s2] (t1) {};
-    \node[sigmoid, right of=t1] (s3) {};
-    \node[pwise=X, right of=s3] (p2) {};
-    \node[tanh, above of=p2] (t2) {};
-    \node[pwise=X, above of=t1] (p3) {};
-    \node[pwise=+, right of=p1, node distance=2*\nodesep cm] (p4) {};
-
-    %% Cell state
-    \node[connode2, node distance=1.5*\nodesep cm, left of=p1, anchor=east] (ctminus1) {#1};
-    \node[connode2, node distance=3.5*\nodesep cm, right of=p4, anchor=west] (ct) {#2};
-    \draw[shorten >= 0.2*\consep cm] (t2) |- (ct);
-    \draw[->] (ctminus1) -- (p1) -- (p4) -- (ct);
-
-    %% Input state
-    \node[connode2, below of=s1] (con1) {};
-    \node[connode2, left of=con1] (con2) {};
-
-    \ifstrempty{#3}%
-    {%
-      \node[input={}, node distance=\nodesep cm, below of=con2, draw=none, fill=none] (xt) {};      
-    }{%
-      \node[input={#3}, node distance=\nodesep cm, below of=con2] (xt) {};
+%% Legend symbols
+\tikzset{
+  %% vector connection
+  vcon/.style={
+    label={center:\tikz\draw[->, thick, >=latex'] (0, 0.2*#1) to[out=300, in=180] (0.2*#1, 0) [out=180, in=60] (0, -0.2#1) to[out=60, in=180] (0.2*#1, 0) -- (0.5#1, 0);}
+  },
+  %% vector copy
+  vcopy/.style={
+    label={center:\tikz\draw[<->, thick, >=latex'] (0.5#1, 0.2*#1) to[out=225, in=0] (0, 0) to[out=0, in=135] (0.5#1, -0.2*#1);}
+  },
+  legendlabel/.style={
+    font=\sffamily\bfseries\tiny,
+    text width=1.4cm,
+    align=center,
+  },
+}
+\tikzset{
+  pics/rnnlegend/.default={}{true}{}{}{}{true}{true},
+  pics/rnnlegend/.style n args = {7}{
+    code = {
+      \edef\myx{0}
+      \ifpgf@rnn@group@rotate
+      \coordinate (x) at (0, -\myx);
+      \else
+      \coordinate (x) at (\myx, 0);
+      \fi
+      \begin{scope}
+        \foreach[count=\xi] \sym\arg in {sigmoid/#1, tanh/#2, pwiseX/#3, pwise+/#4, pwise1-/#5, vcon/#6, vcopy/#7} {
+          \ifnum\pdfstrcmp{\arg}{true}=0
+          \ifnum\pdfstrcmp{\sym}{sigmoid}=0
+          \node[sigmoid, label={[legendlabel]below:sigmoid}] (sigmoid) at (x) {};
+          \fi
+          \ifnum\pdfstrcmp{\sym}{tanh}=0
+          \node[tanh, label={[legendlabel]below:tanh}] (tanh) at (x) {};
+          \fi
+          \ifnum\pdfstrcmp{\sym}{pwiseX}=0
+          \node[pwise=X, label={[legendlabel]below:pointwise multiplication}] (pmult)  at (x) {};
+          \fi
+          \ifnum\pdfstrcmp{\sym}{pwise+}=0
+          \node[pwise=+, label={[legendlabel]below:pointwise addition}] (padd)  at (x) {};
+          \fi
+          \ifnum\pdfstrcmp{\sym}{pwise1-}=0
+          \node[pwise={1-}, label={[legendlabel]below:pointwise inversion}] (pinvert)  at (x) {};
+          \fi
+          \ifnum\pdfstrcmp{\sym}{vcon}=0
+          \node[vcon=1cm, label={[legendlabel]below:vector concatenation}] (vconcat)  at (x) {};
+          \fi
+          \ifnum\pdfstrcmp{\sym}{vcopy}=0
+          \node[vcopy=1cm, label={[legendlabel]below:vector copy}] (vcopy)  at (x) {};
+          \fi
+          \pgfmathparse{\myx+1.0}
+          \xdef\myx{\pgfmathresult}
+          \ifpgf@rnn@group@rotate
+          \coordinate (x) at (0, -\myx);
+          \else
+          \coordinate (x) at (\myx, 0);
+          \fi
+          \fi
+        }
+      \end{scope}
     }
-
-    \draw (xt) -- ($ (xt) !.9! (con2) $) to [out=90, in=180] ($ (xt|-con1.east) !.1! (con1.east) $) -- (con1) -| (s1);
-
-    %% Hidden state
-    \node[connode2, node distance=\consep * 2 cm, left of=con2, anchor=east] (htminus1) {#4};
-    \node[connode2, node distance=\nodesep * 6 cm, right of=con2, anchor=west] (ht) {#5};
-    \draw (htminus1) -| (s1);
-    \draw (htminus1) -| (t1);
-    \draw (htminus1) -| (s2);
-    \draw (htminus1) -| (s3);
-
-    %% Remaining edges
-    \draw[->] (s1) -- (p1);
-    \draw[->] (s2) |- (p3);
-    \draw (t1) -- (p3);
-    \draw[->] (s3) -- (p2);
-    \draw (p2) -- (t2);
-    \draw[->] (p2) |- (ht);
-    \draw[->] (p3) -- (p4);
-    
-  \end{tikzpicture}  
+  }
 }
 
-\newcommand*{\lstmforgetgate}{
-   \begin{tikzpicture}
-     \node[anchor=west] {\lstm};
-     \node (rect) at (1.7*\nodesep, 0.65*\nodesep) [draw=red, thick, dotted, minimum width=0.7*\nodesep cm, minimum height=2.25*\nodesep cm]  {};
-     \node[above of=rect, red, font=\sffamily\tiny\bfseries, anchor=south] {forget gate};
-   \end{tikzpicture}
-}
-
-\newcommand*{\lstminputgate}{
-   \begin{tikzpicture}
-     \node[anchor=west] {\lstm};
-     \node (rect) at (2.7*\nodesep, 0.25*\nodesep) [draw=red, thick, dotted, minimum width=0.7*\nodesep cm, minimum height=1.5*\nodesep cm]  {};
-     \node[above of=rect, red, font=\sffamily\tiny\bfseries, anchor=north] {input gate};
-   \end{tikzpicture}
-}
-
-\newcommand*{\lstmcellstate}{
-   \begin{tikzpicture}
-     \node[anchor=west] {\lstm};
-     \node (rect) at (0.2*\nodesep, 1.6*\nodesep) [draw=red, thick, dotted, minimum width=7*\nodesep cm, minimum height=0.4*\nodesep cm, anchor=west]  {};
-     \node[below of=rect, red, font=\sffamily\tiny\bfseries, anchor=north west, node distance=0.2*\nodesep cm] {cell state};
-   \end{tikzpicture}
-}
-
-\newcommand*{\lstmoutputgate}{
-   \begin{tikzpicture}
-     \node[anchor=west] {\lstm};
-     \node (rect) at (4.25*\nodesep, -0.25 * \nodesep) [draw=red, thick, dotted, minimum width=1.25*\nodesep cm, minimum height=\nodesep cm, anchor=west]  {};
-     \node[above of=rect, red, font=\sffamily\tiny\bfseries, anchor=south, node distance=0.5*\nodesep cm] {output gate};
-   \end{tikzpicture}
-}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%% GRU
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommandx*{\gru}[3][1=,2=,3=]{
-  \begin{tikzpicture}[>=latex, thick, node distance=\nodesep cm]
-    \draw[rounded corners, fill=green!30] (0,0) rectangle (6*\nodesep, 3*\nodesep);
-    \node[sigmoid] (s1) at (2*\nodesep, 1.25*\nodesep) {};
-    \node[sigmoid, right of=s1] (s2) {};
-    \node[connode2, above of=s1, node distance=1.5*\consep cm] (cs1p1) {};
-    \node[pwise=X, left of=cs1p1] (p1) {};
-    \node[pwise={1-}, above of=s2] (p2) {};
-    \node[pwise={X}, above of=p2, node distance=\consep cm] (p3) {};
-    \node[tanh, right of=s2, node distance=1.5*\nodesep cm] (t1) {};
-    \node[pwise=X, above of=t1, node distance=1.5*\consep cm] (p4) {};
-    \node[pwise=+, right of=p3, node distance=1.5*\nodesep cm] (p5) {};
+%% Neural network perceptron
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    %% Invisible nodes
-    \node[connode2, above of=s2, node distance=1.5*\consep cm] (p2b) {};
-    % Row 2
-    \node[connode2, below of=s1] (s32) {};
-    \node[connode2, left of=s32, node distance=\nodesep cm] (s22) {};
-    \node[connode2, left of=s22] (s12) {};
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% mackayperceptron: Mackay style perceptron from Information theory
+%% book
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/mackayperceptron/.style={
+    code = {
+      \begin{scope}[node distance=2*\basenodesep]
+        \node[ionode={32pt}{black}{{$x_0=1$}}] (x0) {};
+        \node[input={$x_1$}, below left of=x0] (x1) {};
+        \node[input={$x_2$}, below of=x1] (x2) {};
+        \node[below of=x2] (vdots) {$\vdots$};
+        \node[input={$x_n$}, below of=vdots] (xn) {};
 
-    % Row 1
-    \node[connode2, below of=s12] (s11) {};
-    \node[connode2, right of=s11] (s21) {};
-    \node[connode2, right of=s21] (s31) {};
-    \node[connode2, right of=s21, node distance=3*\nodesep cm] (s51) {};
-    
-    %% Input
-    \ifstrempty{#3}%
-    {%
-      \node[input={}, node distance=.75*\nodesep cm, below of=s11, draw=none, fill=none] (xt) {};      
-    }{%
-      \node[input={#3}, node distance=.75*\nodesep cm, below of=s11] (xt) {};
+        \node[activation, right of=x2] (sum) {};
+
+        \node[output={$y$}, right of=sum, node distance=4*\basenodesep] (y) {};
+
+        \draw[->] (x0) -- (sum) node [midway, right] {$w_0$};
+        \draw[->] (x1) -- (sum) node [midway, above] {$w_1$};
+        \draw[->] (x2) -- (sum) node [midway, above] {$w_2$};
+        \draw[->] (xn) -- (sum) node [midway, right] {$w_n$};
+        \draw[->] (sum) -- (y);
+      \end{scope}
     }
-    %%\node[input={$\boldsymbol{x_t}$}, node distance=.75*\nodesep cm, below of=s11] (xt) {};
-    
-    %% Cell state
-    \node[connode2, node distance=3.5*\nodesep cm, left of=p3, anchor=east] (ctminus1) {#1};
-    \node[connode2, node distance=2*\nodesep cm, right of=p5, anchor=west] (ct) {#2};
-    \draw[->] (ctminus1) -- (p3) -- (p5) -- (ct);
-
-    %% Edges
-    
-    % Tanh to +
-    \draw[->] (p4) -- (p5);
-    \draw (t1) -- (p4);
-
-    % xt to t1 and others
-    \draw (xt) |- (s11-|t1) -| (t1);
-    \draw (xt) -- ($ (xt) !.9! (s12) $) to [out=90, in=180] ($ (xt|-s22.east) !.1! (s22.east) $) -| (s1);
-    \draw (ctminus1) -| ($ (xt) !1.1! (s12) $) to [out=270, in=180] ($ (xt|-s22.east) !.1! (s22.east) $) -| (s1);
-    \draw (s32) -| (s2);
-    \draw[->] (s1) |- (p1);
-    \draw (ctminus1) -| (p1);
-    \draw[shorten >= 0.05*\consep cm] (p1) -- (s22);
-    \draw[shorten <= 0.05*\consep cm] (s22) -- ($ (s22) !.9! (s21) $) to[out=270, in=180] ($ (s21) !.1! (s31) $);
-    \draw (s2) -- (p2);
-    \draw[->] (p2) -- (p3);
-    \draw[->] (p2b) -- (p4);
-
-  \end{tikzpicture}  
+  }
 }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% mackayperceptronactivity: Mackay style perceptron from Information
+%% theory book, with explicit activity and nonlinear function nodes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/mackayperceptronactivity/.style={
+    code = {
+      \begin{scope}[node distance=2*\basenodesep]
+        \node[ionode={32pt}{black}{{$x_0=1$}}] (x0) {};
+        \node[input={$x_1$}, below left of=x0] (x1) {};
+        \node[input={$x_2$}, below of=x1] (x2) {};
+        \node[below of=x2] (vdots) {$\vdots$};
+        \node[input={$x_n$}, below of=vdots] (xn) {};
+
+        \node[activation, right of=x2] (sum) {$\sum$};
+        \node[right of=sum, node distance=2*\basenodesep, sigmoid] (nonlinear) {};
+        \node[output={$y$}, right of=sum, node distance=4*\basenodesep] (y) {};
+
+        \draw[->] (x0) -- (sum) node [midway, right] {$w_0$};
+        \draw[->] (x1) -- (sum) node [midway, above] {$w_1$};
+        \draw[->] (x2) -- (sum) node [midway, above] {$w_2$};
+        \draw[->] (xn) -- (sum) node [midway, right] {$w_n$};
+        \draw[->] (sum) -- (nonlinear);
+        \draw[->] (nonlinear) -- (y);
+      \end{scope}
+    }
+  }
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Vanilla RNNs
+%% Neural network layers
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \tikzset{
-  xtlabel/.initial = $X_t$,
-  htlabel/.initial  = $H_t$,
-  pics/vanillarnn/.style 2 args = {
+  pics/nnlayer/.default={3}{input}{}{}{blue},
+  pics/nnlayer/.style n args={5}{
     code = {
-      \tikzset{xtlabel/.get=\xtlabel}
-      \tikzset{htlabel/.get=\htlabel}
-      \begin{scope}[xshift=\rnnfigwidth/2, yshift=\rnnfigheight/2]
-        \draw[thick] (-\rnnfigwidth/2, -\rnnfigheight/2) rectangle (\rnnfigwidth/2, \rnnfigheight/2);
-        \draw[thick, rounded corners, fill=green!30] (-\rnnwidth/2, -\rnnheight/2) rectangle (\rnnwidth/2, \rnnheight/2);
-        \node[tanh] (t1) at (0, 0) {};
-        \node[input={\xtlabel}] (xt) at (-\rnnwidth/2 + \baseunit/2, -\rnnheight/2 - 3*\baseunit/4) {};    
-        \node[output={\htlabel}] (ht) at (\rnnwidth/2 - \baseunit/2, \rnnheight/2 + 3*\baseunit/4) {};
+      \tikzmath{
+        int \nnodes, \offset, \j;
+        \offset = #1;
+        \nnodes = #1 + mod(#1, 2) - 1;
+        \j = 1;
+      }
+      \ifpgf@rnn@group@dotted
+      \tikzmath{\offset = \offset + 1;}
+      \fi
 
-        %% Connection nodes
-        \node[connodew, above of=xt] (xta) {};
-        \node[connode, below of=t1] (t1b) {};
-        \node[connode, above of=t1] (t1a) {};
-        \node[connodew, below of=ht] (htb) {};
-        \node[connode] (x) at ($ (t1a) !.5! (htb) $) {};
-        \node[connodew, right of=x] (htr) {};        
+      %% Center nodes such that alignment between layers is on center
+      \begin{scope}[yshift=\offset*\basenodesep/2]
+        \ifpgf@rnn@group@boxed
+        \draw[rounded corners, draw=#5!80, fill=#5!50, opacity=0.8] (-\basenodesep/2, -\basenodesep/2) rectangle (\basenodesep/2, -\offset * \basenodesep - \basenodesep/2);
+        \else
+        \fi
+        \pgfmathparse{#1} \pgfmathresult \let\nnodes\pgfmathresult
+        \foreach [count=\i] \n in {1, 2, ..., \nnodes} {
+          \tikzmath{ \j=\i ;}
+          \ifnum\pdfstrcmp{\n}{\nnodes}=0
+          \ifpgf@rnn@group@dotted
+          \node[yshift=-\i*\basenodesep, text height=2.5ex, text depth=.5ex] (vdots) {$\vdots$};
+          \tikzmath{ \i=\i+1;}
+          \ifstrempty{#4}{}{\let\n#4}
+          \fi
+          \fi
+          \ifstrempty{#3}%
+          {%
+            \node[#2, yshift=-\i*\basenodesep] (_n\j) {};
+          }{%
+            \node[#2={$#3_\n$}, yshift=-\i*\basenodesep] (_n\j) {};
+          }
+        }
+      \end{scope}
+    }
+  }
+}
 
-        \draw[->, conline] (xt) |- ($ (xta) !.5! (t1b) $) -| (t1);
-        \draw[->, conline] (t1) |- ($ (t1a) !.5! (htb) $) -| (ht);
-        \draw[->, conline] (x) -- (htr);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% connectlayers: Macro to connect layers
+%% Arguments: prefix1, prefix2, nnodes, nnodes2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/connectlayers/.style n args = {4}{
+    code = {
+      \ifstrempty{#4}{%
+        \foreach \i in {1, 2, ..., #3} {
+          \draw[nncon] (#1_n\i) -- (#2_n\i);
+        }
+      }{%
+        \foreach \i in {1, 2, ..., #3} {
+          \foreach \j in {1, ..., #4} {
+            \draw[nncon] (#1_n\i) -- (#2_n\j);
+          }
+        }
+      }
+    },
+  },
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% RNN - smallest unit representation without inner details
+%%
+%% Input, network (represented as box), output
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\rnninnerwidth{2*\basenodesep}
+\def\rnninnerheight{\basenodesep}
+\def\rnnouterwidth{2*\basenodesep}
+\def\rnnouterheight{3*\basenodesep}
+\def\rnnioouterwidth{2*\basenodesep}
+\def\rnnioouterheight{3*\basenodesep + \ionodesize}
+\def\rnnioxshift{3*\basenodesep}
+\def\rnnioxshiftsmall{0.9*\rnnioxshift}
+
+\tikzset{
+  rnnw/.initial = \rnninnerwidth,
+  rnnh/.initial = \rnninnerheight,
+}
+
+%%%%%%%%%%%%%%%%%%%%
+%% rnn: minimal rnn unit without input/output nodes. Consists of box
+%% with connection nodes
+%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/rnn/.style= {
+    code = {
+      \tikzset{rnnw/.get=\rnnw}
+      \tikzset{rnnh/.get=\rnnh}
+      \begin{scope}[xshift=\rnnouterwidth/2, yshift=\rnnouterheight/2]
+        \node[nnbox, rectangle, nnlabel, minimum width=\rnnw, minimum height=\rnnh] (_center) at (0, 0) {};
+        \ifnum\pdfstrcmp{#1}{tanh}=0
+        \node[tanh] (_tanh) at (_center) {};
+        \else
+        \node[nnlabel] (A) at (_center) {#1};
+        \fi
+
+        \node[zionode, below of=_center, node distance=\basenodesep + \baseconsep] (_input) {};
+        \node[zionode, above of=_center, node distance=\basenodesep + \baseconsep] (_output) {};
+        \node[znode, right of=_center] (_right) {};
+        \node[znode, left of=_center] (_left) {};
+        \node(_boundary) [fit=(_center)(_left)(_right)] {};
       \end{scope}
     }
   },
-  vanillarnnoverlay/.pic={%%
-    \pic{vanillarnn};
-    \begin{scope}[xshift=\rnnfigwidth/2, yshift=\rnnfigheight/2]
-      \draw[ultra thick, rounded corners, fill=green!30, opacity=0.8] (-\rnnwidth/2, -\rnnheight/2) rectangle (\rnnwidth/2, \rnnheight/2);
-      \node[font=\sffamily\Huge] (A) at (0, 0) {A};
-    \end{scope}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% rnnio: rnn with input and output node
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\foldedsep{0.5*\baseconsep}
+\def\foldedwidth{5*\baseconsep}
+\tikzset{
+  pics/rnnio/.default={A}{$X_t$}{$Y_t$},
+  pics/rnnio/.style n args={3}{
+    code = {
+      \pic{rnn={#1}};
+      \ifnum\pdfstrcmp{\rnn@group@shade}{input}=0
+      \shade [shading=radial, inner color=blue!100, outer color=blue!0] (_input) circle (0.8*\ionodesize);
+      \fi
+      \ifnum\pdfstrcmp{\rnn@group@shade}{output}=0
+      \shade [shading=radial, inner color=blue!100, outer color=blue!0] (_output) circle (0.8*\ionodesize);
+      \fi
+      \ifnum\pdfstrcmp{\rnn@group@shade}{both}=0
+      \shade [shading=radial, inner color=blue!100, outer color=blue!0] (_input) circle (0.8*\ionodesize);
+      \shade [shading=radial, inner color=blue!100, outer color=blue!0] (_output) circle (0.8*\ionodesize);
+      \fi
+      \node[input={#2}] (_xt) at (_input) {};
+      \node[output={#3}] (_yt) at (_output) {};
+      \draw[->] (_xt) to (_center);
+      \draw[->] (_center) to (_yt);
+
+      \ifpgf@rnn@group@folded
+      \draw[->] (_right) -- ++(\foldedsep, 0) -- ++(0, 1.5*\baseconsep) -- ++ (-\foldedwidth, 0) -- ++(0, -1.5\baseconsep) --(_left);
+      \fi
+      \ifpgf@rnn@group@addlabels
+      \node[lstmlabel, anchor=north west] at (_right.east) {$h_t$};
+      \fi
+
+      \ifpgf@rnn@group@addweights@wxh
+      \node[weightlabel, anchor=west] at ($ (_input) !.4! (_input |- _center)$) {$\mathbf{W_{xh}}$};
+      \fi
+      \ifpgf@rnn@group@addweights@why
+      \node[weightlabel, anchor=west] at ($ (_output) !.5! (_center -| _output)$) {$\mathbf{W_{hy}}$};
+      \fi
+      \ifpgf@rnn@group@addweights@whh
+      \node[weightlabel, anchor=north west] at (_right) {$\mathbf{W_{hh}}$};
+      \fi
+    }
   }
 }
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% rnnioin: rnn with input node only
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/rnnioin/.default={}{},
+  pics/rnnioin/.style n args = {2}{
+    code = {
+      \pic{rnn={#1}};
+      \node[input={#2}] (_xt) at (_input) {};
+      \draw[->] (_xt) to (_center);
+    },
+  },
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% rnnioout: rnnio with output node only
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/rnnioout/.default={}{},
+  pics/rnnioout/.style n args = {2}{
+    code = {
+      \pic{rnn={#1}};
+      \node[output={#2}] (_yt) at (_output) {};
+      \draw[->] (_center) to (_yt);
+    },
+  },
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Vanilla RNN: larger units depicting internal structure
+%%
+%% Modular build up from basic rectangular unit to LSTMs and GRUs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% FIXME: possibly base on smaller unit separation; would also require
+%% adjusting ionodesize
+%% FIXME: rename baseconsep (-> gridunit?)
+\def\RNNinnerwidth{10*\baseconsep}
+\def\RNNinnerheight{6*\baseconsep}
+\def\RNNouterwidth{12*\baseconsep}
+\def\RNNouterheight{8*\baseconsep}
+\def\RNNioouterwidth{\RNNouterwidth + \ionodesize}
+\def\RNNioouterheight{\RNNouterheight + \ionodesize}
+\def\RNNdeltaunit{\baseconsep / 2}
+
+\tikzset{
+  RNNw/.initial = \RNNinnerwidth,
+  RNNh/.initial = \RNNinnerheight,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% RNN: basic vanilla rnn unit. Capital letter to distinguish from rnn
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/RNN/.style= {
+    code = {
+      \tikzset{RNNw/.get=\RNNw}
+      \tikzset{RNNh/.get=\RNNh}
+      \begin{scope}[xshift=\RNNouterwidth/2, yshift=\RNNouterheight/2]
+        \node[nnbox, ultra thick, rectangle, nnlabel, minimum width=\RNNw, minimum height=\RNNh] (_center) at (0, 0) {#1};
+
+        % Center up nodes
+        \node[znode, above of=_center, node distance=\RNNdeltaunit] (_center_up1) {};
+        \node[znode, above of=_center_up1, node distance=3*\RNNdeltaunit] (_center_up2) {};
+
+        %% Center down nodes
+        \node[znode, below of=_center, node distance=2*\RNNdeltaunit] (_center_down1) {};
+        \node[znode, below of=_center_down1, node distance=2*\RNNdeltaunit] (_center_down2) {};
+
+        %% cin / cout marker
+        \node[znode, left of=_center_up2, node distance=6*\baseconsep] (_cin) {};
+        \node[znode, right of=_center_up2, node distance=6*\baseconsep] (_cout) {};
+
+
+        %% hin / hout marker
+        \node[znode, left of=_center_down2, node distance=6*\baseconsep] (_hin) {};
+        \node[znode, right of=_center_down2, node distance=6*\baseconsep] (_hout) {};
+
+        %% input / output marker
+        \node[znode, left of=_center_down2, node distance=4*\baseconsep + \RNNdeltaunit] (_hin_input) {};
+        \node[znode, right of=_center_up2, node distance=4*\baseconsep + \RNNdeltaunit] (_cout_output) {};
+
+        %% Input / output nodes
+        \node[zionode, below of=_hin_input, node distance=2*\baseconsep + \RNNdeltaunit] (_input) {};
+        \node[zionode, above of=_cout_output, node distance=2*\baseconsep + \RNNdeltaunit] (_output) {};
+
+        %% Nodes intersecting yt and hout / cout
+        \node[znode] (_output_hout) at (_output |- _hout) {};
+        \node[znode] (_output_cout) at (_output |- _cout) {};
+
+        \node(_boundary) [inner sep=0pt, outer sep=0pt, fit=(_input)(_hin)(_cin)(_output)(_cout)(_hout)] {};
+      \end{scope}
+    }
+  },
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% RNNio: vanilla RNN with input and output node
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/RNNio/.default={}{$X_t$}{$Y_t$},
+  pics/RNNio/.style n args={3}{
+    code = {
+      \tikzset{RNNw/.get=\RNNw}
+      \tikzset{RNNh/.get=\RNNh}
+      \pic  {RNN};
+      \ifnum\pdfstrcmp{\rnn@group@shade}{input}=0
+      \shade [shading=radial, inner color=blue!100, outer color=blue!0] (_input) circle (0.8*\ionodesize);
+      \fi
+      \ifnum\pdfstrcmp{\rnn@group@shade}{output}=0
+      \shade [shading=radial, inner color=blue!100, outer color=blue!0] (_output) circle (0.8*\ionodesize);
+      \fi
+      \ifnum\pdfstrcmp{\rnn@group@shade}{both}=0
+      \shade [shading=radial, inner color=blue!100, outer color=blue!0] (_input) circle (0.8*\ionodesize);
+      \shade [shading=radial, inner color=blue!100, outer color=blue!0] (_output) circle (0.8*\ionodesize);
+      \fi
+      \node[input={#2}] (_xt) at (_input) {};
+      \node[output={#3}] (_yt) at (_output) {};
+
+      \node[tanh] (_tanh) at (_center) {};
+      \draw[nnconarr] (_xt) |- (_hin -| _tanh) -- (_tanh);
+      \draw[nnconarr] (_cin) -| ($ (_hin) !.5! (_center_down2) $) -| (_tanh);
+      \draw[nnconarr] (_tanh) |- (_center_up2 -| _yt) -- (_yt);
+      \draw[nnconarr] (_tanh) |- (_cout);
+      \ifnum\pdfstrcmp{#1}{}=0
+      \else
+      \node[nnbox, ultra thick, rectangle, nnlabel, minimum width=\RNNw, minimum height=\RNNh, opacity=0.8] at (_center) {};
+      \node[nnlabel] (A) at (_center) {#1};
+      \fi
+    }
+  }
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% lstmempty: lstm with nodes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/lstmempty/.style = {
+    code = {
+      \tikzset{RNNw/.get=\RNNw}
+      \tikzset{RNNh/.get=\RNNh}
+      \pic{RNN};
+      \node[znode] (_ztanh) at (_center_down1) {};
+      \node[znode, left of=_ztanh, node distance=3*\RNNdeltaunit] (_zsigmoid_center) {};
+      \node[znode, left of=_zsigmoid_center, node distance=3*\RNNdeltaunit] (_zsigmoid_left) {};
+      \node[znode, right of=_ztanh, node distance=3*\RNNdeltaunit] (_zsigmoid_right) {};
+
+      \node[pwise={}, fill=none] (_zpwise_X_center) at ($ (_center) !.5! (_center_up1) $) {};
+      \node[pwise={}, fill=none] (_zpwise_+_center) at (_center_up2) {};
+      \node[pwise={}, fill=none] (_zpwise_X_left) at (_center_up2 -| _zsigmoid_left) {};
+      \node[pwise={}, fill=none, right of=_zpwise_X_center, node distance=6*\RNNdeltaunit] (_zpwise_X_right) {};
+      \node[znode, above of=_zpwise_X_right, node distance=2*\RNNdeltaunit] (_ztanh_right) {};
+
+      % Label nodes
+      \node[lstmflowlabel, above left of=_hin] (_hin_label) {};
+      \node[lstmflowlabel, above right of=_hout] (_hout_label) {};
+      \node[lstmflowlabel, above left of=_cin] (_cin_label) {};
+      \node[lstmflowlabel, above right of=_cout] (_cout_label) {};
+      \node[zsmallionode] (_zit) at (_zsigmoid_center |- _zpwise_X_center) {};
+      \node[zsmallionode] (_zot) at (_zsigmoid_right |- _zpwise_X_right) {};
+
+      \node[znode, minimum size=3*\ionodesize / 4] (_zctilde) at ( $ (_ztanh) !.6! (_zpwise_X_center) $ ) {};
+    }
+  },
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% lstmgate: sigmoid and pwiseX
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/lstmgate/.style = {
+    code = {
+      \node[pwise=X] (_pwise_X) at (0, 0) {};
+      \node[sigmoid, below of=_pwise_X] (_sigmoid) {};
+      \node[znode, below of=_sigmoid] (_sigmoid_down) {};
+      \node[znode, left of=_pwise_X] (_pwise_X_left) {};
+      \node[znode, right of=_pwise_X] (_pwise_X_right) {};
+      \draw[nncon] (_sigmoid_down) -- (_sigmoid);
+      \draw[nnconarr] (_sigmoid) -- (_pwise_X);
+      \draw[nncon] (_pwise_X_left) -- (_pwise_X);
+      \draw[nncon] (_pwise_X_right) -- (_pwise_X);
+    }
+  }
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% lstmcellstateflow: draw cell state flow c_{t-1} -> c_t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/lstmcellstateflow/.default = {lstm},
+  pics/lstmcellstateflow/.style = {
+    code = {
+      \node[pwise=+] (_pwise_+_center) at (#1_center_up2) {};
+      \node[pwise=X] (_pwise_X_left) at (#1_zpwise_X_left) {};
+      \draw[nncon] (#1_cin) -- (#1_zpwise_X_left);
+      \draw[nncon] (#1_zpwise_X_left) -- (#1_zpwise_+_center);
+      \draw[nnconarr] (#1_zpwise_+_center) -- (#1_cout);
+      \ifpgf@rnn@group@addlabels
+      \node[lstmlabel, anchor=west] at (#1_cin_label) {$c_{t-1}$};
+      \node[lstmlabel, anchor=east] at (#1_cout_label) {$c_{t}$};
+      \else
+      \fi
+    }
+  }
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% cellinput - draw x_t and h_{t-1} inputs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/lstmhiddeninput/.default = {lstm},
+  pics/lstmhiddeninput/.style = {
+    code = {
+      \draw[nncon] (#1_input) |- (#1_hin_input);
+      \draw[nncon] (#1_hin) -- (#1_hin_input.east);
+
+      \ifpgf@rnn@group@addlabels
+      \node[lstmlabel, above left of=#1_input] {$x_t$};
+      \node[lstmlabel, anchor=west] at (#1_hin_label) {$h_{t-1}$};
+      \else
+      \fi
+    }
+  }
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% forgetgate - draw forget gate
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/lstmforgetgate/.default = {lstm},
+  pics/lstmforgetgate/.style = {
+    code = {
+      \node[sigmoid] (_sigmoid_left) at (#1_zsigmoid_left) {};
+      \draw[nncon] (#1_hin_input) -- (#1_hin_input -| _sigmoid_left) -| (_sigmoid_left);
+      \draw[nnconarr] (_sigmoid_left) -- (#1_zpwise_X_left);
+
+      \ifpgf@rnn@group@addlabels
+      \node[lstmlabel, anchor=east] at ( $ (_sigmoid_left) !.5! (#1_zpwise_X_left) $ ) {$f_t$};
+      \else
+      \fi
+    }
+  }
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% input gate
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/lstminputgate/.default = {lstm},
+  pics/lstminputgate/.style = {
+    code = {
+      \node[sigmoid] (_sigmoid_center) at (#1_zsigmoid_center) {};
+      \draw[nncon] (#1_hin_input) -| (_sigmoid_center);
+      \draw[nnconarr] (_sigmoid_center) |- (#1_zpwise_X_center);
+
+      \ifpgf@rnn@group@addlabels
+      \node[lstmlabel] at (#1_zit.north west) {$i_t$};
+      \else
+      \fi
+    }
+  }
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% candidate memory: draw tanh to ctilde
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/lstmcandidatememory/.default = {lstm},
+  pics/lstmcandidatememory/.style = {
+    code = {
+      \node[tanh] (_tanh) at (#1_ztanh) {};
+      \draw[nncon] (#1_hin_input) -| (_tanh);
+      \draw[nncon] (_tanh) -- (#1_zpwise_X_center);
+
+      \ifpgf@rnn@group@addlabels
+      \node[lstmlabel] at (#1_zctilde.east) {$\tilde{c}_t$};
+      \else
+      \fi
+    }
+  }
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% outputgate: draw output gate only
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/lstmoutputgate/.default = {lstm},
+  pics/lstmoutputgate/.style = {
+    code = {
+      \node[sigmoid] (_sigmoid_right) at (#1_zsigmoid_right) {};
+      \draw[nncon] (#1_hin_input) -| (_sigmoid_right);
+      \draw[nnconarr] (_sigmoid_right) |- (#1_zpwise_X_right);
+
+      \ifpgf@rnn@group@addlabels
+      \node[lstmlabel] at (#1_zot.north west) {$o_t$};
+      \else
+      \fi
+    }
+  }
+}
+\tikzset{
+  pics/lstminputxcandidateflow/.default = {lstm},
+  pics/lstminputxcandidateflow/.style = {
+    code = {
+      \node[pwise=X] (_pwise_X_center) at (#1_zpwise_X_center) {};
+      \draw[nnconarr] (_pwise_X_center) -- (#1_zpwise_+_center);
+    }
+  }
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% inputxcandidate: input gate times ctilde; just pwise_X and
+% connection to cell state flow
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/lstminputxcandidate/.default = {lstm},
+  pics/lstminputxcandidate/.style = {
+    code = {
+      \draw[nnconarr] (_sigmoid_left) -- (#1_zpwise_X_left);
+      \draw[nnconarr] (_sigmoid_center) |- (#1_zpwise_X_center);
+      \draw[nncon] (_tanh) -- (#1_zpwise_X_center);
+
+      \ifpgf@rnn@group@addlabels
+      \node[lstmlabel, anchor=east] at ( $ (_sigmoid_left) !.5! (#1_zpwise_X_left) $ ) {$f_t$};
+      \node[lstmlabel] at (#1_zit.north west) {$i_t$};
+      \node[lstmlabel] at (#1_zctilde.east) {$\tilde{c}_t$};
+      \else
+      \fi
+    }
+  }
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% celloutput: tanh to ht output
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/lstmcelloutput/.default = {lstm},
+  pics/lstmcelloutput/.style = {
+    code = {
+      \node[tanh] (_tanh_right) at (#1_ztanh_right) {};
+      \node[pwise=X] (_pwise_X_right) at (#1_zpwise_X_right) {};
+
+      \draw[nncon] (_tanh_right |- #1_cout) -- (_tanh_right);
+      \draw[nncon] (_tanh_right) -- (_pwise_X_right);
+      \draw[nnconarr] (_pwise_X_right) |- (#1_hout);
+
+      %% Draw the crossing connection from hout to yt
+      \draw[nncon] ($ (#1_output_hout) !.1! (_pwise_X_right |- #1_hout) $) -| ($(#1_output_cout) !1pt! (#1_output_hout) $);
+      \draw[nnconarr] ($ (#1_output_cout) !1pt! (#1_output) $) -- (#1_output);
+
+      \ifpgf@rnn@group@addlabels
+      \node[lstmlabel, below right of=#1_output] at (#1_output) {$h_t$};
+      \node[lstmflowlabel, anchor=east] at (#1_hout_label) {$h_t$};
+      \else
+      \fi
+    }
+  }
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% lstm: lstm unit
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/lstm/.style = {
+    code = {
+      \tikzset{RNNw/.get=\RNNw}
+      \tikzset{RNNh/.get=\RNNh}
+      \pic (lstm) {lstmempty};
+      \pic {lstmcellstateflow};
+      \pic {lstmhiddeninput};%
+      \pic {lstmforgetgate};%
+      \pic {lstminputgate};%
+      \pic {lstmcandidatememory};%
+      \pic {lstminputxcandidateflow};
+      \pic {lstmoutputgate};%
+      \pic {lstmcelloutput};
+
+      \ifpgf@rnn@group@addlabels
+      \node [fit=(lstm_hin_label.west)(lstm_cin_label.west)(lstm_input)(lstm_output)(lstm_cout_label.east)(lstm_hout_label.east)] (bb) at (lstm_center) {};
+      \else
+      \node [fit=(lstm_hin.west)(lstm_cin.west)(lstm_input)(lstm_output)(lstm_cout.east)(lstm_hout.east)] (bb) at (lstm_center) {};
+      \fi
+
+      \ifnum\pdfstrcmp{\rnn@group@highlight}{}=0
+      \else
+      \draw[opacity=0.8, inner sep=0pt, outer sep=0pt, fill=white, draw=none] (bb.south west) rectangle (bb.north east);
+      \fi
+
+      \ifnum\pdfstrcmp{\rnn@group@highlight}{forgetgate}=0
+      \pic {lstmhiddeninput};
+      \pic {lstmforgetgate};%
+      \fi
+      \ifnum\pdfstrcmp{\rnn@group@highlight}{inputgate}=0%
+      \pic {lstmhiddeninput};
+      \pic {lstminputgate};%
+      \fi
+      \ifnum\pdfstrcmp{\rnn@group@highlight}{outputgate}=0%
+      \pic {lstmhiddeninput};
+      \pic {lstmoutputgate};%
+      \fi
+      \ifnum\pdfstrcmp{\rnn@group@highlight}{candidatecellstate}=0%
+      \pic {lstmhiddeninput};
+      \pic {lstminputgate};%
+      \pic {lstmcandidatememory};%
+      \fi
+      \ifnum\pdfstrcmp{\rnn@group@highlight}{updatecellstate}=0%
+      \pic{lstmcellstateflow};
+      \pic{lstminputxcandidate};
+      \pic{lstminputxcandidateflow};
+      \fi
+      \ifnum\pdfstrcmp{\rnn@group@highlight}{celloutput}=0%
+      \pic {lstmhiddeninput};
+      \pic {lstmoutputgate};%
+      \pic {lstmcelloutput};%
+      \fi
+      \ifnum\pdfstrcmp{\rnn@group@highlight}{cellstateflow}=0%
+      \pic {lstmcellstateflow};%
+      \fi
+    }
+  }
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% GRU
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% gruempty
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/gruempty/.style = {
+    code = {
+      \tikzset{RNNw/.get=\RNNw}
+      \tikzset{RNNh/.get=\RNNh}
+      \pic{RNN};
+      \node[znode] (_zsigmoid_center) at (_center) {};
+      \node[znode, left of=_zsigmoid_center, node distance=5*\RNNdeltaunit] (_zsigmoid_left) {};
+      \node[znode, left of=_zsigmoid_left, node distance=2*\RNNdeltaunit] (_zsigmoid_left_pwise) {};
+      \node[znode, right of=_zsigmoid_center, node distance=5*\RNNdeltaunit] (_ztanh_right) {};
+      \node[znode, below of=_zsigmoid_center, node distance=2*\RNNdeltaunit] (_zsigmoid_center_down) {};
+
+      \node[pwise={}, fill=none, above of=_zsigmoid_left_pwise, node distance=2*\RNNdeltaunit] (_zpwise_X_left) {};
+
+      \node[pwise={}, fill=none, above of=_zsigmoid_center, node distance=2.25*\RNNdeltaunit] (_zpwise_invert) {};
+      \node[pwise={}, fill=none, above of=_zsigmoid_center, node distance=4*\RNNdeltaunit] (_zpwise_X_center) {};
+
+      \node[pwise={}, fill=none, above of=_ztanh_right, node distance=1.75*\RNNdeltaunit] (_zpwise_X_right) {};
+      \node[pwise={}, fill=none, above of=_ztanh_right, node distance=4*\RNNdeltaunit] (_zpwise_+_right) {};
+
+
+      % Label nodes
+      \node[lstmflowlabel, above left of=_cin] (_cin_label) {};
+      \node[lstmflowlabel, above right of=_cout] (_cout_label) {};
+      \node[zsmallionode] (_zrt) at (_zsigmoid_left |- _zpwise_X_left) {};
+      \node[zsmallionode] (_zzt) at (_zpwise_invert.south west) {};
+      \node[zsmallionode] (_zhtilde) at (_zpwise_X_right.south east) {};
+    },
+  },
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% grucellstateflow
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/grucellstateflow/.default = {gru},
+  pics/grucellstateflow/.style = {
+    code = {
+      \node[pwise=X] (_pwise_X_center) at (#1_center_up2) {};
+      \node[pwise=+] at (#1_zpwise_+_right) (_pwise_+_right) {};
+      \draw[nncon] (#1_cin) -- (_pwise_X_center);
+      \draw[nncon] (_pwise_X_center) -- (_pwise_+_right);
+      \draw[nnconarr] (_pwise_+_right) -- (#1_cout);
+
+      \ifpgf@rnn@group@addlabels
+      \node[lstmlabel, anchor=west] at (#1_cin_label) {$h_{t-1}$};
+      \node[lstmlabel, anchor=east] at (#1_cout_label) {$h_{t}$};
+      \node[lstmlabel] at (#1_input.north west) {$x_{t}$};
+      \else
+      \fi
+    }
+  }
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% grucelloutput: tanh to ht output
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/grucelloutput/.default = {gru},
+  pics/grucelloutput/.style = {
+    code = {
+      \node[tanh] (_tanh_right) at (#1_ztanh_right) {};
+      \node[pwise=X] at (#1_zpwise_X_right) (_pwise_X_right) {};
+
+      \draw[nncon] (#1_input) |- (#1_hin -| _tanh_right) -- (_tanh_right);
+      \draw[nncon] (_tanh_right) -- (_pwise_X_right);
+      \draw[nnconarr] (_pwise_X_right) -- (#1_zpwise_+_right);
+      \draw[nnconarr] (#1_zpwise_+_right) -| (#1_output);
+
+      \ifpgf@rnn@group@addlabels
+      \node[lstmlabel, below right of=#1_output] at (#1_output) {$h_t$};
+      \node[lstmlabel] at (#1_zhtilde.east) {$\tilde{h}_t$};
+      \else
+      \fi
+    }
+  }
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% gruupdategate
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/gruupdategate/.default = {gru},
+  pics/gruupdategate/.style = {
+    code = {
+      \node[sigmoid] (_sigmoid_center) at (#1_zsigmoid_center) {};
+      \node[pwise={1-}] at (#1_zpwise_invert) (_pwise_invert) {};
+
+      \draw[nnconarr] (_sigmoid_center) |- (#1_zpwise_X_right);
+      \draw[nncon]  (_sigmoid_center) -- (_pwise_invert);
+      \draw[nnconarr] (_pwise_invert) -- (#1_zpwise_X_center);
+
+      \ifpgf@rnn@group@addlabels
+      \node[lstmlabel] at (#1_zzt.south west)  {$z_t$};
+      \else
+      \fi
+
+    }
+  }
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% gruresetgate
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/gruresetgate/.default = {gru},
+  pics/gruresetgate/.style = {
+    code = {
+      \node[sigmoid] (_sigmoid_left) at (#1_zsigmoid_left) {};
+      \node[sigmoid] (_sigmoid_center) at (#1_zsigmoid_center) {};
+      \node[tanh] (_tanh_right) at (#1_ztanh_right) {};
+      \node[pwise={X}] at (#1_zpwise_X_left) (_pwise_X_left) {};
+
+      \draw[nnconarr] (_sigmoid_left) |- (_pwise_X_left);
+      \draw[nncon] (#1_cin) -| (_pwise_X_left);
+      \draw[nncon] (_pwise_X_left) |- (#1_center_down2 -| _tanh_right) -- (_tanh_right);
+      \draw[nncon] (#1_input) |- (#1_center_down1 -| _sigmoid_left) -- (_sigmoid_left);
+      \draw[nncon] (#1_input) |- (#1_center_down1 -| _sigmoid_center) -- (_sigmoid_center);
+      \draw[nncon] (#1_cin) -| (#1_center_down1 -| #1_input) -- (#1_center_down1 -| _sigmoid_left) -| (_sigmoid_left);
+      \draw[nncon] (#1_cin) -| (#1_center_down1 -| #1_input) -- (#1_center_down1 -| _sigmoid_center) -| (_sigmoid_center);
+
+      \ifpgf@rnn@group@addlabels
+      \node[lstmlabel] at (#1_zrt.north east)  {$r_t$};
+      \else
+      \fi
+
+    }
+  }
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% gru: gru unit
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{
+  pics/gru/.style = {
+    code = {
+      \tikzset{RNNw/.get=\RNNw}
+      \tikzset{RNNh/.get=\RNNh}
+      \pic (gru) {gruempty};
+      \pic {grucelloutput};
+      \pic {grucellstateflow};
+      \pic {gruresetgate};
+      \pic {gruupdategate};
+
+      \ifpgf@rnn@group@addlabels
+      \node [fit=(gru_cin_label.west)(gru_input)(gru_output)(gru_cout_label.east)] (bb) at (gru_center) {};
+      \else
+      \node [fit=(gru_cin.west)(gru_input)(gru_output)(gru_cout.east)] (bb) at (gru_center) {};
+      \fi
+
+      \ifnum\pdfstrcmp{\rnn@group@highlight}{}=0
+      \else
+      \draw[opacity=0.8, inner sep=0pt, outer sep=0pt, fill=white, draw=none] (bb.south west) rectangle (bb.north east);
+      \fi
+      \ifnum\pdfstrcmp{\rnn@group@highlight}{celloutput}=0%
+      \pic {grucelloutput};
+      \fi
+      \ifnum\pdfstrcmp{\rnn@group@highlight}{updategate}=0%
+      \pic {gruupdategate};%
+      \fi
+      \ifnum\pdfstrcmp{\rnn@group@highlight}{resetgate}=0%
+      \pic {gruresetgate};%
+      \fi
+      \ifnum\pdfstrcmp{\rnn@group@highlight}{cellstateflow}=0%
+      \pic {grucellstateflow};%
+      \fi
+    }
+  }
+}

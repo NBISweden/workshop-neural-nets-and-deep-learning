@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Per Unneberg" />
+  <title>Recurrent neural networks</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="lecture.serve_files/reveal.js-3.3.0.1/css/reveal.css"/>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #232629;
+    color: #7a7c7d;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #7a7c7d;  padding-left: 4px; }
+div.sourceCode
+  { color: #cfcfc2; background-color: #232629; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span { color: #cfcfc2; } /* Normal */
+code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } /* Alert */
+code span.an { color: #3f8058; } /* Annotation */
+code span.at { color: #2980b9; } /* Attribute */
+code span.bn { color: #f67400; } /* BaseN */
+code span.bu { color: #7f8c8d; } /* BuiltIn */
+code span.cf { color: #fdbc4b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #3daee9; } /* Char */
+code span.cn { color: #27aeae; font-weight: bold; } /* Constant */
+code span.co { color: #7a7c7d; } /* Comment */
+code span.cv { color: #7f8c8d; } /* CommentVar */
+code span.do { color: #a43340; } /* Documentation */
+code span.dt { color: #2980b9; } /* DataType */
+code span.dv { color: #f67400; } /* DecVal */
+code span.er { color: #da4453; text-decoration: underline; } /* Error */
+code span.ex { color: #0099ff; font-weight: bold; } /* Extension */
+code span.fl { color: #f67400; } /* Float */
+code span.fu { color: #8e44ad; } /* Function */
+code span.im { color: #27ae60; } /* Import */
+code span.in { color: #c45b00; } /* Information */
+code span.kw { color: #cfcfc2; font-weight: bold; } /* Keyword */
+code span.op { color: #cfcfc2; } /* Operator */
+code span.ot { color: #27ae60; } /* Other */
+code span.pp { color: #27ae60; } /* Preprocessor */
+code span.re { color: #2980b9; background-color: #153042; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #da4453; } /* SpecialString */
+code span.st { color: #f44f4f; } /* String */
+code span.va { color: #27aeae; } /* Variable */
+code span.vs { color: #da4453; } /* VerbatimString */
+code span.wa { color: #da4453; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="lecture.serve_files/reveal.js-3.3.0.1/css/theme/simple.css" id="theme">
+
+
+  <!-- some tweaks to reveal css -->
+  <style type="text/css">
+    .reveal h1 { font-size: 2.0em; }
+    .reveal h2 { font-size: 1.5em;  }
+    .reveal h3 { font-size: 1.25em;	}
+    .reveal h4 { font-size: 1em;	}
+
+    .reveal .slides>section,
+    .reveal .slides>section>section {
+      padding: 0px 0px;
+    }
+
+
+
+    .reveal table {
+      border-width: 1px;
+      border-spacing: 2px;
+      border-style: dotted;
+      border-color: gray;
+      border-collapse: collapse;
+      font-size: 0.7em;
+    }
+
+    .reveal table th {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      font-weight: bold;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+    .reveal table td {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+
+  </style>
+
+    <style type="text/css">code{white-space: pre;}</style>
+
+    <link rel="stylesheet" href="revealjs.css"/>
+
+<!-- Printing and PDF exports -->
+<script id="paper-css" type="application/dynamic-css">
+
+/* Default Print Stylesheet Template
+   by Rob Glazebrook of CSSnewbie.com
+   Last Updated: June 4, 2008
+
+   Feel free (nay, compelled) to edit, append, and
+   manipulate this file as you see fit. */
+
+
+@media print {
+
+	/* SECTION 1: Set default width, margin, float, and
+	   background. This prevents elements from extending
+	   beyond the edge of the printed page, and prevents
+	   unnecessary background images from printing */
+	html {
+		background: #fff;
+		width: auto;
+		height: auto;
+		overflow: visible;
+	}
+	body {
+		background: #fff;
+		font-size: 20pt;
+		width: auto;
+		height: auto;
+		border: 0;
+		margin: 0 5%;
+		padding: 0;
+		overflow: visible;
+		float: none !important;
+	}
+
+	/* SECTION 2: Remove any elements not needed in print.
+	   This would include navigation, ads, sidebars, etc. */
+	.nestedarrow,
+	.controls,
+	.fork-reveal,
+	.share-reveal,
+	.state-background,
+	.reveal .progress,
+	.reveal .backgrounds {
+		display: none !important;
+	}
+
+	/* SECTION 3: Set body font face, size, and color.
+	   Consider using a serif font for readability. */
+	body, p, td, li, div {
+		font-size: 20pt!important;
+		font-family: Georgia, "Times New Roman", Times, serif !important;
+		color: #000;
+	}
+
+	/* SECTION 4: Set heading font face, sizes, and color.
+	   Differentiate your headings from your body text.
+	   Perhaps use a large sans-serif for distinction. */
+	h1,h2,h3,h4,h5,h6 {
+		color: #000!important;
+		height: auto;
+		line-height: normal;
+		font-family: Georgia, "Times New Roman", Times, serif !important;
+		text-shadow: 0 0 0 #000 !important;
+		text-align: left;
+		letter-spacing: normal;
+	}
+	/* Need to reduce the size of the fonts for printing */
+	h1 { font-size: 28pt !important;  }
+	h2 { font-size: 24pt !important; }
+	h3 { font-size: 22pt !important; }
+	h4 { font-size: 22pt !important; font-variant: small-caps; }
+	h5 { font-size: 21pt !important; }
+	h6 { font-size: 20pt !important; font-style: italic; }
+
+	/* SECTION 5: Make hyperlinks more usable.
+	   Ensure links are underlined, and consider appending
+	   the URL to the end of the link for usability. */
+	a:link,
+	a:visited {
+		color: #000 !important;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	/*
+	.reveal a:link:after,
+	.reveal a:visited:after {
+		content: " (" attr(href) ") ";
+		color: #222 !important;
+		font-size: 90%;
+	}
+	*/
+
+
+	/* SECTION 6: more reveal.js specific additions by @skypanther */
+	ul, ol, div, p {
+		visibility: visible;
+		position: static;
+		width: auto;
+		height: auto;
+		display: block;
+		overflow: visible;
+		margin: 0;
+		text-align: left !important;
+	}
+	.reveal pre,
+	.reveal table {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	.reveal pre code {
+		padding: 20px;
+		border: 1px solid #ddd;
+	}
+	.reveal blockquote {
+		margin: 20px 0;
+	}
+	.reveal .slides {
+		position: static !important;
+		width: auto !important;
+		height: auto !important;
+
+		left: 0 !important;
+		top: 0 !important;
+		margin-left: 0 !important;
+		margin-top: 0 !important;
+		padding: 0 !important;
+		zoom: 1 !important;
+
+		overflow: visible !important;
+		display: block !important;
+
+		text-align: left !important;
+		-webkit-perspective: none;
+		   -moz-perspective: none;
+		    -ms-perspective: none;
+		        perspective: none;
+
+		-webkit-perspective-origin: 50% 50%;
+		   -moz-perspective-origin: 50% 50%;
+		    -ms-perspective-origin: 50% 50%;
+		        perspective-origin: 50% 50%;
+	}
+	.reveal .slides section {
+		visibility: visible !important;
+		position: static !important;
+		width: auto !important;
+		height: auto !important;
+		display: block !important;
+		overflow: visible !important;
+
+		left: 0 !important;
+		top: 0 !important;
+		margin-left: 0 !important;
+		margin-top: 0 !important;
+		padding: 60px 20px !important;
+		z-index: auto !important;
+
+		opacity: 1 !important;
+
+		page-break-after: always !important;
+
+		-webkit-transform-style: flat !important;
+		   -moz-transform-style: flat !important;
+		    -ms-transform-style: flat !important;
+		        transform-style: flat !important;
+
+		-webkit-transform: none !important;
+		   -moz-transform: none !important;
+		    -ms-transform: none !important;
+		        transform: none !important;
+
+		-webkit-transition: none !important;
+		   -moz-transition: none !important;
+		    -ms-transition: none !important;
+		        transition: none !important;
+	}
+	.reveal .slides section.stack {
+		padding: 0 !important;
+	}
+	.reveal section:last-of-type {
+		page-break-after: avoid !important;
+	}
+	.reveal section .fragment {
+		opacity: 1 !important;
+		visibility: visible !important;
+
+		-webkit-transform: none !important;
+		   -moz-transform: none !important;
+		    -ms-transform: none !important;
+		        transform: none !important;
+	}
+	.reveal section img {
+		display: block;
+		margin: 15px 0px;
+		background: rgba(255,255,255,1);
+		border: 1px solid #666;
+		box-shadow: none;
+	}
+
+	.reveal section small {
+		font-size: 0.8em;
+	}
+
+}  
+</script>
+
+
+<script id="pdf-css" type="application/dynamic-css">
+    
+/**
+ * This stylesheet is used to print reveal.js
+ * presentations to PDF.
+ *
+ * https://github.com/hakimel/reveal.js#pdf-export
+ */
+
+* {
+	-webkit-print-color-adjust: exact;
+}
+
+body {
+	margin: 0 auto !important;
+	border: 0;
+	padding: 0;
+	float: none !important;
+	overflow: visible;
+}
+
+html {
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+}
+
+/* Remove any elements not needed in print. */
+.nestedarrow,
+.reveal .controls,
+.reveal .progress,
+.reveal .playback,
+.reveal.overview,
+.fork-reveal,
+.share-reveal,
+.state-background {
+	display: none !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	text-shadow: 0 0 0 #000 !important;
+}
+
+.reveal pre code {
+	overflow: hidden !important;
+	font-family: Courier, 'Courier New', monospace !important;
+}
+
+ul, ol, div, p {
+	visibility: visible;
+	position: static;
+	width: auto;
+	height: auto;
+	display: block;
+	overflow: visible;
+	margin: auto;
+}
+.reveal {
+	width: auto !important;
+	height: auto !important;
+	overflow: hidden !important;
+}
+.reveal .slides {
+	position: static;
+	width: 100%;
+	height: auto;
+
+	left: auto;
+	top: auto;
+	margin: 0 !important;
+	padding: 0 !important;
+
+	overflow: visible;
+	display: block;
+
+	-webkit-perspective: none;
+	   -moz-perspective: none;
+	    -ms-perspective: none;
+	        perspective: none;
+
+	-webkit-perspective-origin: 50% 50%; /* there isn't a none/auto value but 50-50 is the default */
+	   -moz-perspective-origin: 50% 50%;
+	    -ms-perspective-origin: 50% 50%;
+	        perspective-origin: 50% 50%;
+}
+
+.reveal .slides section {
+	page-break-after: always !important;
+
+	visibility: visible !important;
+	position: relative !important;
+	display: block !important;
+	position: relative !important;
+
+	margin: 0 !important;
+	padding: 0 !important;
+	box-sizing: border-box !important;
+	min-height: 1px;
+
+	opacity: 1 !important;
+
+	-webkit-transform-style: flat !important;
+	   -moz-transform-style: flat !important;
+	    -ms-transform-style: flat !important;
+	        transform-style: flat !important;
+
+	-webkit-transform: none !important;
+	   -moz-transform: none !important;
+	    -ms-transform: none !important;
+	        transform: none !important;
+}
+
+.reveal section.stack {
+	margin: 0 !important;
+	padding: 0 !important;
+	page-break-after: avoid !important;
+	height: auto !important;
+	min-height: auto !important;
+}
+
+.reveal img {
+	box-shadow: none;
+}
+
+.reveal .roll {
+	overflow: visible;
+	line-height: 1em;
+}
+
+/* Slide backgrounds are placed inside of their slide when exporting to PDF */
+.reveal section .slide-background {
+	display: block !important;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: -1;
+}
+
+/* All elements should be above the slide-background */
+.reveal section>* {
+	position: relative;
+	z-index: 1;
+}
+
+/* Display slide speaker notes when 'showNotes' is enabled */
+.reveal .speaker-notes-pdf {
+	display: block;
+	width: 100%;
+	max-height: none;
+	left: auto;
+	top: auto;
+	z-index: 100;
+}
+
+/* Display slide numbers when 'slideNumber' is enabled */
+.reveal .slide-number-pdf {
+	display: block;
+	position: absolute;
+	font-size: 14px;
+}
+
+</script>
+
+
+<script>
+var style = document.createElement( 'style' );
+style.type = 'text/css';
+var style_script_id = window.location.search.match( /print-pdf/gi ) ? 'pdf-css' : 'paper-css';
+var style_script = document.getElementById(style_script_id).text;
+style.innerHTML = style_script;
+document.getElementsByTagName('head')[0].appendChild(style);
+</script>
+
+    <div class="scilife-logo"></div>
+    <div class="nbis-logo"></div>
+    <script src="lecture.serve_files/header-attrs-2.11/header-attrs.js"></script>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+    <h1 class="title">Recurrent neural networks</h1>
+    <h2 class="author">Per Unneberg</h2>
+    <h3 class="date">14 January, 2022</h3>
+</section>
+
+<section class="slide level2">
+
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-2.4.0.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.4.0.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.4.0.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-gl-2.4.0.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-2.4.0.min.js"
+        crossorigin="anonymous"></script>
+</section>
+<section id="overview" class="title-slide slide level1">
+<h1>Overview</h1>
+<h3>
+Recap
+</h3>
+<h3>
+Sequential models
+</h3>
+<h3>
+Recurrent neural networks (RNNs)
+</h3>
+<h3>
+LSTMs and GRUs
+</h3>
+<h3>
+Practical applications
+</h3>
+<aside class="notes">
+<ol type="1">
+<li>Recap perceptron
+<ul>
+<li>Even if it has been done before recap perceptron with my notation</li>
+<li>want to show what it looks like with a perceptron in a sequential model</li>
+</ul></li>
+<li>Sequential models
+<ul>
+<li>begin with simple model, e.g. sinus time series</li>
+<li>DNA sequence characteristics, language processing, time series (maybe intuitively simplest)</li>
+<li>solve with perceptron</li>
+<li>highlight problems with perceptron</li>
+</ul></li>
+<li><h2 id="rnns">RNNs</h2></li>
+<li>LSTMs and GRUs
+<ul>
+<li>solution to vanishing gradients</li>
+<li>need to explain <strong>what</strong> they do and <strong>how</strong> they solve the issue:
+<ul>
+<li>gated inputs / outputs</li>
+<li>ReLUs (indep from above or part of?)</li>
+</ul></li>
+</ul></li>
+<li>Practical applications
+<ul>
+<li>look in literature to focus on life sciences; possibly also languages as this is interesting in itself (e.g. google translate)</li>
+</ul></li>
+</ol>
+</aside>
+</section>
+
+<section>
+<section id="recap" class="title-slide slide level1">
+<h1>Recap</h1>
+
+</section>
+<section id="perceptron-single-neuron" class="slide level2">
+<h2>Perceptron (single neuron)</h2>
+<div style="display: grid; grid-template-columns: 1fr 1.5fr; grid-column-gap: 10px;">
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-recap-perceptron-simple-1.svg" width="480" /></p>
+</div>
+<div>
+<h3>
+Architecture
+</h3>
+<p>A single neuron has <span class="math inline">\(n\)</span> <em>inputs</em> <span class="math inline">\(x_i\)</span> and an <em>output</em> <span class="math inline">\(y\)</span>. To each input is associated a <em>weight</em> <span class="math inline">\(w_i\)</span>.</p>
+<h3>
+Activity rule
+</h3>
+<p>The <strong>activity rule</strong> is given by two steps:</p>
+<p><span class="math display">\[a = \sum_{i} w_ix_i, \quad i=1,...,n\]</span></p>
+<p><span class="math display">\[\begin{array}{ccc}
+\mathrm{activation} &amp; &amp; \mathrm{activity}\\
+a &amp; \rightarrow &amp; y(a)
+\end{array}\]</span></p>
+<p><span class="citation" data-cites="mackay_information_2003">(MacKay, 2003)</span></p>
+</div>
+</div>
+<aside class="notes">
+<p>Beware of notation here. Points to make:</p>
+<ul>
+<li><span class="math inline">\(w_0=1\)</span> -&gt; bias</li>
+<li>activation -&gt; activity can be separated (next slide)</li>
+</ul>
+<p>Alternative view of bias: an additional weight <span class="math inline">\(w_0\)</span> with input permanently set to 1 (MacKay, 2003, p. 471)</p>
+<p>(Alexander Amini, 2021, p. 5:43) point out inputs <span class="math inline">\(x_i\)</span> represent <strong>one</strong> time point</p>
+</aside>
+</section>
+<section id="perceptron-single-neuron-1" class="slide level2">
+<h2>Perceptron (single neuron)</h2>
+<div style="display: grid; grid-template-columns: 1fr 1.5fr; grid-column-gap: 10px;">
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-recap-perceptron-activity-1.svg" width="480" /></p>
+</div>
+<div>
+<h3>
+Architecture
+</h3>
+<p>A single neuron has <span class="math inline">\(n\)</span> <em>inputs</em> <span class="math inline">\(x_i\)</span> and an <em>output</em> <span class="math inline">\(y\)</span>. To each input is associated a <em>weight</em> <span class="math inline">\(w_i\)</span>.</p>
+<h3>
+Activity rule
+</h3>
+<p>The <strong>activity rule</strong> is given by two steps:</p>
+<p><span class="math display">\[a = \sum_{i} w_ix_i, \quad i=1,...,n\]</span></p>
+<p><span class="math display">\[\begin{array}{ccc}
+\mathrm{activation} &amp; &amp; \mathrm{activity}\\
+a &amp; \rightarrow &amp; y(a)
+\end{array}\]</span></p>
+<p><span class="citation" data-cites="mackay_information_2003">(MacKay, 2003)</span></p>
+</div>
+</div>
+<aside class="notes">
+<p>Beware of notation here. Points to make:</p>
+<ul>
+<li><span class="math inline">\(w_0=1\)</span> -&gt; bias</li>
+<li>activation -&gt; activity can be separated (next slide)</li>
+</ul>
+<p>Alternative view of bias: an additional weight <span class="math inline">\(w_0\)</span> with input permanently set to 1 (MacKay, 2003, p. 471)</p>
+<p>(NO_ITEM_<a href="DATA:alexander_amini_mit_2021" class="uri">DATA:alexander_amini_mit_2021</a>) point out inputs <span class="math inline">\(x_i\)</span> represent <strong>one</strong> time point</p>
+</aside>
+</section>
+<section id="perceptron-single-neuron-2" class="slide level2">
+<h2>Perceptron (single neuron)</h2>
+<div style="display: grid; grid-template-columns: 1fr 1.5fr; grid-column-gap: 10px;">
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-recap-perceptron-vectorized-1.svg" width="480" /></p>
+</div>
+<div>
+<p><span class="math display">\[a = w_0 + \sum_{i} w_ix_i, \quad i=1,...,m\]</span></p>
+<p><span class="math display">\[y = y(a) = g\left( w_0 + \sum_{i=1}^{m} w_ix_i \right)\]</span></p>
+<div class="element: fragment">
+<p>or in vector notation</p>
+<p><span class="math display">\[y = g\left(w_0 + \mathbf{X^T} \mathbf{W} \right)\]</span></p>
+<p>where:</p>
+<p><span class="math display">\[\quad\mathbf{X}=
+\begin{bmatrix}x_1\\ \vdots \\ x_m\end{bmatrix},
+\quad \mathbf{W}=\begin{bmatrix}w_1\\ \vdots \\ w_m\end{bmatrix}\]</span></p>
+</div>
+<p><span class="citation" data-cites="alexander_amini_mit_2021_rnn">(Alexander Amini, 2021)</span></p>
+</div>
+</div>
+<aside class="notes">
+<p>Follow MIT notation: g() is the non-linear activation (function)</p>
+</aside>
+</section>
+<section id="simplified-illustration-and-notation" class="slide level2">
+<h2>Simplified illustration and notation</h2>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-recap-perceptron-simplified-1.svg" width="960" /></p>
+<h3>
+Architecture
+</h3>
+<p>Vectorized versions: input <span class="math inline">\(\boldsymbol{x}\)</span>, weights <span class="math inline">\(\boldsymbol{w}\)</span>, output <span class="math inline">\(\boldsymbol{y}\)</span></p>
+<h3>
+Activity rule
+</h3>
+<p><span class="math display">\[a = \boldsymbol{wx}\]</span></p>
+<aside class="notes">
+<p>FIXME: inconsistent notation? Weights are depicted as attached to first arrow, then the labels indicate what <strong>value</strong> is passed along</p>
+</aside>
+</section>
+<section id="feed-forward-network" class="slide level2">
+<h2>Feed forward network</h2>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-recap-perceptron-multiout-1.svg" width="768" /></p>
+<aside class="notes">
+<p>Show multi-valued (vector) output and hidden layer</p>
+</aside>
+</section>
+<section id="simplified-illustration" class="slide level2">
+<h2>Simplified illustration</h2>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-recap-perceptron-multiout-simple-1.svg" width="768" /></p>
+<aside class="notes">
+<p>Condense hidden layers to a box.</p>
+</aside>
+</section></section>
+<section>
+<section id="sequential-models" class="title-slide slide level1">
+<h1>Sequential models</h1>
+
+</section>
+<section id="motivation" class="slide level2">
+<h2>Motivation</h2>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-motivation-time-series-1.svg" width="768" /></p>
+<aside class="notes">
+<p>incremental figure showing time series (e.g. sinus) that highlights</p>
+<ul>
+<li>dependency on previous time point</li>
+<li>(weaker) dependency on more distant time points</li>
+</ul>
+</aside>
+</section>
+<section id="motivation-1" class="slide level2">
+<h2>Motivation</h2>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-motivation-time-series-1-1.svg" width="768" /></p>
+<aside class="notes">
+<p>incremental figure showing time series (e.g. sinus) that highlights</p>
+<ul>
+<li>dependency on previous time point</li>
+<li>(weaker) dependency on more distant time points</li>
+</ul>
+</aside>
+</section>
+<section id="motivation-2" class="slide level2">
+<h2>Motivation</h2>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-motivation-time-series-2-1.svg" width="768" /></p>
+<aside class="notes">
+<p>incremental figure showing time series (e.g. sinus) that highlights</p>
+<ul>
+<li>dependency on previous time point</li>
+<li>(weaker) dependency on more distant time points</li>
+</ul>
+</aside>
+</section>
+<section id="motivation-3" class="slide level2">
+<h2>Motivation</h2>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-motivation-time-series-3-1.svg" width="768" /></p>
+<aside class="notes">
+<p>incremental figure showing time series (e.g. sinus) that highlights</p>
+<ul>
+<li>dependency on previous time point</li>
+<li>(weaker) dependency on more distant time points</li>
+</ul>
+</aside>
+</section>
+<section id="a-few-concrete-examples-of-real-world-sequences" class="slide level2">
+<h2>A few concrete examples of real-world sequences</h2>
+<h5>
+Language translation
+</h5>
+<p><img src="lecture.serve_files/figure-revealjs/rnn-example-language-translation-1.svg" width="576" /></p>
+<div style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 2px;">
+<div>
+<h5>
+Time series
+</h5>
+<p><img src="https://github.com/unit8co/darts/raw/master/static/images/example.png" width="500px" /></p>
+<p><span class="citation" data-cites="herzen2021darts">(Herzen et al., 2021)</span></p>
+</div>
+<div>
+<h5>
+Genomics
+</h5>
+<p><img src="https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41598-018-33321-1/MediaObjects/41598_2018_33321_Fig5_HTML.png?as=webp" width="300px" /></p>
+<p><span class="citation" data-cites="shen_recurrent_2018">(Shen et al., 2018)</span></p>
+</div>
+</div>
+</section>
+<section id="types-of-models" class="slide level2">
+<h2>Types of models</h2>
+<div style="display: grid; grid-template-columns: 10fr 1fr 10fr 10fr 10fr; grid-gap: 0px 0px; grid-template-rows: 1fr 1fr;">
+<div>
+<h5>
+one to one
+</h5>
+<p><img src="lecture.serve_files/figure-revealjs/sequential-models-one-to-one-1.svg" width="96" /></p>
+</div>
+<div>
+
+</div>
+<div class="element: fragment" data-fragment-index="2">
+<h5>
+many to one
+</h5>
+<p><img src="lecture.serve_files/figure-revealjs/sequential-models-many-to-one-1.svg" width="288" /></p>
+</div>
+<div class="element: fragment" data-fragment-index="3">
+<h5>
+one to many
+</h5>
+<p><img src="lecture.serve_files/figure-revealjs/sequential-models-one-to-many-1.svg" width="288" /></p>
+</div>
+<div class="element: fragment" data-fragment-index="4">
+<h5>
+many to many
+</h5>
+<p><img src="lecture.serve_files/figure-revealjs/sequential-models-many-to-many-1.svg" width="288" /></p>
+</div>
+<div>
+<h6>
+Image classification
+</h6>
+<p><img src="lecture.serve_files/figure-revealjs/fashion-mnist-image-classification-1.png" width="960" /></p>
+</div>
+<div>
+
+</div>
+<div class="element: fragment" data-fragment-index="2">
+<h6>
+Sentiment analysis
+</h6>
+<p><img src="https://d1sjtleuqoc1be.cloudfront.net/wp-content/uploads/2019/04/25112909/shutterstock_1073953772.jpg" width="300px" /></p>
+</div>
+<div class="element: fragment" data-fragment-index="3">
+<h6>
+Image captioning
+</h6>
+<p><img src="https://cocodataset.org/images/captions-splash.jpg" width="350px" /></p>
+</div>
+<div class="element: fragment" data-fragment-index="4">
+<h6>
+Machine translation
+</h6>
+<p><img src="https://img.icons8.com/plasticine/344/google-translate-new-logo.png" width="200px" /></p>
+</div>
+</div>
+<p><span class="citation" data-cites="karpathy_unreasonable_effectiveness_of_RNNs">(Karpathy, 2015)</span></p>
+<aside class="notes">
+<p>Important point here: each input/output/hidden are <strong>vectors</strong></p>
+<p>(Karpathy, 2015)</p>
+<p>Issues with Vanilla NNs and CNNs:</p>
+<ul>
+<li>dependency on <strong>fixed</strong> size input</li>
+<li>fixed amount of computational steps</li>
+</ul>
+<p>Models:</p>
+<ul>
+<li><strong>one to one:</strong> Vanilla processing without RNN, from fixed input to fixed output e.g. image classification (aka vanilla neural network)</li>
+<li><strong>one to many:</strong> sequence output, e.g. image captioning</li>
+<li><strong>many to one:</strong> sequence input, e.g. sentiment analysis (classify sequence as happy/sad/…)</li>
+<li><strong>many to many:</strong> sequence input and sequence output, e.g. machine translation</li>
+</ul>
+<p>Data:</p>
+<ul>
+<li><p>(Xiao et al., 2017)</p></li>
+<li><p><a href="https://cocodataset.org/#captions-2015" class="uri">https://cocodataset.org/#captions-2015</a></p></li>
+</ul>
+</aside>
+</section></section>
+<section>
+<section id="recurrent-neural-networks-rnns" class="title-slide slide level1">
+<h1>Recurrent Neural Networks (RNNs)</h1>
+<p><br/></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-folded-only-1.svg" width="384" /></p>
+<aside class="notes">
+<p>We will now look at the essentials of RNNs. As the figure implies, the output of the network</p>
+<p>(NO_ITEM_<a href="DATA:alexander_amini_mit_2021" class="uri">DATA:alexander_amini_mit_2021</a>) point out inputs <span class="math inline">\(x_i\)</span> represent <strong>one</strong> time point</p>
+<p>input, output, green box: contains vectors of data, arrows represent operations/functions (Karpathy, 2015)</p>
+<p>Key feature: the recurrence (green) can be applied as many times as we want, i.e. no constraint on input size</p>
+<p>Why recurrent networks? <a href="https://www.simplilearn.com/tutorials/deep-learning-tutorial/rnn" class="uri">https://www.simplilearn.com/tutorials/deep-learning-tutorial/rnn</a></p>
+<p>FFNs</p>
+<ul>
+<li>Cannot handle sequential data</li>
+<li>Considers only the current input</li>
+<li>Cannot memorize previous inputs</li>
+</ul>
+<p>and information only flows forward (i.e. no memory)</p>
+</aside>
+</section>
+<section id="feed-forward-network-implementation-to-sequential-data" class="slide level2">
+<h2>Feed forward network implementation to sequential data</h2>
+<div style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;">
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/ffn-xt-1-1.svg" width="768" height="300px" /></p>
+</div>
+<div class="element: fragment" data-fragment-index="2" style="border-left: 2px black solid;">
+<p><img src="lecture.serve_files/figure-revealjs/ffn-x0-xt-1-1.svg" width="100%" height="300px" /></p>
+</div>
+<div>
+
+</div>
+<div class="element fragment" data-fragment-index="1">
+<p>Assume multiple time points.</p>
+</div>
+</div>
+<aside class="notes">
+<p>Rotated FFN: take a moment to recap the ffn. Input <span class="math inline">\(X_t \in \mathbb{R}^{m}\)</span> is mapped to output <span class="math inline">\(\widehat{Y}_t \in \mathbb{R}^n\)</span> via the network (<span class="math inline">\(f(\cdot)\)</span></p>
+<p>Now assume we have several time steps, starting at e.g. time 0. Also we predict the outputs individually.</p>
+</aside>
+</section>
+<section id="feed-forward-network-implementation-to-sequential-data-1" class="slide level2">
+<h2>Feed forward network implementation to sequential data</h2>
+<div style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;">
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/ffn-xt-2-1.svg" width="768" height="300px" /></p>
+</div>
+<div style="border-left: 2px black solid;">
+<p><img src="lecture.serve_files/figure-revealjs/ffn-x0-xt-2-1.svg" width="100%" height="300px" /></p>
+</div>
+<div>
+
+</div>
+<div>
+<p>Assume multiple time points.</p>
+</div>
+</div>
+<aside class="notes">
+<p>Add another time step…</p>
+</aside>
+</section>
+<section id="feed-forward-network-implementation-to-sequential-data-2" class="slide level2">
+<h2>Feed forward network implementation to sequential data</h2>
+<div style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;">
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/ffn-xt-3-1.svg" width="768" height="300px" /></p>
+</div>
+<div style="border-left: 2px black solid; ">
+<p><img src="lecture.serve_files/figure-revealjs/ffn-x0-xt-3-1.svg" width="100%" height="300px" /></p>
+</div>
+<div>
+
+</div>
+<div>
+<p>Assume multiple time points.</p>
+<ul>
+<li class="fragment">Dependency of inputs not modelled such that ambiguous sequences cannot be be distinguished:</li>
+</ul>
+<div class="fragment">
+<p>“the boat is in the water” vs “the water is in the boat”</p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Use an ambiguous example to point out that ffns can’t distinguish order of words; we explicitly want to model sequential dependencies</p>
+<p>Example: “the boat is in the water” vs “the water is in the boat”</p>
+<p>Alt example: “man bites dog” vs “dog bites man” (, Zhang et al., 2021, p. 8.1)</p>
+<p>Emphasize fact that any prediction is based only on the current input</p>
+</aside>
+</section>
+<section id="feed-forward-network-implementation-to-sequential-data-3" class="slide level2">
+<h2>Feed forward network implementation to sequential data</h2>
+<div style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;">
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/ffn-xt-4-1.svg" width="768" height="300px" /></p>
+</div>
+<div style="border-left: 2px black solid; ">
+<p><img src="lecture.serve_files/figure-revealjs/ffn-x0-xt-4-1.svg" width="100%" height="300px" /></p>
+</div>
+<div>
+
+</div>
+<div>
+<p>Assume multiple time points.</p>
+<ul>
+<li>Time points are modelled <strong>individually</strong> ( <span class="math inline">\(\hat{Y}_t = f(X_t)\)</span> )</li>
+</ul>
+</div>
+</div>
+<aside class="notes">
+<p>Emphasize fact that any prediction is based only on the current input</p>
+<p>Also: the dependency on many previous variables motivates the introduction of a latent variable model that depends on the previous state via a hidden (latent) variable</p>
+</aside>
+</section>
+<section id="feed-forward-network-implementation-to-sequential-data-4" class="slide level2">
+<h2>Feed forward network implementation to sequential data</h2>
+<div style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;">
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/ffn-xt-5-1.svg" width="768" height="300px" /></p>
+</div>
+<div style="border-left: 2px black solid; ">
+<p><img src="lecture.serve_files/figure-revealjs/ffn-x0-xt-5-1.svg" width="100%" height="300px" /></p>
+</div>
+<div>
+
+</div>
+<div>
+<p>Assume multiple time points.</p>
+<ul>
+<li>Time points are modelled <strong>individually</strong> ( <span class="math inline">\(\hat{Y}_t = f(X_t)\)</span> )</li>
+<li>Also want dependency on <strong>previous</strong> inputs ( <span class="math inline">\(\hat{Y}_t = f(..., X_2, X_1)\)</span> )</li>
+</ul>
+</div>
+</div>
+<aside class="notes">
+<p>Emphasize fact that any prediction is based only on the current input</p>
+<p>Also: the dependency on many previous variables motivates the introduction of a latent variable model that depends on the previous state via a hidden (latent) variable</p>
+</aside>
+</section>
+<section id="adding-recurrence-relations" class="slide level2">
+<h2>Adding recurrence relations</h2>
+<div style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;">
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/ffn-xt-arr-1-1.svg" width="768" height="300px" /></p>
+</div>
+<div style="border-left: 2px black solid; ">
+<p><img src="lecture.serve_files/figure-revealjs/ffn-x0-xt-arr-1-1.svg" width="100%" height="300px" /></p>
+</div>
+<div>
+
+</div>
+<div>
+
+</div>
+</div>
+<aside class="notes">
+<p>We want to model dependencies over time. Solution is to model the cell state (a hidden state) and pass this information on to the next</p>
+</aside>
+</section>
+<section id="adding-recurrence-relations-1" class="slide level2">
+<h2>Adding recurrence relations</h2>
+<div style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;">
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/ffn-xt-arr-2-1.svg" width="768" height="300px" /></p>
+</div>
+<div style="border-left: 2px black solid; ">
+<p><img src="lecture.serve_files/figure-revealjs/ffn-x0-xt-arr-2-1.svg" width="100%" height="300px" /></p>
+</div>
+<div>
+
+</div>
+<div>
+
+</div>
+</div>
+</section>
+<section id="adding-recurrence-relations-2" class="slide level2">
+<h2>Adding recurrence relations</h2>
+<div style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;">
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/ffn-xt-arr-3-1.svg" width="768" height="300px" /></p>
+</div>
+<div style="border-left: 2px black solid; ">
+<p><img src="lecture.serve_files/figure-revealjs/ffn-x0-xt-arr-3-1.svg" width="100%" height="300px" /></p>
+</div>
+<div>
+
+</div>
+<div>
+
+</div>
+</div>
+</section>
+<section id="adding-recurrence-relations-3" class="slide level2">
+<h2>Adding recurrence relations</h2>
+<div style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;">
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/ffn-xt-arr-4-1.svg" width="768" height="300px" /></p>
+</div>
+<div style="border-left: 2px white solid; ">
+<p><img src="lecture.serve_files/figure-revealjs/ffn-x0-xt-arr-4-1.svg" width="100%" height="300px" /></p>
+</div>
+<div>
+<p>Folded representation</p>
+</div>
+<div>
+<p>Unfolded representation</p>
+<div class="fragment">
+<p>Add a <em>hidden state</em> <span class="math inline">\(h\)</span> that introduces a dependency on the previous step:</p>
+<p><span class="math display">\[
+\hat{Y}_t = f(X_t, h_{t-1})
+\]</span></p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p><span class="math inline">\(h_t\)</span> is a summary of the inputs we’ve seen sofar</p>
+<p>(Zhang et al., 2021, Chapter 8.4):</p>
+<blockquote>
+<p>If we want to incorporate the possible effect of words earlier than time step t−(n−1) on xt, we need to increase n. However, the number of model parameters would also increase exponentially with it, as we need to store |V|n numbers for a vocabulary set V. Hence, rather than modeling P(xt∣xt−1,…,xt−n+1) it is preferable to use a latent variable model:</p>
+<p>P(xt∣xt−1,…,x1) ~ P(xt∣ht−1),</p>
+</blockquote>
+<p>IOW, with ht the recurrence becomes a latent variable model.</p>
+</aside>
+</section>
+<section id="sequential-memory-of-rnns" class="slide level2">
+<h2>Sequential memory of RNNs</h2>
+<p>RNNs have what one could call “sequential memory” <span class="citation" data-cites="phi_illustrated_2020_RNN">(Phi, 2020)</span></p>
+<h3 id="alphabet">Alphabet</h3>
+<p>Exercise: say alphabet in your head</p>
+<pre><code>    A B C ... X Y Z
+
+</code></pre>
+<div class="element: fragment">
+<p>Modification: start from e.g. letter F</p>
+<p>May take time to get started, but from there on it’s easy</p>
+</div>
+<div class="element: fragment">
+<p>Now read the alphabet in reverse:</p>
+<pre><code>    Z Y X ... C B A
+
+</code></pre>
+</div>
+<div class="element: fragment">
+<p>Memory access is associative and context-dependent</p>
+</div>
+<aside class="notes">
+<p>Provide the alphabet example from <span class="citation" data-cites="phi_illustrated_2020_RNN">(Phi, 2020)</span></p>
+<p>cf (, Haykin, 2010, p. 203):</p>
+<blockquote>
+<p>For a neural network to be dynamic, it must be given <em>short-term memory</em> in one form or the other</p>
+</blockquote>
+</aside>
+</section>
+<section id="recurrent-neural-networks" class="slide level2">
+<h2>Recurrent Neural Networks</h2>
+<p><br/></p>
+<div style="display: grid; grid-template-columns: 400px auto; grid-column-gap: 10px;">
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-folded-hidden-eq-1-1.svg" width="400px" /></p>
+</div>
+<div>
+<div class="element: fragment">
+<p>Add recurrence relation where current hidden cell state <span class="math inline">\(h_t\)</span> depends on input <span class="math inline">\(x_t\)</span> and previous hidden state <span class="math inline">\(h_{t-1}\)</span> via a function <span class="math inline">\(f_W\)</span> that defines the network parameters (weights):</p>
+<p><span class="math display">\[
+h_t = f_\mathbf{W}(x_t, h_{t-1})
+\]</span></p>
+</div>
+<div class="element: fragment">
+<p>Note that the same function and weights are used across all time steps!</p>
+</div>
+</div>
+</div>
+</section>
+<section id="recurrent-neural-networks---pseudocode" class="slide level2">
+<h2>Recurrent Neural Networks - pseudocode</h2>
+<p><br/></p>
+<div style="display: grid; grid-template-columns: 400px auto; grid-column-gap: 10px;">
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-folded-hidden-eq-2-1.svg" width="400px" /></p>
+</div>
+<div>
+<div style="font-size: 0.8em">
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RNN:</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Initialize weights and cell state</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._h <span class="op">=</span> [...]</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._Whh <span class="op">=</span> [...]</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._Wxh <span class="op">=</span> [...]</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._Why <span class="op">=</span> [...]</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> update_cell_state(<span class="va">self</span>, x):</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># function is some function that updates cell state</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._h <span class="op">=</span> function(<span class="va">self</span>._h <span class="op">*</span> <span class="va">self</span>._Whh <span class="op">+</span> x <span class="op">*</span> <span class="va">self</span>.Wxh)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> predict(<span class="va">self</span>):</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._h <span class="op">*</span> <span class="va">self</span>._Why</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> update_weights(<span class="va">self</span>, y):</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Calculate error via some loss function</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        error <span class="op">=</span> loss(<span class="va">self</span>.predict() <span class="op">-</span> y)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># update weights via back propagation...</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>rnn <span class="op">=</span> RNN()</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x, y <span class="kw">in</span> input_data:</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    rnn.update_cell_state(x)</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    rnn.update_weights(y)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve next prediction</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>yhat <span class="op">=</span> rnn.predict() </span></code></pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="vanilla-rnns" class="slide level2">
+<h2>Vanilla RNNs</h2>
+<p><br/></p>
+<div style="display: grid; grid-template-columns: 400px auto; grid-column-gap: 10px;">
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-vanilla-rnn-folded-hidden-eq-1-1.svg" width="400px" /></p>
+</div>
+<div>
+<div class="element: fragment" data-fragment-index="3">
+<h3 style="color: red;">
+Output vector
+</h3>
+<p><span class="math display">\[
+\hat{Y}_t = \mathbf{W_{hy}^T}h_t
+\]</span></p>
+</div>
+<div class="element: fragment" data-fragment-index="2">
+<h3 style="color: green;">
+Update hidden state
+</h3>
+<p><span class="math display">\[
+h_t = \mathsf{tanh}(\mathbf{W_{xh}^T}X_t + \mathbf{W_{hh}^T}h_{t-1})
+\]</span></p>
+</div>
+<div class="element: fragment" data-fragment-index="1">
+<h3 style="color: blue;">
+Input vector
+</h3>
+<p><span class="math display">\[
+X_t
+\]</span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="vanilla-rnns-1" class="slide level2">
+<h2>Vanilla RNNs</h2>
+<p><br/></p>
+<p><span class="citation" data-cites="olah_christopher_understanding_nodate">(Olah, 2015)</span></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-vanilla-rnn-unfolded-weights-1-1.svg" width="1200px" /></p>
+<aside class="notes">
+<p>From MIT lecture: use the folded version and incrementally reveal the equation</p>
+<p><span class="math display">\[
+h_t = f_W(x_t, h_{t-1})
+\]</span></p>
+<p>and point out that f, W are <strong>shared</strong> across all units</p>
+<p>Add pseudocode to exemplify</p>
+</aside>
+</section>
+<section id="vanilla-rnns-2" class="slide level2">
+<h2>Vanilla RNNs</h2>
+<p><br/></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-vanilla-rnn-unfolded-weights-2-1.svg" width="1200px" /></p>
+<aside class="notes">
+<p>From MIT lecture: use the folded version and incrementally reveal the equation</p>
+<p><span class="math display">\[
+h_t = f_W(x_t, h_{t-1})
+\]</span></p>
+<p>and point out that f, W are <strong>shared</strong> across all units</p>
+<p>Add pseudocode to exemplify</p>
+</aside>
+</section>
+<section id="vanilla-rnns-3" class="slide level2">
+<h2>Vanilla RNNs</h2>
+<p><br/></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-vanilla-rnn-unfolded-weights-3-1.svg" width="1200px" /></p>
+<aside class="notes">
+<p>From MIT lecture: use the folded version and incrementally reveal the equation</p>
+<p><span class="math display">\[
+h_t = f_W(x_t, h_{t-1})
+\]</span></p>
+<p>and point out that f, W are <strong>shared</strong> across all units (Lendave, 2021)</p>
+<p>Add pseudocode to exemplify</p>
+</aside>
+</section>
+<section id="vanilla-rnns-4" class="slide level2">
+<h2>Vanilla RNNs</h2>
+<p><br/></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-vanilla-rnn-unfolded-weights-4-1.svg" width="1200px" /></p>
+<div class="element: fragment">
+<p>Note: <span class="math inline">\(\mathbf{W_{xh}}\)</span>, <span class="math inline">\(\mathbf{W_{hh}}\)</span>, and <span class="math inline">\(\mathbf{W_{hy}}\)</span> are shared across all cells!</p>
+</div>
+<aside class="notes">
+<p>From MIT lecture: use the folded version and incrementally reveal the equation</p>
+<p><span class="math display">\[
+h_t = f_W(x_t, h_{t-1})
+\]</span></p>
+<p>and point out that f, W are <strong>shared</strong> across all units</p>
+<p>Add pseudocode to exemplify</p>
+</aside>
+</section>
+<section id="desired-features-of-rnn" class="slide level2">
+<h2>Desired features of RNN</h2>
+<div class="fragment">
+<h3>
+<ol type="1">
+<li>Variable sequence lengths
+</h3></li>
+</ol>
+Not all inputs are of equal length <br/>
+</div>
+<div class="fragment">
+<h3>
+<ol start="2" type="1">
+<li>Long-term memory
+</h3></li>
+</ol>
+“I grew up in England, and … I speak fluent English” <br/>
+</div>
+<div class="fragment">
+<h3>
+<ol start="3" type="1">
+<li>Preserve order
+</h3>
+“dog bites man” != “man bites dog” <br/>
+</div></li>
+</ol>
+<div class="fragment">
+<h3>
+<ol start="4" type="1">
+<li>Share parameters
+</h3></li>
+</ol>
+Adresses points 2 and 3. <br/>
+</div>
+<aside class="notes">
+<ul>
+<li>variable sequence lengths</li>
+</ul>
+<p>From (Cho et al., 2014):</p>
+<blockquote>
+<p>architectur that learns to <em>encode</em> a variable-length sequence into a fixed-length vector representation and to <em>decode</em> a given fixed-length representation back into a variable-length sequence</p>
+</blockquote>
+</aside>
+</section>
+<section id="example-box-jenkins-airline-passenger-data-set" class="slide level2">
+<h2>Example: Box &amp; Jenkins airline passenger data set</h2>
+<p><img src="lecture.serve_files/figure-revealjs/box-jenkins-airline-1-1.png" width="500px" /></p>
+<p><span class="citation" data-cites="onnen_temporal_2021">(Onnen, 2021)</span></p>
+<aside class="notes">
+<p>(Onnen, 2021)</p>
+<p>See also <a href="https://machinelearningmastery.com/understanding-simple-recurrent-neural-networks-in-keras/" class="uri">https://machinelearningmastery.com/understanding-simple-recurrent-neural-networks-in-keras/</a> for rnn example on sunspots</p>
+<p>Important: need to explicitly show how data is partitioned as this can be difficult to understand</p>
+<p><a href="https://machinelearningmastery.com/how-to-develop-lstm-models-for-time-series-forecasting/" class="uri">https://machinelearningmastery.com/how-to-develop-lstm-models-for-time-series-forecasting/</a></p>
+<p>Herzen article on darts: <a href="https://medium.com/unit8-machine-learning-publication/training-forecasting-models-on-multiple-time-series-with-darts-dc4be70b1844" class="uri">https://medium.com/unit8-machine-learning-publication/training-forecasting-models-on-multiple-time-series-with-darts-dc4be70b1844</a></p>
+</aside>
+</section>
+<section id="example-generate-test-and-training-data" class="slide level2">
+<h2>Example: generate test and training data</h2>
+<p><img src="lecture.serve_files/figure-revealjs/box-jenkins-airline-2-3.png" width="500px" /></p>
+<p>Partition time series into training and test data sets at an e.g. 2:1 ratio:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rnnutils</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> rnnutils.airlines()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.array(df[<span class="st">&#39;passengers&#39;</span>].values.astype(<span class="st">&#39;float32&#39;</span>)).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>train, test, scaler <span class="op">=</span> rnnutils.make_train_test(data) </span></code></pre></div>
+</section>
+<section id="example-prepare-data-for-keras" class="slide level2">
+<h2>Example: prepare data for keras</h2>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-prepare-airline-data-for-keras-1.svg" width="800px" /></p>
+<div class="element: fragment">
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>time_steps <span class="op">=</span> <span class="dv">12</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>trainX, trainY, trainX_indices, trainY_indices <span class="op">=</span> rnnutils.make_xy(train, time_steps)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>testX, testY, testX_indices, testY_indices <span class="op">=</span> rnnutils.make_xy(test, time_steps) </span></code></pre></div>
+</div>
+</section>
+<section id="example-create-vanilla-rnn-model" class="slide level2">
+<h2>Example: create vanilla RNN model</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.models <span class="im">import</span> Sequential</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.layers <span class="im">import</span> Dense, SimpleRNN</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Sequential()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>model.add(SimpleRNN(units<span class="op">=</span><span class="dv">3</span>, input_shape<span class="op">=</span>(time_steps, <span class="dv">1</span>),</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                    activation<span class="op">=</span><span class="st">&quot;tanh&quot;</span>))</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>model.add(Dense(units<span class="op">=</span><span class="dv">1</span>, activation<span class="op">=</span><span class="st">&quot;tanh&quot;</span>))</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span><span class="st">&#39;mean_squared_error&#39;</span>, optimizer<span class="op">=</span><span class="st">&#39;adam&#39;</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>model.summary() </span></code></pre></div>
+<pre><code>## Model: &quot;sequential&quot;
+## _________________________________________________________________
+## Layer (type)                 Output Shape              Param #   
+## =================================================================
+## simple_rnn (SimpleRNN)       (None, 3)                 15        
+## _________________________________________________________________
+## dense (Dense)                (None, 1)                 4         
+## =================================================================
+## Total params: 19
+## Trainable params: 19
+## Non-trainable params: 0
+## _________________________________________________________________</code></pre>
+</section>
+<section id="example-fit-the-model-and-evaluate" class="slide level2">
+<h2>Example: fit the model and evaluate</h2>
+<div style="font-size: 0.8em">
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(trainX, trainY, epochs<span class="op">=</span><span class="dv">20</span>, batch_size<span class="op">=</span><span class="dv">1</span>, verbose<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>Ytrainpred <span class="op">=</span> model.predict(trainX)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>Ytestpred <span class="op">=</span> model.predict(testX) </span></code></pre></div>
+</div>
+<div style="display: grid; grid-template-columns: 50% 50%; grid-column-gap: 10px; grid-row-gap: 0px">
+<div style="font-size: 0.8em">
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>rnnutils.plot_history(history) </span></code></pre></div>
+</div>
+<div style="font-size: 0.8em">
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {<span class="st">&#39;train&#39;</span>: (model.predict(trainX), train, trainY_indices),</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;test&#39;</span>: (model.predict(testX), test, testY_indices)}</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>rnnutils.plot_pred(data, scaler<span class="op">=</span>scaler, ticks<span class="op">=</span><span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">144</span>, <span class="dv">20</span>), labels<span class="op">=</span>df.year[<span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">144</span>, <span class="dv">20</span>)]) </span></code></pre></div>
+</div>
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/airline-plot-history-5.png" width="80%" /></p>
+</div>
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/airline-plot-model-fit-7.png" width="80%" /></p>
+</div>
+</div>
+</section>
+<section id="exercise" class="slide level2">
+<h2>Exercise</h2>
+<p>See if you can improve the airline passenger model. Some things to try:</p>
+<ul>
+<li>change the number of units</li>
+<li>change time_steps</li>
+<li>change the number of epochs</li>
+</ul>
+</section></section>
+<section>
+<section id="training" class="title-slide slide level1">
+<h1>Training</h1>
+
+</section>
+<section id="recap-backpropagation-algorithm-in-ffns" class="slide level2">
+<h2>Recap: backpropagation algorithm in ffns</h2>
+<div style="display: grid; grid-template-columns: 50% auto; grid-column-gap: 50px;">
+<div>
+<p><span class="citation" data-cites="alexander_amini_mit_2021_rnn">(Alexander Amini, 2021)</span></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-backpropagation-ffn-1-1.svg" width="768" /></p>
+</div>
+<div>
+
+</div>
+</div>
+<aside class="notes">
+<p>Revise basic steps of training with incremental figure. Base on RNN since that is what we are looking at but point out that this review is general and applies also to ffns.</p>
+</aside>
+</section>
+<section id="recap-backpropagation-algorithm-in-ffns-1" class="slide level2">
+<h2>Recap: backpropagation algorithm in ffns</h2>
+<div style="display: grid; grid-template-columns: 50% auto; grid-column-gap: 50px;">
+<div>
+<p><span class="citation" data-cites="alexander_amini_mit_2021_rnn">(Alexander Amini, 2021)</span></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-backpropagation-ffn-2-1.svg" width="768" /></p>
+</div>
+<div>
+<p><br/></p>
+<ol type="1">
+<li>perform forward pass and generate prediction</li>
+</ol>
+</div>
+</div>
+<aside class="notes">
+<p>Revise basic steps of training with incremental figure. Base on RNN since that is what we are looking at but point out that this review is general and applies also to ffns.</p>
+</aside>
+</section>
+<section id="recap-backpropagation-algorithm-in-ffns-2" class="slide level2">
+<h2>Recap: backpropagation algorithm in ffns</h2>
+<div style="display: grid; grid-template-columns: 50% auto; grid-column-gap: 50px;">
+<div>
+<p><span class="citation" data-cites="alexander_amini_mit_2021_rnn">(Alexander Amini, 2021)</span></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-backpropagation-ffn-3-1.svg" width="768" /></p>
+</div>
+<div>
+<p><br/></p>
+<ol type="1">
+<li>perform forward pass and generate prediction</li>
+<li>calculate prediction error <span class="math inline">\(\epsilon_i\)</span> wrt (known) output: <span class="math inline">\(\epsilon_i =  \mathcal{L}(\hat{y}_i, y_i)\)</span>, loss function <span class="math inline">\(\mathcal{L}\)</span></li>
+</ol>
+</div>
+</div>
+<aside class="notes">
+<p>Revise basic steps of training with incremental figure. Base on RNN since that is what we are looking at but point out that this review is general and applies also to ffns.</p>
+</aside>
+</section>
+<section id="recap-backpropagation-algorithm-in-ffns-3" class="slide level2">
+<h2>Recap: backpropagation algorithm in ffns</h2>
+<div style="display: grid; grid-template-columns: 50% auto; grid-column-gap: 50px;">
+<div>
+<p><span class="citation" data-cites="alexander_amini_mit_2021_rnn">(Alexander Amini, 2021)</span></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-backpropagation-ffn-4-1.svg" width="768" /></p>
+</div>
+<div>
+<p><br/></p>
+<ol type="1">
+<li>perform forward pass and generate prediction</li>
+<li>calculate prediction error <span class="math inline">\(\epsilon_i\)</span> wrt (known) output: <span class="math inline">\(\epsilon_i =  \mathcal{L}(\hat{y}_i, y_i)\)</span>, loss function <span class="math inline">\(\mathcal{L}\)</span></li>
+<li>back propagate errors and update weights to minimize loss</li>
+</ol>
+</div>
+</div>
+<aside class="notes">
+<p>Revise basic steps of training with incremental figure. Base on RNN since that is what we are looking at but point out that this review is general and applies also to ffns.</p>
+</aside>
+</section>
+<section id="backpropagation-through-time-bptt" class="slide level2">
+<h2>Backpropagation through time (BPTT)</h2>
+<p><span class="citation" data-cites="alexander_amini_mit_2021_rnn">(Alexander Amini, 2021)</span></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-backpropagation-unfolded-1-1.svg" width="100%" height="500px" /></p>
+</section>
+<section id="backpropagation-through-time-bptt-1" class="slide level2">
+<h2>Backpropagation through time (BPTT)</h2>
+<p><span class="citation" data-cites="alexander_amini_mit_2021_rnn">(Alexander Amini, 2021)</span></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-backpropagation-unfolded-2-1.svg" width="100%" height="500px" /></p>
+</section>
+<section id="backpropagation-through-time-bptt-2" class="slide level2">
+<h2>Backpropagation through time (BPTT)</h2>
+<p><span class="citation" data-cites="alexander_amini_mit_2021_rnn">(Alexander Amini, 2021)</span></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-backpropagation-unfolded-3-1.svg" width="100%" height="500px" /></p>
+</section>
+<section id="backpropagation-through-time-bptt-3" class="slide level2">
+<h2>Backpropagation through time (BPTT)</h2>
+<p><span class="citation" data-cites="alexander_amini_mit_2021_rnn">(Alexander Amini, 2021)</span></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-backpropagation-unfolded-5-1.svg" width="100%" height="500px" /></p>
+</section>
+<section id="backpropagation-through-time-bptt-4" class="slide level2">
+<h2>Backpropagation through time (BPTT)</h2>
+<p><span class="citation" data-cites="alexander_amini_mit_2021_rnn">(Alexander Amini, 2021)</span></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-backpropagation-unfolded-6-1.svg" width="100%" height="500px" /></p>
+</section>
+<section id="backpropagation-through-time-bptt-5" class="slide level2">
+<h2>Backpropagation through time (BPTT)</h2>
+<p><span class="citation" data-cites="alexander_amini_mit_2021_rnn">(Alexander Amini, 2021)</span></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-backpropagation-unfolded-7-1.svg" width="100%" height="500px" /></p>
+<p>Errors are propagated backwards in time from <span class="math inline">\(t=t\)</span> to <span class="math inline">\(t=0\)</span>.</p>
+<div class="element: fragment">
+<p>Problem: calculating gradient may depend on large powers of <span class="math inline">\(\mathbf{W_{hh}}^{\mathsf{T}}\)</span> (e.g. <span class="math inline">\(\delta\mathcal{L} / \delta h_0 \sim f((\mathbf{W_{hh}}^{\mathsf{T}})^t)\)</span></p>
+</div>
+<aside class="notes">
+<p>Wording: gradient <span class="math inline">\((dL/dh_0) ~ f((W_hh^T)^t)\)</span>, i.e. gradient may depend on large powers of <span class="math inline">\(W^T_hh\)</span>. So gradient is <span class="math inline">\(\propto a^t\)</span>, so if</p>
+<p>(a &gt; 1: exploding gradients; just mention here)</p>
+<p>a &lt; 1: vanishing gradients</p>
+<p>This is problematic since the <strong>size</strong> of weight adjustments depend on size of gradient</p>
+</aside>
+</section>
+<section id="the-effect-of-vanishing-gradients-on-long-term-memory" class="slide level2">
+<h2>The effect of vanishing gradients on long-term memory</h2>
+<div style="display: grid; grid-template-columns: 30% auto; grid-column-gap: 0px; font-size: 0.8em;">
+<div>
+<div class="fragment">
+<p>In layer <span class="math inline">\(i\)</span> gradient size ~ <span class="math inline">\((\mathbf{W_{hh}}^{\mathsf{T}})^{t-i}\)</span></p>
+</div>
+<div class="fragment">
+<p><span class="math inline">\(\downarrow\)</span></p>
+<p>Weight adjustments depend on size of gradient</p>
+</div>
+<div class="fragment">
+<p><span class="math inline">\(\downarrow\)</span></p>
+<p>Early layers tend to “see” small gradients and do very little updating</p>
+</div>
+<div class="fragment">
+<p><span class="math inline">\(\downarrow\)</span></p>
+<p>Bias parameters to learn recent events</p>
+</div>
+<div class="fragment">
+<p><span class="math inline">\(\downarrow\)</span></p>
+<p>RNN suffer short term memory</p>
+</div>
+</div>
+<div>
+<div class="element: fragment">
+<p><span class="citation" data-cites="olah_christopher_understanding_nodate">(Olah, 2015)</span></p>
+<p>“The clouds are in the <u>_</u>”</p>
+</div>
+<div class="element: fragment">
+<p><img src="lecture.serve_files/figure-revealjs/tikz-clouds-are-in-the-sky-1.svg" width="768" height="200px" /></p>
+<p><br/></p>
+</div>
+<div class="element: fragment">
+<p>“I grew up in England … I speak fluent <u>_</u>”</p>
+</div>
+<div class="element: fragment">
+<p><img src="lecture.serve_files/figure-revealjs/tikz-I-speak-fluent-english-1.svg" width="768" height="200px" /></p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>(Thomas, 2018)</p>
+<p>The bigger the gradient, the bigger the adjustment and <strong>vice versa</strong>. Gradients are calculated wrt to effects of gradients in previous layer. If those adjustments were small, gradients will be small, which in time leads to exponentially declining values. Early layers fail to do any learning.</p>
+<p>In flowchart: <strong>given</strong> that W is smaller than one, the gradients tend to vanish and be negligible for early layers</p>
+<p>Examples: highlight the context dependency of the prediction. Sky is easy to infer, but in the second example, if the intervening paragraph is long, we need context from much farther back.</p>
+</aside>
+</section>
+<section id="solutions-to-vanishing-gradient" class="slide level2">
+<h2>Solutions to vanishing gradient</h2>
+<div style="display: grid; grid-template-columns: 50% auto; grid-template-rows: auto auto auto; grid-row-gap: 0px; grid-column-gap: 0px;">
+<div class="element: fragment" data-fragment-index="1">
+<ol type="1">
+<li><p>Activation function</p>
+<p>ReLU (or leaky ReLU) instead of sigmoid or tanh</p></li>
+</ol>
+</div>
+<div class="element: fragment" data-fragment-index="1">
+<p><img src="lecture.serve_files/figure-revealjs/tikz-vanishing-gradient-trick-1-1.svg" width="768" height="200px" /></p>
+</div>
+<div class="element: fragment" data-fragment-index="2">
+<ol start="2" type="1">
+<li><p>Weight initialization</p>
+<p>Set bias=0, weights to identity matrix</p></li>
+</ol>
+</div>
+<div class="element: fragment" data-fragment-index="2">
+<p><img src="lecture.serve_files/figure-revealjs/tikz-vanishing-gradient-trick-2-1.svg" width="768" height="200px" /></p>
+</div>
+<div class="element: fragment" data-fragment-index="3">
+<ol start="3" type="1">
+<li><p>More complex cells using “gating”</p>
+<p>For example LSTM</p></li>
+</ol>
+</div>
+<div class="element: fragment" data-fragment-index="3">
+<p><img src="lecture.serve_files/figure-revealjs/tikz-vanishing-gradient-trick-3-1.svg" width="768" height="200px" /></p>
+</div>
+</div>
+<aside class="notes">
+<p>Note that ReLUs not used in LSTMs / GRU as ReLU is non-negative. The tanh activation is needed so that values can be added <strong>and</strong> subtracted. Sigmoid is in (0, 1).</p>
+</aside>
+</section></section>
+<section>
+<section id="lstms-and-grus" class="title-slide slide level1">
+<h1>LSTMs and GRUs</h1>
+
+</section>
+<section id="motivation-behind-lstms-and-grus" class="slide level2">
+<h2>Motivation behind LSTMs and GRUs</h2>
+<div style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 10px;">
+<div>
+<h5 align="center">
+LSTM
+</h5>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-lstm-1.svg" width="480" /></p>
+</div>
+<div>
+<h5 align="center">
+GRU
+</h5>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-gru-1.svg" width="480" /></p>
+</div>
+</div>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-gru-lstm-legend-1.svg" width="480" /></p>
+<p>Long Short Term Memory (LSTM) (Hochreiter &amp; Schmidhuber, 1997) and Gated Recurrent Unit (GRU) (Cho et al., 2014) architectures were proposed to solve the vanishing gradient problem.</p>
+<aside class="notes">
+<p>Based on (Phi, 2020)</p>
+<ul>
+<li>solution to short-term memory</li>
+<li>gates <strong>regulate</strong> the flow of information, concentrating on the important parts</li>
+</ul>
+</aside>
+</section>
+<section id="intuition" class="slide level2">
+<h2>Intuition</h2>
+<div class="element:" style="font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter, monospace; font-size: 0.8em;">
+<p>In this paper, we propose a novel neural network model called RNN Encoder-Decoder that consists of two recurrent neural networks (RNN). One RNN encodes a sequence of symbols into a fixed-length vector representation, and the other decodes the representation into another sequence of symbols. The encoder and decoder of the proposed model are jointly trained to maximize the conditional probability of a target sequence given a source sequence. The performance of a statistical machine translation system is empirically found to improve by using the conditional probabilities of phrase pairs computed by the RNN Encoder-Decoder as an additional feature in the existing log-linear model. Qualitatively, we show that the proposed model learns a semantically and syntactically meaningful representation of linguistic phrases.</p>
+</div>
+<div class="element:" style="font-size: 0.6em;">
+<p>Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation (Cho et al., 2014)</p>
+</div>
+<aside class="notes">
+<p>(Phi, 2020)</p>
+<p>Example: provide long text (e.g. customer) review and point out what we most likely will remember the following day. Intuition on LSTM/GRU: focus on relevant information.</p>
+<p>Intuition:</p>
+<ul>
+<li>solution to vanishing gradient problem</li>
+<li>gates regulate flow of information, focusing on the important parts</li>
+</ul>
+</aside>
+</section>
+<section id="intuition-1" class="slide level2">
+<h2>Intuition</h2>
+<div class="highlight">
+<p>In this paper, we propose a <strong>novel neural network</strong> model called <strong>RNN</strong> <strong>Encoder-Decoder</strong> that consists of <strong>two recurrent neural networks</strong> (RNN). One RNN <strong>encodes</strong> a <strong>sequence of symbols</strong> into a fixed-length vector representation, and the other <strong>decodes the representation</strong> into another sequence of symbols. The encoder and decoder of the proposed model are <strong>jointly trained</strong> to maximize the conditional probability of a target sequence given a source sequence. The performance of a <strong>statistical</strong> <strong>machine translation system</strong> is empirically found to improve by using the conditional probabilities of phrase pairs computed by the RNN Encoder-Decoder as an additional feature in the existing log-linear model. Qualitatively, we show that the proposed model learns a <strong>semantically and syntactically meaningful representation</strong> of linguistic phrases.</p>
+</div>
+<div class="element:" style="font-size: 0.6em;">
+<p>Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation (Cho et al., 2014)</p>
+</div>
+<p><br/></p>
+<div class="element: fragment">
+<p>Remember the important parts, pay less attention to (forget) the rest.</p>
+</div>
+<aside class="notes">
+<p>(Phi, 2020)</p>
+<p>Example: provide long text (e.g. customer) review and point out what we most likely will remember the following day. Intuition on LSTM/GRU: focus on relevant information.</p>
+<p>Intuition:</p>
+<ul>
+<li>solution to vanishing gradient problem</li>
+<li>gates regulate flow of information, focusing on the important parts</li>
+</ul>
+</aside>
+</section>
+<section id="lstm-cell-state-flow-and-gating" class="slide level2">
+<h2>LSTM: Cell state flow and gating</h2>
+<p><span class="citation" data-cites="olah_christopher_understanding_nodate">(Olah, 2015)</span></p>
+<div style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 10px;">
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-cellstateflow-1.svg" width="768" height="300px" /></p>
+<p>Information flows in the cell state from <span class="math inline">\(c_{t-1}\)</span> to <span class="math inline">\(c_t\)</span>.</p>
+</div>
+<div class="element: fragment">
+<p><img src="lecture.serve_files/figure-revealjs/tikz-lstmgate-1.svg" width="768" height="300px" /></p>
+<p>Gates affect the amount of information let through. The sigmoid layer outputs anything from 0 (nothing) to 1 (everything).</p>
+</div>
+</div>
+<div class="element: fragment" style="font-size: 0.8em">
+<p><span class="citation" data-cites="cho_learning_2014">(Cho et al., 2014)</span></p>
+<blockquote>
+<p>In our preliminary experiments, we found that it is crucial to use this new unit with gating units. We were not able to get meaningful result with an oft-used tanh unit without any gating.</p>
+</blockquote>
+</div>
+<aside class="notes">
+<p>(Olah, 2015)</p>
+<p>(, Cho et al., 2014, p. 1726) on the hidden unit:</p>
+<blockquote>
+<p>In our preliminary experiments, we found that it is crucial to use this new unit with gating units. We were not able to get meaningful result with an oft-used tanh unit without any gating.</p>
+</blockquote>
+</aside>
+</section>
+<section id="forget-input-and-output-gates" class="slide level2">
+<h2>Forget, input, and output gates</h2>
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-column-gap: 10px;">
+<div>
+<h5>
+forget gate
+</h5>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-lstm-forget-gate-only-1.svg" width="768" /></p>
+<p><strong>Purpose:</strong> reset content of cell</p>
+</div>
+<div>
+<h5>
+input gate
+</h5>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-lstm-input-gate-only-1.svg" width="768" /></p>
+<p><strong>Purpose:</strong> decide when to read data into cell</p>
+</div>
+<div>
+<h5>
+output gate
+</h5>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-lstm-output-gate-only-1.svg" width="768" /></p>
+<p><strong>Purpose:</strong> read entries from cell</p>
+</div>
+</div>
+<p>Sigmoid squishes vector <span class="math inline">\([\boldsymbol{h_{t-1}}, \boldsymbol{x_t}]\)</span> (previous hidden state + input) to <span class="math inline">\((0, 1)\)</span>, where anything from no information (0) to all information (1) passes through the gate.</p>
+</section>
+<section id="the-forget-gate" class="slide level2">
+<h2>The forget gate</h2>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-lstm-forget-gate-1.svg" width="480" /></p>
+<p><strong>Purpose</strong>: decide what information to keep or throw away</p>
+<p>Sigmoid squishes vector <span class="math inline">\([\boldsymbol{h_{t-1}}, \boldsymbol{x_t}]\)</span> (previous hidden state + input) to <span class="math inline">\((0, 1)\)</span>, where 0=forget, 1=keep.</p>
+<div class="element: fragment">
+<p><span class="math display">\[
+f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)
+\]</span></p>
+</div>
+</section>
+<section id="add-new-information---the-input-gate" class="slide level2">
+<h2>Add new information - the input gate</h2>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-lstm-candidatecellstate-input-1.svg" width="480" /></p>
+<p>Two steps to adding new information:</p>
+<ol type="1">
+<li>sigmoid layer decides which values to update</li>
+</ol>
+</section>
+<section id="add-new-information---get-candidate-values" class="slide level2">
+<h2>Add new information - get candidate values</h2>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-lstm-candidatecellstate-input-1-1.svg" width="480" /></p>
+<p>Two steps to adding new information:</p>
+<ol type="1">
+<li>sigmoid layer decides which values to update</li>
+<li>tanh layer creates vector of new candidate values <span class="math inline">\(\tilde{c}_t\)</span></li>
+</ol>
+<div class="element: fragment">
+<p><span class="math display">\[
+i_t = \sigma (W_i \cdot [h_{t-1}, x_t] + b_i)\\
+\tilde{c}_t = \mathsf{tanh}(W_c \cdot [h_{t-1}, x_t] + b_c)
+\]</span></p>
+</div>
+</section>
+<section id="updating-the-cell-state" class="slide level2">
+<h2>Updating the cell state</h2>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-lstm-update-cell-state-1.svg" width="480" /></p>
+<ol type="1">
+<li>multiply old cell state by <span class="math inline">\(f_t\)</span> to forget what was decided to forget</li>
+<li>add <span class="math inline">\(i_t * \tilde{c}_t\)</span></li>
+</ol>
+<div class="element: fragment">
+<p><span class="math display">\[
+c_t = f_t * c_{t-1} + i_t * \tilde{c}_t
+\]</span></p>
+</div>
+</section>
+<section id="cell-output" class="slide level2">
+<h2>Cell output</h2>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-lstm-output-gate-1.svg" width="480" /></p>
+<p>Output is filtered version of cell state.</p>
+<ol type="1">
+<li>sigmoid output gate decides what parts of cell state to output</li>
+<li>push cell state through tanh and multiply by sigmoid output</li>
+</ol>
+<div class="element: fragment">
+<p><span class="math display">\[
+o_t = \sigma(W_o [h_{t-1}, x_t] + b_o)\\
+h_t = o_t * \mathsf{tanh}(c_t)
+\]</span></p>
+</div>
+</section>
+<section id="lstm-putting-it-together" class="slide level2">
+<h2>LSTM: putting it together</h2>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-lstm-intuition-1.svg" width="480" /></p>
+<h3 id="intuition-2">Intuition</h3>
+<ul>
+<li>if forget ~ 1, input ~ 0, <span class="math inline">\(c_{t-1}\)</span> will be saved over time</li>
+</ul>
+<aside class="notes">
+<p>From (, Zhang et al., 2021, p. 9.2.1.3):</p>
+<ul>
+<li>if forget ~ 1, input ~ 0, C<sub>t-1</sub> will be saved over time</li>
+</ul>
+</aside>
+</section>
+<section id="lstm-putting-it-together-1" class="slide level2">
+<h2>LSTM: putting it together</h2>
+<p><span class="citation" data-cites="zhang2021dive">(Zhang et al., 2021)</span></p>
+<div style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 10px;">
+<div>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-lstm-2-1.svg" width="480" /></p>
+</div>
+<div>
+<p><span class="math display">\[
+f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)\\
+i_t = \sigma (W_i \cdot [h_{t-1}, x_t] + b_i)\\
+\tilde{c}_t = \mathsf{tanh}(W_c \cdot [h_{t-1}, x_t] + b_c)\\
+c_t = f_t * c_{t-1} + i_t * \tilde{c}_t\\
+o_t = \sigma(W_o [h_{t-1}, x_t] + b_o)\\
+h_t = o_t * \mathsf{tanh}(c_t)
+\]</span></p>
+</div>
+</div>
+<p><span class="math display">\[
+x_t \in \mathbb{R}^{n\times d}, h_{t-1} \in \mathbb{n \times h},
+i_t \in \mathbb{R}^{n\times h}, f_t \in \mathbb{R}^{n\times h}, o_t \in \mathbb{R}^{n\times h},
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+W_f \in \mathbb{R}^{n \times (h+d)}, W_i \in \mathbb{R}^{n \times (h+d)}, W_o \in \mathbb{R}^{n \times (h+d)}, W_c \in \mathbb{R}^{n \times (h+d)}
+\]</span></p>
+</section>
+<section id="gru" class="slide level2">
+<h2>GRU</h2>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-big-gru-1.svg" width="80%" /></p>
+<ul>
+<li>forget and input states combined to single <em>update</em> gate</li>
+<li>merge cell and hidden state</li>
+<li>simpler model than LSTM</li>
+</ul>
+<aside class="notes">
+<p>(Olah, 2015)</p>
+<p>Notes that GRU has been gaining traction lately (where lately=2015!)</p>
+<p>Comparison (Lendave, 2021):</p>
+<ul>
+<li>GRU has fewer parameters so uses less memory and executes faster</li>
+<li>LSTM more accurate on larger datasets</li>
+</ul>
+</aside>
+</section>
+<section id="exercise-1" class="slide level2">
+<h2>Exercise</h2>
+<h3 id="analyse-airline-passengers-with-lstm">1. Analyse airline passengers with LSTM</h3>
+<p>Modify the airline passenger model to use an LSTM and compare the results. Try out different parameters to improve test predictions.</p>
+<h3 id="time-series-forecasting-with-lstm-discrete-state-space">2. Time-series forecasting with LSTM, discrete state space</h3>
+<p>LSTM with Variable Length Input Sequences to One Character Output</p>
+<aside class="notes">
+<p>Good example at (Koehrsen, 2018)</p>
+</aside>
+</section>
+<section id="time-series-forecasting-with-lstm-discrete-state-space-1" class="slide level2">
+<h2>Time-series forecasting with LSTM, discrete state space</h2>
+<h3 id="objective">Objective</h3>
+<p>Predict next character in sequence of strings</p>
+<h3 id="comments">Comments</h3>
+<ul>
+<li>use several LSTM layers, where the last one should return sequences <span class="citation" data-cites="brownlee_stacked_2017">(Brownlee, 2017)</span></li>
+</ul>
+</section></section>
+<section id="bibliography" class="title-slide slide level1">
+<h1>Bibliography</h1>
+<div id="refs" class="references hanging-indent csl-bib-body" role="doc-bibliography" style="font-size: 60%;" data-line-spacing="2">
+<div id="ref-alexander_amini_mit_2021_rnn" class="csl-entry" role="doc-biblioentry">
+Alexander Amini. (2021). <em><span>MIT</span> 6.<span>S191</span>: <span>Recurrent</span> <span>Neural</span> <span>Networks</span></em>. <a href="https://www.youtube.com/watch?v=qjrad0V0uJE">https://www.youtube.com/watch?v=qjrad0V0uJE</a>
+</div>
+<div id="ref-brownlee_stacked_2017" class="csl-entry" role="doc-biblioentry">
+Brownlee, J. (2017). Stacked <span>Long</span> <span>Short</span>-<span>Term</span> <span>Memory</span> <span>Networks</span>. In <em>Machine Learning Mastery</em>. <a href="https://machinelearningmastery.com/stacked-long-short-term-memory-networks/">https://machinelearningmastery.com/stacked-long-short-term-memory-networks/</a>
+</div>
+<div id="ref-cho_learning_2014" class="csl-entry" role="doc-biblioentry">
+Cho, K., Merrienboer, B. van, Gulcehre, C., Bahdanau, D., Bougares, F., Schwenk, H., &amp; Bengio, Y. (2014). Learning <span>Phrase</span> <span>Representations</span> using <span>RNN</span> <span>Encoder</span>-<span>Decoder</span> for <span>Statistical</span> <span>Machine</span> <span>Translation</span>. <em>arXiv:1406.1078 [Cs, Stat]</em>. <a href="http://arxiv.org/abs/1406.1078">http://arxiv.org/abs/1406.1078</a>
+</div>
+<div id="ref-herzen2021darts" class="csl-entry" role="doc-biblioentry">
+Herzen, J., Lässig, F., Piazzetta, S. G., Neuer, T., Tafti, L., Raille, G., Pottelbergh, T. V., Pasieka, M., Skrodzki, A., Huguenin, N., Dumonal, M., Kościsz, J., Bader, D., Gusset, F., Benheddi, M., Williamson, C., Kosinski, M., Petrik, M., &amp; Grosch, G. (2021). <em>Darts: User-friendly modern machine learning for time series</em>. <a href="https://arxiv.org/abs/2110.03224">https://arxiv.org/abs/2110.03224</a>
+</div>
+<div id="ref-hochreiter_long_1997" class="csl-entry" role="doc-biblioentry">
+Hochreiter, S., &amp; Schmidhuber, J. (1997). Long <span>Short</span>-<span>Term</span> <span>Memory</span>. <em>Neural Computation</em>, <em>9</em>(8), 1735–1780. <a href="https://doi.org/10.1162/neco.1997.9.8.1735">https://doi.org/10.1162/neco.1997.9.8.1735</a>
+</div>
+<div id="ref-karpathy_unreasonable_effectiveness_of_RNNs" class="csl-entry" role="doc-biblioentry">
+Karpathy, A. (2015). <em>The <span>Unreasonable</span> <span>Effectiveness</span> of <span>Recurrent</span> <span>Neural</span> <span>Networks</span></em>. <a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/">https://karpathy.github.io/2015/05/21/rnn-effectiveness/</a>
+</div>
+<div id="ref-mackay_information_2003" class="csl-entry" role="doc-biblioentry">
+MacKay, D. J. C. (2003). <em>Information <span>Theory</span>, <span>Inference</span> and <span>Learning</span> <span>Algorithms</span></em> (Illustrated edition). Cambridge University Press.
+</div>
+<div id="ref-olah_christopher_understanding_nodate" class="csl-entry" role="doc-biblioentry">
+Olah, C. (2015). <em>Understanding <span>LSTM</span> <span>Networks</span> – colah’s blog</em>. <a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/">http://colah.github.io/posts/2015-08-Understanding-LSTMs/</a>
+</div>
+<div id="ref-onnen_temporal_2021" class="csl-entry" role="doc-biblioentry">
+Onnen, H. (2021). Temporal <span>Loops</span>: <span>Intro</span> to <span>Recurrent</span> <span>Neural</span> <span>Networks</span> for <span>Time</span> <span>Series</span> <span>Forecasting</span> in <span>Python</span>. In <em>Medium</em>. <a href="https://towardsdatascience.com/temporal-loops-intro-to-recurrent-neural-networks-for-time-series-forecasting-in-python-b0398963dc1f">https://towardsdatascience.com/temporal-loops-intro-to-recurrent-neural-networks-for-time-series-forecasting-in-python-b0398963dc1f</a>
+</div>
+<div id="ref-phi_illustrated_2020_RNN" class="csl-entry" role="doc-biblioentry">
+Phi, M. (2020). Illustrated <span>Guide</span> to <span>Recurrent</span> <span>Neural</span> <span>Networks</span>. In <em>Medium</em>. <a href="https://towardsdatascience.com/illustrated-guide-to-recurrent-neural-networks-79e5eb8049c9">https://towardsdatascience.com/illustrated-guide-to-recurrent-neural-networks-79e5eb8049c9</a>
+</div>
+<div id="ref-shen_recurrent_2018" class="csl-entry" role="doc-biblioentry">
+Shen, Z., Bao, W., &amp; Huang, D.-S. (2018). Recurrent <span>Neural</span> <span>Network</span> for <span>Predicting</span> <span>Transcription</span> <span>Factor</span> <span>Binding</span> <span>Sites</span>. <em>Scientific Reports</em>, <em>8</em>(1), 15270. <a href="https://doi.org/10.1038/s41598-018-33321-1">https://doi.org/10.1038/s41598-018-33321-1</a>
+</div>
+<div id="ref-zhang2021dive" class="csl-entry" role="doc-biblioentry">
+Zhang, A., Lipton, Z. C., Li, M., &amp; Smola, A. J. (2021). Dive into deep learning. <em>arXiv Preprint arXiv:2106.11342</em>.
+</div>
+</div>
+</section>
+    </div>
+  </div>
+
+  <script src="lecture.serve_files/reveal.js-3.3.0.1/lib/js/head.min.js"></script>
+  <script src="lecture.serve_files/reveal.js-3.3.0.1/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Opens links in an iframe preview overlay
+        previewLinks: true,
+        // Transition style
+        transition: 'none', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'default', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1200,
+        height: 800,
+        // Bounds for smallest/largest possible scale to apply to content
+        minScale: 1,
+        maxScale: 1,
+
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'lecture.serve_files/reveal.js-3.3.0.1/plugin/notes/notes.js', async: true },
+        ]
+      });
+    </script>
+  <!-- dynamically load mathjax for compatibility with self-contained -->
+  <script>
+    (function () {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+      document.getElementsByTagName("head")[0].appendChild(script);
+    })();
+  </script>
+
+<script>
+  (function() {
+    if (window.jQuery) {
+      Reveal.addEventListener( 'slidechanged', function(event) {  
+        window.jQuery(event.previousSlide).trigger('hidden');
+        window.jQuery(event.currentSlide).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+
+  </body>
+</html>
