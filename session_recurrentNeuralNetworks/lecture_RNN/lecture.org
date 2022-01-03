@@ -1,6 +1,7 @@
 #+STARTUP: indent
 #+OPTIONS: toc:nil num:t  \n:nil @:t ::t |:t ^:{} -:t f:t *:t <:nil H:4 rmd_yaml:nil
 #+EXPORT_FILE_NAME: lecture.Rmd
+#+CITE_EXPORT: csl /home/peru/opt/styles/apa.csl
 
 * Header                                                             :ignore:
 #+begin_export markdown
@@ -29,6 +30,8 @@ output:
       maxScale: 1
       height: 800
       width: 1200
+nocite: '@*'
+csl: /home/peru/opt/styles/apa.csl
 mainfont: Liberation Serif
 monofont: Liberation Mono
 bibliography: references.bib
@@ -115,9 +118,9 @@ print("""
 * Sandbox slides
 FIXME: Remove this section; for testing purposes only
 
-cite:bourgeois_overview_2021
+[cite/t/b:@bourgeois_overview_2021]
 
-cite:aiml_vanishing_2018
+[cite:@aiml_vanishing_2018]
 
 
 ** Motivation
@@ -207,37 +210,139 @@ script, div = components(p)
 print(script)
 print(div)
 #+end_src
+
+** Test animation                                                 :noexport:
+#+name: tikz-test-animation
+#+begin_src tikz :ravel fig.ext="svg", cache=FALSE, engine.opts=list(template="tikzfig-anim.tex")
+\begin{tikzpicture}
+  \tikz \node :fill opacity = { 0s="1", 2s="0", begin on=click }
+  [fill = blue!20, draw = blue, ultra thick, circle] {ooeoeu};
+\end{tikzpicture}
+#+end_src
 * Recap
-** Perceptron
-#+name: tikz-rnn-motivation-perceptron
+** Perceptron (single neuron)
+::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 10px;"}
+
+:::: {}
+
+#+name: tikz-rnn-recap-perceptron-1
 #+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=4
-\begin{tikzpicture}[node distance=2*\nodesep cm, >=latex]
-\node[ionode={16pt}{black}{$x_0$}] (x0) {};
-\node[input={$x_1$}, below of=x0] (x1) {};
-\node[input={$x_2$}, below of=x1] (x2) {};
-\node[below of=x2] (vdots) {$\vdots$};
-\node[input={$x_n$}, below of=vdots] (xn) {};
-
-\node[circle, draw=black, thick, minimum size=16pt, right of=x2] (sum) {};
-
-\node[output={$y$}, right of=sum, node distance=4*\nodesep cm] (y) {};
-
-\draw[->] (x0) -- (sum) node [midway, above right] {$w_0=1$};
-\draw[->] (x1) -- (sum) node [midway, above] {$w_1$};
-\draw[->] (x2) -- (sum) node [midway, above] {$w_2$};
-\draw[->] (xn) -- (sum) node [midway, above left] {$w_n$};
-\draw[->] (sum) -- (y);
+\begin{tikzpicture}
+  \pic {mackayperceptron};
 \end{tikzpicture}
 #+end_src
 
+:::: 
+
+:::: {}
+
+<h3>Architecture</h3>
+
+A single neuron has $n$ /inputs/ $x_i$ and an /output/ $y$. To each
+input is associated a /weight/ $w_i$.
+
+<h3>Activity rule</h3>
+The *activity rule* is given by two steps:
+
+$$a = \sum_{i} w_ix_i, \quad i=1,...,n$$
+
+$$\begin{array}{ccc}
+\mathrm{activation} & & \mathrm{activity}\\
+a & \rightarrow & y(a)
+\end{array}$$
+
+:::: 
+
+:::::::: 
+*** Notes                                                          :ignore:
 ::: {.notes}
 
+Alternative view of bias: an additional weight $w_0$ with input
+permanently set to 1 [cite:@mackay_information_2003 p.471]
+
+[cite:@alexander_amini_mit_2021 5:43] point out inputs $x_i$ represent
+*one* time point
+
+Draw bottom-up; then dimensions are in "correct" order
 
 :::
+** Feed forward network
 
-** Notation
+#+name: tikz-rnn-recap-perceptron-multiout
+#+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=4
+\begin{tikzpicture}
+  \pic {ffn};
+ % \node[input={$x_1$}] (x1) {};
+%   \node[input={$x_2$}, below of=x1] (x2) {};
+%   \node[below of=x2] (vdots) {$\vdots$};
+%   \node[input={$x_m$}, below of=vdots] (xn) {};
+
+%   \node[circle, draw=black, thick, minimum size=32pt, right of=x2] (sum) {$\mathrm{f(a)}$};
+
+%   \node[output={$y_3$}, right of=sum, node distance=4*\nodesep cm] (y3) {};
+%   \node[output={$y_2$}, above of=y3] (y2) {};
+%   \node[output={$y_1$}, above of=y2] (y1) {};
+%   \node[below of=x2] (vdots_y) {$\vdots$};
+%   \node[input={$x_m$}, below of=vdots_y] (xn) {};
+  
+
+%   \draw[->] (x1) -- (sum) node [midway, above] {$w_1$};
+%   \draw[->] (x2) -- (sum) node [midway, above] {$w_2$};
+%   \draw[->] (xn) -- (sum) node [midway, right] {$w_n$};
+%   \draw[->] (sum) -- (y);
+\end{tikzpicture}
+#+end_src
+
+
+
+*** Notes                                                          :ignore:
+:::: {.notes}
+
+Show multi-valued (vector) output and hidden layer
+
+::::
+** Simplified illustration
+Condense hidden layers to a box.
+*** Notes                                                          :ignore:
+:::: {.notes}
+
+Emphasize input/output dimensions? (R_m, R_n)
+
+::::
+** Simplified illustration and notation
+#+name: tikz-rnn-recap-perceptron-2
+#+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=10
+\begin{tikzpicture}[node distance=4*\nodesep cm, >=latex]
+
+\node[input={$\boldsymbol{x}$}] (x) {};
+\node[ionode={16pt}{black}{$\sum$}, draw=black, thick, minimum size=16pt, right of=x] (sum) {};
+\node[sigtan={16pt}{blue}{4pt}, right of=sum] (tanh) {};
+\node[output={$y$}, right of=tanh] (y) {};
+
+\draw[->] (x) -- (sum) node [midway, above] {$\boldsymbol{w}$};
+\draw[->] (sum) -- (tanh) node [midway, above] {$\boldsymbol{wx}$};
+\draw[->] (tanh) -- (y) node [midway, above] {$\mathrm{tanh(}\boldsymbol{wx}\mathrm{)}$};
+\end{tikzpicture}
+#+end_src
+
+
+<h3>Architecture</h3>
+
+Vectorized versions: input $\boldsymbol{x}$, weights $\boldsymbol{w}$,
+output $\boldsymbol{y}$
+
+<h3>Activity rule</h3>
+
+$$a = \boldsymbol{wx}$$
+
+:::: {.notes}
+
+FIXME: inconsistent notation? Weights are depicted as attached to
+first arrow, then the labels indicate what *value* is passed along
+
+::::
+
 * Sequential models
-
 ** Motivation
 
 #+name: tikz-rnn-motivation-time-series
@@ -306,6 +411,8 @@ incremental figure showing time series (e.g. sinus) that highlights
 \end{tikzpicture}
 #+end_src
 
+
+*** Notes                                                          :ignore:
 ::: {.notes}
 
 incremental figure showing time series (e.g. sinus) that highlights
@@ -314,9 +421,6 @@ incremental figure showing time series (e.g. sinus) that highlights
 
 :::
 
-** Why standard perceptrons/FFNs don't work
-
-
 ** Concrete models
 FIXME: add examples from
 - genomics
@@ -324,9 +428,8 @@ FIXME: add examples from
 - language processing
 - ...
 
-
 ** Temporal aspects
-Provide the alphabet example from https://towardsdatascience.com/illustrated-guide-to-recurrent-neural-networks-79e5eb8049c9
+Provide the alphabet example from [cite:@phi_illustrated_2020]
 
 A -> Z: easy, given one letter the other follows
 
@@ -337,11 +440,131 @@ Z -> A: try do enumerate alphabet in reverse; non-trivial
 *** one-to-many
 *** many-to-many
 * RNNs
+
+:::{.element: class="fragment"}
+
+#+name: tikz-rnn-folded-only
+#+begin_src tikz :ravel fig.ext="svg", cache=FALSE, fig.width=4
+\begin{tikzpicture}[thick]
+  \def\sep{3 * \basenodesep}
+  \def\width{\sep}
+  \def\height{\rnnouterheight}
+  \pic (foldedrnn_) {rnniofolded};
+\end{tikzpicture}
+#+end_src
+
+:::
+** Why ffns don't work
+
+::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-column-gap: 10px;"}
+
+:::: {}
+
+Column 1
+
+:::: 
+
+:::: {}
+
+Nullam eu ante vel est convallis dignissim. Fusce suscipit,
+wisi nec facilisis facilisis, est dui fermentum leo, quis tempor
+ligula erat quis odio. Nunc porta vulputate tellus. Nunc rutrum turpis
+sed pede. Sed bibendum. Aliquam posuere. Nunc aliquet, augue nec
+adipiscing interdum, lacus tellus malesuada massa, quis varius mi
+purus non odio. Pellentesque condimentum, magna ut suscipit hendrerit,
+ipsum augue ornare nulla, non luctus diam neque sit amet urna.
+Curabitur vulputate vestibulum lorem. Fusce sagittis, libero non
+molestie mollis, magna orci ultrices dolor, at vulputate neque nulla
+lacinia eros. Sed id ligula quis est convallis tempor. Curabitur
+lacinia pulvinar nibh. Nam a sapien.
+
+
+
+:::: 
+
+:::: {}
+
+Column 3
+
+:::: 
+
+::::::::::::::::::: 
 ** Why we need them and what they are
+
+#+name: tikz-rnn-folded
+#+begin_src tikz :ravel fig.ext="svg", cache=FALSE, fig.width=12
+\begin{tikzpicture}[thick]
+  \def\sep{3 * \basenodesep}
+  \def\width{6.5 * \sep}
+  \def\height{\rnnouterheight}
+  \draw[white] (0,0) rectangle (\width, \height);
+  \pic (foldedrnn_) {rnniofolded};
+\end{tikzpicture}
+#+end_src
+
+
+** Why we need them and what they are
+
+#+name: tikz-rnn-folded-unfolded
+#+begin_src tikz :ravel fig.ext="svg", cache=FALSE, fig.width=12
+\begin{tikzpicture}[thick]
+  \def\sep{3 * \basenodesep}
+  \def\width{6.5 * \sep}
+  \def\height{\rnnouterheight}
+  \draw[white] (0,0) rectangle (\width, \height);
+  \pic (foldedrnn_) {rnniofolded};
+  \node[xshift=1.5*\sep, yshift=\height/2] (eq) {\Huge =};
+  \pic[xshift=2*\sep] (x0_) {rnnio={A}{$X_0$}{$H_0$}};
+  \pic[xshift=3*\sep] (x1_) {rnnio={A}{$X_1$}{$H_1$}};
+  \pic[xshift=4*\sep] (x2_) {rnnio={A}{$X_2$}{$H_2$}};
+  \node[xshift=5*\sep] (dots) {\Huge \dots};
+  \pic[xshift=5.5*\sep] (xt_) {rnnio={A}{$X_t$}{$H_t$}};
+  \draw[->] (x0_right) -- (x1_left);
+  \draw[->] (x1_right) -- (x2_left);
+  \draw[->] (x2_right) -- (xt_left);
+\end{tikzpicture}
+#+end_src
+
+
+
 ** Parameter sharing
 contrast with FFNs
 ** RNN basic architecture
-cite:olah_christopher_understanding_nodate
+[cite:@olah_christopher_understanding_nodate]
+
+#+name: tikz-rnn-basic-architecture-1
+#+begin_src tikz :ravel fig.ext="svg", cache=FALSE, fig.width=18
+\begin{tikzpicture}
+  \draw[white] (0,0) rectangle (3*\rnnfigwidth, \rnnfigheight);
+  \pic[xshift=\rnnfigwidth]{vanillarnn};
+\end{tikzpicture}        
+#+end_src
+** RNN basic architecture
+:PROPERTIES:
+:ID:       e374b4c9-8989-43f2-a696-b7b143e3124f
+:END:
+[cite:@olah_christopher_understanding_nodate]
+
+#+name: tikz-rnn-basic-architecture-2
+#+begin_src tikz :ravel fig.ext="svg", cache=FALSE, fig.width=18
+\begin{tikzpicture}
+  \draw[white] (0,0) rectangle (3*\rnnfigwidth, \rnnfigheight);
+  \pic[xshift=\rnnfigwidth]{vanillarnn};
+  \pic[xshift=0, xtlabel=$X_{t-1}$, htlabel=$H_{t-1}$]{vanillarnnoverlay};
+\end{tikzpicture}        
+#+end_src
+** RNN basic architecture
+[cite:@olah_christopher_understanding_nodate]
+
+#+name: tikz-rnn-basic-architecture-3
+#+begin_src tikz :ravel fig.ext="svg", cache=FALSE, fig.width=18
+\begin{tikzpicture}
+  \draw[white] (0,0) rectangle (3*\rnnfigwidth, \rnnfigheight);
+  \pic[xshift=\rnnfigwidth]{vanillarnn};
+  \pic[xshift=0, xtlabel=$X_{t-1}$, htlabel=$H_{t-1}$]{vanillarnnoverlay};
+  \pic[xshift=2 * \rnnfigwidth, xtlabel=$X_{t+1}$, htlabel=$X_{t+1}$]{vanillarnnoverlay};
+\end{tikzpicture}        
+#+end_src
 ** Examples
 Examples using vanilla RNNs
 
@@ -355,7 +578,7 @@ Segway into exercise with co2 data
 * LSTMs and GRUs
 ** Motivation behind LSTMs and GRUs
 
-<div class="based-on">Based on cite:phi_illustrated_2020</div>
+<div class="based-on">Based on [cite/t/b:@phi_illustrated_2020]</div>
 ::::::::::::::::::: {style="display: flex;"}
 
 :::: {}
@@ -396,16 +619,18 @@ Segway into exercise with co2 data
 }
 \begin{tikzpicture}[node distance=1cm]
 \node[pwise=X, node distance=2cm, label={[legend]below:pointwise multiplication}] (pmult) {};
-\node[tanhnode, left of=pmult, label={[legend]below:tanh}] (tanh) {};
-\node[signode, left of=tanh, label={[legend]below:sigmoid}] (sigmoid) {};
+\node[tanh, left of=pmult, label={[legend]below:tanh}] (tanh) {};
+\node[sigmoid, left of=tanh, label={[legend]below:sigmoid}] (sigmoid) {};
 \node[pwise=+, right of=pmult, label={[legend]below:pointwise addition}] (padd) {};
 \node[vcon=1cm, right of=padd, label={[legend]below:vector concatenation}] (vconcat) {};
 \end{tikzpicture}
 #+end_src
 
-Long Short Term Memory (LSTM) cite:hochreiter_long_1997 and Gated
-Recurrent Unit (GRU) cite:cho_learning_2014 architectures were
+Long Short Term Memory (LSTM) [cite:@hochreiter_long_1997] and Gated
+Recurrent Unit (GRU) [cite:@cho_learning_2014] architectures were
 proposed to solve the vanishing gradient problem.
+
+
 *** Notes                                                          :ignore:
 
 ::: {.notes}
@@ -446,8 +671,8 @@ Sigmoid squishes vector $[\boldsymbol{h_{t-1}}, \boldsymbol{x_t}]$
 #+begin_src tikz :ravel cache=FALSE, fig.ext="svg", fig.width=8
 \begin{tikzpicture}
 \node (lstm) at (0, 0) {\lstmforgetgate};
-\node[packet, scale=.3] (ht) at (-2.7, -.53) {$h_{t-1}$};
-\node[packet, scale=.3] (xt) at (-2.2, -.7) {$h_{t-1}$};
+%\node[packet, scale=.3] (ht) at (-2.7, -.53) {$h_{t-1}$};
+%\node[packet, scale=.3] (xt) at (-2.2, -.7) {$h_{t-1}$};
 \end{tikzpicture}
 #+end_src
 
@@ -500,6 +725,8 @@ use in everyday life
 Mention attention networks as a next step generalisation?
 ** Recombination rate estimation in genomics
 segway to practical
+
 * Bibliography                                                       :ignore:
+
 ** Bibliography {.allowframebreaks}
 <div id="refs" class="references hanging-indent" role="doc-bibliography" style="font-size: 70%;">
