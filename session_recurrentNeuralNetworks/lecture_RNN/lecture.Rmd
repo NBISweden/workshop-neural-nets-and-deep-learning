@@ -1,0 +1,751 @@
+
+---
+title: "Recurrent neural networks"
+author:
+  - Per Unneberg
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  revealjs::revealjs_presentation:
+    css: revealjs.css
+    includes:
+      in_header: footer.html
+    self_contained: false
+    reveal_plugins: []
+    highlight: breezedark
+    fig_caption: false
+    toc: false
+    toc_depth: 2
+    slide_level: 2
+    transition: none
+    reveal_options:
+      slideNumber: true
+      previewLinks: true
+      minScale: 1
+      maxScale: 1
+      height: 800
+      width: 1200
+nocite: '@*'
+csl: /home/peru/opt/styles/apa.csl
+mainfont: Liberation Serif
+monofont: Liberation Mono
+bibliography: references.bib
+---
+
+```{r  knitr-setup, echo=FALSE, include=FALSE }
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+library(reticulate)
+options(browser="firefox")
+knitr::opts_chunk$set(warning = FALSE, message = FALSE,
+                      autodep=TRUE, echo=FALSE,
+                      cache=FALSE, include=TRUE, eval=TRUE, tidy=FALSE, error=TRUE)
+#class.source = "numberLines lineAnchors", comment="",
+#                      class.output = c("numberLines lineAnchors chunkout"))
+knitr::knit_hooks$set(inline = function(x) {
+                      prettyNum(x, big.mark=" ")
+})
+knitr::opts_chunk$set(engine.opts=list(template="tikzfig.tex", dvisvgm.opts = "--font-format=woff")) 
+```
+
+```{r  load-python-libraries, engine='python' }
+import os
+import sys
+import pandas as pd
+import bokeh
+from bokeh.models import ColumnDataSource, HoverTool
+from bokeh import plotting
+from bokeh.io import output_notebook
+from bokeh.embed import components 
+```
+
+```{r  python-load-bokeh-scripts, results="asis", engine='python' }
+print("""
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-2.4.0.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.4.0.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.4.0.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-gl-2.4.0.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-2.4.0.min.js"
+        crossorigin="anonymous"></script>
+""") 
+```
+
+
+# Overview
+
+<h3>Recap</h3>
+<h3>Sequential models</h3>
+<h3>Recurrent neural networks (RNNs)</h3>
+<h3>LSTMs and GRUs</h3>
+<h3>Practical applications</h3>
+
+
+# Sandbox slides
+
+FIXME: Remove this section; for testing purposes only
+
+Bourgeois &#38; Warren (2021)
+
+(Thomas, 2018)
+
+
+## Motivation
+
+Show images of some sequential models
+
+$$f(x) = \sum_{i=1}^n x_iw_i$$
+
+```{r  tikz-perceptron, cache=FALSE, fig.width=3, fig.ext="svg", engine='tikz' }
+\begin{tikzpicture}[node distance=2cm, auto, >=latex', thick]
+\draw[draw=white,use as bounding box](0,0) rectangle (4, 7);
+                     % \path (0, 0)  rectangle (4, 7);
+\node[ionode={16pt}{black}{$\boldsymbol{x_{0}}$}] (x0) at (1, 6) {};
+\node[input={$\boldsymbol{x_1}$}] (x1) [below of=x0] {};
+\node[input={}, draw=none, fill=none] (x2) [below of=x1] {};
+\node[output={}, draw=none, fill=none] (y) [right of=x1] {};
+\end{tikzpicture} 
+```
+
+
+## Motivation
+
+Show images of some sequential models
+
+$$f(x) = \sum_{i=1}^n x_iw_i$$
+
+```{r  tikz-perceptron-2, cache=FALSE, fig.width=3, fig.ext="svg", engine='tikz' }
+\begin{tikzpicture}[node distance=2cm, auto, >=latex', thick]
+\draw[draw=white,use as bounding box](0,0) rectangle (4, 7);
+                     % \path (0, 0)  rectangle (4, 7);
+\node[ionode={16pt}{black}{$\boldsymbol{x_{0}}$}] (x0) at (1, 6) {};
+\node[input={$\boldsymbol{x_1}$}] (x1) [below of=x0] {};
+\node[input={$\boldsymbol{x_1}$}] (x2) [below of=x1] {};
+\node[output={$\boldsymbol{y}$}] (y) [right of=x1] {};
+\end{tikzpicture} 
+```
+
+
+## Alternative motivation
+
+Show simple example, e.g. of a time series with 1, 2, or 3 points
+
+```{r  tensorflow-block, echo=TRUE, eval=FALSE, engine='python' }
+import tensorflow as tf
+
+rnn = tf.layer.SimpleRNN() 
+```
+
+
+## Bokeh plot
+
+```{r  bokeh-test-plot, results="asis", fig.align="right", out.width="800px", engine='python' }
+# prepare some data
+x = [1, 2, 3, 4, 5]
+y1 = [4, 5, 5, 7, 2]
+y2 = [2, 3, 4, 5, 6]
+
+# create a new plot
+p = plotting.figure(title="Legend example")
+
+# add circle renderer with legend_label arguments
+line = p.line(x, y1, legend_label="Temp.", line_color="blue", line_width=2)
+circle = p.circle(
+    x,
+    y2,
+    legend_label="Objects",
+    fill_color="red",
+    fill_alpha=0.5,
+    line_color="blue",
+    size=80,
+)
+
+# display legend in top left corner (default is top right corner)
+p.legend.location = "top_left"
+
+# add a title to your legend
+p.legend.title = "Obervations"
+
+# change appearance of legend text
+p.legend.label_text_font = "times"
+p.legend.label_text_font_style = "italic"
+p.legend.label_text_color = "navy"
+
+# change border and background of legend
+p.legend.border_line_width = 3
+p.legend.border_line_color = "navy"
+p.legend.border_line_alpha = 0.8
+p.legend.background_fill_color = "navy"
+p.legend.background_fill_alpha = 0.2
+
+script, div = components(p)
+print(script)
+print(div) 
+```
+
+
+# Recap
+
+
+## Perceptron (single neuron)
+
+::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 10px;"}
+
+:::: {}
+
+```{r  tikz-rnn-recap-perceptron-1, cache=FALSE, fig.ext="svg", fig.width=4, engine='tikz' }
+\begin{tikzpicture}[node distance=2*\nodesep cm, >=latex]
+\node[ionode={32pt}{black}{{$x_0=1$}}] (x0) {};
+\node[input={$x_1$}, below left of=x0] (x1) {};
+\node[input={$x_2$}, below of=x1] (x2) {};
+\node[below of=x2] (vdots) {$\vdots$};
+\node[input={$x_n$}, below of=vdots] (xn) {};
+
+\node[circle, draw=black, thick, minimum size=32pt, right of=x2] (sum) {$\mathrm{f(a)}$};
+
+\node[output={$y$}, right of=sum, node distance=4*\nodesep cm] (y) {};
+
+\draw[->] (x0) -- (sum) node [midway, right] {$w_0$};
+\draw[->] (x1) -- (sum) node [midway, above] {$w_1$};
+\draw[->] (x2) -- (sum) node [midway, above] {$w_2$};
+\draw[->] (xn) -- (sum) node [midway, right] {$w_n$};
+\draw[->] (sum) -- (y);
+\end{tikzpicture} 
+```
+
+:::: 
+
+:::: {}
+
+<h3>Architecture</h3>
+
+A single neuron has $n$ *inputs* $x_i$ and an *output* $y$. To each
+input is associated a *weight* $w_i$.
+
+<h3>Activity rule</h3>
+The **activity rule** is given by two steps:
+
+$$a = \sum_{i} w_ix_i, \quad i=1,...,n$$
+
+$$\begin{array}{ccc}
+\mathrm{activation} & & \mathrm{activity}\\
+a & \rightarrow & y(a)
+\end{array}$$
+
+:::: 
+
+:::::::: 
+
+::: {.notes}
+
+Alternative view of bias: an additional weight $w_0$ with input
+permanently set to 1 (MacKay, 2003, p. 471)
+
+(Alexander Amini, 2021, p. 5:43) point out inputs $x_i$ represent
+**one** time point
+
+Draw bottom-up; then dimensions are in "correct" order
+
+:::
+
+
+## Feed forward network
+
+several inputs and outputs
+
+:::: {.notes}
+
+Show multi-valued (vector) output and hidden layer
+
+::::
+
+
+## Simplified illustration
+
+Condense hidden layers to a box.
+
+:::: {.notes}
+
+Emphasize input/output dimensions? (R\_m, R\_n)
+
+::::
+
+
+## Simplified illustration and notation
+
+```{r  tikz-rnn-recap-perceptron-2, cache=FALSE, fig.ext="svg", fig.width=10, engine='tikz' }
+\begin{tikzpicture}[node distance=4*\nodesep cm, >=latex]
+
+\node[input={$\boldsymbol{x}$}] (x) {};
+\node[ionode={16pt}{black}{$\sum$}, draw=black, thick, minimum size=16pt, right of=x] (sum) {};
+\node[sigtan={16pt}{blue}{4pt}, right of=sum] (tanh) {};
+\node[output={$y$}, right of=tanh] (y) {};
+
+\draw[->] (x) -- (sum) node [midway, above] {$\boldsymbol{w}$};
+\draw[->] (sum) -- (tanh) node [midway, above] {$\boldsymbol{wx}$};
+\draw[->] (tanh) -- (y) node [midway, above] {$\mathrm{tanh(}\boldsymbol{wx}\mathrm{)}$};
+\end{tikzpicture} 
+```
+
+<h3>Architecture</h3>
+
+Vectorized versions: input $\boldsymbol{x}$, weights $\boldsymbol{w}$,
+output $\boldsymbol{y}$
+
+<h3>Activity rule</h3>
+
+$$a = \boldsymbol{wx}$$
+
+:::: {.notes}
+
+FIXME: inconsistent notation? Weights are depicted as attached to
+first arrow, then the labels indicate what **value** is passed along
+
+::::
+
+
+# Sequential models
+
+
+## Motivation
+
+```{r  tikz-rnn-motivation-time-series, cache=TRUE, fig.ext="svg", fig.width=8, engine='tikz' }
+\begin{tikzpicture}
+\node[obs, fill=black!50] (x0) at (100pt, 0pt) {};
+\node[obs, fill=white] (x1) at (50pt, 50pt) {};
+\node[obs, fill=white] (x2) at (0pt, 0pt) {};
+\end{tikzpicture} 
+```
+
+::: {.notes}
+
+incremental figure showing time series (e.g. sinus) that highlights
+
+-   dependency on previous time point
+-   (weaker) dependency on more distant time points
+
+:::
+
+
+## Motivation
+
+```{r  tikz-rnn-motivation-time-series-1, cache=TRUE, fig.ext="svg", fig.width=8, engine='tikz' }
+\begin{tikzpicture}
+\node[obs, fill=black!50] (x0) at (100pt, 0pt) {};
+\node[obs, fill=black!20] (x1) at (50pt, 50pt) {};
+\node[obs, fill=white] (x2) at (0pt, 0pt) {};
+\end{tikzpicture} 
+```
+
+::: {.notes}
+
+incremental figure showing time series (e.g. sinus) that highlights
+
+-   dependency on previous time point
+-   (weaker) dependency on more distant time points
+
+:::
+
+
+## Motivation
+
+```{r  tikz-rnn-motivation-time-series-2, cache=TRUE, fig.ext="svg", fig.width=8, engine='tikz' }
+\begin{tikzpicture}
+\node[obs, fill=black!50] (x0) at (100pt, 0pt) {};
+\node[obs, fill=black!20] (x1) at (50pt, 50pt) {};
+\node[obs, fill=black!20] (x2) at (0pt, 0pt) {};
+\end{tikzpicture} 
+```
+
+::: {.notes}
+
+incremental figure showing time series (e.g. sinus) that highlights
+
+-   dependency on previous time point
+-   (weaker) dependency on more distant time points
+
+:::
+
+
+## Motivation
+
+```{r  tikz-rnn-motivation-time-series-3, cache=FALSE, fig.ext="svg", fig.width=8, engine='tikz' }
+\begin{tikzpicture}[>=latex]
+\node[obs, fill=black!50] (x0) at (100pt, 0pt) {};
+\node[obs, fill=black!20] (x1) at (50pt, 50pt) {};
+\node[obs, fill=black!20] (x2) at (0pt, 0pt) {};
+\draw[->, thick, black!50, dotted] (x2) to[out=90, in=180] (x1) to[out=0, in=90] (x0);
+\end{tikzpicture} 
+```
+
+::: {.notes}
+
+incremental figure showing time series (e.g. sinus) that highlights
+
+-   dependency on previous time point
+-   (weaker) dependency on more distant time points
+
+:::
+
+
+## Concrete models
+
+FIXME: add examples from
+
+-   genomics
+-   time series
+-   language processing
+-   &#x2026;
+
+
+## Temporal aspects
+
+Provide the alphabet example from (Phi, 2020)
+
+A -> Z: easy, given one letter the other follows
+
+Z -> A: try do enumerate alphabet in reverse; non-trivial
+
+
+## Types of models
+
+
+### one-to-one
+
+
+### one-to-many
+
+
+### many-to-many
+
+
+# RNNs
+
+:::{.element: class="fragment"}
+
+```{r  tikz-rnn-folded-only, fig.ext="svg", cache=FALSE, fig.width=4, engine='tikz' }
+\begin{tikzpicture}[thick]
+  \def\sep{3 * \basenodesep}
+  \def\width{\sep}
+  \def\height{\rnnouterheight}
+  \pic (foldedrnn_) {rnniofolded};
+\end{tikzpicture} 
+```
+
+:::
+
+
+## Why ffns don't work
+
+::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-column-gap: 10px;"}
+
+:::: {}
+
+Column 1
+
+:::: 
+
+:::: {}
+
+Nullam eu ante vel est convallis dignissim. Fusce suscipit,
+wisi nec facilisis facilisis, est dui fermentum leo, quis tempor
+ligula erat quis odio. Nunc porta vulputate tellus. Nunc rutrum turpis
+sed pede. Sed bibendum. Aliquam posuere. Nunc aliquet, augue nec
+adipiscing interdum, lacus tellus malesuada massa, quis varius mi
+purus non odio. Pellentesque condimentum, magna ut suscipit hendrerit,
+ipsum augue ornare nulla, non luctus diam neque sit amet urna.
+Curabitur vulputate vestibulum lorem. Fusce sagittis, libero non
+molestie mollis, magna orci ultrices dolor, at vulputate neque nulla
+lacinia eros. Sed id ligula quis est convallis tempor. Curabitur
+lacinia pulvinar nibh. Nam a sapien.
+
+:::: 
+
+:::: {}
+
+Column 3
+
+:::: 
+
+::::::::::::::::::: 
+
+
+## Why we need them and what they are
+
+```{r  tikz-rnn-folded, fig.ext="svg", cache=FALSE, fig.width=12, engine='tikz' }
+\begin{tikzpicture}[thick]
+  \def\sep{3 * \basenodesep}
+  \def\width{6.5 * \sep}
+  \def\height{\rnnouterheight}
+  \draw[white] (0,0) rectangle (\width, \height);
+  \pic (foldedrnn_) {rnniofolded};
+\end{tikzpicture} 
+```
+
+
+## Why we need them and what they are
+
+```{r  tikz-rnn-folded-unfolded, fig.ext="svg", cache=FALSE, fig.width=12, engine='tikz' }
+\begin{tikzpicture}[thick]
+  \def\sep{3 * \basenodesep}
+  \def\width{6.5 * \sep}
+  \def\height{\rnnouterheight}
+  \draw[white] (0,0) rectangle (\width, \height);
+  \pic (foldedrnn_) {rnniofolded};
+  \node[xshift=1.5*\sep, yshift=\height/2] (eq) {\Huge =};
+  \pic[xshift=2*\sep] (x0_) {rnnio={A}{$X_0$}{$H_0$}};
+  \pic[xshift=3*\sep] (x1_) {rnnio={A}{$X_1$}{$H_1$}};
+  \pic[xshift=4*\sep] (x2_) {rnnio={A}{$X_2$}{$H_2$}};
+  \node[xshift=5*\sep] (dots) {\Huge \dots};
+  \pic[xshift=5.5*\sep] (xt_) {rnnio={A}{$X_t$}{$H_t$}};
+  \draw[->] (x0_right) -- (x1_left);
+  \draw[->] (x1_right) -- (x2_left);
+  \draw[->] (x2_right) -- (xt_left);
+\end{tikzpicture} 
+```
+
+
+## Parameter sharing
+
+contrast with FFNs
+
+
+## RNN basic architecture
+
+(Olah, 2015)
+
+```{r  tikz-rnn-basic-architecture-1, fig.ext="svg", cache=FALSE, fig.width=18, engine='tikz' }
+\begin{tikzpicture}
+  \draw[white] (0,0) rectangle (3*\rnnfigwidth, \rnnfigheight);
+  \pic[xshift=\rnnfigwidth]{vanillarnn};
+\end{tikzpicture}         
+```
+
+
+## RNN basic architecture
+
+(Olah, 2015)
+
+```{r  tikz-rnn-basic-architecture-2, fig.ext="svg", cache=FALSE, fig.width=18, engine='tikz' }
+\begin{tikzpicture}
+  \draw[white] (0,0) rectangle (3*\rnnfigwidth, \rnnfigheight);
+  \pic[xshift=\rnnfigwidth]{vanillarnn};
+  \pic[xshift=0, xtlabel=$X_{t-1}$, htlabel=$H_{t-1}$]{vanillarnnoverlay};
+\end{tikzpicture}         
+```
+
+
+## RNN basic architecture
+
+(Olah, 2015)
+
+```{r  tikz-rnn-basic-architecture-3, fig.ext="svg", cache=FALSE, fig.width=18, engine='tikz' }
+\begin{tikzpicture}
+  \draw[white] (0,0) rectangle (3*\rnnfigwidth, \rnnfigheight);
+  \pic[xshift=\rnnfigwidth]{vanillarnn};
+  \pic[xshift=0, xtlabel=$X_{t-1}$, htlabel=$H_{t-1}$]{vanillarnnoverlay};
+  \pic[xshift=2 * \rnnfigwidth, xtlabel=$X_{t+1}$, htlabel=$X_{t+1}$]{vanillarnnoverlay};
+\end{tikzpicture}         
+```
+
+
+## Examples
+
+Examples using vanilla RNNs
+
+e.g. Box & Jenkins airline passenger data set
+
+
+## Exercise
+
+Segway into exercise with co2 data
+
+
+# Training
+
+
+## Backpropagation in time
+
+
+## Exploding and vanishing gradients
+
+
+## Problems with Vanilla RNNs
+
+
+# LSTMs and GRUs
+
+
+## Motivation behind LSTMs and GRUs
+
+<div class="based-on">Based on Phi (2020)</div>
+::::::::::::::::::: {style="display: flex;"}
+
+:::: {}
+
+<h6 align="center">LSTM</h6>
+
+```{r  tikz-lstm, cache=FALSE, fig.ext="svg", fig.width=8, engine='tikz' }
+\begin{tikzpicture}[node distance=1cm]
+\node (lstm) at (0, 0) {\lstm[$\boldsymbol{c_{t-1}}$][$\boldsymbol{c_{t}}$][$\boldsymbol{x_t}$][$\boldsymbol{h_{t-1}}$][$\boldsymbol{h_{t}}$]};
+\end{tikzpicture} 
+```
+
+::::
+
+:::: {}
+
+<h6 align="center">GRU</h6>
+
+```{r  tikz-gru, cache=FALSE, fig.ext="svg", fig.width=8, engine='tikz' }
+\begin{tikzpicture}[node distance=1cm]
+\node (gru) at (0, 0) {\gru[$\boldsymbol{c_{t-1}}$][$\boldsymbol{c_{t}}$][$\boldsymbol{x_t}$]};
+\end{tikzpicture} 
+```
+
+::::
+
+:::::::::::::::::::
+
+```{r  tikz-gru-lstm-legend, cache=FALSE, fig.ext="svg", fig.width=6, engine='tikz' }
+\tikzset{legend/.style={
+        font=\sffamily\bfseries\tiny,
+        text width=1.4cm,
+        align=center
+        }
+}
+\begin{tikzpicture}[node distance=1cm]
+\node[pwise=X, node distance=2cm, label={[legend]below:pointwise multiplication}] (pmult) {};
+\node[tanh, left of=pmult, label={[legend]below:tanh}] (tanh) {};
+\node[sigmoid, left of=tanh, label={[legend]below:sigmoid}] (sigmoid) {};
+\node[pwise=+, right of=pmult, label={[legend]below:pointwise addition}] (padd) {};
+\node[vcon=1cm, right of=padd, label={[legend]below:vector concatenation}] (vconcat) {};
+\end{tikzpicture} 
+```
+
+Long Short Term Memory (LSTM) (Hochreiter &#38; Schmidhuber, 1997) and Gated
+Recurrent Unit (GRU) (Cho et al., 2014) architectures were
+proposed to solve the vanishing gradient problem.
+
+::: {.notes}
+Here are some notes&#x2026;
+
+-   explain pseudo-targets
+-   point out the two common idioms for collecting targets:
+    1.  expand
+    2.  input functions
+
+:::
+
+
+## Intuition
+
+Example on cereal ad really good (we remember the important parts):
+
+<https://towardsdatascience.com/illustrated-guide-to-lstms-and-gru-s-a-step-by-step-explanation-44e9eb85bf21>
+
+
+## Gating (forget / remember)
+
+
+## A closer look at LSTM architecture - the forget gate
+
+```{r  tikz-lstm-forget-gate, cache=FALSE, fig.ext="svg", fig.width=8, engine='tikz' }
+\begin{tikzpicture}
+\node (lstm) at (0, 0) {\lstmforgetgate};
+\end{tikzpicture} 
+```
+
+**Purpose**: decide what information to keep or throw away
+
+Sigmoid squishes vector $[\boldsymbol{h_{t-1}}, \boldsymbol{x_t}]$
+(previous hidden state + input) to $(0, 1)$, where 0=forget, 1=keep.
+
+
+## A closer look at LSTM architecture - the forget gate
+
+```{r  tikz-lstm-forget-gate-1, cache=FALSE, fig.ext="svg", fig.width=8, engine='tikz' }
+\begin{tikzpicture}
+\node (lstm) at (0, 0) {\lstmforgetgate};
+%\node[packet, scale=.3] (ht) at (-2.7, -.53) {$h_{t-1}$};
+%\node[packet, scale=.3] (xt) at (-2.2, -.7) {$h_{t-1}$};
+\end{tikzpicture} 
+```
+
+**Purpose**: decide what information to keep or throw away
+
+Sigmoid squishes vector $[\boldsymbol{h_{t-1}}, \boldsymbol{x_t}]$
+(previous hidden state + input) to $(0, 1)$, where 0=forget, 1=keep.
+
+$$
+f_t = \sigma()
+$$
+
+
+## The input gate
+
+```{r  tikz-lstm-input-gate, cache=FALSE, fig.ext="svg", fig.width=8, engine='tikz' }
+\begin{tikzpicture}
+\node (lstm) at (0, 0) {\lstminputgate};
+\end{tikzpicture} 
+```
+
+**Purpose**:
+
+
+## The cell state
+
+```{r  tikz-lstm-cell-state, cache=FALSE, fig.ext="svg", fig.width=8, engine='tikz' }
+\begin{tikzpicture}
+\node (lstm) {\lstmcellstate};
+\end{tikzpicture} 
+```
+
+**Purpose**:
+
+
+## The output gate
+
+```{r  tikz-lstm-output-gate, cache=FALSE, fig.ext="svg", fig.width=8, engine='tikz' }
+\begin{tikzpicture}
+\node (lstm) {\lstmoutputgate};
+\end{tikzpicture} 
+```
+
+**Purpose**:
+
+
+## Exercise
+
+Exercise that compares vanilla RNN to LSTMs
+
+
+# Applications
+
+
+## Google translate
+
+feels like one of the more obvious language applications that people
+use in everyday life
+
+
+## Time series
+
+
+## Attention networks
+
+Mention attention networks as a next step generalisation?
+
+
+## Recombination rate estimation in genomics
+
+segway to practical
+
+
+# Bibliography {.allowframebreaks}
+
+<div id="refs" class="references hanging-indent" role="doc-bibliography" style="font-size: 70%;">
+
