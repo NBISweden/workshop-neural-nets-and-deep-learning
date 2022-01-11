@@ -24,8 +24,7 @@ jobs:
           environment-name: nn_dl_python
       - name: Test imports
         run: |
-          pip install pytest
-          pytest --disable-warnings common_assets/conda_envs/test_imports.py
+          python common_assets/conda_envs/test_imports.py
           
   win:
     runs-on: windows-latest
