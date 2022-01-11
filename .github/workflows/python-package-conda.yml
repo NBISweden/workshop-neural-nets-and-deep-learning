@@ -10,7 +10,7 @@ jobs:
     defaults:
       # conda activation requires bash instead of sh
       # 
-      # C:\Miniconda\condabin\conda.bat init powershell
+      # C:\Miniconda\condabin\conda.bat init powershell $env:path = "C:\Miniconda;C:\Miniconda\condabin\;$env:path"
       run:
         shell: bash -l {0}
 
@@ -37,9 +37,10 @@ jobs:
       with:
         python-version: 3.x
     - name: Install dependencies
+      shell: cmd
       run: |
-        C:\Miniconda\condabin\conda.bat install mamba -n base -c conda-forge
-        C:\Miniconda\condabin\mamba env update --file common_assets/conda_envs/nn_dl_python_win.yaml --name nn_dl_python
-        $env:Path = "C:\Miniconda;C:\Miniconda\condabin\;$env:Path"
-        C:\Miniconda\envs\nn_dl_python\Scripts\activate.exe
-        C:\Miniconda\envs\nn_dl_python\python.exe common_assets/conda_envs/test_imports.py
+        set PATH=%PATH%C:\Miniconda;C:\Miniconda\condabin\
+        conda install mamba -n base -c conda-forge
+        mamba env update --file common_assets/conda_envs/nn_dl_python_win.yaml --name nn_dl_python
+        conda activate nn_dl_python
+        python common_assets/conda_envs/test_imports.py
