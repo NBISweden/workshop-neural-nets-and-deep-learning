@@ -13098,14 +13098,14 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Back-propagation">Back-propagation<a class="anchor-link" href="#Back-propagation">&#182;</a></h1>
+<h1 id="Exercise-Session-annBuilding-blocks">Exercise Session annBuilding blocks<a class="anchor-link" href="#Exercise-Session-annBuilding-blocks">&#182;</a></h1>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Recall-the--training-algorithm-(Gradient-descent)-for-the-ANN">Recall the  training algorithm (Gradient descent) for the ANN<a class="anchor-link" href="#Recall-the--training-algorithm-(Gradient-descent)-for-the-ANN">&#182;</a></h2><ol>
+<h2 id="Background">Background<a class="anchor-link" href="#Background">&#182;</a></h2><h3 id="Recall-the--training-algorithm-(Gradient-descent)-for-the-ANN">Recall the  training algorithm (Gradient descent) for the ANN<a class="anchor-link" href="#Recall-the--training-algorithm-(Gradient-descent)-for-the-ANN">&#182;</a></h3><ol>
 <li>Initialize weights and biases randomly $\sim N(0, \sigma^2)$</li>
 <li>Loop for $M$ epochs or until convergence:<ul>
 <li><em>Forward Pass</em>: Compute the values of loss function, $L(w,b|x)$ and intermediate varibles using the current values of $w$ and $b$.</li>
@@ -13118,6 +13118,7 @@ div#notebook {
 </li>
 <li>Return final weights and biases</li>
 </ol>
+<p>In this exercise we will look at a single iteration of the Gradient descent algorithm</p>
 <h3 id="Gradient-descents-is-about-derivatives">Gradient descents is about derivatives<a class="anchor-link" href="#Gradient-descents-is-about-derivatives">&#182;</a></h3><ul>
 <li>There's a lot of derivatives in an ANN</li>
 <li><em>Back-propagation</em> allows us to compute them efficiently</li>
@@ -13263,6 +13264,18 @@ $$\frac{\partial L(b,w|x)}{\partial v},\quad v \in {w, b}$$<h2 id="Back-propagat
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Preparations">Preparations<a class="anchor-link" href="#Preparations">&#182;</a></h2><p>Start by downloading the Jupyter notebook version of this exercise -- your <em>workbook</em> for the exercise to your <em>nndl</em> folder:</p>
+
+<pre><code>curl -o nn_dl_python.yaml https://raw.githubusercontent.com/NBISweden/workshop-neural-nets-and-deep-learning/master/session_annBuildingBlocks/exercise_jupyter_intro.ipynb</code></pre>
+<p>(or, alternatively, <code>wget https://raw.githubusercontent.com/NBISweden/workshop-neural-nets-and-deep-learning/master/c/session_annBuildingBlocks/exercise_jupyter_intro.ipynb</code>)</p>
+<p>Open the downloaded  .ipynb file in your Jupyter notebook browser.</p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -14096,6 +14109,20 @@ dz2da1 = w2
 &amp;=&amp; \sigma(z_2)\left(1-\sigma(z_2)\right)\\
 &amp;=&amp; a_1\left(1-a_1\right)
 \end{eqnarray}$</p>
+<hr>
+<details>
+    <summary> Solution </summary>
+$\begin{eqnarray}
+\frac{\partial a_1}{\partial z_2} 
+&=&  \frac{\partial \sigma(z_2)}{\partial z_2} \\
+&=& \sigma(z_2)\left(1-\sigma(z_2)\right)\\
+&=& a_1\left(1-a_1\right)
+\end{eqnarray}$
+
+</details><hr>
+<ul>
+<li>Then fill in the corresponding code below and see if you get the same table values</li>
+</ul>
 
 </div>
 </div>
@@ -14594,7 +14621,7 @@ etc.
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Matrix-algebra">Matrix algebra<a class="anchor-link" href="#Matrix-algebra">&#182;</a></h2><p>In fact it turns out that it is beneficial to collect similar variables into vectors and matrices, i.e., gradients, and then use matrix multiplication between these to compute all partial derivatives inone go.</p>
-<p>However, this would <strong>extra-curricular for this course</strong>, (but a walk-through is provided at the end of this exercise as a challenge only for those who <em>really loves math</em> and <em>if and only if</em> they have time (NB! this will require familiarity with matrix algebra).</p>
+<p>However, this would <strong>extra-curricular for this course</strong>, (but a walk-through is provided at the end of the exercise (only in <em>html</em> version) as a challenge only for those who <em>really loves math</em> and <em>if and only if</em> they have time (NB! this will require familiarity with matrix algebra).</p>
 
 </div>
 </div>
