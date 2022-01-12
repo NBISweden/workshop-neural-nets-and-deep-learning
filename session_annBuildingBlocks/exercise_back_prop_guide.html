@@ -13094,6 +13094,25 @@ div#notebook {
 
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"> </div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Reset css and font defaults in:
+/Users/bengtsb/.jupyter/custom &amp;
+/Users/bengtsb/Library/Jupyter/nbextensions
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -13271,7 +13290,8 @@ $$\frac{\partial L(b,w|x)}{\partial v},\quad v \in {w, b}$$<h2 id="Back-propagat
 <h2 id="Preparations">Preparations<a class="anchor-link" href="#Preparations">&#182;</a></h2><p>Start by downloading the Jupyter notebook version of this exercise -- your <em>workbook</em> for the exercise to your <em>nndl</em> folder:</p>
 
 <pre><code>curl -o nn_dl_python.yaml https://raw.githubusercontent.com/NBISweden/workshop-neural-nets-and-deep-learning/master/session_annBuildingBlocks/exercise_jupyter_intro.ipynb</code></pre>
-<p>(or, alternatively, <code>wget https://raw.githubusercontent.com/NBISweden/workshop-neural-nets-and-deep-learning/master/c/session_annBuildingBlocks/exercise_jupyter_intro.ipynb</code>)</p>
+<p>or, alternatively, 
+<code>wget https://raw.githubusercontent.com/NBISweden/workshop-neural-nets-and-deep-learning/master/c/session_annBuildingBlocks/exercise_jupyter_intro.ipynb</code></p>
 <p>Open the downloaded  .ipynb file in your Jupyter notebook browser.</p>
 
 </div>
@@ -13288,7 +13308,7 @@ $$\frac{\partial L(b,w|x)}{\partial v},\quad v \in {w, b}$$<h2 id="Back-propagat
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[60]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Known variables</span>
@@ -13336,18 +13356,18 @@ $$\frac{\partial L(b,w|x)}{\partial v},\quad v \in {w, b}$$<h2 id="Back-propagat
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <style type="text/css">
-#T_347e3_ th {
+#T_1931e_ th {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
-#T_347e3_ td {
+#T_1931e_ td {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
 </style>
-<table id="T_347e3_">
+<table id="T_1931e_">
   <thead>
     <tr>
       <th class="col_heading level0 col0" >$x$</th>
@@ -13367,19 +13387,19 @@ $$\frac{\partial L(b,w|x)}{\partial v},\quad v \in {w, b}$$<h2 id="Back-propagat
   </thead>
   <tbody>
     <tr>
-      <td id="T_347e3_row0_col0" class="data row0 col0" >0.05</td>
-      <td id="T_347e3_row0_col1" class="data row0 col1" >0.01</td>
-      <td id="T_347e3_row0_col2" class="data row0 col2" >0.1</td>
-      <td id="T_347e3_row0_col3" class="data row0 col3" >-0.1</td>
-      <td id="T_347e3_row0_col4" class="data row0 col4" ></td>
-      <td id="T_347e3_row0_col5" class="data row0 col5" ></td>
-      <td id="T_347e3_row0_col6" class="data row0 col6" ></td>
-      <td id="T_347e3_row0_col7" class="data row0 col7" >0.3</td>
-      <td id="T_347e3_row0_col8" class="data row0 col8" >0.3</td>
-      <td id="T_347e3_row0_col9" class="data row0 col9" ></td>
-      <td id="T_347e3_row0_col10" class="data row0 col10" ></td>
-      <td id="T_347e3_row0_col11" class="data row0 col11" ></td>
-      <td id="T_347e3_row0_col12" class="data row0 col12" ></td>
+      <td id="T_1931e_row0_col0" class="data row0 col0" >0.05</td>
+      <td id="T_1931e_row0_col1" class="data row0 col1" >0.01</td>
+      <td id="T_1931e_row0_col2" class="data row0 col2" >0.1</td>
+      <td id="T_1931e_row0_col3" class="data row0 col3" >-0.1</td>
+      <td id="T_1931e_row0_col4" class="data row0 col4" ></td>
+      <td id="T_1931e_row0_col5" class="data row0 col5" ></td>
+      <td id="T_1931e_row0_col6" class="data row0 col6" ></td>
+      <td id="T_1931e_row0_col7" class="data row0 col7" >0.3</td>
+      <td id="T_1931e_row0_col8" class="data row0 col8" >0.3</td>
+      <td id="T_1931e_row0_col9" class="data row0 col9" ></td>
+      <td id="T_1931e_row0_col10" class="data row0 col10" ></td>
+      <td id="T_1931e_row0_col11" class="data row0 col11" ></td>
+      <td id="T_1931e_row0_col12" class="data row0 col12" ></td>
     </tr>
   </tbody>
 </table>
@@ -13445,7 +13465,7 @@ L = (y-haty)/2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[62]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Replace &quot;&quot; with the code to compute these variables</span>
@@ -13480,18 +13500,18 @@ L = (y-haty)/2
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <style type="text/css">
-#T_b41a7_ th {
+#T_3c659_ th {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
-#T_b41a7_ td {
+#T_3c659_ td {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
 </style>
-<table id="T_b41a7_">
+<table id="T_3c659_">
   <thead>
     <tr>
       <th class="col_heading level0 col0" >$x$</th>
@@ -13511,19 +13531,19 @@ L = (y-haty)/2
   </thead>
   <tbody>
     <tr>
-      <td id="T_b41a7_row0_col0" class="data row0 col0" >0.05</td>
-      <td id="T_b41a7_row0_col1" class="data row0 col1" >0.01</td>
-      <td id="T_b41a7_row0_col2" class="data row0 col2" >0.1</td>
-      <td id="T_b41a7_row0_col3" class="data row0 col3" >-0.1</td>
-      <td id="T_b41a7_row0_col4" class="data row0 col4" >0.05</td>
-      <td id="T_b41a7_row0_col5" class="data row0 col5" >-0.095</td>
-      <td id="T_b41a7_row0_col6" class="data row0 col6" >0.48</td>
-      <td id="T_b41a7_row0_col7" class="data row0 col7" >0.3</td>
-      <td id="T_b41a7_row0_col8" class="data row0 col8" >0.3</td>
-      <td id="T_b41a7_row0_col9" class="data row0 col9" >0.44</td>
-      <td id="T_b41a7_row0_col10" class="data row0 col10" >0.61</td>
-      <td id="T_b41a7_row0_col11" class="data row0 col11" >0.61</td>
-      <td id="T_b41a7_row0_col12" class="data row0 col12" >    -0.3    </td>
+      <td id="T_3c659_row0_col0" class="data row0 col0" >0.05</td>
+      <td id="T_3c659_row0_col1" class="data row0 col1" >0.01</td>
+      <td id="T_3c659_row0_col2" class="data row0 col2" >0.1</td>
+      <td id="T_3c659_row0_col3" class="data row0 col3" >-0.1</td>
+      <td id="T_3c659_row0_col4" class="data row0 col4" >0.05</td>
+      <td id="T_3c659_row0_col5" class="data row0 col5" >-0.095</td>
+      <td id="T_3c659_row0_col6" class="data row0 col6" >0.48</td>
+      <td id="T_3c659_row0_col7" class="data row0 col7" >0.3</td>
+      <td id="T_3c659_row0_col8" class="data row0 col8" >0.3</td>
+      <td id="T_3c659_row0_col9" class="data row0 col9" >0.44</td>
+      <td id="T_3c659_row0_col10" class="data row0 col10" >0.61</td>
+      <td id="T_3c659_row0_col11" class="data row0 col11" >0.61</td>
+      <td id="T_3c659_row0_col12" class="data row0 col12" >    -0.3    </td>
     </tr>
   </tbody>
 </table>
@@ -13642,7 +13662,7 @@ w'_2 &amp;=&amp; w_1 - \eta \times \frac{\partial L(w,b|x)}{\partial w_2}
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="prompt input_prompt">In&nbsp;[65]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">dLda2</span> <span class="o">=</span> <span class="n">a2</span> <span class="o">-</span> <span class="n">y</span>
@@ -13671,18 +13691,18 @@ w'_2 &amp;=&amp; w_1 - \eta \times \frac{\partial L(w,b|x)}{\partial w_2}
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <style type="text/css">
-#T_c1608_ th {
+#T_998c2_ th {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
-#T_c1608_ td {
+#T_998c2_ td {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
 </style>
-<table id="T_c1608_">
+<table id="T_998c2_">
   <thead>
     <tr>
       <th class="col_heading level0 col0" >$\frac{\partial L(b,w|x)}{\partial a_2}$</th>
@@ -13694,11 +13714,11 @@ w'_2 &amp;=&amp; w_1 - \eta \times \frac{\partial L(w,b|x)}{\partial w_2}
   </thead>
   <tbody>
     <tr>
-      <td id="T_c1608_row0_col0" class="data row0 col0" >    0.6     </td>
-      <td id="T_c1608_row0_col1" class="data row0 col1" >0.24</td>
-      <td id="T_c1608_row0_col2" class="data row0 col2" >0.61</td>
-      <td id="T_c1608_row0_col3" class="data row0 col3" >0.05</td>
-      <td id="T_c1608_row0_col4" class="data row0 col4" >0.3</td>
+      <td id="T_998c2_row0_col0" class="data row0 col0" >    0.6     </td>
+      <td id="T_998c2_row0_col1" class="data row0 col1" >0.24</td>
+      <td id="T_998c2_row0_col2" class="data row0 col2" >0.61</td>
+      <td id="T_998c2_row0_col3" class="data row0 col3" >0.05</td>
+      <td id="T_998c2_row0_col4" class="data row0 col4" >0.3</td>
     </tr>
   </tbody>
 </table>
@@ -13766,18 +13786,18 @@ w'_2 &amp;=&amp; w_1 - \eta \times \frac{\partial L(w,b|x)}{\partial w_2}
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <style type="text/css">
-#T_b41a7_ th {
+#T_3c659_ th {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
-#T_b41a7_ td {
+#T_3c659_ td {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
 </style>
-<table id="T_b41a7_">
+<table id="T_3c659_">
   <thead>
     <tr>
       <th class="col_heading level0 col0" >$x$</th>
@@ -13797,19 +13817,19 @@ w'_2 &amp;=&amp; w_1 - \eta \times \frac{\partial L(w,b|x)}{\partial w_2}
   </thead>
   <tbody>
     <tr>
-      <td id="T_b41a7_row0_col0" class="data row0 col0" >0.05</td>
-      <td id="T_b41a7_row0_col1" class="data row0 col1" >0.01</td>
-      <td id="T_b41a7_row0_col2" class="data row0 col2" >0.1</td>
-      <td id="T_b41a7_row0_col3" class="data row0 col3" >-0.1</td>
-      <td id="T_b41a7_row0_col4" class="data row0 col4" >0.05</td>
-      <td id="T_b41a7_row0_col5" class="data row0 col5" >-0.095</td>
-      <td id="T_b41a7_row0_col6" class="data row0 col6" >0.48</td>
-      <td id="T_b41a7_row0_col7" class="data row0 col7" >0.3</td>
-      <td id="T_b41a7_row0_col8" class="data row0 col8" >0.3</td>
-      <td id="T_b41a7_row0_col9" class="data row0 col9" >0.44</td>
-      <td id="T_b41a7_row0_col10" class="data row0 col10" >0.61</td>
-      <td id="T_b41a7_row0_col11" class="data row0 col11" >0.61</td>
-      <td id="T_b41a7_row0_col12" class="data row0 col12" >    -0.3    </td>
+      <td id="T_3c659_row0_col0" class="data row0 col0" >0.05</td>
+      <td id="T_3c659_row0_col1" class="data row0 col1" >0.01</td>
+      <td id="T_3c659_row0_col2" class="data row0 col2" >0.1</td>
+      <td id="T_3c659_row0_col3" class="data row0 col3" >-0.1</td>
+      <td id="T_3c659_row0_col4" class="data row0 col4" >0.05</td>
+      <td id="T_3c659_row0_col5" class="data row0 col5" >-0.095</td>
+      <td id="T_3c659_row0_col6" class="data row0 col6" >0.48</td>
+      <td id="T_3c659_row0_col7" class="data row0 col7" >0.3</td>
+      <td id="T_3c659_row0_col8" class="data row0 col8" >0.3</td>
+      <td id="T_3c659_row0_col9" class="data row0 col9" >0.44</td>
+      <td id="T_3c659_row0_col10" class="data row0 col10" >0.61</td>
+      <td id="T_3c659_row0_col11" class="data row0 col11" >0.61</td>
+      <td id="T_3c659_row0_col12" class="data row0 col12" >    -0.3    </td>
     </tr>
   </tbody>
 </table>
@@ -13891,7 +13911,7 @@ $\quad$<em>If we have computed the values of partial derivatives for a layer, we
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="prompt input_prompt">In&nbsp;[69]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Unknown variables to compute in Back-propagation</span>
@@ -13932,18 +13952,18 @@ $\quad$<em>If we have computed the values of partial derivatives for a layer, we
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <style type="text/css">
-#T_764a2_ th {
+#T_bbb61_ th {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
-#T_764a2_ td {
+#T_bbb61_ td {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
 </style>
-<table id="T_764a2_">
+<table id="T_bbb61_">
   <thead>
     <tr>
       <th class="col_heading level0 col0" >$w'_1$</th>
@@ -13958,14 +13978,14 @@ $\quad$<em>If we have computed the values of partial derivatives for a layer, we
   </thead>
   <tbody>
     <tr>
-      <td id="T_764a2_row0_col0" class="data row0 col0" ></td>
-      <td id="T_764a2_row0_col1" class="data row0 col1" >0.05</td>
-      <td id="T_764a2_row0_col2" class="data row0 col2" ></td>
-      <td id="T_764a2_row0_col3" class="data row0 col3" ></td>
-      <td id="T_764a2_row0_col4" class="data row0 col4" ></td>
-      <td id="T_764a2_row0_col5" class="data row0 col5" ></td>
-      <td id="T_764a2_row0_col6" class="data row0 col6" >0.24</td>
-      <td id="T_764a2_row0_col7" class="data row0 col7" >    0.51    </td>
+      <td id="T_bbb61_row0_col0" class="data row0 col0" ></td>
+      <td id="T_bbb61_row0_col1" class="data row0 col1" >0.05</td>
+      <td id="T_bbb61_row0_col2" class="data row0 col2" ></td>
+      <td id="T_bbb61_row0_col3" class="data row0 col3" ></td>
+      <td id="T_bbb61_row0_col4" class="data row0 col4" ></td>
+      <td id="T_bbb61_row0_col5" class="data row0 col5" ></td>
+      <td id="T_bbb61_row0_col6" class="data row0 col6" >0.24</td>
+      <td id="T_bbb61_row0_col7" class="data row0 col7" >    0.51    </td>
     </tr>
   </tbody>
 </table>
@@ -14018,7 +14038,7 @@ dz2da1 = w2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="prompt input_prompt">In&nbsp;[71]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Replace &quot;&quot; with the code to compute this variable</span>
@@ -14054,18 +14074,18 @@ dz2da1 = w2
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <style type="text/css">
-#T_daea1_ th {
+#T_80e60_ th {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
-#T_daea1_ td {
+#T_80e60_ td {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
 </style>
-<table id="T_daea1_">
+<table id="T_80e60_">
   <thead>
     <tr>
       <th class="col_heading level0 col0" >$w'_1$</th>
@@ -14080,14 +14100,14 @@ dz2da1 = w2
   </thead>
   <tbody>
     <tr>
-      <td id="T_daea1_row0_col0" class="data row0 col0" ></td>
-      <td id="T_daea1_row0_col1" class="data row0 col1" >0.05</td>
-      <td id="T_daea1_row0_col2" class="data row0 col2" ></td>
-      <td id="T_daea1_row0_col3" class="data row0 col3" ></td>
-      <td id="T_daea1_row0_col4" class="data row0 col4" ></td>
-      <td id="T_daea1_row0_col5" class="data row0 col5" >0.3</td>
-      <td id="T_daea1_row0_col6" class="data row0 col6" >0.24</td>
-      <td id="T_daea1_row0_col7" class="data row0 col7" >    0.51    </td>
+      <td id="T_80e60_row0_col0" class="data row0 col0" ></td>
+      <td id="T_80e60_row0_col1" class="data row0 col1" >0.05</td>
+      <td id="T_80e60_row0_col2" class="data row0 col2" ></td>
+      <td id="T_80e60_row0_col3" class="data row0 col3" ></td>
+      <td id="T_80e60_row0_col4" class="data row0 col4" ></td>
+      <td id="T_80e60_row0_col5" class="data row0 col5" >0.3</td>
+      <td id="T_80e60_row0_col6" class="data row0 col6" >0.24</td>
+      <td id="T_80e60_row0_col7" class="data row0 col7" >    0.51    </td>
     </tr>
   </tbody>
 </table>
@@ -14166,18 +14186,18 @@ da1dz1 = a1*(1-a1)
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <style type="text/css">
-#T_d39a3_ th {
+#T_5e841_ th {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
-#T_d39a3_ td {
+#T_5e841_ td {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
 </style>
-<table id="T_d39a3_">
+<table id="T_5e841_">
   <thead>
     <tr>
       <th class="col_heading level0 col0" >$w'_1$</th>
@@ -14192,14 +14212,14 @@ da1dz1 = a1*(1-a1)
   </thead>
   <tbody>
     <tr>
-      <td id="T_d39a3_row0_col0" class="data row0 col0" ></td>
-      <td id="T_d39a3_row0_col1" class="data row0 col1" >0.05</td>
-      <td id="T_d39a3_row0_col2" class="data row0 col2" ></td>
-      <td id="T_d39a3_row0_col3" class="data row0 col3" ></td>
-      <td id="T_d39a3_row0_col4" class="data row0 col4" >0.25</td>
-      <td id="T_d39a3_row0_col5" class="data row0 col5" >0.3</td>
-      <td id="T_d39a3_row0_col6" class="data row0 col6" >0.24</td>
-      <td id="T_d39a3_row0_col7" class="data row0 col7" >    0.51    </td>
+      <td id="T_5e841_row0_col0" class="data row0 col0" ></td>
+      <td id="T_5e841_row0_col1" class="data row0 col1" >0.05</td>
+      <td id="T_5e841_row0_col2" class="data row0 col2" ></td>
+      <td id="T_5e841_row0_col3" class="data row0 col3" ></td>
+      <td id="T_5e841_row0_col4" class="data row0 col4" >0.25</td>
+      <td id="T_5e841_row0_col5" class="data row0 col5" >0.3</td>
+      <td id="T_5e841_row0_col6" class="data row0 col6" >0.24</td>
+      <td id="T_5e841_row0_col7" class="data row0 col7" >    0.51    </td>
     </tr>
   </tbody>
 </table>
@@ -14279,18 +14299,18 @@ dz1dw1 = i1
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <style type="text/css">
-#T_97d9a_ th {
+#T_eae72_ th {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
-#T_97d9a_ td {
+#T_eae72_ td {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
 </style>
-<table id="T_97d9a_">
+<table id="T_eae72_">
   <thead>
     <tr>
       <th class="col_heading level0 col0" >$w'_1$</th>
@@ -14305,14 +14325,14 @@ dz1dw1 = i1
   </thead>
   <tbody>
     <tr>
-      <td id="T_97d9a_row0_col0" class="data row0 col0" ></td>
-      <td id="T_97d9a_row0_col1" class="data row0 col1" >0.05</td>
-      <td id="T_97d9a_row0_col2" class="data row0 col2" ></td>
-      <td id="T_97d9a_row0_col3" class="data row0 col3" >0.05</td>
-      <td id="T_97d9a_row0_col4" class="data row0 col4" >0.25</td>
-      <td id="T_97d9a_row0_col5" class="data row0 col5" >0.3</td>
-      <td id="T_97d9a_row0_col6" class="data row0 col6" >0.24</td>
-      <td id="T_97d9a_row0_col7" class="data row0 col7" >    0.51    </td>
+      <td id="T_eae72_row0_col0" class="data row0 col0" ></td>
+      <td id="T_eae72_row0_col1" class="data row0 col1" >0.05</td>
+      <td id="T_eae72_row0_col2" class="data row0 col2" ></td>
+      <td id="T_eae72_row0_col3" class="data row0 col3" >0.05</td>
+      <td id="T_eae72_row0_col4" class="data row0 col4" >0.25</td>
+      <td id="T_eae72_row0_col5" class="data row0 col5" >0.3</td>
+      <td id="T_eae72_row0_col6" class="data row0 col6" >0.24</td>
+      <td id="T_eae72_row0_col7" class="data row0 col7" >    0.51    </td>
     </tr>
   </tbody>
 </table>
@@ -14389,18 +14409,18 @@ dLdw1 = dz1dw1 * da1dz1 * dz2da1 * da2dz2 * dLda2
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <style type="text/css">
-#T_5d9ce_ th {
+#T_c0445_ th {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
-#T_5d9ce_ td {
+#T_c0445_ td {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
 </style>
-<table id="T_5d9ce_">
+<table id="T_c0445_">
   <thead>
     <tr>
       <th class="col_heading level0 col0" >$w'_1$</th>
@@ -14415,14 +14435,14 @@ dLdw1 = dz1dw1 * da1dz1 * dz2da1 * da2dz2 * dLda2
   </thead>
   <tbody>
     <tr>
-      <td id="T_5d9ce_row0_col0" class="data row0 col0" ></td>
-      <td id="T_5d9ce_row0_col1" class="data row0 col1" >0.05</td>
-      <td id="T_5d9ce_row0_col2" class="data row0 col2" >0.00053</td>
-      <td id="T_5d9ce_row0_col3" class="data row0 col3" >0.05</td>
-      <td id="T_5d9ce_row0_col4" class="data row0 col4" >0.25</td>
-      <td id="T_5d9ce_row0_col5" class="data row0 col5" >0.3</td>
-      <td id="T_5d9ce_row0_col6" class="data row0 col6" >0.24</td>
-      <td id="T_5d9ce_row0_col7" class="data row0 col7" >    0.51    </td>
+      <td id="T_c0445_row0_col0" class="data row0 col0" ></td>
+      <td id="T_c0445_row0_col1" class="data row0 col1" >0.05</td>
+      <td id="T_c0445_row0_col2" class="data row0 col2" >0.00053</td>
+      <td id="T_c0445_row0_col3" class="data row0 col3" >0.05</td>
+      <td id="T_c0445_row0_col4" class="data row0 col4" >0.25</td>
+      <td id="T_c0445_row0_col5" class="data row0 col5" >0.3</td>
+      <td id="T_c0445_row0_col6" class="data row0 col6" >0.24</td>
+      <td id="T_c0445_row0_col7" class="data row0 col7" >    0.51    </td>
     </tr>
   </tbody>
 </table>
@@ -14490,18 +14510,18 @@ w1new = w1 - eta * dLdw1
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <style type="text/css">
-#T_f2c11_ th {
+#T_08831_ th {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
-#T_f2c11_ td {
+#T_08831_ td {
   font-size: 18px;
   max-width: 2.5cm;
   text-align: left;
 }
 </style>
-<table id="T_f2c11_">
+<table id="T_08831_">
   <thead>
     <tr>
       <th class="col_heading level0 col0" >$w'_1$</th>
@@ -14516,14 +14536,14 @@ w1new = w1 - eta * dLdw1
   </thead>
   <tbody>
     <tr>
-      <td id="T_f2c11_row0_col0" class="data row0 col0" >0.1</td>
-      <td id="T_f2c11_row0_col1" class="data row0 col1" >0.05</td>
-      <td id="T_f2c11_row0_col2" class="data row0 col2" >0.00053</td>
-      <td id="T_f2c11_row0_col3" class="data row0 col3" >0.05</td>
-      <td id="T_f2c11_row0_col4" class="data row0 col4" >0.25</td>
-      <td id="T_f2c11_row0_col5" class="data row0 col5" >0.3</td>
-      <td id="T_f2c11_row0_col6" class="data row0 col6" >0.24</td>
-      <td id="T_f2c11_row0_col7" class="data row0 col7" >    0.51    </td>
+      <td id="T_08831_row0_col0" class="data row0 col0" >0.1</td>
+      <td id="T_08831_row0_col1" class="data row0 col1" >0.05</td>
+      <td id="T_08831_row0_col2" class="data row0 col2" >0.00053</td>
+      <td id="T_08831_row0_col3" class="data row0 col3" >0.05</td>
+      <td id="T_08831_row0_col4" class="data row0 col4" >0.25</td>
+      <td id="T_08831_row0_col5" class="data row0 col5" >0.3</td>
+      <td id="T_08831_row0_col6" class="data row0 col6" >0.24</td>
+      <td id="T_08831_row0_col7" class="data row0 col7" >    0.51    </td>
     </tr>
   </tbody>
 </table>
