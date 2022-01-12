@@ -1,6 +1,12 @@
 #!/bin/bash
 
-notebooks=$(find ../ -name "*.ipynb" -not -path '*/.*')
+if [ -n "$1" ]; then
+    notebooks=$1
+    slides=$(echo $1| sed 's/.ipynb/.slides.html/')
+else
+    notebooks=$(find ../ -name "*.ipynb" -not -path '*/.*')
+    slides=$(find ../ -name "*.slides.html" -not -path '*/.*')
+fi
 
 for notebook in $notebooks; do
     isslide=$(grep "\"slide_type\": \"slide\"" $notebook)
@@ -8,11 +14,12 @@ for notebook in $notebooks; do
     if [[ ! -z $isslide ]]; then
         jupyter nbconvert --to slides $notebook --template slides_reveal_split.tpl
     else
-        jupyter nbconvert --to html $notebook
+	echo "nb"
+        jupyter nbconvert --to html $notebook --template=nbextensions
+	slides=""
     fi
 done
 
-slides=$(find ../ -name "*.slides.html" -not -path '*/.*')
 scriptspath=$(pwd)
 for slide in $slides; do
     echo "Converting $slide to self-contained"
