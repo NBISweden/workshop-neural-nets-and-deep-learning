@@ -263,6 +263,7 @@ print(div)
 
 :::: {}
 
+
 <h3>Architecture</h3>
 
 A single neuron has $n$ /inputs/ $x_i$ and an /output/ $y$. To each
@@ -354,6 +355,7 @@ permanently set to 1 [cite:@mackay_information_2003 p.471]
 :::
 ** Perceptron (single neuron)
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1.5fr; grid-column-gap: 10px;"}
+
 
 :::: {}
 
@@ -1984,7 +1986,7 @@ try:
 - change time_steps
 - change the number of epochs
 
-* Training                                                      
+* Training
 ** Recap: backpropagation algorithm in ffns
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 50% auto; grid-column-gap: 50px;"}
@@ -2792,8 +2794,6 @@ subtracted. Sigmoid is in (0, 1).
 
 ::::
 
-
-
 * LSTMs and GRUs
 ** Motivation behind LSTMs and GRUs
 
@@ -3300,8 +3300,6 @@ Predict next character in sequence of strings
 *** Comments
 - use several LSTM layers, where the last one should return sequences
   cite:brownlee_stacked_2017
-
-
 
 * Applications                                                     :noexport:
 ** Google translate

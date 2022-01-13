@@ -3,7 +3,7 @@
 title: "Recurrent neural networks"
 author:
   - Per Unneberg
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "20 January, 2022"
 output:
   revealjs::revealjs_presentation:
     css: revealjs.css
@@ -838,7 +838,7 @@ Assume multiple time points.
 
 :::: fragment
 
-"the boat is in the water" vs "the water is in the boat"
+"dog bites man" vs "man bites dog"
 
 ::::
 

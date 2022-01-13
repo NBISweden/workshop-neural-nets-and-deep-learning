@@ -331,11 +331,9 @@
         \node[input={$x_2$}, below of=x1] (x2) {};
         \node[below of=x2] (vdots) {$\vdots$};
         \node[input={$x_n$}, below of=vdots] (xn) {};
-
         \node[activation, right of=x2] (sum) {$\sum$};
         \node[right of=sum, node distance=2*\basenodesep, sigmoid] (nonlinear) {};
         \node[output={$y$}, right of=sum, node distance=4*\basenodesep] (y) {};
-
         \draw[->] (x0) -- (sum) node [midway, right] {$w_0$};
         \draw[->] (x1) -- (sum) node [midway, above] {$w_1$};
         \draw[->] (x2) -- (sum) node [midway, above] {$w_2$};
@@ -346,6 +344,7 @@
     }
   }
 }
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Neural network layers
