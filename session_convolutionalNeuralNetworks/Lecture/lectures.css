@@ -1,0 +1,46 @@
+.column {
+    float: left;
+    width: 50%;
+  }
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  .reveal .small pre code{
+      max-height: 700px;
+      font-size: 14px;
+      line-height: 19px;
+  }
+  .reveal .bottom {
+      position: fixed;
+      bottom: 100px;
+      left: 0px;
+  }
+  /*.reveal h1 {
+      position: fixed;
+      top: 40%;
+      text-align: center;
+      width: 100%;
+  }*/
+
+.cm-keyword {color: #708;}
+.cm-atom {color: #219;}
+.cm-number {color: #164;}
+.cm-def {color: #00f;}
+.cm-variable {color: black;}
+.cm-variable-2 {color: #05a;}
+.cm-variable-3 {color: #085;}
+.cm-property {color: black;}
+.cm-operator {color: black;}
+.cm-string {color: #a11;}
+.cm-string-2 {color: #f50;}
+.cm-meta {color: #555;}
+.cm-error {color: #f00;}
+.cm-qualifier {color: #555;}
+.cm-builtin {color: #30a;}
+.cm-bracket {color: #997;}
+.cm-tag {color: #170;}
+.cm-attribute {color: #00c;}
+.cm-hr {color: #999;}
