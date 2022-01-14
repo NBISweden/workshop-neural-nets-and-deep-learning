@@ -20,6 +20,8 @@
 .reveal h3 { font-size: 1.25em;
              padding-top: 30px;}
 .reveal h4 { font-size: 1em;        }
+.reveal h5 { font-size: 0.8em;        }
+.reveal h6 { font-size: 0.6em;        }
 
 .reveal .slides>section,
 .reveal .slides>section>section {
@@ -32,9 +34,10 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
-    /* -moz-box-shadow: 0px 0px 0px transparent !important; */
-    /* -webkit-box-shadow: 0px 0px 0px transparent !important; */
-    /* box-shadow: 0px 0px 0px transparent !important; */
+    /* Remove comments to prevent shadowed images */
+    -moz-box-shadow: 0px 0px 0px transparent !important;
+    -webkit-box-shadow: 0px 0px 0px transparent !important;
+    box-shadow: 0px 0px 0px transparent !important;
 }
 
 /* Make sure code blocks are filled */
@@ -43,7 +46,7 @@
 }
 .reveal section pre code {
     max-height: 100%;
-    font-size: 1.2em;
+    font-size: 1em;
 }
 .scroll-1000 {
     max-height: 1000px;
@@ -61,6 +64,7 @@ pre.numberSource code > span > a:first-child::before {
     left: -0.3em;
     padding-left: 1.3em;
 }
+
 
 /* div.sourceCode { background-color: white } */
 
@@ -98,6 +102,20 @@ pre.numberSource code > span > a:first-child::before {
 .light-grey { color: #999999 }
 .grey { color: #666666 }
 .dark-grey { color: #333333 }
+
+.highlight {
+    font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    font-size: 0.8em;
+}
+.highlight p {
+    font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    font-size: 0.8em;
+    color: LightGray;
+}
+.highlight strong {
+    font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    color: black;
+}
 
 /* Set the maximum figure size to 100% of the slide */
 img, video, iframe {
@@ -209,7 +227,10 @@ a:hover {
     width: 400px;
 }
 
-
+div.smallcite {
+    font-size: 0.6em;
+    float: right;
+}
 
 /* Font sizes */
 .tiny {
@@ -217,6 +238,10 @@ a:hover {
   line-height: 1.2em;
   vertical-align: top; }
 
+span.citation {
+    font-size: 0.6em;
+    float: right;
+}
 
 /* Taken from ../templates.css */
 div.scilife-logo {
