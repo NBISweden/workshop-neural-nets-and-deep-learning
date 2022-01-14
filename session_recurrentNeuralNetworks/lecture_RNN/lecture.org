@@ -16,7 +16,7 @@ output:
     css: revealjs.css
     includes:
       in_header: footer.html
-    self_contained: false
+    self_contained: true
     reveal_plugins: []
     highlight: breezedark
     fig_caption: false
@@ -1575,6 +1575,62 @@ yhat = rnn.predict()
 
 :::::::::::::::::::
 
+*** Notes                         :ignore:
+:::: {.notes}
+
+Pseudocode examples:
+
+[cite:@karpathy_unreasonable_effectiveness_of_RNNs]
+
+#+begin_src jupyter-python
+rnn = RNN()
+y = rnn.step(x) # x is an input vector, y is the RNN's output vector
+
+class RNN:
+  # ...
+  # Description of forward pass
+  def step(self, x):
+    # update the hidden state
+    self.h = np.tanh(np.dot(self.W_hh, self.h) + np.dot(self.W_xh, x))
+    # compute the output vector
+    y = np.dot(self.W_hy, self.h)
+    return y
+
+#+end_src
+A two-layer network would look as follows:
+#+begin_src jupyter-python
+y1 = rnn.step(x)
+y2 = rnn.step(y1)
+#+end_src
+
+Keras version (https://keras.io/api/layers/recurrent_layers/rnn/#rnn-class):
+#+begin_src jupyter-python
+class MinimalRNNCell(keras.layers.Layer):
+
+    def __init__(self, units, **kwargs):
+        self.units = units
+        self.state_size = units
+        super(MinimalRNNCell, self).__init__(**kwargs)
+
+    def build(self, input_shape):
+        self.kernel = self.add_weight(shape=(input_shape[-1], self.units),
+                                      initializer='uniform',
+                                      name='kernel')
+        self.recurrent_kernel = self.add_weight(
+            shape=(self.units, self.units),
+            initializer='uniform',
+            name='recurrent_kernel')
+        self.built = True
+
+    def call(self, inputs, states):
+        prev_output = states[0]
+        h = backend.dot(inputs, self.kernel)
+        output = h + backend.dot(prev_output, self.recurrent_kernel)
+        return output, [output]
+#+end_src
+
+::::
+
 ** Vanilla RNNs
 
 <br/>
@@ -1913,6 +1969,30 @@ model.compile(loss='mean_squared_error', optimizer='adam')
 model.summary()
 #+end_src
 
+*** Notes                         :ignore:
+:::: {.notes}
+
+On RNN layers and time steps (https://keras.io/guides/working_with_rnns/):
+
+- the units correspond to the output size (yhat)
+- an RNN layer processes batches of input sequences
+- an RNN layer loops RNN cells that process one input at a time (e.g.
+  one word, one time point)
+
+Also from the source code (LSTMCell):
+
+#+begin_quote
+  This class processes one step within the whole time sequence input, whereas
+  `tf.keras.layer.LSTM` processes the whole sequence.
+#+end_quote
+
+The number of LSTMCells is defined by the units parameter, e.g.:
+
+#+begin_src jupyter-python
+# Stacked layer
+rnn_cells = [tf.keras.layers.LSTMCell(128) for _ in range(2)]
+#+end_src
+::::
 
 ** Example: fit the model and evaluate
 
@@ -3298,7 +3378,8 @@ Good example at [cite:@koehrsen_recurrent_2018]
 Predict next character in sequence of strings
 
 *** Comments
-- use several LSTM layers, where the last one should return sequences
+- you may have to use several LSTM layers, in which the last layer
+  should not return sequences (set =return_sequences=False=)
   cite:brownlee_stacked_2017
 
 * Applications                                                     :noexport:

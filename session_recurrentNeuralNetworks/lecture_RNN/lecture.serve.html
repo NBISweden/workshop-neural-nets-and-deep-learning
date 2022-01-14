@@ -1179,6 +1179,28 @@ h_t = f_\mathbf{W}(x_t, h_{t-1})
 </div>
 </div>
 </div>
+<aside class="notes">
+<p>Pseudocode examples:</p>
+<p>(Karpathy, 2015)</p>
+<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): NameError: name &#39;RNN&#39; is not defined
+## 
+## Detailed traceback:
+##   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;</code></pre>
+<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): NameError: name &#39;rnn&#39; is not defined
+## 
+## Detailed traceback:
+##   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;</code></pre>
+<p>A two-layer network would look as follows:</p>
+<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): NameError: name &#39;rnn&#39; is not defined
+## 
+## Detailed traceback:
+##   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;</code></pre>
+<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): NameError: name &#39;rnn&#39; is not defined
+## 
+## Detailed traceback:
+##   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;</code></pre>
+<p>Keras version (<a href="https://keras.io/api/layers/recurrent_layers/rnn/#rnn-class" class="uri">https://keras.io/api/layers/recurrent_layers/rnn/#rnn-class</a>):</p>
+</aside>
 </section>
 <section id="vanilla-rnns" class="slide level2">
 <h2>Vanilla RNNs</h2>
@@ -1331,32 +1353,32 @@ Adresses points 2 and 3. <br/>
 <h2>Example: generate test and training data</h2>
 <p><img src="lecture.serve_files/figure-revealjs/box-jenkins-airline-2-3.png" width="500px" /></p>
 <p>Partition time series into training and test data sets at an e.g. 2:1 ratio:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rnnutils</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> rnnutils.airlines()</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.array(df[<span class="st">&#39;passengers&#39;</span>].values.astype(<span class="st">&#39;float32&#39;</span>)).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>train, test, scaler <span class="op">=</span> rnnutils.make_train_test(data) </span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rnnutils</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> rnnutils.airlines()</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.array(df[<span class="st">&#39;passengers&#39;</span>].values.astype(<span class="st">&#39;float32&#39;</span>)).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>train, test, scaler <span class="op">=</span> rnnutils.make_train_test(data) </span></code></pre></div>
 </section>
 <section id="example-prepare-data-for-keras" class="slide level2">
 <h2>Example: prepare data for keras</h2>
 <p><img src="lecture.serve_files/figure-revealjs/tikz-prepare-airline-data-for-keras-1.svg" width="800px" /></p>
 <div class="element: fragment">
-<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>time_steps <span class="op">=</span> <span class="dv">12</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>trainX, trainY, trainX_indices, trainY_indices <span class="op">=</span> rnnutils.make_xy(train, time_steps)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>testX, testY, testX_indices, testY_indices <span class="op">=</span> rnnutils.make_xy(test, time_steps) </span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>time_steps <span class="op">=</span> <span class="dv">12</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>trainX, trainY, trainX_indices, trainY_indices <span class="op">=</span> rnnutils.make_xy(train, time_steps)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>testX, testY, testX_indices, testY_indices <span class="op">=</span> rnnutils.make_xy(test, time_steps) </span></code></pre></div>
 </div>
 </section>
 <section id="example-create-vanilla-rnn-model" class="slide level2">
 <h2>Example: create vanilla RNN model</h2>
-<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.models <span class="im">import</span> Sequential</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.layers <span class="im">import</span> Dense, SimpleRNN</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Sequential()</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>model.add(SimpleRNN(units<span class="op">=</span><span class="dv">3</span>, input_shape<span class="op">=</span>(time_steps, <span class="dv">1</span>),</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                    activation<span class="op">=</span><span class="st">&quot;tanh&quot;</span>))</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>model.add(Dense(units<span class="op">=</span><span class="dv">1</span>, activation<span class="op">=</span><span class="st">&quot;tanh&quot;</span>))</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span><span class="st">&#39;mean_squared_error&#39;</span>, optimizer<span class="op">=</span><span class="st">&#39;adam&#39;</span>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>model.summary() </span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.models <span class="im">import</span> Sequential</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.layers <span class="im">import</span> Dense, SimpleRNN</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Sequential()</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>model.add(SimpleRNN(units<span class="op">=</span><span class="dv">3</span>, input_shape<span class="op">=</span>(time_steps, <span class="dv">1</span>),</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                    activation<span class="op">=</span><span class="st">&quot;tanh&quot;</span>))</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>model.add(Dense(units<span class="op">=</span><span class="dv">1</span>, activation<span class="op">=</span><span class="st">&quot;tanh&quot;</span>))</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span><span class="st">&#39;mean_squared_error&#39;</span>, optimizer<span class="op">=</span><span class="st">&#39;adam&#39;</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>model.summary() </span></code></pre></div>
 <pre><code>## Model: &quot;sequential&quot;
 ## _________________________________________________________________
 ## Layer (type)                 Output Shape              Param #   
@@ -1369,22 +1391,40 @@ Adresses points 2 and 3. <br/>
 ## Trainable params: 19
 ## Non-trainable params: 0
 ## _________________________________________________________________</code></pre>
+<aside class="notes">
+<p>On RNN layers and time steps (<a href="https://keras.io/guides/working_with_rnns/" class="uri">https://keras.io/guides/working_with_rnns/</a>):</p>
+<ul>
+<li>the units correspond to the output size (yhat)</li>
+<li>an RNN layer processes batches of input sequences</li>
+<li>an RNN layer loops RNN cells that process one input at a time (e.g. one word, one time point)</li>
+</ul>
+<p>Also from the source code (LSTMCell):</p>
+<blockquote>
+<p>This class processes one step within the whole time sequence input, whereas `tf.keras.layer.LSTM` processes the whole sequence.</p>
+</blockquote>
+<p>The number of LSTMCells is defined by the units parameter, e.g.:</p>
+<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): NameError: name &#39;tf&#39; is not defined
+## 
+## Detailed traceback:
+##   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+##   File &quot;&lt;string&gt;&quot;, line 1, in &lt;listcomp&gt;</code></pre>
+</aside>
 </section>
 <section id="example-fit-the-model-and-evaluate" class="slide level2">
 <h2>Example: fit the model and evaluate</h2>
 <div style="font-size: 0.8em">
-<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(trainX, trainY, epochs<span class="op">=</span><span class="dv">20</span>, batch_size<span class="op">=</span><span class="dv">1</span>, verbose<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>Ytrainpred <span class="op">=</span> model.predict(trainX)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>Ytestpred <span class="op">=</span> model.predict(testX) </span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(trainX, trainY, epochs<span class="op">=</span><span class="dv">20</span>, batch_size<span class="op">=</span><span class="dv">1</span>, verbose<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>Ytrainpred <span class="op">=</span> model.predict(trainX)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>Ytestpred <span class="op">=</span> model.predict(testX) </span></code></pre></div>
 </div>
 <div style="display: grid; grid-template-columns: 50% 50%; grid-column-gap: 10px; grid-row-gap: 0px">
 <div style="font-size: 0.8em">
-<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>rnnutils.plot_history(history) </span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>rnnutils.plot_history(history) </span></code></pre></div>
 </div>
 <div style="font-size: 0.8em">
-<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {<span class="st">&#39;train&#39;</span>: (model.predict(trainX), train, trainY_indices),</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;test&#39;</span>: (model.predict(testX), test, testY_indices)}</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>rnnutils.plot_pred(data, scaler<span class="op">=</span>scaler, ticks<span class="op">=</span><span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">144</span>, <span class="dv">20</span>), labels<span class="op">=</span>df.year[<span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">144</span>, <span class="dv">20</span>)]) </span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {<span class="st">&#39;train&#39;</span>: (model.predict(trainX), train, trainY_indices),</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;test&#39;</span>: (model.predict(testX), test, testY_indices)}</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>rnnutils.plot_pred(data, scaler<span class="op">=</span>scaler, ticks<span class="op">=</span><span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">144</span>, <span class="dv">20</span>), labels<span class="op">=</span>df.year[<span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">144</span>, <span class="dv">20</span>)]) </span></code></pre></div>
 </div>
 <div>
 <p><img src="lecture.serve_files/figure-revealjs/airline-plot-history-5.png" width="80%" /></p>
@@ -1865,7 +1905,7 @@ W_f \in \mathbb{R}^{n \times (h+d)}, W_i \in \mathbb{R}^{n \times (h+d)}, W_o \i
 <p>Predict next character in sequence of strings</p>
 <h3 id="comments">Comments</h3>
 <ul>
-<li>use several LSTM layers, where the last one should return sequences <span class="citation" data-cites="brownlee_stacked_2017">(Brownlee, 2017)</span></li>
+<li>you may have to use several LSTM layers, in which the last layer should not return sequences (set <code>return_sequences=False</code>) <span class="citation" data-cites="brownlee_stacked_2017">(Brownlee, 2017)</span></li>
 </ul>
 </section></section>
 <section id="bibliography" class="title-slide slide level1">
