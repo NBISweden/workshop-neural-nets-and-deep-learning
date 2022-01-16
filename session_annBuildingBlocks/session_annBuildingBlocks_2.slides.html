@@ -67,23 +67,17 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .il { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Integer.Long */
   </style>
 <style type="text/css">
-    
+    /*This file contains any manual css for this page that needs to override the global styles.
+This is only required when different pages style the same element differently. This is just
+a hack to deal with our current css styles and no new styling should be added in this file.*/
 
-<script>
-    MathJax.Hub.Config({
-        "HTML-CSS": {
-            /*preferredFont: "TeX",*/
-            /*availableFonts: ["TeX", "STIX"],*/
-            styles: {
-                scale: 100,
-                ".MathJax_Display": {
-                    "font-size": "100%",
-                }
-            }
-        }
-    });
-</script>
-    
+#ipython-main-app {
+    position: relative;
+}
+#jupyter-main-app {
+    position: relative;
+}
+
   </style>
 <style type="text/css">
 /*-----------------------------------------------------------------------------
@@ -14494,7 +14488,7 @@ a.anchor-link {
 /*    --jp-ui-font-size1: 20px;       /* instead of 14px */ */
 /*    --jp-content-font-size1: 20px;  /* instead of 14px */ */
     --jp-code-font-size: 19px;      /* instead of 13px */
-/*    --jp-cell-prompt-width: 110px;  /* instead of 64px */
+    --jp-cell-prompt-width: 110px;  /* instead of 64px */
 }
 @media print {
   body {
@@ -14653,7 +14647,7 @@ div.jp-OutputPrompt {
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Learning">Learning<a class="anchor-link" href="#Learning">¶</a></h2>
+<h2 id="Learning">Learning<a class="anchor-link" href="#Learning">¶</a></h2><p>Estimating parameters ($w$ and $b$)</p>
 </div>
 </div>
 </div>
@@ -14771,6 +14765,7 @@ div.jp-OutputPrompt {
 </div>
 </div>
 </div><aside class="notes">
+<aside class="notes">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
@@ -14792,7 +14787,8 @@ div.jp-OutputPrompt {
 </div>
 </div>
 </div>
-</aside></section></section><section><section>
+</aside></aside></section></section>
+<section><section>
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
@@ -15148,7 +15144,7 @@ b_{j} &amp;=&amp; b_{j} - \eta \frac{\partial L(w,b|x)}{\partial b_{j}}
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Summary-Learning">Summary Learning<a class="anchor-link" href="#Summary-Learning">¶</a></h2><h3 id="Loss-function">Loss function<a class="anchor-link" href="#Loss-function">¶</a></h3>\begin{eqnarray}
+<h2 id="Summary-Learning">Summary Learning<a class="anchor-link" href="#Summary-Learning">¶</a></h2><h3 id="(Quadratic)-Loss-function">(Quadratic) Loss function<a class="anchor-link" href="#(Quadratic)-Loss-function">¶</a></h3>\begin{eqnarray}
 L(w,b|x) &amp;=&amp; \frac{1}{2}\sum_i\left(y_i-\hat{y}_i\right)^2\\
 L(w,b) &amp;=&amp; \frac{1}{K}\sum_{k=1}^K  L(w,b|x^{(k)})
 \end{eqnarray}<ul>
