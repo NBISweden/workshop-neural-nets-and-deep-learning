@@ -13145,9 +13145,9 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Chain-rule-of-derivation">Chain rule of derivation<a class="anchor-link" href="#Chain-rule-of-derivation">¶</a></h1><h3 id="A-reminder">A reminder<a class="anchor-link" href="#A-reminder">¶</a></h3><p>The chain rule simplifies derivation of complex functions and states that</p>
-$$\frac{d f(g(x))}{dx} = \frac{df(g(x))}{dg(x)} \times \frac{dg(x)}{d x} $$<p>A complex function can be formulated as a function $f()$ of a function $g() of x$" -- what does this mean? Maybe it is easier to explain this by an example:</p>
+$$\frac{d f(g(x))}{dx} = \frac{df(g(x))}{dg(x)} \times \frac{dg(x)}{d x} $$<p>A complex function can be formulated as a function $f()$ of a function $g()$ of $x$ -- what does this mean? Maybe it is easier to explain this by an example:</p>
 <p>Consider the complex function $f\left(g(x)\right) = \frac{1}{2}(a-x)^2$, where $g(x) = a-x$ and the function $f(g(x)) = \frac{1}{2}g(x)^2 = \frac{1}{2}(a-x)^2$.</p>
-<p>It is often convenient to simplify notation by introducing a help variable, e.g., $t$, for $g(x).</p>
+<p>It is often convenient to simplify notation by introducing a help variable, e.g., $t$, for $g(x)$.</p>
 $$\textrm{Let $t=g(x)$, then $f(g(x))=f(t)$}$$<p>...and the re-express the derivative in terms of the help variable:</p>
 $$\frac{d f(g(x))}{dx} =\frac{d f(t)}{dx} = \frac{df(t)}{dt} \times \frac{dt}{dx}$$<p>The result is often easier to solve... but let's look at some examples to make it less abstract</p>
 </div>
@@ -13211,8 +13211,8 @@ and then made it a neat expression in terms of $\sigma(x)$</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Back-propagation-goal">Back propagation goal<a class="anchor-link" href="#Back-propagation-goal">¶</a></h2><p>Compute the partial derivative of the cost function $L(b,w|x)$ with respect to each parameter $v$ in  $w$ and $b$, i.e.,</p>
-$$\frac{\partial L(b,w|x)}{\partial v},\quad v \in {w, b}$$<h2 id="Back-propagation-strategy">Back propagation strategy<a class="anchor-link" href="#Back-propagation-strategy">¶</a></h2><p>Use chain rule to split $\frac{\partial L(b,w|x)}{\partial v}$ on $z$ and $a$ of each layer, going from left to right.</p>
-<p>Then compute the partial derivatives from right to left and use their products to obtain each relevant $\frac{\partial L(b,w|x)}{\partial v}$</p>
+$$\frac{\partial L(b,w|x)}{\partial v},\quad v \in {w, b}$$<h2 id="Back-propagation-strategy">Back propagation strategy<a class="anchor-link" href="#Back-propagation-strategy">¶</a></h2><p>Use chain rule to split $\frac{\partial L(b,w|x)}{\partial v}$ on the $a_j$s and $z_j$s of each layer, going from right to left.</p>
+<p>Then compute the partial derivatives and use their products to obtain each relevant $\frac{\partial L(b,w|x)}{\partial v}$</p>
 </div>
 </div>
 </div>
@@ -13242,8 +13242,8 @@ $$\frac{\partial L(b,w|x)}{\partial v},\quad v \in {w, b}$$<h2 id="Back-propagat
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Preparations">Preparations<a class="anchor-link" href="#Preparations">¶</a></h2><p>Start by downloading the Jupyter notebook version of this exercise -- your <em>workbook</em> for the exercise to your <em>nndl</em> folder:</p>
 <pre><code>curl -o nn_dl_python.yaml https://raw.githubusercontent.com/NBISweden/workshop-neural-nets-and-deep-learning/master/session_annBuildingBlocks/exercise_jupyter_intro.ipynb</code></pre>
-<p>or, alternatively, 
-<code>wget https://raw.githubusercontent.com/NBISweden/workshop-neural-nets-and-deep-learning/master/c/session_annBuildingBlocks/exercise_jupyter_intro.ipynb</code></p>
+<p>or, alternatively,</p>
+<pre><code>wget https://raw.githubusercontent.com/NBISweden/workshop-neural-nets-and-deep-learning/master/c/session_annBuildingBlocks/exercise_jupyter_intro.ipynb</code></pre>
 <p>Open the downloaded  .ipynb file in your Jupyter notebook browser.</p>
 </div>
 </div>
@@ -13489,7 +13489,7 @@ L(w,b|x) &amp;=&amp; \frac{1}{2}\left(y-\hat{y}\right)^2 = \frac{1}{2}\left(y-a_
 \end{eqnarray}$</p>
 <h3 id="2.-Apply-chain-rule">2. Apply chain rule<a class="anchor-link" href="#2.-Apply-chain-rule">¶</a></h3><p>We use the chain rule to split $\frac{\partial L(w,b|x)}{\partial w_2}$ on $a_2$ and $z_2$, in turn, and do it  backwards along the path, i.e., from right to left in the figure above.</p>
 <h4 id="First-split-on-$a_2$:">First split on $a_2$:<a class="anchor-link" href="#First-split-on-$a_2$:">¶</a></h4><p>$\hspace{1cm}\begin{eqnarray} 
-\frac{\partial L(w,b|x)}{\partial w_2} &amp;=&amp;  \frac{\partial a_2}{\partial w_2}\times \frac{\partial L(w,b|x)}{\partial a_2} 
+\frac{\partial L(w,b|x)}{\partial w_2} &amp;=&amp; \frac{\partial a_2}{\partial w_2}\times \frac{\partial L(w,b|x)}{\partial a_2} 
 \end{eqnarray}$</p>
 <h4 id="Then-split-first-factor-on-$z_2$:">Then split first factor on $z_2$:<a class="anchor-link" href="#Then-split-first-factor-on-$z_2$:">¶</a></h4><p>$\hspace{1cm}\begin{eqnarray} 
 \frac{\partial L(w,b|x)}{\partial w_2} &amp;=&amp;  \frac{\partial z_2}{\partial w_2}\times \frac{\partial a_2}{\partial z_2} \times \frac{\partial L(w,b|x)}{\partial a_2} 
@@ -13513,7 +13513,7 @@ $\begin{eqnarray}
 \end{eqnarray}$<br/>
 Now, we just need to fill in the values of $y$ and $a_2$ from our Forward pass table<br/>
 $\begin{eqnarray}\frac{\partial L(w,b|x)}{\partial a_2} 
-&amp;=&amp;  0.61 - 0.01 = 0.6
+&amp;=&amp;  0.609 - 0.01 = 0.599
 \end{eqnarray}$<br/>
 <br/></p>
 </li>
@@ -13529,7 +13529,7 @@ $\begin{eqnarray}
 Filling in the values of $a_2$ from our Forward pass table, gives<br/>
 $\begin{eqnarray}
 \frac{\partial a_2}{\partial z_2} 
-&amp;=&amp;  0.61\times(1-0.61) = 0.2379
+&amp;=&amp;  0.609\times(1-0.609) = 0.238
 \end{eqnarray}$<br/>
 <br/></p>
 </li>
@@ -13544,13 +13544,13 @@ $\begin{eqnarray}
 \end{eqnarray}$ 
 Filling in the values of and $a_1$ from our Forward pass table, gives us<br/>
 $\begin{eqnarray}
-\frac{\partial z_2}{\partial w_2} &amp;=&amp;  0.48 \\
+\frac{\partial z_2}{\partial w_2} &amp;=&amp;  0.476 \\
 \end{eqnarray}$ </li>
 </ul>
 <h3 id="4.-Compute-the-requested-(full)-partial-derivative">4. Compute the requested (full) partial derivative<a class="anchor-link" href="#4.-Compute-the-requested-(full)-partial-derivative">¶</a></h3><p>Finally, we get the value of $\frac{\partial L(w,b|x)}{\partial w_1}$ by simply multiplying the three partial derivatives.</p>
 <p>$\hspace{1cm}\begin{eqnarray} 
 \frac{\partial L(w,b|x)}{\partial w_2} &amp;=&amp;  \frac{\partial z_2}{\partial w_2}\times \frac{\partial a_2}{\partial z_2} \times \frac{\partial L(w,b|x)}{\partial a_2}\\
-&amp;=&amp; 0.48 \times 0.2379 \times 0.6 = 0068152
+&amp;=&amp; 0.476 \times 0.238 \times 0.599 = 0.0577
 \end{eqnarray}$</p>
 </div>
 </div>
@@ -13562,7 +13562,7 @@ $\begin{eqnarray}
 $$w' = w - \eta \frac{\partial L(w,b|x)}{\partial w_2}$$<p>Let's use an $\eta = 0.05$</p>
 <p>$\hspace{1cm}\begin{eqnarray} 
 w'_2 &amp;=&amp; w_2 - \eta \times \frac{\partial L(w,b|x)}{\partial w_2} 
-&amp;=&amp; 0.3 - 0.05\times 0.068152 =0.29657424
+&amp;=&amp; 0.3 - 0.05\times 0.0577 =0.297
 \end{eqnarray}$</p>
 </div>
 </div>
@@ -13873,6 +13873,7 @@ $\quad$<em>If we have computed the values of partial derivatives for a layer, we
 &amp;=&amp;  \frac{\partial w_2 a_1 +b_1}{\partial a_1} \\
 &amp;=&amp; ?
 \end{eqnarray}$</p>
+<p>(Write the answer on paper -- you don't have to type the latex code)</p>
 <hr/>
 <details>
 <summary> Solution </summary>
@@ -13979,7 +13980,7 @@ dz2da1 = w2
 \frac{\partial a_1}{\partial z_2} 
 &amp;=&amp;  \frac{\partial \sigma(z_2)}{\partial z_2} \\
 &amp;=&amp; \sigma(z_2)\left(1-\sigma(z_2)\right)\\
-&amp;=&amp; a_1\left(1-a_1\right)
+&amp;=&amp; ?
 \end{eqnarray}$</p>
 <hr/>
 <details>
@@ -14011,6 +14012,17 @@ da1dz1 = a1*(1-a1)
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Replace "" with the code to compute this variable</span>
+
+<span class="n">da1dz1</span> <span class="o">=</span> <span class="s2">""</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 </div>
@@ -14110,6 +14122,17 @@ dz1dw1 = i1
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Replace "" with the code to compute this variable</span>
+
+<span class="n">dz1dw1</span> <span class="o">=</span> <span class="s2">""</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 </div>
@@ -14206,6 +14229,16 @@ dLdw1 = dz1dw1 * da1dz1 * dz2da1 * da2dz2 * dLda2
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [128]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Replace "" with the code to compute this variable</span>
+<span class="n">dLdw1</span> <span class="o">=</span> <span class="s2">""</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 </div>
@@ -14293,6 +14326,17 @@ w1new = w1 - eta * dLdw1
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [131]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Replace "" with the code to compute this variable</span>
+
+<span class="n">w1new</span> <span class="o">=</span> <span class="s2">""</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 </div>
@@ -14355,7 +14399,7 @@ w1new = w1 - eta * dLdw1
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="What-about-the-bias?">What about the bias?<a class="anchor-link" href="#What-about-the-bias?">¶</a></h1><p>The biases $b_1$ and b_2$ are udpated in very much the same way as the weights:</p>
+<h1 id="What-about-the-bias?">What about the bias?<a class="anchor-link" href="#What-about-the-bias?">¶</a></h1><p>The biases $b_1$ and $b_2$ are udpated in very much the same way as the weights:</p>
 <ol>
 <li>Determine the (forward) path from the bias in question, $b_i$, to the loss function $L(b,w|x)$. For $b_2$ this is: 
 $$\begin{eqnarray}
@@ -14369,7 +14413,7 @@ L(w,b|x) &amp;=&amp; \frac{1}{2}\left(y-\hat{y}\right)^2 = \frac{1}{2}\left(y-a_
 <li>Compute the value of $\frac{\partial L(b,w|x)}{\partial b_i}$ using the partial derivatives of the split expression</li>
 <li>Update the requested bias $b_i$ using $\eta$ and $\frac{\partial L(b,w|x)}{\partial b_i}$.</li>
 </ol>
-<p>(<em>If and only if</em> you get time over, you could try to do this for $b2$ and/or $b_1$)</p>
+<p>(<em>If and only if</em> you get time over, you could try to do this for $b_2$ and/or $b_1$)</p>
 </div>
 </div>
 </div>
@@ -14399,9 +14443,9 @@ L(w,b|x) &amp;=&amp; \frac{1}{2}\left(y-\hat{y}\right)^2 = \frac{1}{2}\left(y-a_
 <p>Well, we would still use the same general approach, but we get more paths to keep track of.</p>
 <h2 id="Forward-pass">Forward pass<a class="anchor-link" href="#Forward-pass">¶</a></h2><p>Because there are now two paths to go from $i_1$ to $\hat{y}_1$ (and similarly from $i_1$ to $\hat{y}_2$), we need to sum over these ways in the forward pass. This is done when computing $z_1^O$, e.g.:</p>
 <p>$\begin{eqnarray}
+&amp;\cdots&amp;\\
+z_1^O &amp;=&amp; \color{green}{\left(\sum_{j=1}^2 w_{j,1}^O a_j^H\right) + b_1^O}\\
 \hat{y}_1 &amp;=&amp; a_1^O = \sigma(z_1^O)\\
-z_1^O &amp;=&amp; \left(\sum_{j=1}^2 w_{j,1}^O a_j^H\right) + b_1^O\\
-etc.
 \end{eqnarray}$</p>
 <h2 id="Backward-pass">Backward pass<a class="anchor-link" href="#Backward-pass">¶</a></h2><p>Similarly, there are now two paths to consider when computing $\frac{\partial L(b,w|w)}{\partial w_1^H}$, one through $\hat{y}_1$ and one  trough $\hat{y}_2$ (see the ANN figure), and again we need to sum over these. Here it is done at the when splitting $\frac{\partial L(b,w|x)}{\partial w_1^H}$ at $a_1^H$, e.g.;</p>
 <p>$\begin{eqnarray}
@@ -14410,8 +14454,8 @@ etc.
 \times
 \frac{\partial a_1^H}{\partial z_1^H} 
 \times
-\sum_{j=1}^2
-\frac{\partial z_j^O}{\partial a_1^H} 
+\color{green}{\sum_{j=1}^2
+\frac{\partial z_j^O}{\partial a_1^H}}
 \times
 \frac{\partial a_j^O}{\partial z_j^O} 
 \times
@@ -14423,7 +14467,7 @@ etc.
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Matrix-algebra">Matrix algebra<a class="anchor-link" href="#Matrix-algebra">¶</a></h2><p>In fact it turns out that it is beneficial to collect similar variables into vectors and matrices, i.e., gradients, and then use matrix multiplication between these to compute all partial derivatives inone go.</p>
+<h2 id="Matrix-algebra">Matrix algebra<a class="anchor-link" href="#Matrix-algebra">¶</a></h2><p>In fact it turns out that it is beneficial to collect similar variables into vectors and matrices, i.e., gradients, and then use matrix multiplication between these to compute all partial derivatives in one go.</p>
 <p>However, this would <strong>extra-curricular for this course</strong>, (but a walk-through is provided at the end of the exercise (only in <em>html</em> version) as a challenge only for those who <em>really loves math</em> and <em>if and only if</em> they have time (NB! this will require familiarity with matrix algebra).</p>
 </div>
 </div>
@@ -14450,7 +14494,10 @@ etc.
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="End-of-the-official-exercise">End of the official exercise<a class="anchor-link" href="#End-of-the-official-exercise">¶</a></h2><p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p>
+<h2 id="End-of-the-official-exercise">End of the official exercise<a class="anchor-link" href="#End-of-the-official-exercise">¶</a></h2><hr/>
+<p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></p>
 <hr/>
 <h3 id="Extra-curricular:-Walk-through-of-forward-and-backward-pass-of-the-ANN-with-more-than-one-neuron-per-layer">Extra-curricular: Walk-through of forward and backward pass of the ANN with more than one neuron per layer<a class="anchor-link" href="#Extra-curricular:-Walk-through-of-forward-and-backward-pass-of-the-ANN-with-more-than-one-neuron-per-layer">¶</a></h3><p>NB! This is only for those who really loves math, it requires familiarity with matrix algebra -- not part of the course.</p>
 <p>We will focus on updating the values of $w^H =\left(w_{1,1}^H, w_{1,2}^H\right)$ using $\frac{\partial L(b,w|x)}{\partial w^H}$ and $\eta=0.05$ in the ANN in the figure below.</p>
