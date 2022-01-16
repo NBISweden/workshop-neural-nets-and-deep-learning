@@ -14,4 +14,7 @@ lecture.serve.Rmd: lecture.Rmd
 
 clean:
 	rm -rf lecture_cache
-	rm -rf *.log
+	rm -rf lecture.serve_cache
+	rm -rf *.log *.dvi *.aux
+	rm -rf Untitled*
+	rm -rf __pycache__ auto

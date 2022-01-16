@@ -16,11 +16,12 @@
 {% endblock input_group %}
 
 {%- block any_cell scoped -%}
-{%- if cell.metadata.get('fragment_start', False) -%}
-<div class="fragment">
-{%- endif -%}
 
-{%- if 'split' in cell.metadata.get('cell_style', '') -%}
+{%- if cell.metadata.slide_type == 'notes' -%}
+<aside class="notes">
+{{ super() }}
+</aside>
+{%- elif 'split' in cell.metadata.get('cell_style', '') -%}
 {{ super()[0:13] + "split_cell " + super()[13:] }}
 {%- else -%}
 {{ super() }}
@@ -99,8 +100,8 @@ a.anchor-link {
     padding: 0;
 }
 :root {
-    --jp-ui-font-size1: 20px;       /* instead of 14px */
-    --jp-content-font-size1: 20px;  /* instead of 14px */
+    --jp-ui-font-size1: 20px;       /* instead of 14px */ 
+    --jp-content-font-size1: 20px;  /* instead of 14px */ 
     --jp-code-font-size: 19px;      /* instead of 13px */
     --jp-cell-prompt-width: 110px;  /* instead of 64px */
 }
@@ -168,7 +169,7 @@ require(
             controls: true,
             progress: true,
             history: true,
-            transition: "{{reveal_transition}}",
+            transition: "none", /* "{{reveal_transition}}",*/
             slideNumber: "{{reveal_number}}",
             plugins: [RevealNotes]
         });
