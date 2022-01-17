@@ -370,7 +370,7 @@
         \else
         \fi
         \pgfmathparse{#1} \pgfmathresult \let\nnodes\pgfmathresult
-        \foreach [count=\i] \n in {1, 2, ..., \nnodes} {
+        \foreach [count=\i] \n in {1, ..., \nnodes} {
           \tikzmath{ \j=\i ;}
           \ifnum\pdfstrcmp{\n}{\nnodes}=0
           \ifpgf@rnn@group@dotted
@@ -399,11 +399,11 @@
   pics/connectlayers/.style n args = {4}{
     code = {
       \ifstrempty{#4}{%
-        \foreach \i in {1, 2, ..., #3} {
+        \foreach \i in {1, ..., #3} {
           \draw[nncon] (#1_n\i) -- (#2_n\i);
         }
       }{%
-        \foreach \i in {1, 2, ..., #3} {
+        \foreach \i in {1, ..., #3} {
           \foreach \j in {1, ..., #4} {
             \draw[nncon] (#1_n\i) -- (#2_n\j);
           }

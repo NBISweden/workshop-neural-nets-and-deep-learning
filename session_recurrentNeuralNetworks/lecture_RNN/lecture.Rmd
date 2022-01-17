@@ -3,7 +3,7 @@
 title: "Recurrent neural networks"
 author:
   - Per Unneberg
-date: "20 January, 2022"
+date: "19 January, 2022"
 output:
   revealjs::revealjs_presentation:
     css: revealjs.css
@@ -137,7 +137,7 @@ input is associated a *weight* $w_i$.
 <h3>Activity rule</h3>
 The **activity rule** is given by two steps:
 
-$$a = \sum_{i} w_ix_i, \quad i=1,...,n$$
+$$a = \sum_{i} w_ix_i, \quad i=0,...,n$$
 
 $$\begin{array}{ccc}
 \mathrm{activation} & & \mathrm{activity}\\
@@ -190,7 +190,7 @@ input is associated a *weight* $w_i$.
 <h3>Activity rule</h3>
 The **activity rule** is given by two steps:
 
-$$a = \sum_{i} w_ix_i, \quad i=1,...,n$$
+$$a = \sum_{i} w_ix_i, \quad i=0,...,n$$
 
 $$\begin{array}{ccc}
 \mathrm{activation} & & \mathrm{activity}\\
@@ -234,9 +234,9 @@ permanently set to 1 (MacKay, 2003, p. 471)
 
 :::: {}
 
-$$a = w_0 + \sum_{i} w_ix_i, \quad i=1,...,m$$
+$$a = w_0 + \sum_{i} w_ix_i, \quad i=1,...,n$$
 
-$$y = y(a) = g\left( w_0 + \sum_{i=1}^{m} w_ix_i \right)$$
+$$y = y(a) = g\left( w_0 + \sum_{i=1}^{n} w_ix_i \right)$$
 
 :::: {.element: class="fragment"}
 
@@ -247,8 +247,8 @@ $$y = g\left(w_0 + \mathbf{X^T} \mathbf{W} \right)$$
 where:
 
 $$\quad\mathbf{X}=
-\begin{bmatrix}x_1\\ \vdots \\ x_m\end{bmatrix},
-\quad \mathbf{W}=\begin{bmatrix}w_1\\ \vdots \\ w_m\end{bmatrix}$$
+\begin{bmatrix}x_1\\ \vdots \\ x_n\end{bmatrix},
+\quad \mathbf{W}=\begin{bmatrix}w_1\\ \vdots \\ w_n\end{bmatrix}$$
 
 ::::
 [@alexander_amini_mit_2021_rnn]
@@ -302,7 +302,7 @@ first arrow, then the labels indicate what **value** is passed along
 \begin{tikzpicture}
   \tikzset{
     iolabel/.append style={rotate=0},
-    nnconnection/.append style={->},
+    nncon/.append style={->},
   }
   \rnntikzset{
     dotted=true
@@ -333,7 +333,7 @@ Show multi-valued (vector) output and hidden layer
 
 ## Simplified illustration
 
-```{r  tikz-rnn-recap-perceptron-multiout-simple, cache=FALSE, fig.ext="svg", fig.width=8, engine='tikz' }
+```{r  tikz-rnn-recap-perceptron-multiout-simple, cache=FALSE, fig.ext="svg", out.width="800px", engine='tikz' }
 \begin{tikzpicture}
   \tikzset{
     iolabel/.append style={rotate=-270},
@@ -344,6 +344,29 @@ Show multi-valued (vector) output and hidden layer
   \end{scope}
   \node[yshift=-2*\basenodesep] {$\mathbf{X} \in \mathbb{R}^m$};
   \node[xshift=3*\basenodesep, yshift=-2*\basenodesep] {$\mathbf{Y} \in \mathbb{R}^n$};
+\end{tikzpicture} 
+```
+
+:::: {.notes}
+
+Condense hidden layers to a box.
+
+::::
+
+
+## Simplified illustration
+
+```{r  tikz-rnn-recap-perceptron-multiout-simple-rotated, cache=FALSE, fig.ext="svg", out.height="600px", engine='tikz' }
+\begin{tikzpicture}
+  \tikzset{
+    iolabel/.append style={rotate=0},
+    nnconnection/.append style={->},
+  }
+  \begin{scope}[rotate=0, transform shape]
+    \pic {rnnio={}{$X$}{$Y$}};
+  \end{scope}
+  \node[yshift=0*\basenodesep] {$\mathbf{X} \in \mathbb{R}^m$};
+  \node[yshift=3*\basenodesep] {$\mathbf{Y} \in \mathbb{R}^n$};
 \end{tikzpicture} 
 ```
 
@@ -438,11 +461,25 @@ incremental figure showing time series (e.g. sinus) that highlights
 :::
 
 
-## A few concrete examples of real-world sequences
+## Sequences around us
+
+::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 2px;"}
+
+:::: {}
+
+<h5>Word prediction</h5>
+
+```{r  rnn-example-word-prediction, out.width="60%" }
+knitr::include_graphics("grf/whattimeisit.png") 
+```
+
+::::
+
+:::: {}
 
 <h5>Language translation</h5>
 
-```{r  rnn-example-language-translation, fig.ext="svg", fig.width=6, engine='tikz' }
+```{r  rnn-example-language-translation, fig.ext="svg", out.width="100%", engine='tikz' }
 \begin{tikzpicture}[node distance=2cm, >=latex]
   \node[align=left, font=\ttfamily, text width=22pt, rectangle, draw=black, thick] (vec) {+0.5 +0.2 -0.1 -0.3 +0.4 +1.2};
   \node[left of=vec, rectangle, minimum width=1.5cm, text height=1cm, align=center, fill=blue!20, draw=blue!80, anchor=east, rounded corners, thick, label={center:Encoder}] (encoder) {};
@@ -456,7 +493,7 @@ incremental figure showing time series (e.g. sinus) that highlights
 \end{tikzpicture} 
 ```
 
-::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 2px;"}
+::::
 
 :::: {}
 
@@ -483,6 +520,16 @@ knitr::include_graphics("https://media.springernature.com/full/springer-static/i
 ::::
 
 :::::::::::::::::::
+
+:::: {.notes}
+
+Word prediction according to
+(Karpathy, 2015):
+
+> model the probability distribution of the next character in the
+> sequence given a sequence of previous characters.
+
+::::
 
 
 ## Types of models
@@ -1318,6 +1365,38 @@ steps!
 
 ```{r  rnn-simple-pseudocode, echo=TRUE, eval=FALSE, engine='python' }
 class RNN:
+  # ...
+  # Description of forward pass
+  def step(self, x):
+    # update the hidden state
+    self.h = np.tanh(np.dot(self.W_hh, self.h) + np.dot(self.W_xh, x))
+    # compute the output vector
+    y = np.dot(self.W_hy, self.h)
+    return y
+
+rnn = RNN()
+ff = FeedForwardNN()
+
+for word in input:
+    output = rnn.step(word)
+
+prediction = ff(output) 
+```
+
+::::
+
+:::: 
+
+:::::::::::::::::::
+
+:::: {.notes}
+
+Pseudocode examples, my example:
+
+```{r  engine='python' }
+
+
+class RNN:
     def __init__(self):
         # Initialize weights and cell state
         self._h = [...]
@@ -1346,16 +1425,6 @@ for x, y in input_data:
 # Retrieve next prediction
 yhat = rnn.predict() 
 ```
-
-::::
-
-:::: 
-
-:::::::::::::::::::
-
-:::: {.notes}
-
-Pseudocode examples:
 
 (Karpathy, 2015)
 
@@ -1407,6 +1476,38 @@ class MinimalRNNCell(keras.layers.Layer):
         h = backend.dot(inputs, self.kernel)
         output = h + backend.dot(prev_output, self.recurrent_kernel)
         return output, [output] 
+```
+
+Also (Phi, 2020b)
+
+```{r  engine='python' }
+rnn = RNN()
+ff = FeedForwardNN()
+hidden_state = [0.0, 0.0, 0.0, 0.0]
+
+for word in input:
+    output, hidden_state = rnn(word, hidden_state)
+
+prediction = ff(output) 
+```
+
+Also (Phi, 2020a) :
+
+```{r  engine='python' }
+def LSTMCell(prev_ct, prev_ht, input):
+    combine = prev_ct + input
+    candidate = candidate_layer(combine)
+    it = input_layer(combine)
+    Ct = prev_ct * ft + candidate * it
+    ot = output_layer(combine)
+    ht = ot * tanh(Ct)
+    return ht, Ct
+
+ct = [0, 0, 0]
+ht = [0, 0, 0]
+
+for input in inputs:
+    ct, ht = LSTMCell(ct, ht, input) 
 ```
 
 ::::
@@ -1827,6 +1928,253 @@ rnnutils.plot_pred(data, scaler=scaler, ticks=range(0, 144, 20), labels=df.year[
 ::::
 
 ::::::::::::::::::: 
+
+
+## Example: model topology writ out
+
+:::: {style="font-size: 0.8em"}
+
+```{r  airline-rnn-model-2, echo=FALSE, eval=TRUE, engine='python' }
+model.summary() 
+```
+
+::::
+
+:::: {.element: class="fragment"}
+
+```{r  tikz-rnn-model-topology-writ-out-1, fig.ext='svg', out.width="80%", engine='tikz' }
+\begin{tikzpicture}[rotate=90, transform shape]
+  \useasboundingbox (-0.5*\basenodesep, -12*\basenodesep) rectangle (6.5*\basenodesep, 11*\basenodesep);
+  \tikzset{
+    iolabel/.append style={rotate=-90},
+    nncon/.append style={->},
+  }
+  \begin{scope}[yshift=0]
+  \pic (xt) {nnlayer={1}{input}{}{}{blue}};
+  \pic[xshift=3*\basenodesep] (ht) {nnlayer={3}{hidden}{}{}{green}};
+  \pic[xshift=6*\basenodesep] (yt) {nnlayer={1}{output}{}{}{red}};
+  \end{scope}
+
+  \pic {connectlayers={xt}{ht}{1}{3}};
+  \pic {connectlayers={ht}{yt}{3}{1}};
+
+  \node[iolabel] at (xt_n1) {$X_t$};
+  \node[iolabel] at (yt_n1) {$Y_t$};
+\end{tikzpicture} 
+```
+
+::::
+
+:::: {.notes}
+
+(Verma, 2021)
+
+::::
+
+
+## Example: model topology writ out
+
+:::: {style="font-size: 0.8em"}
+
+```{r  airline-rnn-model-3, echo=FALSE, eval=TRUE, engine='python' }
+model.summary() 
+```
+
+::::
+
+```{r  tikz-rnn-model-topology-writ-out-2, fig.ext='svg', out.width="80%", engine='tikz' }
+\begin{tikzpicture}[rotate=90, transform shape]
+  \useasboundingbox (-0.5*\basenodesep, -12*\basenodesep) rectangle (6.5*\basenodesep, 11*\basenodesep);
+  \tikzset{
+    iolabel/.append style={rotate=-90},
+    nncon/.append style={->},
+  }
+  \begin{scope}[yshift=0]
+  \pic (xt) {nnlayer={1}{input}{}{}{blue}};
+  \pic[xshift=3*\basenodesep] (ht) {nnlayer={3}{hidden}{}{}{green}};
+  \pic[xshift=6*\basenodesep] (yt) {nnlayer={1}{output}{}{}{red}};
+  \end{scope}
+
+  \begin{scope}[yshift=10*\basenodesep]
+    \pic (x1) {nnlayer={1}{input}{}{}{blue}};
+    \pic[xshift=3*\basenodesep] (h1) {nnlayer={3}{hidden}{}{}{green}};
+    \pic[xshift=6*\basenodesep] (y1) {nnlayer={1}{output}{}{}{red}};
+  \end{scope}
+
+  \begin{scope}[yshift=-10*\basenodesep]
+    \pic (xn) {nnlayer={1}{input}{}{}{blue}};
+    \pic[xshift=3*\basenodesep] (hn) {nnlayer={3}{hidden}{}{}{green}};
+    \pic[xshift=6*\basenodesep] (yn) {nnlayer={1}{output}{}{}{red}};
+  \end{scope}
+
+  \pic {connectlayers={x1}{h1}{1}{3}};
+  \pic {connectlayers={h1}{y1}{3}{1}};
+  \pic {connectlayers={xt}{ht}{1}{3}};
+  \pic {connectlayers={ht}{yt}{3}{1}};
+  \pic {connectlayers={xn}{hn}{1}{3}};
+  \pic {connectlayers={hn}{yn}{3}{1}};
+  
+  \draw (h1_n1.east) edge[->, bend left] (ht_n1.east)
+    (h1_n2.east) edge[->, bend left] (ht_n2.east)
+    (h1_n3.east) edge[->, bend left] (ht_n3.east)
+
+    (h1_n1.west) edge[->, bend right] (ht_n2.west)
+    (h1_n1.west) edge[->, bend right] (ht_n3.west)
+
+    (h1_n2.west) edge[->, bend right] (ht_n1.west)
+    (h1_n2.west) edge[->, bend right] (ht_n3.west)
+
+    (h1_n3.west) edge[->, bend right] (ht_n1.west)
+    (h1_n3.west) edge[->, bend right] (ht_n2.west)
+    
+    (h1_n3.south) edge[->] (ht_n1.north);
+
+    \draw (ht_n1.east) edge[->, bend left] (hn_n1.east)
+    (ht_n2.east) edge[->, bend left] (hn_n2.east)
+    (ht_n3.east) edge[->, bend left] (hn_n3.east)
+
+    (ht_n1.west) edge[->, bend right] (hn_n2.west)
+    (ht_n1.west) edge[->, bend right] (hn_n3.west)
+
+    (ht_n2.west) edge[->, bend right] (hn_n1.west)
+    (ht_n2.west) edge[->, bend right] (hn_n3.west)
+
+    (ht_n3.west) edge[->, bend right] (hn_n1.west)
+    (ht_n3.west) edge[->, bend right] (hn_n2.west)
+    
+    (ht_n3.south) edge[->] (hn_n1.north);
+
+    \node[iolabel] at (xt_n1) {$X_t$};
+    \node[iolabel] at (yt_n1) {$Y_t$};
+    \node[iolabel] at (x1_n1) {$X_1$};
+    \node[iolabel] at (y1_n1) {$Y_1$};
+    \node[iolabel] at (xn_n1) {$X_{12}$};
+    \node[iolabel] at (yn_n1) {$Y_{12}$};
+
+    \node at ($(h1_n3.west) !.5! (ht_n1.west)$) {\Huge$\vdots$};
+    \node at ($(ht_n3.west) !.5! (hn_n1.west)$) {\Huge$\vdots$};
+\end{tikzpicture} 
+```
+
+:::: {.element: class="fragment"}
+
+[@verma_understanding_2021]
+
+NB! In keras, RNN input is a 3D tensor with shape `[batch, timesteps, feature]`
+
+::::
+
+:::: {.notes}
+
+(Verma, 2021)
+
+::::
+
+
+## An RNN in numbers
+
+[@karpathy_unreasonable_effectiveness_of_RNNs]
+
+```{r  tikz-karpathy-rnn-example-numbers, fig.ext='svg', out.width="50%", engine='tikz' }
+\begin{tikzpicture}
+  \tikzset{
+    input/.style={rectangle, draw=black, fill=blue!30, text width=0.8cm, align=center},
+    hidden/.style={rectangle, draw=black, fill=green!30, text width=0.8cm, align=center},
+    output/.style={rectangle, draw=black, fill=red!30, text width=0.8cm, align=center},
+  }
+
+  \node[input] (i1) {1\\ 0\\ 0\\ 0};
+  \node[input, right of=i1, node distance=3cm] (i2) {0\\ 1\\ 0\\ 0};
+  \node[input, right of=i2, node distance=3cm] (i3) {0\\ 0\\ 1\\ 0};
+  \node[input, right of=i3, node distance=3cm] (i4) {0\\ 0\\ 1\\ 0};
+
+  \node[hidden, above of=i1, node distance=3cm] (h1) {0.3\\ -0.1\\ 0.9};
+  \node[hidden, above of=i2, node distance=3cm] (h2) {1.0\\ 0.3\\ 0.1};
+  \node[hidden, above of=i3, node distance=3cm] (h3) {0.1\\ -0.5\\ -0.3};
+  \node[hidden, above of=i4, node distance=3cm] (h4) {-0.3\\ 0.9\\ 0.7};
+
+  \newcommand{\op}[1]{\color{blue!70}\textbf{#1}\color{black}}
+  \newcommand{\on}[1]{\color{red!70}\textbf{#1}\color{black}}
+
+  \node[output, above of=h1, node distance=3cm] (o1) {\on{1.0}\\ \op{2.2} \\ \on{-3.0}\\\on{4.1}};
+  \node[output, above of=h2, node distance=3cm] (o2) {\on{0.5}\\ \on{0.3} \\ \op{-1.0}\\\on{1.2}};
+  \node[output, above of=h3, node distance=3cm] (o3) {\on{0.1}\\ \on{0.5} \\ \op{1.9}\\\on{-0.1}};
+  \node[output, above of=h4, node distance=3cm] (o4) {\on{0.2}\\ \on{-1.5} \\ \on{-0.1}\\\op{2.2}};
+
+  \node[left of=i1, node distance=2cm] (il) {input layer};
+  \node[left of=h1, node distance=2cm] {hidden layer};
+  \node[left of=o1, node distance=2cm] (ol) {output layer};
+  \node[below of=il, node distance=1.25cm]  {input chars:};
+  \node[above of=ol, node distance=1.25cm]  {target chars:};
+
+  \node[above of=o1, anchor=south] {\op{e}};
+  \node[above of=o2, anchor=south] {\op{l}};
+  \node[above of=o3, anchor=south] {\op{l}};
+  \node[above of=o4, anchor=south] {\op{o}};
+
+  \node[below of=i1, anchor=north] {\textbf{h}};
+  \node[below of=i2, anchor=north] {\textbf{e}};
+  \node[below of=i3, anchor=north] {\textbf{l}};
+  \node[below of=i4, anchor=north] {\textbf{l}};
+
+  \draw[color=blue] (i1) edge[->] (h1)
+  (i2) edge[->] (h2)
+  (i3) edge[->] (h3)
+  (i4) edge[->] node[left] {\color{blue!70}$\mathbf{W_{xh}}$\color{black}} (h4);
+
+  \draw[color=green] (h1) edge[->] (h2)
+  (h2) edge[->] (h3)
+  (h3) edge[->] node[above] {\color{green!70}$\mathbf{W_{hh}}$\color{black}} (h4);
+
+  \draw[color=red] (h1) edge[->] (o1)
+  (h2) edge[->] (o2)
+  (h3) edge[->] (o3)
+  (h4) edge[->] node[left] {\color{red!70}$\mathbf{W_{hy}}$\color{black}} (o4);
+\end{tikzpicture} 
+```
+
+<small>
+Example network trained on "hello" showing activations in forward pass
+given input "hell". The outputs contain confidences in outputs
+(vocabulary={h, e, l, o}). We want blue numbers high, red numbers low.
+P(e) is in context of "h", P(l) in context of "he" and so on.
+</small>
+
+:::: {.element: class="fragment"}
+
+<small>
+What is the topology of the network?
+</small>
+
+::::
+
+:::: {.element: class="fragment"}
+
+<small>
+4 input units (features), 4 time steps, 3 hidden units, 4 output units
+</small>
+
+::::
+
+:::: {.notes}
+
+NB! This is what it could look like after a forward pass! During
+training, we **want** to increase confidence for blue characters. Also,
+for output 2 and more the output depends on all preceding **hidden**
+states + the input.
+
+Mention: e is conditional on h
+
+l is conditional on input e + hidden state based on h. Quoting Karpathy:
+
+> This training sequence is in fact a source of 4 separate training
+> examples: 1. The probability of “e” should be likely given the context
+> of “h”, 2. “l” should be likely in the context of “he”, 3. “l” should
+> also be likely given the context of “hel”, and finally 4. “o” should
+> be likely given the context of “hell”.
+
+Ask for input\_shape: what is timesteps? (=4) What is features? (=4)
+::::
 
 
 ## Exercise
@@ -2574,7 +2922,7 @@ is long, we need context from much farther back.
 \begin{tikzpicture}
   \matrix [matrix of math nodes,left delimiter=(,right delimiter=), anchor=west](W){ 
     1 & 0 & \dots  & 0\\
-    0 & 0 & \dots  & 0\\
+    0 & 1 & \dots  & 0\\
     \vdots  & \vdots  & \ddots & \vdots\\
     0 & 0 & \dots  & 1\\
   };
@@ -2669,14 +3017,17 @@ Long Short Term Memory (LSTM)  (Hochreiter &#38; Schmidhuber, 1997) and Gated
 Recurrent Unit (GRU) (Cho et al., 2014) architectures were
 proposed to solve the vanishing gradient problem.
 
-::: {.notes}
+:::: {.notes}
 
-Based on (Phi, 2020)
+Based on (Phi, 2020a)
 
 -   solution to short-term memory
 -   gates **regulate** the flow of information, concentrating on the important parts
 
-:::
+In contrast to RNN, LSTM has *four* neural network layers that
+interact via the gates
+
+::::
 
 
 ## Intuition
@@ -2708,7 +3059,7 @@ Statistical Machine Translation  (Cho et al., 2014)
 
 :::: {.notes}
 
-(Phi, 2020)
+(Phi, 2020a)
 
 Example: provide long text (e.g. customer) review and point out what
 we most likely will remember the following day. Intuition on LSTM/GRU:
@@ -2759,7 +3110,7 @@ Remember the important parts, pay less attention to (forget) the rest.
 
 :::: {.notes}
 
-(Phi, 2020)
+(Phi, 2020a)
 
 Example: provide long text (e.g. customer) review and point out what
 we most likely will remember the following day. Intuition on LSTM/GRU:
@@ -2783,11 +3134,21 @@ Intuition:
 
 ```{r  tikz-cellstateflow, fig.ext="svg", cache=FALSE, out.height="300px", engine='tikz' }
 \begin{tikzpicture}
-  \pic[\rnntikzbasekey/highlight=cellstateflow] {lstm} ;
+  \pic[\rnntikzbasekey/.cd, add labels=true, highlight=cellstateflow] {lstm} ;
 \end{tikzpicture} 
 ```
 
+:::: {.element: class="fragment"}
+
+LSTM adds *cell state* that in effect provides the long-term memory
+
+::::
+
+:::: {.element: class="fragment"}
+
 Information flows in the cell state from $c_{t-1}$ to $c_t$.
+
+::::
 
 ::::
 
@@ -2820,11 +3181,29 @@ outputs anything from 0 (nothing) to 1 (everything).
 
 (Olah, 2015)
 
+NB: Olah's example revolves around a language model where we try to
+predict the next output
+
 (, Cho et al., 2014, p. 1726) on the hidden unit:
 
 > In our preliminary experiments, we found that it is crucial to use
 > this new unit with gating units. We were not able to get meaningful
 > result with an oft-used tanh unit without any gating.
+
+Difference between cell and hidden state (<https://datascience.stackexchange.com/questions/82808/difference-between-lstm-cell-state-and-hidden-state>):
+
+-   Cell state: Long term memory of the model, only part of LSTM models
+-   Hidden state: Working memory, part of LSTM and RNN models
+
+for RNN, *every* previous state is considered in calculation of
+backpropagation
+
+LSTM: introduce cell state, in addition to hidden state, simply
+providing longer memory, enabled by
+
+-   the storage of useful beliefs from new inputs
+-   the loading of beliefs into the working memory (i.e. cell state)
+    that are immediately useful.
 
 ::::
 
@@ -2839,11 +3218,11 @@ outputs anything from 0 (nothing) to 1 (everything).
 
 ```{r  tikz-lstm-forget-gate-only, fig.ext="svg", engine='tikz' }
 \begin{tikzpicture}
-  \pic[\rnntikzbasekey/highlight=forgetgate] {lstm};
+  \pic[\rnntikzbasekey/highlight=forgetgate, \rnntikzbasekey/add labels=true] {lstm};
 \end{tikzpicture} 
 ```
 
-**Purpose:** reset content of cell
+**Purpose:** reset content of cell state
 
 ::::
 
@@ -2853,11 +3232,11 @@ outputs anything from 0 (nothing) to 1 (everything).
 
 ```{r  tikz-lstm-input-gate-only, fig.ext="svg", engine='tikz' }
 \begin{tikzpicture}
-  \pic[\rnntikzbasekey/highlight=inputgate] {lstm};
+  \pic[\rnntikzbasekey/.cd, add labels=true, highlight=inputgate] {lstm};
 \end{tikzpicture} 
 ```
 
-**Purpose:** decide when to read data into cell
+**Purpose:** decide when to read data into cell state
 ::::
 
 :::: {}
@@ -2866,32 +3245,38 @@ outputs anything from 0 (nothing) to 1 (everything).
 
 ```{r  tikz-lstm-output-gate-only, fig.ext="svg", engine='tikz' }
 \begin{tikzpicture}
-  \pic[\rnntikzbasekey/highlight=outputgate] {lstm};
+  \pic[\rnntikzbasekey/highlight=outputgate, \rnntikzbasekey/add labels=true] {lstm};
 \end{tikzpicture} 
 ```
 
-**Purpose:** read entries from cell
+**Purpose:** read entries from cell state
 
 ::::
 
 :::::::::::::::::::
 
 Sigmoid squishes vector $[\boldsymbol{h_{t-1}}, \boldsymbol{x_t}]$
-(previous hidden state + input) to $(0, 1)$, where anything from no information (0) to all information (1) passes through the gate.
+(previous hidden state + input) to $(0, 1)$ for each value in cell
+state $c_{t-1}$, where 0 means "reset entry", 1 "keep it"
+
+:::: {.notes}
+
+::::
 
 
 ## The forget gate
 
 ```{r  tikz-lstm-forget-gate, cache=FALSE, fig.ext="svg", fig.width=5, engine='tikz' }
 \begin{tikzpicture}
-\pic[\rnntikzbasekey/.cd, highlight=forgetgate] {lstm};
+\pic[\rnntikzbasekey/.cd, highlight=forgetgate, add labels=true] {lstm};
 \end{tikzpicture} 
 ```
 
 **Purpose**: decide what information to keep or throw away
 
 Sigmoid squishes vector $[\boldsymbol{h_{t-1}}, \boldsymbol{x_t}]$
-(previous hidden state + input) to $(0, 1)$, where 0=forget, 1=keep.
+(previous hidden state + input) to $(0, 1)$ for each value in cell
+state $c_{t-1}$, where 0 means "forget entry", 1 "keep it"
 
 :::: {.element: class="fragment"}
 
@@ -2901,12 +3286,22 @@ $$
 
 ::::
 
+:::: {.notes}
+
+> Let’s go back to our example of a language model trying to predict the
+> next word based on all the previous ones. In such a problem, the cell
+> state might include the gender of the present subject, so that the
+> correct pronouns can be used. When we see a new subject, we want to
+> forget the gender of the old subject.
+
+::::
+
 
 ## Add new information - the input gate
 
 ```{r  tikz-lstm-candidatecellstate-input, cache=FALSE, fig.ext="svg", fig.width=5, engine='tikz' }
 \begin{tikzpicture}
-  \pic[\rnntikzbasekey/.cd, highlight=inputgate] {lstm};
+  \pic[\rnntikzbasekey/.cd, highlight=inputgate, add labels=true] {lstm};
 \end{tikzpicture} 
 ```
 
@@ -2914,12 +3309,20 @@ Two steps to adding new information:
 
 1.  sigmoid layer decides which values to update
 
+:::: {.notes}
+
+> In the example of our language model, we’d want to add the gender of
+> the new subject to the cell state, to replace the old one we’re
+> forgetting.
+
+::::
+
 
 ## Add new information - get candidate values
 
 ```{r  tikz-lstm-candidatecellstate-input-1, cache=FALSE, fig.ext="svg", fig.width=5, engine='tikz' }
 \begin{tikzpicture}
-  \pic[\rnntikzbasekey/.cd, highlight=candidatecellstate] {lstm};
+  \pic[\rnntikzbasekey/.cd, highlight=candidatecellstate, add labels=true] {lstm};
 \end{tikzpicture} 
 ```
 
@@ -2937,18 +3340,27 @@ $$
 
 ::::
 
+:::: {.notes}
+
+> In the example of our language model, we’d want to add the gender of
+> the new subject to the cell state, to replace the old one we’re
+> forgetting.
+
+::::
+
 
 ## Updating the cell state
 
 ```{r  tikz-lstm-update-cell-state, cache=FALSE, fig.ext="svg", fig.width=5, engine='tikz' }
 \begin{tikzpicture}
-  \pic[\rnntikzbasekey/.cd, highlight=updatecellstate] {lstm};
+  \pic[\rnntikzbasekey/.cd, highlight=updatecellstate, add labels=true] {lstm};
 \end{tikzpicture} 
 ```
 
 1.  multiply old cell state by $f_t$ to forget what was decided to
     forget
-2.  add $i_t * \tilde{c}_t$
+2.  add new candidate values scaled by how much we want to update them
+    $i_t * \tilde{c}_t$
 
 :::: {.element: class="fragment"}
 
@@ -2958,12 +3370,20 @@ $$
 
 ::::
 
+:::: {.notes}
+
+> In the case of the language model, this is where we’d actually drop
+> the information about the old subject’s gender and add the new
+> information, as we decided in the previous steps.
+
+::::
+
 
 ## Cell output
 
 ```{r  tikz-lstm-output-gate, cache=FALSE, fig.ext="svg", fig.width=5, engine='tikz' }
 \begin{tikzpicture}
-  \pic[\rnntikzbasekey/.cd, highlight=celloutput] {lstm};
+  \pic[\rnntikzbasekey/.cd, highlight=celloutput, add labels=true] {lstm};
 \end{tikzpicture} 
 ```
 
@@ -2981,19 +3401,31 @@ $$
 
 ::::
 
+:::: {.notes}
+
+> For the language model example, since it just saw a subject, it might
+> want to output information relevant to a verb, in case that’s what is
+> coming next. For example, it might output whether the subject is
+> singular or plural, so that we know what form a verb should be
+> conjugated into if that’s what follows next.
+
+::::
+
 
 ## LSTM: putting it together
 
 ```{r  tikz-lstm-intuition, cache=FALSE, fig.ext="svg", fig.width=5, engine='tikz' }
 \begin{tikzpicture}
-  \pic {lstm};
+  \pic[\rnntikzbasekey/add labels=true] {lstm};
 \end{tikzpicture} 
 ```
 
 
 ### Intuition
 
--   if forget ~ 1, input ~ 0, $c_{t-1}$ will be saved over time
+-   if forget ~ 1, input ~ 0, $c_{t-1}$ will be saved to next time step
+    (input irrelevant for cell state)
+-   if forget ~ 0, input ~ 1, pay attention to the current input
 
 :::: {.notes}
 
@@ -3014,7 +3446,7 @@ From (, Zhang et al., 2021, p. 9.2.1.3):
 
 ```{r  tikz-lstm-2, cache=FALSE, fig.ext="svg", fig.width=5, engine='tikz' }
 \begin{tikzpicture}
-  \pic {lstm};
+  \pic[\rnntikzbasekey/add labels=true] {lstm};
 \end{tikzpicture} 
 ```
 
@@ -3049,7 +3481,7 @@ $$
 
 ## GRU
 
-```{r  tikz-big-gru, fig.ext="svg", out.width="80%", engine='tikz' }
+```{r  tikz-big-gru, fig.ext="svg", fig.width=6, engine='tikz' }
 \begin{tikzpicture}
 \pic {gru};  
 \end{tikzpicture} 
@@ -3106,6 +3538,13 @@ Predict next character in sequence of strings
 -   you may have to use several LSTM layers, in which the last layer
     should not return sequences (set `return_sequences=False`)
     [@brownlee_stacked_2017]
+
+:::: {.notes}
+
+Use (Karpathy, 2015) hello example
+to illustrate how the modelling is done
+
+::::
 
 
 # Bibliography

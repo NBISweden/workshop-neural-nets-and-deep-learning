@@ -92,10 +92,12 @@ def plot_pred(data, scaler=None, rmse=True, **kw):
     ax.legend(legend)
     plt.show()
 
+
 def plot_history(history, show=True, xlim=None, ylim=None):
     """Plot history - plot training and/or test accuracy or loss values"""
     datalabels = ["Training", "Test"]
-    metrics_labels = {'loss': "loss", 'acc': "accuracy", 'accuracy': "accuracy"}
+    metrics_labels = {'loss': "loss", 'acc': "accuracy", 'accuracy': "accuracy",
+                      'mse': 'mse', 'recall': 'recall'}
     if not isinstance(history, dict):
         history = history.history
     hkeys = history.keys()
