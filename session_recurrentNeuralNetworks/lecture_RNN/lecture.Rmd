@@ -3535,8 +3535,8 @@ Predict next character in sequence of strings
 
 ### Comments
 
--   you may have to use several LSTM layers, in which the last layer
-    should not return sequences (set `return_sequences=False`)
+-   you could use several LSTM layers, in which all but the last
+    layer should return sequences (set `return_sequences=True`)
     [@brownlee_stacked_2017]
 
 :::: {.notes}

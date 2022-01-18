@@ -3847,8 +3847,8 @@ Good example at [cite:@koehrsen_recurrent_2018]
 Predict next character in sequence of strings
 
 *** Comments
-- you may have to use several LSTM layers, in which the last layer
-  should not return sequences (set =return_sequences=False=)
+- you could use several LSTM layers, in which all but the last
+  layer should return sequences (set =return_sequences=True=)
   cite:brownlee_stacked_2017
 
 *** Notes                         :ignore:

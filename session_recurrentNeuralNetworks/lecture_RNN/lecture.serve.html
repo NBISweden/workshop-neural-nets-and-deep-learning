@@ -2054,7 +2054,7 @@ W_f \in \mathbb{R}^{n \times (h+d)}, W_i \in \mathbb{R}^{n \times (h+d)}, W_o \i
 <p>Predict next character in sequence of strings</p>
 <h3 id="comments">Comments</h3>
 <ul>
-<li>you may have to use several LSTM layers, in which the last layer should not return sequences (set <code>return_sequences=False</code>) <span class="citation" data-cites="brownlee_stacked_2017">(Brownlee, 2017)</span></li>
+<li>you could use several LSTM layers, in which all but the last layer should return sequences (set <code>return_sequences=True</code>) <span class="citation" data-cites="brownlee_stacked_2017">(Brownlee, 2017)</span></li>
 </ul>
 <aside class="notes">
 <p>Use (Karpathy, 2015) hello example to illustrate how the modelling is done</p>
