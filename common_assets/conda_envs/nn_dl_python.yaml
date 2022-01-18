@@ -15,6 +15,7 @@ dependencies:
   - tabulate
   - keras #=2.4.3
   - tensorflow >=2.0.0
+  - numpy==1.19.5
   - pydot
   - graphviz
   - scikit-learn
