@@ -523,7 +523,7 @@ document.getElementsByTagName('head')[0].appendChild(style);
 <section>
     <h1 class="title">Recurrent neural networks</h1>
     <h2 class="author">Per Unneberg</h2>
-    <h3 class="date">20 January, 2022</h3>
+    <h3 class="date">19 January, 2022</h3>
 </section>
 
 <section class="slide level2">
@@ -608,7 +608,7 @@ Architecture
 Activity rule
 </h3>
 <p>The <strong>activity rule</strong> is given by two steps:</p>
-<p><span class="math display">\[a = \sum_{i} w_ix_i, \quad i=1,...,n\]</span></p>
+<p><span class="math display">\[a = \sum_{i} w_ix_i, \quad i=0,...,n\]</span></p>
 <p><span class="math display">\[\begin{array}{ccc}
 \mathrm{activation} &amp; &amp; \mathrm{activity}\\
 a &amp; \rightarrow &amp; y(a)
@@ -641,7 +641,7 @@ Architecture
 Activity rule
 </h3>
 <p>The <strong>activity rule</strong> is given by two steps:</p>
-<p><span class="math display">\[a = \sum_{i} w_ix_i, \quad i=1,...,n\]</span></p>
+<p><span class="math display">\[a = \sum_{i} w_ix_i, \quad i=0,...,n\]</span></p>
 <p><span class="math display">\[\begin{array}{ccc}
 \mathrm{activation} &amp; &amp; \mathrm{activity}\\
 a &amp; \rightarrow &amp; y(a)
@@ -666,15 +666,15 @@ a &amp; \rightarrow &amp; y(a)
 <p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-recap-perceptron-vectorized-1.svg" width="480" /></p>
 </div>
 <div>
-<p><span class="math display">\[a = w_0 + \sum_{i} w_ix_i, \quad i=1,...,m\]</span></p>
-<p><span class="math display">\[y = y(a) = g\left( w_0 + \sum_{i=1}^{m} w_ix_i \right)\]</span></p>
+<p><span class="math display">\[a = w_0 + \sum_{i} w_ix_i, \quad i=1,...,n\]</span></p>
+<p><span class="math display">\[y = y(a) = g\left( w_0 + \sum_{i=1}^{n} w_ix_i \right)\]</span></p>
 <div class="element: fragment">
 <p>or in vector notation</p>
 <p><span class="math display">\[y = g\left(w_0 + \mathbf{X^T} \mathbf{W} \right)\]</span></p>
 <p>where:</p>
 <p><span class="math display">\[\quad\mathbf{X}=
-\begin{bmatrix}x_1\\ \vdots \\ x_m\end{bmatrix},
-\quad \mathbf{W}=\begin{bmatrix}w_1\\ \vdots \\ w_m\end{bmatrix}\]</span></p>
+\begin{bmatrix}x_1\\ \vdots \\ x_n\end{bmatrix},
+\quad \mathbf{W}=\begin{bmatrix}w_1\\ \vdots \\ w_n\end{bmatrix}\]</span></p>
 </div>
 <p><span class="citation" data-cites="alexander_amini_mit_2021_rnn">(Alexander Amini, 2021)</span></p>
 </div>
@@ -707,7 +707,14 @@ Activity rule
 </section>
 <section id="simplified-illustration" class="slide level2">
 <h2>Simplified illustration</h2>
-<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-recap-perceptron-multiout-simple-1.svg" width="768" /></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-recap-perceptron-multiout-simple-1.svg" width="800px" /></p>
+<aside class="notes">
+<p>Condense hidden layers to a box.</p>
+</aside>
+</section>
+<section id="simplified-illustration-1" class="slide level2">
+<h2>Simplified illustration</h2>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-recap-perceptron-multiout-simple-rotated-1.svg" width="768" height="600px" /></p>
 <aside class="notes">
 <p>Condense hidden layers to a box.</p>
 </aside>
@@ -761,13 +768,21 @@ Activity rule
 </ul>
 </aside>
 </section>
-<section id="a-few-concrete-examples-of-real-world-sequences" class="slide level2">
-<h2>A few concrete examples of real-world sequences</h2>
+<section id="sequences-around-us" class="slide level2">
+<h2>Sequences around us</h2>
+<div style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 2px;">
+<div>
+<h5>
+Word prediction
+</h5>
+<p><img src="grf/whattimeisit.png" width="60%" /></p>
+</div>
+<div>
 <h5>
 Language translation
 </h5>
-<p><img src="lecture.serve_files/figure-revealjs/rnn-example-language-translation-1.svg" width="576" /></p>
-<div style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 2px;">
+<p><img src="lecture.serve_files/figure-revealjs/rnn-example-language-translation-1.svg" width="100%" /></p>
+</div>
 <div>
 <h5>
 Time series
@@ -783,6 +798,12 @@ Genomics
 <p><span class="citation" data-cites="shen_recurrent_2018">(Shen et al., 2018)</span></p>
 </div>
 </div>
+<aside class="notes">
+<p>Word prediction according to (Karpathy, 2015):</p>
+<blockquote>
+<p>model the probability distribution of the next character in the sequence given a sequence of previous characters.</p>
+</blockquote>
+</aside>
 </section>
 <section id="types-of-models" class="slide level2">
 <h2>Types of models</h2>
@@ -1149,57 +1170,69 @@ h_t = f_\mathbf{W}(x_t, h_{t-1})
 <div>
 <div style="font-size: 0.8em">
 <div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RNN:</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Initialize weights and cell state</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._h <span class="op">=</span> [...]</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._Whh <span class="op">=</span> [...]</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._Wxh <span class="op">=</span> [...]</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._Why <span class="op">=</span> [...]</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> update_cell_state(<span class="va">self</span>, x):</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># function is some function that updates cell state</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._h <span class="op">=</span> function(<span class="va">self</span>._h <span class="op">*</span> <span class="va">self</span>._Whh <span class="op">+</span> x <span class="op">*</span> <span class="va">self</span>.Wxh)</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> predict(<span class="va">self</span>):</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._h <span class="op">*</span> <span class="va">self</span>._Why</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> update_weights(<span class="va">self</span>, y):</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Calculate error via some loss function</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        error <span class="op">=</span> loss(<span class="va">self</span>.predict() <span class="op">-</span> y)</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># update weights via back propagation...</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>rnn <span class="op">=</span> RNN()</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x, y <span class="kw">in</span> input_data:</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    rnn.update_cell_state(x)</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    rnn.update_weights(y)</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve next prediction</span></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>yhat <span class="op">=</span> rnn.predict() </span></code></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ...</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Description of forward pass</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> step(<span class="va">self</span>, x):</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># update the hidden state</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.h <span class="op">=</span> np.tanh(np.dot(<span class="va">self</span>.W_hh, <span class="va">self</span>.h) <span class="op">+</span> np.dot(<span class="va">self</span>.W_xh, x))</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># compute the output vector</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> np.dot(<span class="va">self</span>.W_hy, <span class="va">self</span>.h)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>rnn <span class="op">=</span> RNN()</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>ff <span class="op">=</span> FeedForwardNN()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> word <span class="kw">in</span> <span class="bu">input</span>:</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> rnn.step(word)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>prediction <span class="op">=</span> ff(output) </span></code></pre></div>
 </div>
 </div>
 </div>
 <aside class="notes">
-<p>Pseudocode examples:</p>
-<p>(Karpathy, 2015)</p>
-<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): NameError: name &#39;RNN&#39; is not defined
+<p>Pseudocode examples, my example:</p>
+<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): NameError: name &#39;input_data&#39; is not defined
 ## 
 ## Detailed traceback:
 ##   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;</code></pre>
-<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): NameError: name &#39;rnn&#39; is not defined
+<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: can&#39;t multiply sequence by non-int of type &#39;list&#39;
+## 
+## Detailed traceback:
+##   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+##   File &quot;&lt;string&gt;&quot;, line 14, in predict</code></pre>
+<p>(Karpathy, 2015)</p>
+<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): AttributeError: &#39;RNN&#39; object has no attribute &#39;step&#39;
 ## 
 ## Detailed traceback:
 ##   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;</code></pre>
 <p>A two-layer network would look as follows:</p>
-<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): NameError: name &#39;rnn&#39; is not defined
+<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): AttributeError: &#39;RNN&#39; object has no attribute &#39;step&#39;
 ## 
 ## Detailed traceback:
 ##   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;</code></pre>
-<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): NameError: name &#39;rnn&#39; is not defined
+<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): AttributeError: &#39;RNN&#39; object has no attribute &#39;step&#39;
 ## 
 ## Detailed traceback:
 ##   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;</code></pre>
 <p>Keras version (<a href="https://keras.io/api/layers/recurrent_layers/rnn/#rnn-class" class="uri">https://keras.io/api/layers/recurrent_layers/rnn/#rnn-class</a>):</p>
+<p>Also (Phi, 2020b)</p>
+<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): NameError: name &#39;FeedForwardNN&#39; is not defined
+## 
+## Detailed traceback:
+##   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;</code></pre>
+<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): TypeError: &#39;builtin_function_or_method&#39; object is not iterable
+## 
+## Detailed traceback:
+##   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;</code></pre>
+<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): NameError: name &#39;ff&#39; is not defined
+## 
+## Detailed traceback:
+##   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;</code></pre>
+<p>Also (Phi, 2020a) :</p>
+<pre><code>## Error in py_call_impl(callable, dots$args, dots$keywords): NameError: name &#39;inputs&#39; is not defined
+## 
+## Detailed traceback:
+##   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;</code></pre>
 </aside>
 </section>
 <section id="vanilla-rnns" class="slide level2">
@@ -1353,32 +1386,32 @@ Adresses points 2 and 3. <br/>
 <h2>Example: generate test and training data</h2>
 <p><img src="lecture.serve_files/figure-revealjs/box-jenkins-airline-2-3.png" width="500px" /></p>
 <p>Partition time series into training and test data sets at an e.g. 2:1 ratio:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rnnutils</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> rnnutils.airlines()</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.array(df[<span class="st">&#39;passengers&#39;</span>].values.astype(<span class="st">&#39;float32&#39;</span>)).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>train, test, scaler <span class="op">=</span> rnnutils.make_train_test(data) </span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rnnutils</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> rnnutils.airlines()</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.array(df[<span class="st">&#39;passengers&#39;</span>].values.astype(<span class="st">&#39;float32&#39;</span>)).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>train, test, scaler <span class="op">=</span> rnnutils.make_train_test(data) </span></code></pre></div>
 </section>
 <section id="example-prepare-data-for-keras" class="slide level2">
 <h2>Example: prepare data for keras</h2>
 <p><img src="lecture.serve_files/figure-revealjs/tikz-prepare-airline-data-for-keras-1.svg" width="800px" /></p>
 <div class="element: fragment">
-<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>time_steps <span class="op">=</span> <span class="dv">12</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>trainX, trainY, trainX_indices, trainY_indices <span class="op">=</span> rnnutils.make_xy(train, time_steps)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>testX, testY, testX_indices, testY_indices <span class="op">=</span> rnnutils.make_xy(test, time_steps) </span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>time_steps <span class="op">=</span> <span class="dv">12</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>trainX, trainY, trainX_indices, trainY_indices <span class="op">=</span> rnnutils.make_xy(train, time_steps)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>testX, testY, testX_indices, testY_indices <span class="op">=</span> rnnutils.make_xy(test, time_steps) </span></code></pre></div>
 </div>
 </section>
 <section id="example-create-vanilla-rnn-model" class="slide level2">
 <h2>Example: create vanilla RNN model</h2>
-<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.models <span class="im">import</span> Sequential</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.layers <span class="im">import</span> Dense, SimpleRNN</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Sequential()</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>model.add(SimpleRNN(units<span class="op">=</span><span class="dv">3</span>, input_shape<span class="op">=</span>(time_steps, <span class="dv">1</span>),</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                    activation<span class="op">=</span><span class="st">&quot;tanh&quot;</span>))</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>model.add(Dense(units<span class="op">=</span><span class="dv">1</span>, activation<span class="op">=</span><span class="st">&quot;tanh&quot;</span>))</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span><span class="st">&#39;mean_squared_error&#39;</span>, optimizer<span class="op">=</span><span class="st">&#39;adam&#39;</span>)</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>model.summary() </span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.models <span class="im">import</span> Sequential</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.layers <span class="im">import</span> Dense, SimpleRNN</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Sequential()</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>model.add(SimpleRNN(units<span class="op">=</span><span class="dv">3</span>, input_shape<span class="op">=</span>(time_steps, <span class="dv">1</span>),</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                    activation<span class="op">=</span><span class="st">&quot;tanh&quot;</span>))</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>model.add(Dense(units<span class="op">=</span><span class="dv">1</span>, activation<span class="op">=</span><span class="st">&quot;tanh&quot;</span>))</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span><span class="st">&#39;mean_squared_error&#39;</span>, optimizer<span class="op">=</span><span class="st">&#39;adam&#39;</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>model.summary() </span></code></pre></div>
 <pre><code>## Model: &quot;sequential&quot;
 ## _________________________________________________________________
 ## Layer (type)                 Output Shape              Param #   
@@ -1413,18 +1446,18 @@ Adresses points 2 and 3. <br/>
 <section id="example-fit-the-model-and-evaluate" class="slide level2">
 <h2>Example: fit the model and evaluate</h2>
 <div style="font-size: 0.8em">
-<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(trainX, trainY, epochs<span class="op">=</span><span class="dv">20</span>, batch_size<span class="op">=</span><span class="dv">1</span>, verbose<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>Ytrainpred <span class="op">=</span> model.predict(trainX)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>Ytestpred <span class="op">=</span> model.predict(testX) </span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(trainX, trainY, epochs<span class="op">=</span><span class="dv">20</span>, batch_size<span class="op">=</span><span class="dv">1</span>, verbose<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>Ytrainpred <span class="op">=</span> model.predict(trainX)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>Ytestpred <span class="op">=</span> model.predict(testX) </span></code></pre></div>
 </div>
 <div style="display: grid; grid-template-columns: 50% 50%; grid-column-gap: 10px; grid-row-gap: 0px">
 <div style="font-size: 0.8em">
-<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>rnnutils.plot_history(history) </span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>rnnutils.plot_history(history) </span></code></pre></div>
 </div>
 <div style="font-size: 0.8em">
-<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {<span class="st">&#39;train&#39;</span>: (model.predict(trainX), train, trainY_indices),</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;test&#39;</span>: (model.predict(testX), test, testY_indices)}</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>rnnutils.plot_pred(data, scaler<span class="op">=</span>scaler, ticks<span class="op">=</span><span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">144</span>, <span class="dv">20</span>), labels<span class="op">=</span>df.year[<span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">144</span>, <span class="dv">20</span>)]) </span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {<span class="st">&#39;train&#39;</span>: (model.predict(trainX), train, trainY_indices),</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;test&#39;</span>: (model.predict(testX), test, testY_indices)}</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>rnnutils.plot_pred(data, scaler<span class="op">=</span>scaler, ticks<span class="op">=</span><span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">144</span>, <span class="dv">20</span>), labels<span class="op">=</span>df.year[<span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">144</span>, <span class="dv">20</span>)]) </span></code></pre></div>
 </div>
 <div>
 <p><img src="lecture.serve_files/figure-revealjs/airline-plot-history-5.png" width="80%" /></p>
@@ -1433,6 +1466,75 @@ Adresses points 2 and 3. <br/>
 <p><img src="lecture.serve_files/figure-revealjs/airline-plot-model-fit-7.png" width="80%" /></p>
 </div>
 </div>
+</section>
+<section id="example-model-topology-writ-out" class="slide level2">
+<h2>Example: model topology writ out</h2>
+<div style="font-size: 0.8em">
+<pre><code>## Model: &quot;sequential&quot;
+## _________________________________________________________________
+## Layer (type)                 Output Shape              Param #   
+## =================================================================
+## simple_rnn (SimpleRNN)       (None, 3)                 15        
+## _________________________________________________________________
+## dense (Dense)                (None, 1)                 4         
+## =================================================================
+## Total params: 19
+## Trainable params: 19
+## Non-trainable params: 0
+## _________________________________________________________________</code></pre>
+</div>
+<div class="element: fragment">
+<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-model-topology-writ-out-1-1.svg" width="80%" /></p>
+</div>
+<aside class="notes">
+<p>(Verma, 2021)</p>
+</aside>
+</section>
+<section id="example-model-topology-writ-out-1" class="slide level2">
+<h2>Example: model topology writ out</h2>
+<div style="font-size: 0.8em">
+<pre><code>## Model: &quot;sequential&quot;
+## _________________________________________________________________
+## Layer (type)                 Output Shape              Param #   
+## =================================================================
+## simple_rnn (SimpleRNN)       (None, 3)                 15        
+## _________________________________________________________________
+## dense (Dense)                (None, 1)                 4         
+## =================================================================
+## Total params: 19
+## Trainable params: 19
+## Non-trainable params: 0
+## _________________________________________________________________</code></pre>
+</div>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-rnn-model-topology-writ-out-2-1.svg" width="80%" /></p>
+<div class="element: fragment">
+<p><span class="citation" data-cites="verma_understanding_2021">(Verma, 2021)</span></p>
+<p>NB! In keras, RNN input is a 3D tensor with shape <code>[batch, timesteps, feature]</code></p>
+</div>
+<aside class="notes">
+<p>(Verma, 2021)</p>
+</aside>
+</section>
+<section id="an-rnn-in-numbers" class="slide level2">
+<h2>An RNN in numbers</h2>
+<p><span class="citation" data-cites="karpathy_unreasonable_effectiveness_of_RNNs">(Karpathy, 2015)</span></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-karpathy-rnn-example-numbers-1.svg" width="50%" /></p>
+<p><small> Example network trained on “hello” showing activations in forward pass given input “hell”. The outputs contain confidences in outputs (vocabulary={h, e, l, o}). We want blue numbers high, red numbers low. P(e) is in context of “h”, P(l) in context of “he” and so on. </small></p>
+<div class="element: fragment">
+<p><small> What is the topology of the network? </small></p>
+</div>
+<div class="element: fragment">
+<p><small> 4 input units (features), 4 time steps, 3 hidden units, 4 output units </small></p>
+</div>
+<aside class="notes">
+<p>NB! This is what it could look like after a forward pass! During training, we <strong>want</strong> to increase confidence for blue characters. Also, for output 2 and more the output depends on all preceding <strong>hidden</strong> states + the input.</p>
+<p>Mention: e is conditional on h</p>
+<p>l is conditional on input e + hidden state based on h. Quoting Karpathy:</p>
+<blockquote>
+<p>This training sequence is in fact a source of 4 separate training examples: 1. The probability of “e” should be likely given the context of “h”, 2. “l” should be likely in the context of “he”, 3. “l” should also be likely given the context of “hel”, and finally 4. “o” should be likely given the context of “hell”.</p>
+</blockquote>
+<p>Ask for input_shape: what is timesteps? (=4) What is features? (=4)</p>
+</aside>
 </section>
 <section id="exercise" class="slide level2">
 <h2>Exercise</h2>
@@ -1667,11 +1769,12 @@ GRU
 <p><img src="lecture.serve_files/figure-revealjs/tikz-gru-lstm-legend-1.svg" width="480" /></p>
 <p>Long Short Term Memory (LSTM) (Hochreiter &amp; Schmidhuber, 1997) and Gated Recurrent Unit (GRU) (Cho et al., 2014) architectures were proposed to solve the vanishing gradient problem.</p>
 <aside class="notes">
-<p>Based on (Phi, 2020)</p>
+<p>Based on (Phi, 2020a)</p>
 <ul>
 <li>solution to short-term memory</li>
 <li>gates <strong>regulate</strong> the flow of information, concentrating on the important parts</li>
 </ul>
+<p>In contrast to RNN, LSTM has <em>four</em> neural network layers that interact via the gates</p>
 </aside>
 </section>
 <section id="intuition" class="slide level2">
@@ -1683,7 +1786,7 @@ GRU
 <p>Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation (Cho et al., 2014)</p>
 </div>
 <aside class="notes">
-<p>(Phi, 2020)</p>
+<p>(Phi, 2020a)</p>
 <p>Example: provide long text (e.g. customer) review and point out what we most likely will remember the following day. Intuition on LSTM/GRU: focus on relevant information.</p>
 <p>Intuition:</p>
 <ul>
@@ -1705,7 +1808,7 @@ GRU
 <p>Remember the important parts, pay less attention to (forget) the rest.</p>
 </div>
 <aside class="notes">
-<p>(Phi, 2020)</p>
+<p>(Phi, 2020a)</p>
 <p>Example: provide long text (e.g. customer) review and point out what we most likely will remember the following day. Intuition on LSTM/GRU: focus on relevant information.</p>
 <p>Intuition:</p>
 <ul>
@@ -1720,7 +1823,12 @@ GRU
 <div style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 10px;">
 <div>
 <p><img src="lecture.serve_files/figure-revealjs/tikz-cellstateflow-1.svg" width="768" height="300px" /></p>
+<div class="element: fragment">
+<p>LSTM adds <em>cell state</em> that in effect provides the long-term memory</p>
+</div>
+<div class="element: fragment">
 <p>Information flows in the cell state from <span class="math inline">\(c_{t-1}\)</span> to <span class="math inline">\(c_t\)</span>.</p>
+</div>
 </div>
 <div class="element: fragment">
 <p><img src="lecture.serve_files/figure-revealjs/tikz-lstmgate-1.svg" width="768" height="300px" /></p>
@@ -1735,10 +1843,22 @@ GRU
 </div>
 <aside class="notes">
 <p>(Olah, 2015)</p>
+<p>NB: Olah’s example revolves around a language model where we try to predict the next output</p>
 <p>(, Cho et al., 2014, p. 1726) on the hidden unit:</p>
 <blockquote>
 <p>In our preliminary experiments, we found that it is crucial to use this new unit with gating units. We were not able to get meaningful result with an oft-used tanh unit without any gating.</p>
 </blockquote>
+<p>Difference between cell and hidden state (<a href="https://datascience.stackexchange.com/questions/82808/difference-between-lstm-cell-state-and-hidden-state" class="uri">https://datascience.stackexchange.com/questions/82808/difference-between-lstm-cell-state-and-hidden-state</a>):</p>
+<ul>
+<li>Cell state: Long term memory of the model, only part of LSTM models</li>
+<li>Hidden state: Working memory, part of LSTM and RNN models</li>
+</ul>
+<p>for RNN, <em>every</em> previous state is considered in calculation of backpropagation</p>
+<p>LSTM: introduce cell state, in addition to hidden state, simply providing longer memory, enabled by</p>
+<ul>
+<li>the storage of useful beliefs from new inputs</li>
+<li>the loading of beliefs into the working memory (i.e. cell state) that are immediately useful.</li>
+</ul>
 </aside>
 </section>
 <section id="forget-input-and-output-gates" class="slide level2">
@@ -1749,35 +1869,43 @@ GRU
 forget gate
 </h5>
 <p><img src="lecture.serve_files/figure-revealjs/tikz-lstm-forget-gate-only-1.svg" width="768" /></p>
-<p><strong>Purpose:</strong> reset content of cell</p>
+<p><strong>Purpose:</strong> reset content of cell state</p>
 </div>
 <div>
 <h5>
 input gate
 </h5>
 <p><img src="lecture.serve_files/figure-revealjs/tikz-lstm-input-gate-only-1.svg" width="768" /></p>
-<p><strong>Purpose:</strong> decide when to read data into cell</p>
+<p><strong>Purpose:</strong> decide when to read data into cell state</p>
 </div>
 <div>
 <h5>
 output gate
 </h5>
 <p><img src="lecture.serve_files/figure-revealjs/tikz-lstm-output-gate-only-1.svg" width="768" /></p>
-<p><strong>Purpose:</strong> read entries from cell</p>
+<p><strong>Purpose:</strong> read entries from cell state</p>
 </div>
 </div>
-<p>Sigmoid squishes vector <span class="math inline">\([\boldsymbol{h_{t-1}}, \boldsymbol{x_t}]\)</span> (previous hidden state + input) to <span class="math inline">\((0, 1)\)</span>, where anything from no information (0) to all information (1) passes through the gate.</p>
+<p>Sigmoid squishes vector <span class="math inline">\([\boldsymbol{h_{t-1}}, \boldsymbol{x_t}]\)</span> (previous hidden state + input) to <span class="math inline">\((0, 1)\)</span> for each value in cell state <span class="math inline">\(c_{t-1}\)</span>, where 0 means “reset entry”, 1 “keep it”</p>
+<aside class="notes">
+
+</aside>
 </section>
 <section id="the-forget-gate" class="slide level2">
 <h2>The forget gate</h2>
 <p><img src="lecture.serve_files/figure-revealjs/tikz-lstm-forget-gate-1.svg" width="480" /></p>
 <p><strong>Purpose</strong>: decide what information to keep or throw away</p>
-<p>Sigmoid squishes vector <span class="math inline">\([\boldsymbol{h_{t-1}}, \boldsymbol{x_t}]\)</span> (previous hidden state + input) to <span class="math inline">\((0, 1)\)</span>, where 0=forget, 1=keep.</p>
+<p>Sigmoid squishes vector <span class="math inline">\([\boldsymbol{h_{t-1}}, \boldsymbol{x_t}]\)</span> (previous hidden state + input) to <span class="math inline">\((0, 1)\)</span> for each value in cell state <span class="math inline">\(c_{t-1}\)</span>, where 0 means “forget entry”, 1 “keep it”</p>
 <div class="element: fragment">
 <p><span class="math display">\[
 f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)
 \]</span></p>
 </div>
+<aside class="notes">
+<blockquote>
+<p>Let’s go back to our example of a language model trying to predict the next word based on all the previous ones. In such a problem, the cell state might include the gender of the present subject, so that the correct pronouns can be used. When we see a new subject, we want to forget the gender of the old subject.</p>
+</blockquote>
+</aside>
 </section>
 <section id="add-new-information---the-input-gate" class="slide level2">
 <h2>Add new information - the input gate</h2>
@@ -1786,6 +1914,11 @@ f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)
 <ol type="1">
 <li>sigmoid layer decides which values to update</li>
 </ol>
+<aside class="notes">
+<blockquote>
+<p>In the example of our language model, we’d want to add the gender of the new subject to the cell state, to replace the old one we’re forgetting.</p>
+</blockquote>
+</aside>
 </section>
 <section id="add-new-information---get-candidate-values" class="slide level2">
 <h2>Add new information - get candidate values</h2>
@@ -1801,19 +1934,29 @@ i_t = \sigma (W_i \cdot [h_{t-1}, x_t] + b_i)\\
 \tilde{c}_t = \mathsf{tanh}(W_c \cdot [h_{t-1}, x_t] + b_c)
 \]</span></p>
 </div>
+<aside class="notes">
+<blockquote>
+<p>In the example of our language model, we’d want to add the gender of the new subject to the cell state, to replace the old one we’re forgetting.</p>
+</blockquote>
+</aside>
 </section>
 <section id="updating-the-cell-state" class="slide level2">
 <h2>Updating the cell state</h2>
 <p><img src="lecture.serve_files/figure-revealjs/tikz-lstm-update-cell-state-1.svg" width="480" /></p>
 <ol type="1">
 <li>multiply old cell state by <span class="math inline">\(f_t\)</span> to forget what was decided to forget</li>
-<li>add <span class="math inline">\(i_t * \tilde{c}_t\)</span></li>
+<li>add new candidate values scaled by how much we want to update them <span class="math inline">\(i_t * \tilde{c}_t\)</span></li>
 </ol>
 <div class="element: fragment">
 <p><span class="math display">\[
 c_t = f_t * c_{t-1} + i_t * \tilde{c}_t
 \]</span></p>
 </div>
+<aside class="notes">
+<blockquote>
+<p>In the case of the language model, this is where we’d actually drop the information about the old subject’s gender and add the new information, as we decided in the previous steps.</p>
+</blockquote>
+</aside>
 </section>
 <section id="cell-output" class="slide level2">
 <h2>Cell output</h2>
@@ -1829,13 +1972,19 @@ o_t = \sigma(W_o [h_{t-1}, x_t] + b_o)\\
 h_t = o_t * \mathsf{tanh}(c_t)
 \]</span></p>
 </div>
+<aside class="notes">
+<blockquote>
+<p>For the language model example, since it just saw a subject, it might want to output information relevant to a verb, in case that’s what is coming next. For example, it might output whether the subject is singular or plural, so that we know what form a verb should be conjugated into if that’s what follows next.</p>
+</blockquote>
+</aside>
 </section>
 <section id="lstm-putting-it-together" class="slide level2">
 <h2>LSTM: putting it together</h2>
 <p><img src="lecture.serve_files/figure-revealjs/tikz-lstm-intuition-1.svg" width="480" /></p>
 <h3 id="intuition-2">Intuition</h3>
 <ul>
-<li>if forget ~ 1, input ~ 0, <span class="math inline">\(c_{t-1}\)</span> will be saved over time</li>
+<li>if forget ~ 1, input ~ 0, <span class="math inline">\(c_{t-1}\)</span> will be saved to next time step (input irrelevant for cell state)</li>
+<li>if forget ~ 0, input ~ 1, pay attention to the current input</li>
 </ul>
 <aside class="notes">
 <p>From (, Zhang et al., 2021, p. 9.2.1.3):</p>
@@ -1873,7 +2022,7 @@ W_f \in \mathbb{R}^{n \times (h+d)}, W_i \in \mathbb{R}^{n \times (h+d)}, W_o \i
 </section>
 <section id="gru" class="slide level2">
 <h2>GRU</h2>
-<p><img src="lecture.serve_files/figure-revealjs/tikz-big-gru-1.svg" width="80%" /></p>
+<p><img src="lecture.serve_files/figure-revealjs/tikz-big-gru-1.svg" width="576" /></p>
 <ul>
 <li>forget and input states combined to single <em>update</em> gate</li>
 <li>merge cell and hidden state</li>
@@ -1905,8 +2054,11 @@ W_f \in \mathbb{R}^{n \times (h+d)}, W_i \in \mathbb{R}^{n \times (h+d)}, W_o \i
 <p>Predict next character in sequence of strings</p>
 <h3 id="comments">Comments</h3>
 <ul>
-<li>you may have to use several LSTM layers, in which the last layer should not return sequences (set <code>return_sequences=False</code>) <span class="citation" data-cites="brownlee_stacked_2017">(Brownlee, 2017)</span></li>
+<li>you could use several LSTM layers, in which all but the last layer should return sequences (set <code>return_sequences=True</code>) <span class="citation" data-cites="brownlee_stacked_2017">(Brownlee, 2017)</span></li>
 </ul>
+<aside class="notes">
+<p>Use (Karpathy, 2015) hello example to illustrate how the modelling is done</p>
+</aside>
 </section></section>
 <section id="bibliography" class="title-slide slide level1">
 <h1>Bibliography</h1>
@@ -1943,6 +2095,9 @@ Phi, M. (2020). Illustrated <span>Guide</span> to <span>Recurrent</span> <span>N
 </div>
 <div id="ref-shen_recurrent_2018" class="csl-entry" role="doc-biblioentry">
 Shen, Z., Bao, W., &amp; Huang, D.-S. (2018). Recurrent <span>Neural</span> <span>Network</span> for <span>Predicting</span> <span>Transcription</span> <span>Factor</span> <span>Binding</span> <span>Sites</span>. <em>Scientific Reports</em>, <em>8</em>(1), 15270. <a href="https://doi.org/10.1038/s41598-018-33321-1">https://doi.org/10.1038/s41598-018-33321-1</a>
+</div>
+<div id="ref-verma_understanding_2021" class="csl-entry" role="doc-biblioentry">
+Verma, S. (2021). Understanding <span>Input</span> and <span>Output</span> shapes in <span>LSTM</span> <span></span> <span>Keras</span>. In <em>Medium</em>. <a href="https://shiva-verma.medium.com/understanding-input-and-output-shape-in-lstm-keras-c501ee95c65e">https://shiva-verma.medium.com/understanding-input-and-output-shape-in-lstm-keras-c501ee95c65e</a>
 </div>
 <div id="ref-zhang2021dive" class="csl-entry" role="doc-biblioentry">
 Zhang, A., Lipton, Z. C., Li, M., &amp; Smola, A. J. (2021). Dive into deep learning. <em>arXiv Preprint arXiv:2106.11342</em>.
