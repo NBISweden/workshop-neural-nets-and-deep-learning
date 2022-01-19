@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Semi-supervised Deep Learning</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Marcin Kierczak | 19-Jan-2022" />
+    <meta name="keywords" content="bioinformatics, course, scilifelab, nbis, deep learning, keras, rstats, ann, autoencoders" />
+    <script src="libs/header-attrs-2.11/header-attrs.js"></script>
+    <link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+    <link id="font-awesome-1-attachment" rel="attachment" href="libs/font-awesome-5.1.0/fonts/fontawesome-webfont.ttf"/>
+    <link rel="stylesheet" href="assets/presentation.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Semi-supervised Deep Learning
+## From autoencoders to Beta-VAEs
+### <b>Marcin Kierczak</b> | 19-Jan-2022
+### NBIS, SciLifeLab
+
+---
+
+exclude: true
+count: false
+
+
+&lt;link href="https://fonts.googleapis.com/css?family=Roboto|Source+Sans+Pro:300,400,600|Ubuntu+Mono&amp;amp;subset=latin-ext" rel="stylesheet"&gt;
+&lt;link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous"&gt;
+
+
+
+
+
+&lt;!-- ------------ Only edit title, subtitle &amp; author above this ------------ --&gt;
+
+
+
+---
+name: topic1
+
+## If you need, `Keras` and `TensorFlow` in R
+
+* you need TensorFlow first,
+--
+
+* than, you also need the `tensorflow` [package](https://tensorflow.rstudio.com/installation/)...
+
+--
+* good 😆 news is you do not need to install manually...
+
+--
+* install `keras` package instead.
+
+--
+
+```r
+install.packages('keras')
+keras::install_keras()
+```
+
+--
+* if your graphics card supports CUDA and you want to use the power of GPU. 
+
+```r
+install.packages('keras')
+keras::install_keras(tensorflow = 'gpu')
+```
+
+--
+* at least two packages provide R interfaces to `Keras`: `keras` by RStudio and `kerasR`. The latter does not expose all Keras functionalities to R though. 
+
+---
+name: topic2
+
+## R ❤️ Keras &amp; TensorFlow
+
+There are excellent resources for learning:
+
+* about TensorFlow [package](https://tensorflow.rstudio.com/guide/tensorflow/eager_execution/) from RStudio,
+
+--
+* excellent book by Chollet &amp; Allaire
+.size-20[![](assets/deep-learning-with-r.jpeg)]
+
+--
+* RStudio Deep Learning with Keras [cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/keras.pdf)
+.size-20[![](assets/cheatsheet.png)]
+
+--
+* from [keras.rstudio.com](https://keras.rstudio.com)
+
+---
+name: neural_zoo
+# Neural 🧠 Zoo 🐫 🐿 🦓 🐬
+
+.pull-left-50[
+.size-70[![](assets/NeuralNetworkZoo.png)]
+.small[source: [Asimov Institute](https://www.asimovinstitute.org/neural-network-zoo/)]
+]
+.pull-right-50[
+An autoencoder is "just" a specific ANN architecture:  
+.size-35[![](assets/ae.png)]
+.small[source: [Asimov Institute](https://www.asimovinstitute.org/neural-network-zoo/)]
+]
+
+---
+name: autoencoders2
+# Autoencoders 
+So, what is really happening here❓
+
+--
+* output data (🎯) are THE SAME as the input data (not always, but a good assumption for now),
+
+--
+* it is thus called **semi-supervised learning** (sometimes **self-supervised**),
+
+--
+* the **loss function** favors weight sets that are able to reconstruct the data from itself ♻️,
+
+--
+* why do we want a network that can reconstruct input data? A waste 🗑 of resources?
+
+--
+* not really! What we want is the 🍾.
+
+.pull-left-50[
+.size-70[![](assets/autoencoder_schema.png)]
+.small[source: [Wikimedia Commons](assets/autoencoder_schema.png)]
+]
+
+---
+name: applications_compression
+# Applications: compression
+.size-90[![](assets/autoencoder_cat.jpeg)]
+.small[source: [sefix.com](https://sefiks.com/2018/03/21/autoencoder-neural-networks-for-unsupervised-learning/)]
+
+---
+name: denoising_autoenc
+# Applications: denoising
+![](assets/denoising_autoencoder.png)
+---
+name: denoising_autoenc
+# Applications: neural inprinting
+![](assets/neural_inprinting_autoencoder.png)
+---
+name: semantic_vae
+# Applications: semantic segmentation
+.pull-left-50[
+    ![](assets/Gmaps_Uppsala.png)
+]
+.pull-right-50[
+![](assets/Mapillary_Uppsala.png)
+]
+
+---
+name: ae_discontinuity
+# Bad, bad, ugly latent space 💩
+.size-60[![](assets/AE_discontinuity.png)]
+.small[source: [Irhum Shafkat](https://towardsdatascience.com/intuitively-understanding-variational-autoencoders-1bfe67eb5daf)]
+
+---
+name: ae_vs_vae
+# AE vs. VAE latent space
+![](assets/AE_VAE.png)
+
+---
+name: vae1
+# Variational AutoEncoder (VAE)
+.pull-left-50[![](assets/VAE1_architecture.png)
+.small[
+source: [Irhum Shafkat](https://towardsdatascience.com/intuitively-understanding-variational-autoencoders-1bfe67eb5daf)
+]
+]
+
+---
+name: vae2
+# Variational AutoEncoder (VAE)
+.pull-left-50[![](assets/VAE1_architecture.png)]
+.pull-right-50[![](assets/VAE2_formulas.png)]
+.small[source: [Irhum Shafkat](https://towardsdatascience.com/intuitively-understanding-variational-autoencoders-1bfe67eb5daf)]
+
+---
+name: desired_latent_space
+# Towards latent space we want
+.size-60[![](assets/VAE_KL_REC_LOSS.png)]
+
+---
+name: reparametrization_trick
+# The reparametrization trick 🎩🐰
+![](assets/VAE_reparam.png)  
+
+.small[source: [antkillerfarm](http://antkillerfarm.github.io/images/img2/VAE_13.png)]
+
+---
+name: vae2
+# Loss function
+`\(\mathcal{L}(\Theta, \phi; \bar{x}, \bar{z}) = \mathbb{E}_{q_{\phi}(\bar{z}|\bar{x})}[\log{p_{\phi}}(\bar{x}|\bar{z})]\)`
+.size-80[![](assets/VAE_no_KL.png)]
+
+--
+We need some 👮 👮!  
+
+---
+name: kl_div
+# Kullback-Leibler divergence
+Officers Solomon Kullback and Richard Leibler 🚔!  
+--
+![](assets/KL_divergence_poo.png)
+
+--
+
+&gt; NOTE! `\(D_KL(P|Q) \neq D_KL(Q|P)\)` and that is why it is a divergence, not a distance.
+
+---
+name: KL_in_R
+# Kullback-Leibler in R
+
+`\(D_{KL} = P(x) \times \log{\left(\frac{P(x)}{Q(x)}\right)}\)`
+
+
+```r
+KL_div &lt;- function(mu1 = 0, sigma1 = 1, mu2, sigma2) {
+  g &lt;- function(x) {
+    P &lt;- dnorm(x, mean=mu1, sd=sigma1, log=F)
+    logP &lt;- dnorm(x, mean=mu1, sd=sigma1, log=T)
+    logQ &lt;- dnorm(x, mean=mu2, sd=sigma2, log=T)
+    val &lt;- P * (logP - logQ)
+    return(val)
+  }
+  result &lt;- integrate(g, -Inf, Inf)
+  return(result$value)   
+} 
+
+KL_div(mu1 = 0, sigma1 = 1, mu2 = 0, sigma2 = 1)
+KL_div(mu1 = 0, sigma1 = 1, mu2 = 0, sigma2 = 2)
+KL_div(mu1 = 0, sigma1 = 1, mu2 = 1, sigma2 = 1)
+```
+
+```
+## [1] 0
+## [1] 0.3181472
+## [1] 0.5
+```
+
+---
+name: KL_only_loss
+# What if we only use `\(\mathcal{D}_{KL}\)`?  
+`\(\mathcal{L}(\Theta, \phi; \bar{x}, \bar{z}) =  \mathcal{D}_{KL}(q_{\phi}(\bar{z}|\bar{x})||p(\bar{z}))\)`  
+The ⛪ 👨‍🎓 Bayesian connection...
+
+--
+.size-50[![](assets/VAE_KL_only.png)]
+
+---
+name: vae_full_loss_fn
+# Complete loss function
+`\(\mathcal{L}(\Theta, \phi; \bar{x}, \bar{z}) = \mathbb{E}_{q_{\phi}(\bar{z}|\bar{x})}[\log{p_{\phi}}(\bar{x}|\bar{z})] - \mathcal{D}_{KL}(q_{\phi}(\bar{z}|\bar{x})||p(\bar{z}))\)`
+.size-60[![](assets/VAE_KL_REC_LOSS.png)]
+
+---
+name: beta-vae
+# `\(\beta\)`-VAEs
+We can make neurons in the latent layer (bottleneck) **disentangled**, i.e., force that they learn different generative parameters:
+
+`\(\mathcal{L}(\Theta, \phi; \bar{x}, \bar{z}) = \mathbb{E}_{q_{\phi}(\bar{z}|\bar{x})}[\log{p_{\phi}}(\bar{x}|\bar{z})] - \mathbf{\beta} \times \mathcal{D}_{KL}(q_{\phi}(\bar{z}|\bar{x})||p(\bar{z}))\)`
+
+![](assets/beta_VAE_faces.png)
+Image after: [β-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework, Higgins et al., ICLR, 2017](https://openreview.net/pdf?id=Sy2fzU9gl)
+  
+Further reading: [Understanding disentangling in β-VAE, Burgess et al., 2018](https://arxiv.org/abs/1804.03599)
+
+---
+name: beta_vae_ex2
+# `\(\beta\)`-VAEs
+.size-70[![](assets/beta_vae_interpret.png)]
+.small[Source: [β-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework, Higgins et al., ICLR, 2017](https://openreview.net/pdf?id=Sy2fzU9gl)]
+---
+name: ae_vae_summary1
+# Summary
+.size-70[![](assets/ae_vae_example_iart_ai.png)]
+.small[source: [iart.ai](http://iart.ai)]
+---
+name: ae_vae_summary2
+# Summary
+
+* Autoencoders (AE) -- specific ANN architecture.
+* Autoencoders: 
+    + non-generative
+    + `\(\mathcal{L}\)` minimizes reconstruction loss
+    + latent space is discontinuous and has "gaps"
+    + good enough for great many applications
+* Variational Autoencoders:
+    + generative
+    + `\(\mathcal{L}\)` minimizes reconstruction loss and **latent loss**
+    + latent space has no gaps and is continuous
+    + contain stochastic node -- need a reparametrization trick
+    + still, the distributions are entangled and have no obvious meaning
+* `\(\beta\)`-VAEs (disentangled VAEs):
+    + same as VAEs but the distributions have interpretation.
+
+&lt;!-- --------------------- Do not edit this and below --------------------- --&gt;
+
+---
+name: end_slide
+class: end-slide, middle
+count: false
+
+# Let's build some autoencoders!
+
+
+
+.end-text[
+&lt;p&gt;R version 4.1.1 (2021-08-10)&lt;br&gt;&lt;p&gt;Platform: x86_64-apple-darwin17.0 (64-bit)&lt;/p&gt;&lt;p&gt;OS: macOS Big Sur 10.16&lt;/p&gt;&lt;br&gt;
+
+&lt;hr&gt;
+
+&lt;span class="small"&gt;Built on : &lt;i class='fa fa-calendar' aria-hidden='true'&gt;&lt;/i&gt; 19-Jan-2022 at &lt;i class='fa fa-clock-o' aria-hidden='true'&gt;&lt;/i&gt; 09:35:36&lt;/span&gt;  
+
+&lt;b&gt;2022&lt;/b&gt; • [SciLifeLab](https://www.scilifelab.se/) • [NBIS](https://nbis.se/)
+]
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="assets/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "4:3",
+"highlightLanguage": "r",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%/%total%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

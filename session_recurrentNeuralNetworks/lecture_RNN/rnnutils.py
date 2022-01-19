@@ -93,9 +93,25 @@ def plot_pred(data, scaler=None, rmse=True, **kw):
     plt.show()
 
 
+def plot_loss_acc(history):
+    try:
+        plt.plot(history.history['accuracy'])
+        plt.plot(history.history['val_accuracy'])
+    except:
+        plt.plot(history.history['acc'])
+        plt.plot(history.history['val_acc'])
+
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train acc', 'val acc', 'train loss', 'val loss'], loc='upper left')
+    plt.show()
+
 def plot_history(history, show=True, xlim=None, ylim=None):
     """Plot history - plot training and/or test accuracy or loss values"""
-    datalabels = ["Training", "Test"]
+    datalabels = ["Training", "Validation"]
     metrics_labels = {'loss': "loss", 'acc': "accuracy", 'accuracy': "accuracy",
                       'mse': 'mse', 'recall': 'recall'}
     if not isinstance(history, dict):
