@@ -3,7 +3,7 @@
   <head>
     <title>Semi-supervised Deep Learning</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Marcin Kierczak | 19-Jan-2022" />
+    <meta name="author" content="Marcin Kierczak | 20-Jan-2022" />
     <meta name="keywords" content="bioinformatics, course, scilifelab, nbis, deep learning, keras, rstats, ann, autoencoders" />
     <script src="libs/header-attrs-2.11/header-attrs.js"></script>
     <link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
@@ -17,7 +17,7 @@ class: center, middle, inverse, title-slide
 
 # Semi-supervised Deep Learning
 ## From autoencoders to Beta-VAEs
-### <b>Marcin Kierczak</b> | 19-Jan-2022
+### <b>Marcin Kierczak</b> | 20-Jan-2022
 ### NBIS, SciLifeLab
 
 ---
@@ -36,60 +36,6 @@ count: false
 &lt;!-- ------------ Only edit title, subtitle &amp; author above this ------------ --&gt;
 
 
-
----
-name: topic1
-
-## If you need, `Keras` and `TensorFlow` in R
-
-* you need TensorFlow first,
---
-
-* than, you also need the `tensorflow` [package](https://tensorflow.rstudio.com/installation/)...
-
---
-* good 😆 news is you do not need to install manually...
-
---
-* install `keras` package instead.
-
---
-
-```r
-install.packages('keras')
-keras::install_keras()
-```
-
---
-* if your graphics card supports CUDA and you want to use the power of GPU. 
-
-```r
-install.packages('keras')
-keras::install_keras(tensorflow = 'gpu')
-```
-
---
-* at least two packages provide R interfaces to `Keras`: `keras` by RStudio and `kerasR`. The latter does not expose all Keras functionalities to R though. 
-
----
-name: topic2
-
-## R ❤️ Keras &amp; TensorFlow
-
-There are excellent resources for learning:
-
-* about TensorFlow [package](https://tensorflow.rstudio.com/guide/tensorflow/eager_execution/) from RStudio,
-
---
-* excellent book by Chollet &amp; Allaire
-.size-20[![](assets/deep-learning-with-r.jpeg)]
-
---
-* RStudio Deep Learning with Keras [cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/keras.pdf)
-.size-20[![](assets/cheatsheet.png)]
-
---
-* from [keras.rstudio.com](https://keras.rstudio.com)
 
 ---
 name: neural_zoo
@@ -300,6 +246,60 @@ name: ae_vae_summary2
 * `\(\beta\)`-VAEs (disentangled VAEs):
     + same as VAEs but the distributions have interpretation.
 
+---
+name: topic1
+
+## If you need, `Keras` and `TensorFlow` in R
+
+* you need TensorFlow first,
+--
+
+* than, you also need the `tensorflow` [package](https://tensorflow.rstudio.com/installation/)...
+
+--
+* good 😆 news is you do not need to install manually...
+
+--
+* install `keras` package instead.
+
+--
+
+```r
+install.packages('keras')
+keras::install_keras()
+```
+
+--
+* if your graphics card supports CUDA and you want to use the power of GPU. 
+
+```r
+install.packages('keras')
+keras::install_keras(tensorflow = 'gpu')
+```
+
+--
+* at least two packages provide R interfaces to `Keras`: `keras` by RStudio and `kerasR`. The latter does not expose all Keras functionalities to R though. 
+
+---
+name: topic2
+
+## R ❤️ Keras &amp; TensorFlow
+
+There are excellent resources for learning:
+
+* about TensorFlow [package](https://tensorflow.rstudio.com/guide/tensorflow/eager_execution/) from RStudio,
+
+--
+* excellent book by Chollet &amp; Allaire
+.size-20[![](assets/deep-learning-with-r.jpeg)]
+
+--
+* RStudio Deep Learning with Keras [cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/keras.pdf)
+.size-20[![](assets/cheatsheet.png)]
+
+--
+* from [keras.rstudio.com](https://keras.rstudio.com)
+
 &lt;!-- --------------------- Do not edit this and below --------------------- --&gt;
 
 ---
@@ -316,7 +316,7 @@ count: false
 
 &lt;hr&gt;
 
-&lt;span class="small"&gt;Built on : &lt;i class='fa fa-calendar' aria-hidden='true'&gt;&lt;/i&gt; 19-Jan-2022 at &lt;i class='fa fa-clock-o' aria-hidden='true'&gt;&lt;/i&gt; 09:35:36&lt;/span&gt;  
+&lt;span class="small"&gt;Built on : &lt;i class='fa fa-calendar' aria-hidden='true'&gt;&lt;/i&gt; 20-Jan-2022 at &lt;i class='fa fa-clock-o' aria-hidden='true'&gt;&lt;/i&gt; 09:53:31&lt;/span&gt;  
 
 &lt;b&gt;2022&lt;/b&gt; • [SciLifeLab](https://www.scilifelab.se/) • [NBIS](https://nbis.se/)
 ]
