@@ -37,58 +37,6 @@ library(emo)
 ```
 
 ---
-name: topic1
-
-## If you need, `Keras` and `TensorFlow` in R
-
-* you need TensorFlow first,
---
-
-* than, you also need the `tensorflow` [package](https://tensorflow.rstudio.com/installation/)...
-
---
-* good `r emo::ji('happy')` news is you do not need to install manually...
-
---
-* install `keras` package instead.
-
---
-```{r, eval=FALSE}
-install.packages('keras')
-keras::install_keras()
-```
-
---
-* if your graphics card supports CUDA and you want to use the power of GPU. 
-```{r, eval=FALSE}
-install.packages('keras')
-keras::install_keras(tensorflow = 'gpu')
-```
-
---
-* at least two packages provide R interfaces to `Keras`: `keras` by RStudio and `kerasR`. The latter does not expose all Keras functionalities to R though. 
-
----
-name: topic2
-
-## R `r emo::ji('heart')` Keras & TensorFlow
-
-There are excellent resources for learning:
-
-* about TensorFlow [package](https://tensorflow.rstudio.com/guide/tensorflow/eager_execution/) from RStudio,
-
---
-* excellent book by Chollet & Allaire
-.size-20[![](assets/deep-learning-with-r.jpeg)]
-
---
-* RStudio Deep Learning with Keras [cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/keras.pdf)
-.size-20[![](assets/cheatsheet.png)]
-
---
-* from [keras.rstudio.com](https://keras.rstudio.com)
-
----
 name: neural_zoo
 # Neural `r emo::ji('brain')` Zoo `r emo::ji('camel')` `r emo::ji('squirrel')` `r emo::ji('zebra')` `r emo::ji('dolphin')`
 
@@ -289,6 +237,58 @@ name: ae_vae_summary2
     + still, the distributions are entangled and have no obvious meaning
 * $\beta$-VAEs (disentangled VAEs):
     + same as VAEs but the distributions have interpretation.
+
+---
+name: topic1
+
+## If you need, `Keras` and `TensorFlow` in R
+
+* you need TensorFlow first,
+--
+
+* than, you also need the `tensorflow` [package](https://tensorflow.rstudio.com/installation/)...
+
+--
+* good `r emo::ji('happy')` news is you do not need to install manually...
+
+--
+* install `keras` package instead.
+
+--
+```{r, eval=FALSE}
+install.packages('keras')
+keras::install_keras()
+```
+
+--
+* if your graphics card supports CUDA and you want to use the power of GPU. 
+```{r, eval=FALSE}
+install.packages('keras')
+keras::install_keras(tensorflow = 'gpu')
+```
+
+--
+* at least two packages provide R interfaces to `Keras`: `keras` by RStudio and `kerasR`. The latter does not expose all Keras functionalities to R though. 
+
+---
+name: topic2
+
+## R `r emo::ji('heart')` Keras & TensorFlow
+
+There are excellent resources for learning:
+
+* about TensorFlow [package](https://tensorflow.rstudio.com/guide/tensorflow/eager_execution/) from RStudio,
+
+--
+* excellent book by Chollet & Allaire
+.size-20[![](assets/deep-learning-with-r.jpeg)]
+
+--
+* RStudio Deep Learning with Keras [cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/keras.pdf)
+.size-20[![](assets/cheatsheet.png)]
+
+--
+* from [keras.rstudio.com](https://keras.rstudio.com)
 
 <!-- --------------------- Do not edit this and below --------------------- -->
 
