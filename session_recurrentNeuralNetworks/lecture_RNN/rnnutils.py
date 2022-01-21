@@ -56,15 +56,15 @@ def make_xy(data, window_size=1, step_size=1):
     return X, Y, np.array(X_indices), Y_indices
 
 
-def plot_pred(data, scaler=None, rmse=True, **kw):
+def plot_pred(data, scaler=None, rmse=True, plotmarkers=False, **kw):
     """Plot prediction and original data"""
     ticks = kw.pop("ticks", None)
     labels = kw.pop("labels", None)
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(**kw)
     legend = []
     rmsedata = {}
     markers = ["*", "x", "o"]
-    colors = ["orange", "steelblue", "black", "green"]
+    colors = ["black", "steelblue", "darkred", "green"]
     x = []
     y = []
     shift = 0
@@ -81,7 +81,10 @@ def plot_pred(data, scaler=None, rmse=True, **kw):
         if scaler is not None:
             Y = scaler.inverse_transform(Y.reshape(-1, 1)).flatten()
             Ypred = scaler.inverse_transform(Ypred.reshape(-1, 1)).flatten()
-        ax.plot(X[Y_indices], Ypred, markers.pop(), color=colors.pop())
+        col = colors.pop()
+        ax.plot(X[Y_indices], Ypred, color=col)
+        if plotmarkers:
+            ax.plot(X[Y_indices], Ypred, markers.pop(), color=col)
         x.extend(X)
         y.extend(Y)
     legend.append("Data")
@@ -109,7 +112,7 @@ def plot_loss_acc(history):
     plt.legend(['train acc', 'val acc', 'train loss', 'val loss'], loc='upper left')
     plt.show()
 
-def plot_history(history, show=True, xlim=None, ylim=None):
+def plot_history(history, show=True, xlim=None, ylim=None, **kw):
     """Plot history - plot training and/or test accuracy or loss values"""
     datalabels = ["Training", "Validation"]
     metrics_labels = {'loss': "loss", 'acc': "accuracy", 'accuracy': "accuracy",
@@ -120,15 +123,16 @@ def plot_history(history, show=True, xlim=None, ylim=None):
     h = np.array([history[k] for k in hkeys])
     labels = ["{} {}".format(x, y) for x, y in zip([datalabels[u.startswith("val_")] for u in hkeys],
                                                    [metrics_labels[v.replace("val_", "")] for v in hkeys])]
-    plt.plot(np.array(range(0, h.shape[1])), h.T)
-    plt.title('Model metrics')
-    plt.ylabel('Metric')
-    plt.xlabel('Epoch')
+    fig, ax = plt.subplots(**kw)
+    ax.plot(np.array(range(0, h.shape[1])), h.T)
+    ax.set_title('Model metrics')
+    ax.set_ylabel('Metric')
+    ax.set_xlabel('Epoch')
     if xlim is not None:
-        plt.xlim(xlim)
+        ax.set_xlim(xlim)
     if ylim is not None:
-        plt.ylim(ylim)
-    plt.legend([l for l in labels], loc='upper left')
+        ax.set_ylim(ylim)
+    ax.legend([l for l in labels], loc='upper left')
     if show:
         plt.show()
 
