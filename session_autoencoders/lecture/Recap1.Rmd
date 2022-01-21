@@ -1,0 +1,121 @@
+---
+title: "Semi-supervised Deep Learning"
+subtitle: "Recap"
+author: "`r paste0('<b>Marcin Kierczak</b> | ',format(Sys.time(), '%d-%b-%Y'))`"
+institute: NBIS, SciLifeLab
+keywords: bioinformatics, course, scilifelab, nbis, deep learning, keras, rstats, ann, autoencoders
+output:
+  xaringan::moon_reader:
+    encoding: 'UTF-8'
+    self_contained: false
+    chakra: 'assets/remark-latest.min.js'
+    css: 'assets/presentation.css'
+    lib_dir: libs
+    nature:
+      ratio: '4:3'
+      highlightLanguage: r
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+---
+exclude: true
+count: false
+
+```{r,echo=FALSE,child="assets/header-presentation.Rmd"}
+```
+
+<!-- ------------ Only edit title, subtitle & author above this ------------ -->
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+# load the packages you need
+#library(dplyr)
+#library(tidyr)
+#library(stringr)
+#library(ggplot2)
+library(emo)
+```
+
+---
+name: applications_compression
+# Applications: compression
+.size-90[![](assets/autoencoder_cat.jpeg)]
+.small[source: [sefix.com](https://sefiks.com/2018/03/21/autoencoder-neural-networks-for-unsupervised-learning/)]
+
+---
+name: ae_vs_vae
+# AE vs. VAE latent space
+![](assets/AE_VAE.png)
+
+---
+name: ae_discontinuity
+# Simple latent space
+$\mathcal{L}(\Theta, \phi; \bar{x}, \bar{z}) = \mathbb{E}_{q_{\phi}(\bar{z}|\bar{x})}[\log{p_{\phi}}(\bar{x}|\bar{z})]$
+.size-60[![](assets/AE_discontinuity.png)]
+.small[source: [Irhum Shafkat](https://towardsdatascience.com/intuitively-understanding-variational-autoencoders-1bfe67eb5daf)]
+
+---
+name: KL_only_loss
+# What if we only use $\mathcal{D}_{KL}$?  
+$\mathcal{L}(\Theta, \phi; \bar{x}, \bar{z}) =  \mathcal{D}_{KL}(q_{\phi}(\bar{z}|\bar{x})||p(\bar{z}))$  
+The `r emo::ji('church')` `r emo::ji('man_student')` Bayesian connection..
+.size-50[![](assets/VAE_KL_only.png)]
+
+---
+name: vae_full_loss_fn
+# Complete loss function
+$\mathcal{L}(\Theta, \phi; \bar{x}, \bar{z}) = \mathbb{E}_{q_{\phi}(\bar{z}|\bar{x})}[\log{p_{\phi}}(\bar{x}|\bar{z})] - \mathcal{D}_{KL}(q_{\phi}(\bar{z}|\bar{x})||p(\bar{z}))$
+.size-60[![](assets/VAE_KL_REC_LOSS.png)]
+
+---
+name: beta-vae
+# $\beta$-VAEs
+We can make neurons in the latent layer (bottleneck) **disentangled**, i.e., force that they learn different generative parameters:
+
+$\mathcal{L}(\Theta, \phi; \bar{x}, \bar{z}) = \mathbb{E}_{q_{\phi}(\bar{z}|\bar{x})}[\log{p_{\phi}}(\bar{x}|\bar{z})] - \mathbf{\beta} \times \mathcal{D}_{KL}(q_{\phi}(\bar{z}|\bar{x})||p(\bar{z}))$
+
+![](assets/beta_VAE_faces.png)
+Image after: [β-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework, Higgins et al., ICLR, 2017](https://openreview.net/pdf?id=Sy2fzU9gl)
+  
+Further reading: [Understanding disentangling in β-VAE, Burgess et al., 2018](https://arxiv.org/abs/1804.03599)
+
+---
+name: ae_vae_summary1
+# Summary
+.size-70[![](assets/ae_vae_example_iart_ai.png)]
+.small[source: [iart.ai](http://iart.ai)]
+---
+name: ae_vae_summary2
+# Summary
+
+* Autoencoders (AE) -- specific ANN architecture.
+* Autoencoders: 
+    + non-generative
+    + $\mathcal{L}$ minimizes reconstruction loss
+    + latent space is discontinuous and has "gaps"
+    + good enough for great many applications
+* Variational Autoencoders:
+    + generative
+    + $\mathcal{L}$ minimizes reconstruction loss and **latent loss**
+    + latent space has no gaps and is continuous
+    + contain stochastic node -- need a reparametrization trick
+    + still, the distributions are entangled and have no obvious meaning
+* $\beta$-VAEs (disentangled VAEs):
+    + same as VAEs but the distributions have interpretation.
+---
+
+name: end_slide
+class: end-slide, middle
+count: false
+
+# Let's build some autoencoders!
+
+```{r,echo=FALSE,child="assets/footer-presentation.Rmd"}
+```
+
+```{r,include=FALSE,eval=FALSE}
+# manually run this to render this document to HTML
+rmarkdown::render("presentation_demo.Rmd")
+# manually run this to convert HTML to PDF
+#pagedown::chrome_print("presentation_demo.html",output="presentation_demo.pdf")
+```
