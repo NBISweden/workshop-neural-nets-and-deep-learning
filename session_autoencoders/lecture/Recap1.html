@@ -3,7 +3,7 @@
   <head>
     <title>Semi-supervised Deep Learning</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Marcin Kierczak | 20-Jan-2022" />
+    <meta name="author" content="Marcin Kierczak | 21-Jan-2022" />
     <meta name="keywords" content="bioinformatics, course, scilifelab, nbis, deep learning, keras, rstats, ann, autoencoders" />
     <script src="libs/header-attrs-2.11/header-attrs.js"></script>
     <link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
@@ -16,8 +16,8 @@
 class: center, middle, inverse, title-slide
 
 # Semi-supervised Deep Learning
-## From autoencoders to Beta-VAEs
-### <b>Marcin Kierczak</b> | 20-Jan-2022
+## Recap
+### <b>Marcin Kierczak</b> | 21-Jan-2022
 ### NBIS, SciLifeLab
 
 ---
@@ -38,73 +38,10 @@ count: false
 
 
 ---
-name: neural_zoo
-# Neural 🧠 Zoo 🐫 🐿 🦓 🐬
-
-.pull-left-50[
-.size-70[![](assets/NeuralNetworkZoo.png)]
-.small[source: [Asimov Institute](https://www.asimovinstitute.org/neural-network-zoo/)]
-]
-.pull-right-50[
-An autoencoder is "just" a specific ANN architecture:  
-.size-35[![](assets/ae.png)]
-.small[source: [Asimov Institute](https://www.asimovinstitute.org/neural-network-zoo/)]
-]
-
----
-name: autoencoders2
-# Autoencoders 
-So, what is really happening here❓
-
---
-* output data (🎯) are THE SAME as the input data (not always, but a good assumption for now),
-
---
-* it is thus called **semi-supervised learning** (sometimes **self-supervised**),
-
---
-* the **loss function** favors weight sets that are able to reconstruct the data from itself ♻️,
-
---
-* why do we want a network that can reconstruct input data? A waste 🗑 of resources?
-
---
-* not really! What we want is the 🍾.
-
-.pull-left-50[
-.size-70[![](assets/autoencoder_schema.png)]
-.small[source: [Wikimedia Commons](assets/autoencoder_schema.png)]
-]
-
----
 name: applications_compression
 # Applications: compression
 .size-90[![](assets/autoencoder_cat.jpeg)]
 .small[source: [sefix.com](https://sefiks.com/2018/03/21/autoencoder-neural-networks-for-unsupervised-learning/)]
-
----
-name: denoising_autoenc
-# Applications: denoising
-![](assets/denoising_autoencoder.png)
----
-name: denoising_autoenc
-# Applications: neural inprinting
-![](assets/neural_inprinting_autoencoder.png)
----
-name: semantic_vae
-# Applications: semantic segmentation
-.pull-left-50[
-    ![](assets/Gmaps_Uppsala.png)
-]
-.pull-right-50[
-![](assets/Mapillary_Uppsala.png)
-]
-
----
-name: ae_discontinuity
-# Bad, bad, ugly latent space 💩
-.size-60[![](assets/AE_discontinuity.png)]
-.small[source: [Irhum Shafkat](https://towardsdatascience.com/intuitively-understanding-variational-autoencoders-1bfe67eb5daf)]
 
 ---
 name: ae_vs_vae
@@ -112,91 +49,17 @@ name: ae_vs_vae
 ![](assets/AE_VAE.png)
 
 ---
-name: vae1
-# Variational AutoEncoder (VAE)
-.pull-left-50[![](assets/VAE1_architecture.png)
-.small[
-source: [Irhum Shafkat](https://towardsdatascience.com/intuitively-understanding-variational-autoencoders-1bfe67eb5daf)
-]
-]
-
----
-name: vae2
-# Variational AutoEncoder (VAE)
-.pull-left-50[![](assets/VAE1_architecture.png)]
-.pull-right-50[![](assets/VAE2_formulas.png)]
-.small[source: [Irhum Shafkat](https://towardsdatascience.com/intuitively-understanding-variational-autoencoders-1bfe67eb5daf)]
-
----
-name: desired_latent_space
-# Towards latent space we want
-.size-60[![](assets/VAE_KL_REC_LOSS.png)]
-
----
-name: reparametrization_trick
-# The reparametrization trick 🎩🐰
-![](assets/VAE_reparam.png)  
-
-.small[source: [antkillerfarm](http://antkillerfarm.github.io/images/img2/VAE_13.png)]
-
----
-name: vae2
-# Loss function
+name: ae_discontinuity
+# Simple latent space
 `\(\mathcal{L}(\Theta, \phi; \bar{x}, \bar{z}) = \mathbb{E}_{q_{\phi}(\bar{z}|\bar{x})}[\log{p_{\phi}}(\bar{x}|\bar{z})]\)`
-.size-80[![](assets/VAE_no_KL.png)]
-
---
-We need some 👮 👮!  
-
----
-name: kl_div
-# Kullback-Leibler divergence
-Officers Solomon Kullback and Richard Leibler 🚔!  
---
-![](assets/KL_divergence_poo.png)
-
---
-
-&gt; NOTE! `\(D_KL(P|Q) \neq D_KL(Q|P)\)` and that is why it is a divergence, not a distance.
-
----
-name: KL_in_R
-# Kullback-Leibler in R
-
-`\(D_{KL} = P(x) \times \log{\left(\frac{P(x)}{Q(x)}\right)}\)`
-
-
-```r
-KL_div &lt;- function(mu1 = 0, sigma1 = 1, mu2, sigma2) {
-  g &lt;- function(x) {
-    P &lt;- dnorm(x, mean=mu1, sd=sigma1, log=F)
-    logP &lt;- dnorm(x, mean=mu1, sd=sigma1, log=T)
-    logQ &lt;- dnorm(x, mean=mu2, sd=sigma2, log=T)
-    val &lt;- P * (logP - logQ)
-    return(val)
-  }
-  result &lt;- integrate(g, -Inf, Inf)
-  return(result$value)   
-} 
-
-KL_div(mu1 = 0, sigma1 = 1, mu2 = 0, sigma2 = 1)
-KL_div(mu1 = 0, sigma1 = 1, mu2 = 0, sigma2 = 2)
-KL_div(mu1 = 0, sigma1 = 1, mu2 = 1, sigma2 = 1)
-```
-
-```
-## [1] 0
-## [1] 0.3181472
-## [1] 0.5
-```
+.size-60[![](assets/AE_discontinuity.png)]
+.small[source: [Irhum Shafkat](https://towardsdatascience.com/intuitively-understanding-variational-autoencoders-1bfe67eb5daf)]
 
 ---
 name: KL_only_loss
 # What if we only use `\(\mathcal{D}_{KL}\)`?  
 `\(\mathcal{L}(\Theta, \phi; \bar{x}, \bar{z}) =  \mathcal{D}_{KL}(q_{\phi}(\bar{z}|\bar{x})||p(\bar{z}))\)`  
-The ⛪ 👨‍🎓 Bayesian connection...
-
---
+The ⛪ 👨‍🎓 Bayesian connection..
 .size-50[![](assets/VAE_KL_only.png)]
 
 ---
@@ -217,11 +80,6 @@ Image after: [β-VAE: Learning Basic Visual Concepts with a Constrained Variatio
   
 Further reading: [Understanding disentangling in β-VAE, Burgess et al., 2018](https://arxiv.org/abs/1804.03599)
 
----
-name: beta_vae_ex2
-# `\(\beta\)`-VAEs
-.size-70[![](assets/beta_vae_interpret.png)]
-.small[Source: [β-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework, Higgins et al., ICLR, 2017](https://openreview.net/pdf?id=Sy2fzU9gl)]
 ---
 name: ae_vae_summary1
 # Summary
@@ -245,64 +103,8 @@ name: ae_vae_summary2
     + still, the distributions are entangled and have no obvious meaning
 * `\(\beta\)`-VAEs (disentangled VAEs):
     + same as VAEs but the distributions have interpretation.
-
 ---
-name: topic1
 
-## If you need, `Keras` and `TensorFlow` in R
-
-* you need TensorFlow first,
---
-
-* than, you also need the `tensorflow` [package](https://tensorflow.rstudio.com/installation/)...
-
---
-* good 😆 news is you do not need to install manually...
-
---
-* install `keras` package instead.
-
---
-
-```r
-install.packages('keras')
-keras::install_keras()
-```
-
---
-* if your graphics card supports CUDA and you want to use the power of GPU. 
-
-```r
-install.packages('keras')
-keras::install_keras(tensorflow = 'gpu')
-```
-
---
-* at least two packages provide R interfaces to `Keras`: `keras` by RStudio and `kerasR`. The latter does not expose all Keras functionalities to R though. 
-
----
-name: topic2
-
-## R ❤️ Keras &amp; TensorFlow
-
-There are excellent resources for learning:
-
-* about TensorFlow [package](https://tensorflow.rstudio.com/guide/tensorflow/eager_execution/) from RStudio,
-
---
-* excellent book by Chollet &amp; Allaire
-.size-20[![](assets/deep-learning-with-r.jpeg)]
-
---
-* RStudio Deep Learning with Keras [cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/keras.pdf)
-.size-20[![](assets/cheatsheet.png)]
-
---
-* from [keras.rstudio.com](https://keras.rstudio.com)
-
-&lt;!-- --------------------- Do not edit this and below --------------------- --&gt;
-
----
 name: end_slide
 class: end-slide, middle
 count: false
@@ -316,7 +118,7 @@ count: false
 
 &lt;hr&gt;
 
-&lt;span class="small"&gt;Built on : &lt;i class='fa fa-calendar' aria-hidden='true'&gt;&lt;/i&gt; 20-Jan-2022 at &lt;i class='fa fa-clock-o' aria-hidden='true'&gt;&lt;/i&gt; 09:53:31&lt;/span&gt;  
+&lt;span class="small"&gt;Built on : &lt;i class='fa fa-calendar' aria-hidden='true'&gt;&lt;/i&gt; 21-Jan-2022 at &lt;i class='fa fa-clock-o' aria-hidden='true'&gt;&lt;/i&gt; 09:19:40&lt;/span&gt;  
 
 &lt;b&gt;2022&lt;/b&gt; • [SciLifeLab](https://www.scilifelab.se/) • [NBIS](https://nbis.se/)
 ]
