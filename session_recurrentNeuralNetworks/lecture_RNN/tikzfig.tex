@@ -1,10 +1,14 @@
 \documentclass[
 %% TIKZ_CLASSOPTION %%
-crop,
-tikz,
-dvisvgm
+%% crop=true,
+tikz=true,
+dvisvgm,
+varwidth=true
 ]{standalone}
+\usepackage{tikz}
 \usetikzlibrary{RNN}
+
+\pgfplotsset{compat=1.18}
 %% EXTRA_TIKZ_PREAMBLE_CODE %%
 \begin{document}
 %% TIKZ_CODE %%
