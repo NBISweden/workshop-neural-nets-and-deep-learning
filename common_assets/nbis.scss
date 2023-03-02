@@ -117,7 +117,11 @@ dt {
     color: $aqua75;
 }
 
-// Make heading stay on top
+// Make H3 heading stay on top
 section.top h3{
-    margin-top: 10px;
+    margin-top: 0px;
+}
+span.citation {
+    font-size: 0.6em;
+    float: right;
 }
