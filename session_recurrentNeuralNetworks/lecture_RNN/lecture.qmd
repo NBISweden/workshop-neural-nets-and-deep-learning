@@ -128,7 +128,7 @@ print("""
 
 # Recap
 
-## Perceptron (single neuron)
+### Perceptron (single neuron)
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1.5fr; grid-column-gap: 10px;"}
 
@@ -145,12 +145,13 @@ print("""
 
 :::: {}
 
-<h3>Architecture</h3>
+#### Architecture
 
 A single neuron has $n$ *inputs* $x_i$ and an *output* $y$. To each
 input is associated a *weight* $w_i$.
 
-<h3>Activity rule</h3>
+#### Activity rule
+
 The **activity rule** is given by two steps:
 
 $$a = \sum_{i} w_ix_i, \quad i=0,...,n$$
@@ -182,7 +183,7 @@ permanently set to 1 (MacKay, 2003, p. 471)
 :::
 
 
-## Perceptron (single neuron)
+### Perceptron (single neuron)
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1.5fr; grid-column-gap: 10px;"}
 
@@ -200,12 +201,13 @@ permanently set to 1 (MacKay, 2003, p. 471)
 
 :::: {}
 
-<h3>Architecture</h3>
+#### Architecture
 
 A single neuron has $n$ *inputs* $x_i$ and an *output* $y$. To each
 input is associated a *weight* $w_i$.
 
-<h3>Activity rule</h3>
+#### Activity rule
+
 The **activity rule** is given by two steps:
 
 $$a = \sum_{i} w_ix_i, \quad i=0,...,n$$
@@ -236,7 +238,7 @@ permanently set to 1 (MacKay, 2003, p. 471)
 :::
 
 
-## Perceptron (single neuron)
+### Perceptron (single neuron)
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1.5fr; grid-column-gap: 10px;"}
 
@@ -285,7 +287,7 @@ Follow MIT notation: g() is the non-linear activation (function)
 
 
 
-## Simplified illustration and notation
+### Simplified illustration and notation
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:   tikz-rnn-recap-perceptron-simplified
@@ -303,12 +305,12 @@ Follow MIT notation: g() is the non-linear activation (function)
 \end{tikzpicture} 
 ```
 
-<h3>Architecture</h3>
+#### Architecture
 
 Vectorized versions: input $\boldsymbol{x}$, weights $\boldsymbol{w}$,
 output $\boldsymbol{y}$
 
-<h3>Activity rule</h3>
+#### Activity rule
 
 $$a = \boldsymbol{wx}$$
 
@@ -319,12 +321,11 @@ first arrow, then the labels indicate what **value** is passed along
 
 ::::
 
-
-## Feed forward network
+### Feed forward network
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label: tikz-rnn-recap-perceptron-multiout
-#| fig-width: 8
+#| out-height: 400px
 \begin{tikzpicture}
   \tikzset{
     iolabel/.append style={rotate=0},
@@ -357,7 +358,7 @@ Show multi-valued (vector) output and hidden layer
 ::::
 
 
-## Simplified illustration
+### Simplified illustration
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label: tikz-rnn-recap-perceptron-multiout-simple
@@ -382,7 +383,7 @@ Condense hidden layers to a box.
 ::::
 
 
-## Simplified illustration
+### Simplified illustration
 
 
 ```{r,  fig.ext="svg", engine='tikz' }
@@ -410,12 +411,11 @@ Condense hidden layers to a box.
 
 
 # Sequential models
+### Motivation
 
-
-## Motivation
-
-```{r  tikz-rnn-motivation-time-series, fig.ext="svg", engine='tikz' }
-#| fig-width: 8
+```{r, fig.ext="svg", engine='tikz' }
+#| label: tikz-rnn-motivation-time-series
+#| out-height: 400px
 \begin{tikzpicture}
 \node[obs, fill=black!50] (x0) at (100pt, 0pt) {};
 \node[obs, fill=white] (x1) at (50pt, 50pt) {};
@@ -433,10 +433,11 @@ incremental figure showing time series (e.g. sinus) that highlights
 :::
 
 
-## Motivation
+### Motivation
 
-```{r  tikz-rnn-motivation-time-series-1, cache=TRUE, fig.ext="svg", fig.width=8, engine='tikz' }
-#| fig-width: 8
+```{r, fig.ext="svg", engine='tikz' }
+#| label:  tikz-rnn-motivation-time-series-1
+#| out-height: 400px
 \begin{tikzpicture}
 \node[obs, fill=black!50] (x0) at (100pt, 0pt) {};
 \node[obs, fill=black!20] (x1) at (50pt, 50pt) {};
@@ -454,9 +455,11 @@ incremental figure showing time series (e.g. sinus) that highlights
 :::
 
 
-## Motivation
+### Motivation
 
-```{r  tikz-rnn-motivation-time-series-2, cache=TRUE, fig.ext="svg", fig.width=8, engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label: tikz-rnn-motivation-time-series-2
+#| out-height: 400px
 \begin{tikzpicture}
 \node[obs, fill=black!50] (x0) at (100pt, 0pt) {};
 \node[obs, fill=black!20] (x1) at (50pt, 50pt) {};
@@ -474,9 +477,11 @@ incremental figure showing time series (e.g. sinus) that highlights
 :::
 
 
-## Motivation
+### Motivation
 
-```{r  tikz-rnn-motivation-time-series-3, cache=FALSE, fig.ext="svg", fig.width=8, engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label: tikz-rnn-motivation-time-series-3
+#| out-height: 400px
 \begin{tikzpicture}[>=latex]
 \node[obs, fill=black!50] (x0) at (100pt, 0pt) {};
 \node[obs, fill=black!20] (x1) at (50pt, 50pt) {};
@@ -495,17 +500,15 @@ incremental figure showing time series (e.g. sinus) that highlights
 :::
 
 
-## Sequences around us
+### Sequences around us
 
-::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 2px;"}
+::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 100px;"}
 
 :::: {}
 
 <h5>Word prediction</h5>
 
-```{r  rnn-example-word-prediction, out.width="60%" }
-knitr::include_graphics("grf/whattimeisit.png") 
-```
+![](grf/whattimeisit.png){width=250}
 
 ::::
 
@@ -513,7 +516,9 @@ knitr::include_graphics("grf/whattimeisit.png")
 
 <h5>Language translation</h5>
 
-```{r  rnn-example-language-translation, fig.ext="svg", out.width="100%", engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:   rnn-example-language-translation
+#| out-height: 200px
 \begin{tikzpicture}[node distance=2cm, >=latex]
   \node[align=left, font=\ttfamily, text width=22pt, rectangle, draw=black, thick] (vec) {+0.5 +0.2 -0.1 -0.3 +0.4 +1.2};
   \node[left of=vec, rectangle, minimum width=1.5cm, text height=1cm, align=center, fill=blue!20, draw=blue!80, anchor=east, rounded corners, thick, label={center:Encoder}] (encoder) {};
@@ -529,26 +534,20 @@ knitr::include_graphics("grf/whattimeisit.png")
 
 ::::
 
-:::: {}
+:::: {style="transform: translate(0, -100px);"}
 
 <h5>Time series</h5>
 
-```{r  sequential-model-time-series-example, out.width="500px" }
-knitr::include_graphics("https://github.com/unit8co/darts/raw/master/static/images/example.png") 
-```
-
+![](https://github.com/unit8co/darts/raw/master/static/images/example.png){width=300}
 [@herzen2021darts]
 
 ::::
 
-:::: {}
+:::: {style="transform: translate(0, -100px);"}
 
 <h5>Genomics</h5>
 
-```{r  sequential-model-genomics-example, out.width="300px" }
-knitr::include_graphics("https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41598-018-33321-1/MediaObjects/41598_2018_33321_Fig5_HTML.png?as=webp") 
-```
-
+![](https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41598-018-33321-1/MediaObjects/41598_2018_33321_Fig5_HTML.png?as=webp){width=240}
 [@shen_recurrent_2018]
 
 ::::
@@ -566,7 +565,7 @@ Word prediction according to
 ::::
 
 
-## Types of models
+### Types of models
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 10fr 1fr 10fr 10fr 10fr; grid-gap: 0px 0px; grid-template-rows: 1fr 1fr;" }
 
@@ -574,8 +573,9 @@ Word prediction according to
 
 <h5>one to one</h5>
 
-```{r  sequential-models-one-to-one, fig.ext="svg", fig.width=1, cache=FALSE, engine='tikz' }
-#| fig-width: 1
+```{r, fig.ext="svg", engine='tikz' }
+#| label: sequential-models-one-to-one
+#| out-height: 100px
 \begin{tikzpicture}
   \tikzset{rnnw=0.75\rnninnerwidth}
   \tikzset{rnnh=1.5\rnninnerheight}
@@ -593,7 +593,9 @@ Word prediction according to
 
 <h5>many to one</h5>
 
-```{r  sequential-models-many-to-one, fig.ext="svg", fig.width=3, cache=FALSE, engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label: sequential-models-many-to-one
+#| out-height: 100px
 \begin{tikzpicture}
   \tikzset{rnnw=0.75\rnninnerwidth}
   \tikzset{rnnh=1.5\rnninnerheight}
@@ -611,7 +613,9 @@ Word prediction according to
 
 <h5>one to many</h5>
 
-```{r  sequential-models-one-to-many, fig.ext="svg", fig.width=3, cache=FALSE, engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:   sequential-models-one-to-many
+#| out-height: 100px
 \begin{tikzpicture}
   \tikzset{rnnw=0.75\rnninnerwidth}
   \tikzset{rnnh=1.5\rnninnerheight}
@@ -629,7 +633,9 @@ Word prediction according to
 
 <h5>many to many</h5>
 
-```{r  sequential-models-many-to-many, fig.ext="svg", fig.width=3, cache=FALSE, engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:   sequential-models-many-to-many
+#| out-height: 100px
 \begin{tikzpicture}
   \tikzset{rnnw=0.75\rnninnerwidth}
   \tikzset{rnnh=1.5\rnninnerheight}
@@ -643,11 +649,12 @@ Word prediction according to
 
 ::::
 
-:::: {}
+:::: {.element: class="fragment"  data-fragment-index="5"}
 
-<h6>Image classification</h6>
+<h5>Image classification</h5>
 
-```{r  fashion-mnist-image-classification, cache=TRUE, engine='python' }
+```{r, engine='python' }
+#| label:   fashion-mnist-image-classification
 from tensorflow import keras
 import matplotlib.pyplot as plt
 fashion_mnist = keras.datasets.fashion_mnist
@@ -672,33 +679,27 @@ plt.show()
 
 ::::
 
-:::: {.element: class="fragment" data-fragment-index="2"}
+:::: {.element: class="fragment" data-fragment-index="6"}
 
-<h6>Sentiment analysis</h6>
+<h5>Sentiment analysis</h5>
 
-```{r  sequential-model-sentiment-analysis, out.width="300px" }
-knitr::include_graphics("https://d1sjtleuqoc1be.cloudfront.net/wp-content/uploads/2019/04/25112909/shutterstock_1073953772.jpg") 
-```
+![](https://d1sjtleuqoc1be.cloudfront.net/wp-content/uploads/2019/04/25112909/shutterstock_1073953772.jpg){height=100}
 
 ::::
 
-:::: {.element: class="fragment" data-fragment-index="3"}
+:::: {.element: class="fragment" data-fragment-index="7"}
 
-<h6>Image captioning</h6>
+<h5>Image captioning</h5>
 
-```{r  sequential-model-image-captioning, out.width="350px" }
-knitr::include_graphics("https://cocodataset.org/images/captions-splash.jpg") 
-```
+![](https://cocodataset.org/images/captions-splash.jpg){height=150}
 
 ::::
 
-:::: {.element: class="fragment" data-fragment-index="4"}
+:::: {.element: class="fragment" data-fragment-index="8"}
 
-<h6>Machine translation</h6>
+<h5>Machine translation</h5>
 
-```{r  sequential-model-google-translate, out.width="200px" }
-knitr::include_graphics("https://img.icons8.com/plasticine/344/google-translate-new-logo.png") 
-```
+![](https://img.icons8.com/plasticine/344/google-translate-new-logo.png){height=100}
 
 ::::
 
@@ -738,9 +739,9 @@ Data:
 
 # Recurrent Neural Networks (RNNs)
 
-<br/>
-
-```{r  tikz-rnn-folded-only, fig.ext="svg", cache=FALSE, fig.width=4, engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label: tikz-rnn-folded-only
+#| out-height: 400px
 \begin{tikzpicture}[thick]
   \tikzset{nnlabel/.style={font=\bfseries\small\sffamily\sansmath}}
   \pic[\rnntikzbasekey/folded=true] {rnnio={A}{$X_t$}{$\widehat{Y}_t$}};
@@ -776,13 +777,14 @@ and information only flows forward (i.e. no memory)
 ::::
 
 
-## Feed forward network implementation to sequential data
+### Feed forward network implementation to sequential data
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;"}
 
 :::: {}
 
-```{r ffn-xt-1, fig.ext="svg", engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:  ffn-xt-1
 #| out-height: 300px
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
@@ -794,7 +796,10 @@ and information only flows forward (i.e. no memory)
 
 :::: {.element: class="fragment" data-fragment-index="2" style="border-left: 2px black solid;"}
 
-```{r  ffn-x0-xt-1, fig.ext="svg", out.height="300px", out.width="100%", engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:   ffn-x0-xt-1
+#| out-height: 300px
+#| out-width: 100%
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (6*\rnnouterwidth, \rnnouterheight + \ionodesize);
   \begin{scope}[xshift=0.2*\rnnioxshiftsmall]
@@ -828,13 +833,15 @@ Now assume we have several time steps, starting at e.g. time 0. Also we predict 
 ::::
 
 
-## Feed forward network implementation to sequential data
+### Feed forward network implementation to sequential data
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;"}
 
 :::: {}
 
-```{r  ffn-xt-2, fig.ext="svg", out.height="300px", engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:   ffn-xt-2
+#| out-height: 300px
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
   \pic {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
@@ -845,7 +852,10 @@ Now assume we have several time steps, starting at e.g. time 0. Also we predict 
 
 :::: {style="border-left: 2px black solid;"}
 
-```{r  ffn-x0-xt-2, fig.ext="svg", out.height="300px", out.width="100%", engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:   ffn-x0-xt-2
+#| out-height: 300px
+#| out-width: 100%
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (6*\rnnouterwidth, \rnnouterheight + \ionodesize);
   \begin{scope}[xshift=0.2*\rnnioxshiftsmall]
@@ -876,13 +886,15 @@ Add another time step&#x2026;
 ::::
 
 
-## Feed forward network implementation to sequential data
+### Feed forward network implementation to sequential data
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;"}
 
 :::: {}
 
-```{r  ffn-xt-3, fig.ext="svg", out.height="300px", engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:   ffn-xt-3
+#| out-height: 300px
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
   \pic {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
@@ -893,7 +905,10 @@ Add another time step&#x2026;
 
 :::: {style="border-left: 2px black solid; "}
 
-```{r  ffn-x0-xt-3, fig.ext="svg", out.height="300px", out.width="100%", engine='tikz' }
+```{r  , fig.ext="svg", engine='tikz' }
+#| label: ffn-x0-xt-3
+#| out-height: 300px
+#| out-width: 100%
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (6*\rnnouterwidth, \rnnouterheight + \ionodesize);
   \begin{scope}[xshift=0.2*\rnnioxshiftsmall]
@@ -943,13 +958,15 @@ Emphasize fact that any prediction is based only on the current input
 ::::
 
 
-## Feed forward network implementation to sequential data
+### Feed forward network implementation to sequential data
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;"}
 
 :::: {}
 
-```{r  ffn-xt-4, fig.ext="svg", out.height="300px", engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:   ffn-xt-4
+#| out-height: 300px
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
   \pic {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
@@ -960,7 +977,10 @@ Emphasize fact that any prediction is based only on the current input
 
 :::: {style="border-left: 2px black solid; "}
 
-```{r  ffn-x0-xt-4, fig.ext="svg", out.height="300px", out.width="100%", engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:   ffn-x0-xt-4
+#| out-height: 300px
+#| out-width: 100%
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (6*\rnnouterwidth, \rnnouterheight + \ionodesize);
   \begin{scope}[xshift=0.2*\rnnioxshiftsmall]
@@ -1000,13 +1020,15 @@ state via a hidden (latent) variable
 ::::
 
 
-## Feed forward network implementation to sequential data
+### Feed forward network implementation to sequential data
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;"}
 
 :::: {}
 
-```{r  ffn-xt-5, fig.ext="svg", out.height="300px", engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:  ffn-xt-5
+#| out-height: 300px
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
   \pic {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
@@ -1017,7 +1039,10 @@ state via a hidden (latent) variable
 
 :::: {style="border-left: 2px black solid; "}
 
-```{r  ffn-x0-xt-5, fig.ext="svg", out.height="300px", out.width="100%", engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:   ffn-x0-xt-5
+#| out-height: 300px
+#| out-width: 100%
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (6*\rnnouterwidth, \rnnouterheight + \ionodesize);
   \begin{scope}[xshift=0.2*\rnnioxshiftsmall]
@@ -1058,13 +1083,15 @@ state via a hidden (latent) variable
 ::::
 
 
-## Adding recurrence relations
+### Adding recurrence relations
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;"}
 
 :::: {}
 
-```{r  ffn-xt-arr-1, fig.ext="svg", out.height="300px", engine='tikz' }
+```{r  , fig.ext="svg", engine='tikz' }
+#| label: ffn-xt-arr-1
+#| out-height: 300px
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
   \pic {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
@@ -1075,7 +1102,10 @@ state via a hidden (latent) variable
 
 :::: {style="border-left: 2px black solid; "}
 
-```{r  ffn-x0-xt-arr-1, fig.ext="svg", out.height="300px", out.width="100%", engine='tikz' }
+```{r  , fig.ext="svg", engine='tikz' }
+#| label: ffn-x0-xt-arr-1
+#| out-height: 300px
+#| out-width: 100%
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (6*\rnnouterwidth, \rnnouterheight + \ionodesize);
   \begin{scope}[xshift=0.2*\rnnioxshiftsmall]
@@ -1108,13 +1138,16 @@ state (a hidden state) and pass this information on to the next
 ::::
 
 
-## Adding recurrence relations
+### Adding recurrence relations
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;"}
 
 :::: {}
 
-```{r  ffn-xt-arr-2, fig.ext="svg", out.height="300px", engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:  ffn-xt-arr-2
+#| out-height: 300px
+
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
   \pic {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
@@ -1125,7 +1158,10 @@ state (a hidden state) and pass this information on to the next
 
 :::: {style="border-left: 2px black solid; "}
 
-```{r  ffn-x0-xt-arr-2, fig.ext="svg", out.height="300px", out.width="100%", engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:   ffn-x0-xt-arr-2
+#| out-height: 300px
+#| out-width: 100%
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (6*\rnnouterwidth, \rnnouterheight + \ionodesize);
   \begin{scope}[xshift=0.2*\rnnioxshiftsmall]
@@ -1154,13 +1190,15 @@ state (a hidden state) and pass this information on to the next
 :::::::::::::::::::
 
 
-## Adding recurrence relations
+### Adding recurrence relations
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;"}
 
 :::: {}
 
-```{r  ffn-xt-arr-3, fig.ext="svg", out.height="300px", engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:   ffn-xt-arr-3
+#| out-height: 300px
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
   \pic {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
@@ -1171,7 +1209,10 @@ state (a hidden state) and pass this information on to the next
 
 :::: {style="border-left: 2px black solid; "}
 
-```{r  ffn-x0-xt-arr-3, fig.ext="svg", out.height="300px", out.width="100%", engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:   ffn-x0-xt-arr-3
+#| out-height: 300px
+#| out-width: 100%
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (6*\rnnouterwidth, \rnnouterheight + \ionodesize);
   \begin{scope}[xshift=0.2*\rnnioxshiftsmall]
@@ -1200,13 +1241,15 @@ state (a hidden state) and pass this information on to the next
 :::::::::::::::::::
 
 
-## Adding recurrence relations
+### Adding recurrence relations
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 250px auto; grid-column-gap: 0px; grid-template-rows: 350px auto; grid-row-gap: 0px; justify-items: stretch;"}
 
 :::: {}
 
-```{r  ffn-xt-arr-4, fig.ext="svg", out.height="300px", engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:   ffn-xt-arr-4
+#| out-height: 300px
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
   \pic[\rnntikzbasekey/.cd, add labels=true, folded=true] {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
@@ -1217,7 +1260,10 @@ state (a hidden state) and pass this information on to the next
 
 :::: {style="border-left: 2px white solid; "}
 
-```{r  ffn-x0-xt-arr-4, fig.ext="svg", out.height="300px", out.width="100%", engine='tikz' }
+```{r, fig.ext="svg", engine='tikz' }
+#| label:   ffn-x0-xt-arr-4
+#| out-height: 300px
+#| out-width: 100%
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (6*\rnnouterwidth, \rnnouterheight + \ionodesize);
   \begin{scope}[xshift=0.2*\rnnioxshiftsmall]
@@ -1282,20 +1328,24 @@ IOW, with ht the recurrence becomes a latent variable model.
 ::::
 
 
-## Sequential memory of RNNs
+### Sequential memory of RNNs
 
 RNNs have what one could call "sequential memory" [@phi_illustrated_2020_RNN]
 
 
-### Alphabet
+#### Alphabet
 
 Exercise: say alphabet in your head
+
+:::::: {style="font-size: 3em;"} 
 
 ```
     A B C ... X Y Z
 
 
 ```
+
+::::::
 
 :::: {.element: class="fragment"}
 
@@ -1309,17 +1359,21 @@ May take time to get started, but from there on it's easy
 
 Now read the alphabet in reverse:
 
+:::::: {style="font-size: 3em;"} 
+
 ```
     Z Y X ... C B A
 
 
 ```
 
+::::::
+
 ::::
 
 :::: {.element: class="fragment"}
 
-Memory access is associative and context-dependent
+Memory access is *associative* and *context-dependent*
 
 ::::
 
@@ -1335,9 +1389,8 @@ cf (, Haykin, 2010, p. 203):
 ::::
 
 
-## Recurrent Neural Networks
+### Recurrent Neural Networks
 
-<br/>
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 400px auto; grid-column-gap: 10px;"}
 
@@ -1378,7 +1431,7 @@ steps!
 :::::::::::::::::::
 
 
-## Recurrent Neural Networks - pseudocode
+### Recurrent Neural Networks - pseudocode
 
 <br/>
 
@@ -1549,7 +1602,7 @@ for input in inputs:
 ::::
 
 
-## Vanilla RNNs
+### Vanilla RNNs
 
 <br/>
 
@@ -1569,7 +1622,7 @@ for input in inputs:
 
 :::: {.element: class="fragment" data-fragment-index="3"}
 
-<h3 style="color: red;">Output vector</h3>
+<h3 style="color: red;">Output vector
 
 $$
 \hat{Y}_t = \mathbf{W_{hy}^T}h_t
@@ -1579,7 +1632,7 @@ $$
 
 :::: {.element: class="fragment" data-fragment-index="2"}
 
-<h3 style="color: green;">Update hidden state</h3>
+<h3 style="color: green;">Update hidden state
 
 $$
 h_t = \mathsf{tanh}(\mathbf{W_{xh}^T}X_t + \mathbf{W_{hh}^T}h_{t-1})
@@ -1589,7 +1642,7 @@ $$
 
 :::: {.element: class="fragment" data-fragment-index="1"}
 
-<h3 style="color: blue;">Input vector</h3>
+<h3 style="color: blue;">Input vector
 
 $$
 X_t
@@ -1602,7 +1655,7 @@ $$
 ::::::::::::::::::: 
 
 
-## Vanilla RNNs
+### Vanilla RNNs
 
 <br/>
 
@@ -1634,7 +1687,7 @@ Add pseudocode to exemplify
 ::::
 
 
-## Vanilla RNNs
+### Vanilla RNNs
 
 <br/>
 
@@ -1667,7 +1720,7 @@ Add pseudocode to exemplify
 ::::
 
 
-## Vanilla RNNs
+### Vanilla RNNs
 
 <br/>
 
@@ -1704,7 +1757,7 @@ Add pseudocode to exemplify
 ::::
 
 
-## Vanilla RNNs
+### Vanilla RNNs
 
 <br/>
 
@@ -1750,30 +1803,30 @@ Add pseudocode to exemplify
 ::::
 
 
-## Desired features of RNN
+### Desired features of RNN
 
 <div class="fragment">
-<h3>1. Variable sequence lengths</h3>
+#### 1. Variable sequence lengths
 
 Not all inputs are of equal length
 <br/>
 </div>
 
 <div class="fragment">
-<h3>2. Long-term memory</h3>
+#### 2. Long-term memory
 
 "I grew up in England, and &#x2026; I speak fluent English"
 <br/>
 </div>
 
 <div class="fragment">
-<h3>3. Preserve order</h3>
+#### 3. Preserve order
 "dog bites man" != "man bites dog"
 <br/>
 </div>
 
 <div class="fragment">
-<h3>4. Share parameters</h3>
+#### 4. Share parameters
 
 Adresses points 2 and 3.
 <br/>
@@ -1792,7 +1845,7 @@ From (Cho et al., 2014):
 ::::
 
 
-## Example: Box & Jenkins airline passenger data set
+### Example: Box & Jenkins airline passenger data set
 
 ```{r  box-jenkins-airline-1, echo=FALSE, fig.ext="png", out.width="500px", engine='python' }
 df = rnnutils.airlines()
@@ -1821,7 +1874,7 @@ Herzen article on darts:
 ::::
 
 
-## Example: generate test and training data
+### Example: generate test and training data
 
 ```{r  box-jenkins-airline-2, echo=FALSE, fig.ext="png", out.width="500px", engine='python' }
 fig, ax = rnnutils.plt.subplots()
@@ -1843,7 +1896,7 @@ train, test, scaler = rnnutils.make_train_test(data)
 ```
 
 
-## Example: prepare data for keras
+### Example: prepare data for keras
 
 ```{r  tikz-prepare-airline-data-for-keras, fig.ext="svg", cache=FALSE, out.width="800px", engine='tikz' }
 \begin{tikzpicture}[node distance=2cm, align=center, >=latex]
@@ -1869,7 +1922,7 @@ testX, testY, testX_indices, testY_indices = rnnutils.make_xy(test, time_steps)
 ::::
 
 
-## Example: create vanilla RNN model
+### Example: create vanilla RNN model
 
 ```{r  airline-rnn-model, echo=TRUE, eval=TRUE, engine='python' }
 from keras.models import Sequential
@@ -1907,7 +1960,7 @@ rnn_cells = [tf.keras.layers.LSTMCell(128) for _ in range(2)]
 ::::
 
 
-## Example: fit the model and evaluate
+### Example: fit the model and evaluate
 
 :::: {style="font-size: 0.8em"}
 
@@ -1966,7 +2019,7 @@ rnnutils.plot_pred(data, scaler=scaler, ticks=range(0, 144, 20), labels=df.year[
 ::::::::::::::::::: 
 
 
-## Example: model topology writ out
+### Example: model topology writ out
 
 :::: {style="font-size: 0.8em"}
 
@@ -2008,7 +2061,7 @@ model.summary()
 ::::
 
 
-## Example: model topology writ out
+### Example: model topology writ out
 
 :::: {style="font-size: 0.8em"}
 
@@ -2107,7 +2160,7 @@ NB! In keras, RNN input is a 3D tensor with shape `[batch, timesteps, feature]`
 ::::
 
 
-## An RNN in numbers
+### An RNN in numbers
 
 [@karpathy_unreasonable_effectiveness_of_RNNs]
 
@@ -2213,7 +2266,7 @@ Ask for input\_shape: what is timesteps? (=4) What is features? (=4)
 ::::
 
 
-## Exercise
+### Exercise
 
 See if you can improve the airline passenger model. Some things to
 try:
@@ -2226,7 +2279,7 @@ try:
 # Training
 
 
-## Recap: backpropagation algorithm in ffns
+### Recap: backpropagation algorithm in ffns
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 50% auto; grid-column-gap: 50px;"}
 
@@ -2266,7 +2319,7 @@ general and applies also to ffns.
 ::::
 
 
-## Recap: backpropagation algorithm in ffns
+### Recap: backpropagation algorithm in ffns
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 50% auto; grid-column-gap: 50px;"}
 
@@ -2312,7 +2365,7 @@ general and applies also to ffns.
 ::::
 
 
-## Recap: backpropagation algorithm in ffns
+### Recap: backpropagation algorithm in ffns
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 50% auto; grid-column-gap: 50px;"}
 
@@ -2359,7 +2412,7 @@ general and applies also to ffns.
 ::::
 
 
-## Recap: backpropagation algorithm in ffns
+### Recap: backpropagation algorithm in ffns
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 50% auto; grid-column-gap: 50px;"}
 
@@ -2411,7 +2464,7 @@ general and applies also to ffns.
 ::::
 
 
-## Backpropagation through time (BPTT)
+### Backpropagation through time (BPTT)
 
 [@alexander_amini_mit_2021_rnn]
 
@@ -2440,7 +2493,7 @@ general and applies also to ffns.
 ```
 
 
-## Backpropagation through time (BPTT)
+### Backpropagation through time (BPTT)
 
 [@alexander_amini_mit_2021_rnn]
 
@@ -2479,7 +2532,7 @@ general and applies also to ffns.
 ```
 
 
-## Backpropagation through time (BPTT)
+### Backpropagation through time (BPTT)
 
 [@alexander_amini_mit_2021_rnn]
 
@@ -2527,7 +2580,7 @@ general and applies also to ffns.
 ```
 
 
-## Backpropagation through time (BPTT)
+### Backpropagation through time (BPTT)
 
 [@alexander_amini_mit_2021_rnn]
 
@@ -2588,7 +2641,7 @@ general and applies also to ffns.
 ```
 
 
-## Backpropagation through time (BPTT)
+### Backpropagation through time (BPTT)
 
 [@alexander_amini_mit_2021_rnn]
 
@@ -2661,7 +2714,7 @@ general and applies also to ffns.
 ```
 
 
-## Backpropagation through time (BPTT)
+### Backpropagation through time (BPTT)
 
 [@alexander_amini_mit_2021_rnn]
 
@@ -2761,7 +2814,7 @@ size of gradient
 ::::
 
 
-## The effect of vanishing gradients on long-term memory
+### The effect of vanishing gradients on long-term memory
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 30% auto; grid-column-gap: 0px; font-size: 0.8em;"}
 
@@ -2893,7 +2946,7 @@ is long, we need context from much farther back.
 ::::
 
 
-## Solutions to vanishing gradient
+### Solutions to vanishing gradient
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 50% auto; grid-template-rows: auto auto auto; grid-row-gap: 0px; grid-column-gap: 0px;"}
 
@@ -3001,7 +3054,7 @@ subtracted. Sigmoid is in (0, 1).
 # LSTMs and GRUs
 
 
-## Motivation behind LSTMs and GRUs
+### Motivation behind LSTMs and GRUs
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 10px;"}
 
@@ -3066,7 +3119,7 @@ interact via the gates
 ::::
 
 
-## Intuition
+### Intuition
 
 :::: {.element: style="font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter, monospace; font-size: 0.8em;"}
 
@@ -3109,7 +3162,7 @@ Intuition:
 ::::
 
 
-## Intuition
+### Intuition
 
 :::: {.highlight}
 
@@ -3160,7 +3213,7 @@ Intuition:
 ::::
 
 
-## LSTM: Cell state flow and gating
+### LSTM: Cell state flow and gating
 
 [@olah_christopher_understanding_nodate]
 
@@ -3244,7 +3297,7 @@ providing longer memory, enabled by
 ::::
 
 
-## Forget, input, and output gates
+### Forget, input, and output gates
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-column-gap: 10px;"}
 
@@ -3300,7 +3353,7 @@ state $c_{t-1}$, where 0 means "reset entry", 1 "keep it"
 ::::
 
 
-## The forget gate
+### The forget gate
 
 ```{r  tikz-lstm-forget-gate, cache=FALSE, fig.ext="svg", fig.width=5, engine='tikz' }
 \begin{tikzpicture}
@@ -3333,7 +3386,7 @@ $$
 ::::
 
 
-## Add new information - the input gate
+### Add new information - the input gate
 
 ```{r  tikz-lstm-candidatecellstate-input, cache=FALSE, fig.ext="svg", fig.width=5, engine='tikz' }
 \begin{tikzpicture}
@@ -3354,7 +3407,7 @@ Two steps to adding new information:
 ::::
 
 
-## Add new information - get candidate values
+### Add new information - get candidate values
 
 ```{r  tikz-lstm-candidatecellstate-input-1, cache=FALSE, fig.ext="svg", fig.width=5, engine='tikz' }
 \begin{tikzpicture}
@@ -3385,7 +3438,7 @@ $$
 ::::
 
 
-## Updating the cell state
+### Updating the cell state
 
 ```{r  tikz-lstm-update-cell-state, cache=FALSE, fig.ext="svg", fig.width=5, engine='tikz' }
 \begin{tikzpicture}
@@ -3415,7 +3468,7 @@ $$
 ::::
 
 
-## Cell output
+### Cell output
 
 ```{r  tikz-lstm-output-gate, cache=FALSE, fig.ext="svg", fig.width=5, engine='tikz' }
 \begin{tikzpicture}
@@ -3448,7 +3501,7 @@ $$
 ::::
 
 
-## LSTM: putting it together
+### LSTM: putting it together
 
 ```{r  tikz-lstm-intuition, cache=FALSE, fig.ext="svg", fig.width=5, engine='tikz' }
 \begin{tikzpicture}
@@ -3472,7 +3525,7 @@ From (, Zhang et al., 2021, p. 9.2.1.3):
 ::::
 
 
-## LSTM: putting it together
+### LSTM: putting it together
 
 [@zhang2021dive]
 
@@ -3515,7 +3568,7 @@ W_f \in \mathbb{R}^{n \times (h+d)}, W_i \in \mathbb{R}^{n \times (h+d)}, W_o \i
 $$
 
 
-## GRU
+### GRU
 
 ```{r  tikz-big-gru, fig.ext="svg", fig.width=6, engine='tikz' }
 \begin{tikzpicture}
@@ -3541,16 +3594,16 @@ Comparison (Lendave, 2021):
 ::::
 
 
-## Exercise
+### Exercise
 
 
-### 1. Analyse airline passengers with LSTM
+#### 1. Analyse airline passengers with LSTM
 
 Modify the airline passenger model to use an LSTM and compare the
 results. Try out different parameters to improve test predictions.
 
 
-### 2. Time-series forecasting with LSTM, discrete state space
+#### 2. Time-series forecasting with LSTM, discrete state space
 
 LSTM with Variable Length Input Sequences to One Character Output
 
@@ -3561,15 +3614,15 @@ Good example at (Koehrsen, 2018)
 ::::
 
 
-## Time-series forecasting with LSTM, discrete state space
+### Time-series forecasting with LSTM, discrete state space
 
 
-### Objective
+#### Objective
 
 Predict next character in sequence of strings
 
 
-### Comments
+#### Comments
 
 -   you could use several LSTM layers, in which all but the last
     layer should return sequences (set `return_sequences=True`)
