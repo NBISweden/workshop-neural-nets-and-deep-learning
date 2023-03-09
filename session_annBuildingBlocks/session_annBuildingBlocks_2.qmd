@@ -1,0 +1,610 @@
+---
+title: "ANN Building Blocks part 2"
+author: "BS"
+format: 
+  revealjs:
+    theme: [default, customBS.scss]
+    smaller: false
+    self-contained: true
+editor: visual
+execute:
+  echo: false
+  include: true
+  warning: false
+---
+
+## Learning
+
+::: columns
+::: {.column width="50%"}
+Estimating parameters ($w$ and $b$)
+
+```{r, setup}
+library(reticulate)
+use_condaenv(condaenv = "nn_dl_python", conda = "auto", required = NULL)
+```
+
+### Linear regression ($\approx$ single *linear* neuron)
+
+-   closed form solution
+
+<br><br><br><br><br><br><br><br>
+
+### ANN (arbitrary number of neurons in layers)
+
+-   closed form does not work
+-   iterative optimization algorithm (=Learning)
+:::
+
+::: {.column width="50%"}
+<img src="./assets/figNeuron2.png" alt="Neuron" width="300"/>
+
+<img src="./assets/figFfAnnClaudio.png" alt="Neuron" width="400"/>
+:::
+:::
+
+## Supervised Learning
+
+::: columns
+::: {.column width="50%"}
+### Aim
+
+Find optimal values of $w_{\cdot,j}$ and $b_j$ over all neurons $j$
+
+### Tools
+
+-   Loss function
+    -   (equiv. Cost/Error Function)
+-   Gradient descent
+    -   Back-propagation
+-   Cross-validation
+    -   Data
+        -   Training set
+            -   for learning
+        -   Validation set
+            -   know when to stop
+        -   Test set
+            -   quality control
+:::
+
+::: {.column width="50%"}
+<img src="./assets/figFfAnnClaudio.png" alt="Neuron" width="400"/>
+
+-   $x$ = input
+-   $y$ **known** output corresponding to $x$
+-   (Recall: $\hat{y}$ is the **estimated** output)
+:::
+:::
+
+## Cross-validation (reminder)
+
+Split data into
+
+1.  training set
+    -   use in gradient descent during learning
+2.  validation set
+    -   evaluate progress/convergence during learning
+3.  test set
+    -   evaluate final result after learning
+
+## Loss Function
+
+::: columns
+::: {.column width="50%"}
+Suppose we have
+
+1.  an ANN that, with input $x$, produces an estimated output $\hat{y}$
+2.  training samples $X=(x^{(1)},\ldots,x^{(K)})$ with true output values $Y=(y^{(1)},\ldots,y^{(K)})$.
+
+Then the **Quadratic Loss Function** is defined as follows:
+
+::: {.fragment fragment-index="1"}
+1, For each $x\in X$, use the residual sum of squares, *RSS*, as an error measure
+
+$\begin{eqnarray*}L(w,b|x) &=& \sum_i\frac{1}{2} \left(y_i-\hat{y}_i\right)^2\end{eqnarray*}$
+:::
+
+::: {.fragment fragment-index="3"}
+2, The full quadratic cost function is simply the Mean Squared Error (MSE) used in cross-validation $$\begin{eqnarray} 
+L(w,b) &=& \frac{1}{K} \sum_{k=1}^K L(w,b|x^{(k)})\\ 
+\end{eqnarray}$$
+:::
+:::
+
+::: {.column width="50%"}
+<img src="./assets/figRss.png" alt="Neuron" width="400"/>
+:::
+:::
+
+## Gradient Descent
+
+##### Optimization
+
+Consider inverted hill-climbing in one dimension $v$, i.e., we want to find the minimum instead of the maximum.
+
+::: columns
+::: {.column width="50%"}
+##### *Hill-climbing*
+:::
+
+::: {.column width="50%"}
+<img src="./assets/figGradDesc1.png" alt="Neuron" width="400"/>
+:::
+:::
+
+## Gradient Descent
+
+##### Optimization
+
+Consider inverted hill-climbing in one dimension $v$, i.e., we want to find the minimum instead of the maximum.
+
+::: columns
+::: {.column width="50%"}
+##### *Hill-climbing*
+
+1.  randomly choose direction and length to change $v$
+2.  stay if $L(v|x)$ got lower, else go back.
+
+::: fragment
+##### We want to be smarter!
+:::
+:::
+
+::: {.column width="50%"}
+<img src="./assets/figGradDesc2.png" alt="Neuron" width="400"/>
+:::
+:::
+
+## Gradient Descent
+
+##### Optimization
+
+Consider inverted hill-climbing in one dimension $v$, i.e., we want to find the minimum instead of the maximum.
+
+::: columns
+::: {.column width="50%"}
+##### *Gradient descent*
+:::
+
+::: {.column width="50%"}
+<img src="./assets/figGradDesc1.png" alt="Neuron" width="400"/>
+:::
+:::
+
+## Gradient Descent
+
+##### Optimization
+
+Consider inverted hill-climbing in one dimension $v$, i.e., we want to find the minimum instead of the maximum.
+
+::: columns
+::: {.column width="50%"}
+##### *Gradient descent*
+
+1.  compute the derivative $\frac{dL(v|x)}{dv}$ to see which way *down* is
+:::
+
+::: {.column width="50%"}
+<img src="./assets/figGradDesc3.png" alt="Neuron" width="400"/>
+:::
+:::
+
+## Gradient Descent
+
+##### Optimization
+
+Consider inverted hill-climbing in one dimension $v$, i.e., we want to find the minimum instead of the maximum.
+
+::: columns
+::: {.column width="50%"}
+##### *Gradient descent*
+
+1.  compute the derivative $\frac{dL(v|x)}{dv}$ to see which way *down* is
+2.  Take a reasonably long step in that direction, $v' = v-\eta\frac{dL(v|x)}{dv}$
+
+::: fragment
+$\eta$ is called the *learning rate*
+:::
+:::
+
+::: {.column width="50%"}
+<img src="./assets/figGradDesc4.png" alt="Neuron" width="400"/>
+:::
+:::
+
+## Gradient Descent in higher dimensions
+
+Same thing really, but we have to have *partial derivatives* for each dimension, which makes it look more complicated.
+
+::: columns
+::: {.column width="50%"}
+<img src="./assets/valley_with_ball.png" alt="valley" width="800"/>
+:::
+
+::: {.column width="50%"}
+Consider a 2-dimensional case. We will treat each dimension separately
+
+::: incremental
+1.  Find the partial derivatives for both dimensions $$\begin{pmatrix}
+    \frac{\partial L(v_1,v_2|x)}{\partial v_1}\\
+    \frac{\partial L(v_1,v_2|x)}{\partial v_2}
+    \end{pmatrix}$$
+
+2.  Take a resonably long step $\begin{eqnarray*} \begin{pmatrix} v'_1\\ v'_2\end{pmatrix} &=& \begin{pmatrix}v_1-\eta\frac{\partial L(x,w)}{\partial v_1} \\ v_2-\eta\frac{\partial L(x,v)}{\partial v_2} \end{pmatrix} \end{eqnarray*}$
+
+(A vector of partial derivatives is called a **gradient**)
+:::
+:::
+:::
+
+## Gradient Descent in higher dimensions
+
+Same thing really, but we have to have *partial derivatives* for each dimension, which makes it look more complicated.
+
+::: columns
+::: {.column width="50%"}
+<img src="./assets/gradient_descent.png" alt="valley" width="800"/>
+
+#### More realistic parameter space
+:::
+
+::: {.column width="50%"}
+Consider a 2-dimensional case. We will treat each dimension separately
+
+1.  Find the partial derivatives for both dimensions $$\begin{pmatrix}
+    \frac{\partial L(v_1,v_2|x)}{\partial v_1}\\
+    \frac{\partial L(v_1,v_2|x)}{\partial v_2}
+    \end{pmatrix}$$
+
+2.  Take a resonably long step $\begin{eqnarray*} \begin{pmatrix} v'_1\\ v'_2\end{pmatrix} &=& \begin{pmatrix}v_1-\eta\frac{\partial L(x,w)}{\partial v_1} \\ v_2-\eta\frac{\partial L(x,v)}{\partial v_2} \end{pmatrix} \end{eqnarray*}$
+
+(A vector of partial derivatives is called a **gradient**)
+:::
+:::
+
+## Gradient descent strategy
+
+::: columns
+::: {.column width="50%"}
+##### Algorithm
+
+1.  Initialize weights and biases randomly $\sim N(0, \sigma^2)$
+2.  Loop for $M$ epochs or until convergence:
+    -   For each weight $w_{i,j}$ and each bias $b_j$ :
+        1.  Compute partial derivatives: $$\begin{eqnarray*}  \frac{\partial L(w,b|x)}{\partial w_{i,j}}\\  \frac{\partial L(w,b|x)}{\partial b_{j}}  \end{eqnarray*}$$
+        2.  Update: $$\begin{eqnarray*}  w_{i,j} &=& w_{i,j} - \eta \frac{\partial L(w,b|x)}{\partial w_{i,j}}\\  b_{j} &=& b_{j} - \eta \frac{\partial L(w,b|x)}{\partial b_{j}}  \end{eqnarray*}$$
+3.  Return final weights and biases
+:::
+
+::: {.column width="50%"}
+::: fragment
+### For this to work, we need to be able to compute all $\frac{\partial L(w,b|x)}{\partial v}$ efficiently
+
+<br>
+:::
+
+::: fragment
+### Solution: Back propagation
+:::
+:::
+:::
+
+## Back propagation -- Forward pass (Skip this slide)
+
+<img src="./assets/figExercise.png" alt="Neuron" height="300"/>
+
+$$\begin{array}{lllll}
+i_1 & \Rightarrow z_1 & \Rightarrow a_1 & \Rightarrow z_2 & \Rightarrow a_2 \\
+\\
+x=i_1 \\
+&\Rightarrow i_1 \times w_1 + b_1 = z_1 \\
+&&\Rightarrow \sigma(z_1) = a_1 \\
+&&&\Rightarrow a_1 \times w_2 + b_2 = z_2 \\
+&&&&\Rightarrow \sigma(z_2) = a_2 = \hat{y}
+\end{array}$$
+
+## Back propagation -- Forward pass
+
+<img src="./assets/figExercise.png" alt="Neuron" height="300"/>
+
+$\begin{array}{lllll} \qquad\qquad\; i_1 & \qquad\quad\Rightarrow z_1 & \Rightarrow a_1 & \quad \Rightarrow z_2 & \Rightarrow a_2 \Rightarrow \widehat{y}\\ \\ \end{array}$
+
+::: columns
+::: {.column width="50%"}
+$i_1 \quad = \quad x$
+
+$z_1 \quad = \quad i_1 \times w_1 + b_1$
+
+$a_1 \quad = \quad \sigma(z_1)$
+
+$z_2 \quad = \quad a_1 \times w_2 + b_2$
+
+$\hat{y} = a_2 \quad = \quad \sigma(z_2)$
+:::
+
+::: {.column width="50%"}
+::: fragment
+$= \quad 0.05$
+:::
+
+::: fragment
+$= \quad 0.05 \times 0.1 - 0.1$ [$\quad= -0.095$]{.fragment}
+:::
+
+::: fragment
+$= \quad \sigma(-0.095)$ [$\quad = 0.476$]{.fragment}
+:::
+
+::: fragment
+$= \quad 0.476 \times 0.3 + 0.3$ [$\quad= 0.443$]{.fragment}
+:::
+
+::: fragment
+$= \quad \sigma(0.443)$ [$\quad= 0.609$]{.fragment}
+:::
+:::
+:::
+
+## Back propagation -- Backward pass
+
+::: columns
+::: {.column width="70%"}
+<img src="./assets/figExercise.png" alt="Neuron" height="300"/>
+:::
+
+::: {.column width="30%"}
+<br>
+
+$x \quad = \quad 0.05$
+
+$i_1 \quad = \quad 0.05$
+
+$z_1 \quad = \quad -0.095$
+
+$a_1 \quad = \quad 0.476$
+
+$z_2 \quad = \quad 0.443$
+
+$a_2 \quad = \quad 0.609$
+
+$y = \quad = \quad 0.01$
+:::
+:::
+
+Partial derivative w.r.t.:
+
+$\begin{array}{ccccccccc} w_2:\qquad\qquad\; & \quad & & \quad &\frac{\partial z_2}{\partial w_2} & \times &\frac{\partial a_2}{\partial z_2} &\times& \frac{\partial L(w,b|x)}{\partial a_2} &=& \frac{\partial L(w,b|x)}{\partial w_2} \qquad\qquad\\ \\ \end{array}$
+
+::: fragment
+$\frac{\partial z_2}{\partial w_2} \quad = \quad \frac{\partial \left(a_1\times w_2 +b_2\right)}{\partial w_2}$ [$\quad = \quad a_1$]{.fragment} [$\quad = \quad 0.476$]{.fragment}
+:::
+
+::: fragment
+$\frac{\partial a_2}{\partial z_2} \quad = \quad \frac{\partial \sigma(z_2)}{\partial z_2}$ [$\quad = \quad a_1\left(1-a_1\right)$]{.fragment} [$\quad = \quad 0.601(1-0.601) \quad = \quad 0.238$]{.fragment}
+:::
+
+::: fragment
+$\frac{\partial L(w,b|x)}{\partial a_2} \quad = \quad \frac{\partial \frac{1}{2}(y - a_2)^2}{\partial a_2}$ [$\quad = \quad \left(a_2-y\right)$]{.fragment} [$\quad = 0.0599$]{.fragment}
+:::
+
+::: fragment
+$\frac{\partial L(w,b|x)}{\partial w_2} \quad = \frac{\partial z_2}{\partial w_2} \times \frac{\partial a_2}{\partial z_2} \times \frac{\partial L(w,b|x)}{\partial a_2}$ [$\quad = 0.476 \times 0.238 \times 0.599 \quad = \quad 0.096$]{.fragment}
+:::
+
+## Back propagation -- Backward pass
+
+::: columns
+::: {.column width="70%"}
+<img src="./assets/figExercise.png" alt="Neuron" height="300"/>
+:::
+
+::: {.column width="30%"}
+<br>
+
+$x \quad = \quad 0.05$
+
+$i_1 \quad = \quad 0.05$
+
+$z_1 \quad = \quad -0.095$
+
+$a_1 \quad = \quad 0.476$
+
+$z_2 \quad = \quad 0.443$
+
+$a_2 \quad = \quad 0.609$
+
+$y = \quad = \quad 0.01$
+:::
+:::
+
+Partial derivative w.r.t.:
+
+$w_2:\qquad\qquad \qquad\qquad \qquad\qquad\; \frac{\partial z_2}{\partial w_2} \times$ [$\frac{\partial a_2}{\partial z_2} \times \frac{\partial L(w,b|x)}{\partial a_2}$]{.fragment .highlight-red fragment-index="2"} $= \frac{\partial L(w,b|x)}{\partial w_2}$
+
+::: {.fragment fragment-index="1"}
+$b_2:\qquad\qquad \qquad\qquad \qquad\qquad\; \frac{\partial z_2}{\partial b_2} \times$ [$\frac{\partial a_2}{\partial z_2} \times \frac{\partial L(w,b|x)}{\partial a_2}$]{.fragment .highlight-red fragment-index="2"} $= \frac{\partial L(w,b|x)}{\partial b_2}$
+:::
+
+::: {.fragment fragment-index="3"}
+$w_1:\qquad\qquad\qquad\qquad \frac{\partial z_1}{\partial w_1}$ [$\times \frac{\partial a_1}{\partial z_1} \times \frac{\partial z_2}{\partial a_1}$]{.fragment .highlight-red fragment-index="5"} [$\times \frac{\partial a_2}{\partial z_2} \times \frac{\partial L(w,b|x)}{\partial a_2}$]{.fragment .highlight-red fragment-index="4"} $= \frac{\partial L(w,b|x)}{\partial w_1}$
+:::
+
+::: {.fragment fragment-index="5"}
+$b_1:\qquad\qquad\qquad\qquad\ \frac{\partial z_1}{\partial b_1}$ [$\times \frac{\partial a_1}{\partial z_1} \times \frac{\partial z_2}{\partial a_1}$ $\times \frac{\partial a_2}{\partial z_2} \times \frac{\partial L(w,b|x)}{\partial a_2}$]{.fragment .highlight-red fragment-index="5"} $= \frac{\partial L(w,b|x)}{\partial b_1}$
+:::
+
+## Back propagation IRL
+
+::: columns
+::: {.column width="50%"}
+### Multiple neurons per layer
+
+1.  Interactions between layers
+2.  Requires vector and matrix multiplication
+
+::: {.fragment fragment-index="2"}
+### Even more complex designs
+
+-   Requires operations on multidimensional matrices
+:::
+
+::: {.fragment fragment-index="3"}
+### Tensors
+
+-   Arrays (matrices) of arbitrary dimensions (ML def)
+-   Tensor operations
+    -   multiplication, decomposition, ...
+    -   produce new tensors
+:::
+
+::: {.fragment fragment-index="4"}
+### TensorFlow
+
+::: incremental
+-   The forward and backward passes are viewed as\
+    "Tensors (e.g., layers) that flow through the network"
+-   Additional twist is that tensors allow running all or chunks of test samples simultaneously
+:::
+:::
+:::
+
+::: {.column width="50%"}
+<img src="./assets/figExercise2.png" alt="Neuron" height="300"/>
+
+::: {.fragment fragment-index="2"}
+<img src="./assets/fig3.png" alt="Neuron" height="300"/>
+:::
+:::
+:::
+
+## Summary Learning
+
+### (Quadratic) Loss function
+
+\begin{eqnarray}
+L(w,b|x) &=& \frac{1}{2}\sum_i\left(y_i-\hat{y}_i\right)^2\\
+L(w,b) &=& \frac{1}{K}\sum_{k=1}^K  L(w,b|x^{(k)})
+\end{eqnarray} - Residual sum of squares (RSS) - Mean squared error (MSE)
+
+### Gradient descent
+
+-   "Clever hill-climbing" in several dimensions
+-   Change all variables $v\in (w,b)$ by taking a reasonable step (the learning rate) in opposite direction to the gradient \begin{equation}
+    v' = v-\eta \frac{\partial L(w,b|x)}{\partial v}
+    \end{equation}
+
+### Back propagation
+
+-   Decomposition of gradients (allows storing and re-using results)
+-   Efficient implementation using tensors
+
+## Activation functions revisited
+
+::: columns
+::: {.column width="50%"}
+##### Perceptron -- *step* activation
+
+-   Pros
+    -   Clear classification (0/1)
+-   Why did the perceptron "fail"?
+    -   1 layer $\Rightarrow$ linear classification
+    -   Not meaningfully differentiable
+    -   a requirement for *multilayer* ANN
+:::
+
+::: {.column width="50%"}
+<img src="./assets/figStep.png" alt="valley" width="800"/>
+:::
+:::
+
+## Activation functions revisited
+
+::: columns
+::: {.column width="50%"}
+##### Why not use the linear function
+
+-   Pros:
+    -   continuous output
+        -   better output "resolution"
+-   Cons:
+    -   Not really "meaningfully" differentiable
+    -   Multilayer linear ann collapses into a single linear model
+
+However, used in the output layer for regression problems!
+:::
+
+::: {.column width="50%"}
+<img src="./assets/figLinear.png" alt="valley" width="800"/>
+:::
+:::
+
+## Activation functions revisited
+
+::: columns
+::: {.column width="50%"}
+#### Sigmoid activation function
+
+-   Meaningfully differentiable <br>
+
+###### Intermediate between *step* and *linear*
+
+-   True for most activation functions
+-   Balance between pros and cons
+:::
+
+::: {.column width="50%"}
+<img src="./assets/figLogistic.png" alt="valley" width="800"/>
+:::
+:::
+
+## Activation functions revisited
+
+::: columns
+::: {.column width="50%"}
+#### ReLu activation function
+
+-   Meaningfully differentiable <br>
+
+###### (A different) intermediate between *step* and *linear*
+
+-   True for most activation functions
+-   Balance between pros and cons
+:::
+
+::: {.column width="50%"}
+<img src="./assets/figReLu.png" alt="valley" width="800"/>
+:::
+:::
+
+## Activation functions summary
+
+-   Meaningfully differentiable is important
+-   Often needs to balance pros and cons
+-   Two main families
+
+<br>
+
+::: columns
+::: {.column width="50%"}
+### Sigmoid (logistic) family
+
+##### Examples
+
+-   Sigmoid
+-   Tanh
+:::
+
+::: {.column width="50%"}
+### ReLu family
+
+##### Examples
+
+-   ReLu
+-   Leaky ReLu
+-   PreLu
+:::
+
+::: fragment
+<br><br><br><br><br> *(More about pros and cons of different activation functionsin a later lecture)*
+:::
+:::
