@@ -16,7 +16,7 @@ dependencies:
   - rise
   - tabulate
   - keras #=2.4.3
-  - tensorflow >=2.0.0, <2.4.0
+  - tensorflow >=2.0.0, <2.6.0
   - numpy==1.19.5
   - pydot
   - graphviz
