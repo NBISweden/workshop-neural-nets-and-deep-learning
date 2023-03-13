@@ -122,6 +122,21 @@ section.top h3{
     margin-top: 0px;
 }
 span.citation {
-    font-size: 0.6em;
+    font-size: 0.8em;
     float: right;
+}
+
+// Special highlighting
+.blockhighlight {
+    font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    font-size: 0.8em;
+}
+.blockhighlight p {
+    font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    font-size: 0.8em;
+    color: LightGray;
+}
+.blockhighlight strong {
+    font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    color: black;
 }

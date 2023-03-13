@@ -1,0 +1,87 @@
+.column {
+    text-align: center;
+}
+.reveal body,p,h1,h2,h3,h4,h5,h6 {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    color: #333333;
+}
+.reveal p {
+    margin: 0;
+}
+
+.reveal .fragment.center {
+    text-align: center;
+}
+
+.reveal h1 { font-size: 2.0em; }
+.reveal h2 { font-size: 1.5em;  }
+.reveal h3 { font-size: 1.25em;
+             padding-top: 10px;}
+.reveal h4 { font-size: 1em;        }
+.reveal h5 { font-size: 0.8em;        }
+.reveal h6 { font-size: 0.6em;        }
+
+.reveal .slides>section,
+.reveal .slides>section>section {
+    padding: 0px 0px;
+    min-height: 100%;
+}
+
+.reveal .slides img{
+    border: 0px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    /* Remove comments to prevent shadowed images */
+    -moz-box-shadow: 0px 0px 0px transparent !important;
+    -webkit-box-shadow: 0px 0px 0px transparent !important;
+    box-shadow: 0px 0px 0px transparent !important;
+}
+
+/* Make sure code blocks are filled */
+.reveal pre code {
+    max-height: 100%;
+}
+.reveal section pre code {
+    max-height: 100%;
+    font-size: 1em;
+}
+
+/* Better alignment of numbered source blocks */
+pre.numberSource code > span > a:first-child::before {
+    left: -0.3em;
+    padding-left: 1.3em;
+}
+
+.scroll-1000 {
+    max-height: 1000px;
+    overflow-y: auto;
+    background-color: inherit;
+}
+.scroll-400  {
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: inherit;
+}
+/* Set the maximum figure size to 100% of the slide */
+img, video, iframe {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Inline code color and border */
+.remark-inline-code {
+  background: #f2f2f2;
+  border-radius: 3px;
+  margin-right: 2px;
+  padding: 2px 3px 1px;
+  font-size: 80% !important;
+}
+
+.image-with-text {
+  display: inline-block;
+  vertical-align: middle;
+}
+
