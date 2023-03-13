@@ -1,0 +1,564 @@
+---
+title: "ANN Building Blocks part 1"
+author: "BS"
+format: 
+  revealjs:
+    theme: [default, customBS.scss]
+    smaller: false
+    self-contained: true
+editor: visual
+execute:
+  echo: false
+  include: true
+  warning: false
+---
+
+## Biological Neurons
+```{r, setup}
+library(reticulate)
+use_condaenv(condaenv = "nn_dl_python", conda = "auto", required = NULL)
+```
+
+:::: {.columns}
+::: {.column width="50%"}
+
+<img src="./assets/neuron2.png" alt="Neuron" width="800"/>
+
+:::
+::: {.column width="50%"}
+
+### Algorithm
+
+-   *Multiple input (on/off):*
+    -   from 1-several neurons
+-   *Processing*:
+    -   *Combination*: of inputs
+    -   *Activation*: on or off state
+-   *Single output (on/off):* to 1-several neurons
+
+:::
+::::
+
+## Artificial neurons
+
+:::: {.columns}
+::: {.column width="50%"}
+
+<img src="./assets/figNeuron.png" alt="Neuron" width="800"/>
+
+:::
+::: {.column width="50%"}
+
+#### Algorithm
+-   *Multiple input:*
+    -   from 1-several neurons
+-   *Processing*:
+    -   *Combination*: of inputs -- **linear model**
+    -   *Activation*: **activation function**
+-   *Single output:* to 1-several neurons
+
+<br><br>
+
+::: {.fragment}
+##### Weighted linear combination of input:
+
+$$
+\begin{eqnarray*} 
+z_j &=& \sum_{i} w_{i,j} a'_{i} + b_j\\ \textrm{weights}&& w_{i,j}\\ \textrm{bias}&& b_j \end{eqnarray*}
+$$
+:::
+::: {.fragment}
+
+##### Sigmoid (logistic) activation function:
+
+$a_j = \sigma(z_j)$
+
+:::
+:::
+::::
+
+
+## The Sigmoid Neuron
+
+:::: {.columns}
+::: {.column width="50%"}
+
+```{python}
+#| label: figSigmoid
+ 
+import numpy as np
+import matplotlib.pyplot as plt
+def sigma(x):
+    return 1/(1+np.exp(-x))
+
+## Creating vectors x and  
+z = np.linspace(-10, 10, 100) 
+a = [ sigma(x) for x in z ]
+  
+log = plt.figure(figsize = (6, 6)) 
+## Create the plot 
+plt.plot(z, a)
+plt.title("Logistic function")
+plt.xlabel('z') 
+plt.ylabel('$\sigma(z)$') 
+## Show the plot 
+plt.show() 
+```
+<br><br><br>
+
+:::
+::: {.column width="50%"}
+
+##### Weighted linear combination of input:
+
+-   $z_j = \sum_{i} w_{i,j} a'_{i} + b_j$
+
+##### Sigmoid/logistic activation function
+
+-   $a_j=\sigma(z_j) = \frac{1}{1+e^{-z_j}}$
+
+
+:::{.fragment}
+
+##### Compare with logistic GLM
+
+-   Weighted linear combination of input:
+    -   $z = \sum_{i} \beta_{i} x_{i} + \alpha$
+-   Sigmoid/logistic link function
+    -   $Pr[y=1|x] = p = \sigma(z) = \frac{1}{1+e^{-z}}$
+
+:::
+:::{.fragment}
+
+**... or equivalently**
+
+$\begin{eqnarray}  \sigma^{-1}(p)&=&\log\left(\frac{p}{1-p}\right) =\\ logit(p) &=& \sum_{i}\beta_{i} x_{i} + \alpha \end{eqnarray}$
+
+:::
+:::
+::::
+
+## Example
+
+:::: {.columns}
+::: {.column width="50%"}
+
+<img src="./assets/figNeuron1.png" alt="Neuron" width="800"/>
+
+:::
+::: {.column width="50%"}
+
+Let inputs be:\
+$\begin{eqnarray} a'_1&=&1\\ a'_2&=&0\\ a'_3&=&1 \end{eqnarray}$
+
+and we have\
+$\begin{eqnarray} z_1 &=& \sum_i w_{i,1}a'_i + b_1\\ a_1 &=& \sigma(z_1) \end{eqnarray}$
+
+
+$z_1 = 0.3 \times 1 + 0.8 \times 0 + 0.2 \times 1 - 0.5 = ?$
+
+$a_1 = \sigma(z_1) = ?$
+
+:::
+::::
+
+## Example
+
+:::: {.columns}
+::: {.column width="50%"}
+
+<img src="./assets/figNeuron1.png" alt="Neuron" width="800"/>
+
+:::
+::: {.column width="50%"}
+
+Let inputs be:\
+$\begin{eqnarray} a'_1&=&1\\ a'_2&=&0\\ a'_3&=&1 \end{eqnarray}$
+
+and we have\
+$\begin{eqnarray} z_1 &=& \sum_i w_{i,1}a'_i + b_1\\ a_1 &=& \sigma(z_1) \end{eqnarray}$
+
+
+$z_1 = 0.3 \times 1 + 0.8 \times 0 + 0.2 \times 1 - 0.5 = 0$
+
+$a_1 = \sigma(z_1) = \frac{1}{1+e^{-0}} = ?$
+:::
+::::
+
+## Example
+
+:::: {.columns}
+::: {.column width="50%"}
+<img src="./assets/figNeuron1.png" alt="Neuron" width="800"/>
+
+:::
+::: {.column width="50%"}
+
+Let inputs be:\
+$\begin{eqnarray} a'_1&=&1\\ a'_2&=&0\\ a'_3&=&1 \end{eqnarray}$
+
+and we have\
+$\begin{eqnarray} z_1 &=& \sum_i w_{i,1}a'_i + b_1\\ a_1 &=& \sigma(z_1) \end{eqnarray}$
+
+
+$z_1 = 0.3 \times 1 + 0.8 \times 0 + 0.2 \times 1 - 0.5 = 0$
+
+$a_1 = \sigma(z_1) = \frac{1}{1+e^{-0}} = 0.5$
+
+:::
+::::
+
+## ...
+
+#### So, if a sigmoid artificial neuron is just another way of doing logistic regression?
+
+#### ... then what's all the fuss about?
+
+#### The *fuss* happens when you connect several neurons into a network
+
+<img src="./assets/figAnn.png" alt="Neuron" width="800"/>
+
+
+## Feed-forward artifical neural networks (ffANN)
+
+:::: {.columns}
+::: {.column width="50%"}
+
+#### Layers
+
+-   "Columns" of 1-many neurons
+
+-   A single *Input layer*
+
+    -   Input neurons receives *data input* and passes it to next layer
+
+-   1-many *Hidden layer(s)*
+
+    -   Articial neurons process their input and deliver output to next layer
+
+-   A single *Output layer*
+
+    -   Artifical neurons process their input and deliver final output $\hat{y}$
+        -   output $\hat{y}_j = a_j$
+        -   Continuous $\hat{y}$: **Regression**
+        -   Discrete $\hat{y}$: **Classification**
+
+:::{.fragment}
+
+#### Connectivity between layers
+
+-   ffANN are fully connected
+    -   each neuron in a layer is connected to each neurons in next layer
+
+:::
+:::
+::: {.column witdth="50%"}
+
+<img src="./assets/figFfAnn.png" alt="Neuron" width="800"/>
+
+
+
+:::
+::::
+
+## ffANN examples
+
+::::{.columns}
+:::{.column width="50%"}
+
+<img src="./assets/figFfAnn1.png" alt="Neuron" width="350"/>
+
+:::{.fragment}
+<font size="5"> Other drawing style, omitting $w$ and $b$. </font> 
+
+<img src="./assets/fig1.png" alt="ANN1" width="350"/>
+:::
+:::
+:::{.column width="50%"}
+:::{.fragment}
+
+<img src="./assets/figFfAnn2.png" alt="Neuron" width="350"/>
+
+:::
+:::{.fragment}
+<font size="5"> Often layers are 'boxed' </font> 
+
+<img src="./assets/fig2.png" alt="ANN2" width="350"/>
+
+:::
+:::
+::::
+
+## ffANN examples
+
+:::: {.columns}
+:::{.column width="50%"}
+
+<font size="5"> layers w \>1 dimension (e.g., images) -- (messy!)</font> <img src="./assets/fig3.png" alt="Neuron" width="800"/>
+:::
+:::{.column width="50%"}
+:::{.fragment}
+
+<font size="5"> Simplify! nodes and arrows implicit</font><img src="./assets/fig3b.png" alt="Neuron" width="800"/>
+:::
+:::{.fragment}
+
+<font size="5"> Collect similar layers into 'blocks' </font><img src="./assets/fig3c.png" alt="Neuron" width="800"/>
+:::
+:::
+::::
+
+## ffANN examples
+
+<font size="5"> Also other type of layers/blocks (cf. coming lectures) </font><img src="./assets/vgg16.png" alt="Neuron" width="1200"/>
+
+
+## Hidden Layers
+
+#### Inutitive function of hidden layers?
+
+-   Each layer can be viewed as transforming the original data to a new multi-dimensional space.
+-   *A hidden layer should, in practice, have at least two neurons to be meaningful*
+    -   Single neuron layer collapses information and forms a bottleneck
+    -   A bottleneck early heavily constrains the NN
+
+::: {.fragment}
+#### Depth
+
+-   number of hidden layers + output layers
+
+:::
+::: {.fragment}
+
+#### Deep Learning
+
+-   Formally, ANNs with depth \> 1
+    -   (often include more advanced layers as well)
+:::
+
+## Why deep Learning?
+
+:::: {.columns}
+::: {.column width="50%"}
+
+### For Regression
+
+-   Single layer $\approx$ logistic regression
+
+:::
+::: {.column width="50%"}
+
+```{python}
+#| label: figRegression1
+import random
+
+def sigma(x):
+    return 1/(1+np.exp(-x))
+
+## Creating vectors x and  
+z = np.linspace(-10, 10, 100) 
+w = [ sigma(x) for x in z ]
+  
+x = [ random.gauss(m, 0.1) for m in np.linspace(-10, 10, 100) ]
+y = [ random.gauss(sigma(x), 0.1) for x in z ]
+  
+fig = plt.figure(figsize = (5, 5)) 
+## Create the plot 
+plt.plot(z, w)
+plt.scatter(x,y, c="red")
+plt.title("Logistic function")
+plt.xlabel('z') 
+plt.ylabel('$\sigma(z)$') 
+## Show the plot 
+plt.show() 
+```
+
+
+:::
+::::
+
+
+## Why deep Learning?
+
+:::: {.columns}
+::: {.column width="50%"}
+
+### For Regression
+
+-   Single layer $\approx$ logistic regression
+-   More layers $\rightarrow$ 
+    -   more complex, non-linear, models
+
+:::
+::: {.column width="50%"}
+
+```{python}
+#| label: figRegression2
+import matplotlib.cm as cm 
+import random
+
+n = 256
+angle = np.linspace(0, 0.95 * 2 * np.pi, n)
+radius = np.linspace(.5, 1., n)
+
+#angle = np.linspace(0, 12 * 2 * np.pi, n)
+#radius = np.linspace(.5, 1., n)
+
+
+x = [ random.gauss(m, 0.1) for m in radius * np.cos(angle) ]
+y = [ random.gauss(m, 0.1) for m in radius * np.sin(angle) ]
+
+z = radius * np.cos(angle)
+w = radius * np.sin(angle)
+
+figSpiral = plt.figure(figsize = (5, 5)) 
+plt.scatter(x,y,c = "red", cmap = cm.hsv)
+plt.plot(z,w)
+plt.show()
+```
+
+:::
+::::
+
+## Why deep Learning?
+
+:::: {.columns}
+::: {.column width="50%"}
+
+### For Regression
+
+-   Single layer $\approx$ logistic regression
+-   More layers $\rightarrow$ 
+    -   more complex, non-linear, models
+
+<br><br>
+
+### For classification
+
+-   Single layer $\approx$ one hyper-plane
+
+:::
+::: {.column width="50%"}
+
+```{python}
+#| label: figClassification1
+import random
+
+## Creating vectors x and  
+a1 = 5;
+b1= -0.75;
+a2=8;
+b2 = -0.4;
+n=50;
+z = np.linspace(0, 10, n); 
+w1 = [ a1 + b1 * zi for zi in z ];
+w2 = [ a2 + b2 * zi for zi in z ];
+
+x = [ random.random() *10 for k in list(range(n)) ];
+y = [ random.random() *10 for k in list(range(n)) ];
+col = [ "red" if y[k] > a1 + b1 * x[k] and y[k] < a2 + b2 * x[k] else "blue" 
+       for k in list(range(n)) ];
+
+fig = plt.figure(figsize = (5, 5));
+## Create the plot 
+plt.scatter(x, y, c=col);
+plt.xlabel('x');
+plt.ylabel('y');
+_=plt.xlim((0,10));
+_=plt.ylim((0,10));
+## Show the plot 
+plt.show();
+```
+
+:::
+::::
+
+## Why deep Learning?
+
+:::: {.columns}
+::: {.column width="50%"}
+
+### For Regression
+
+-   Single layer $\approx$ logistic regression
+-   More layers $\rightarrow$ 
+    -   more complex, non-linear, models
+
+<br><br>
+
+### For classification
+
+-   Single layer $\approx$ one hyper-plane
+
+:::
+::: {.column width="50%"}
+
+```{python}
+#| label: figClassification2
+import random
+
+fig = plt.figure(figsize = (5, 5));
+## Create the plot 
+plt.scatter(x, y, c=col);
+plt.plot(z, w2);
+plt.xlabel('x');
+plt.ylabel('y');
+_=plt.xlim((0,10));
+_=plt.ylim((0,10));
+## Show the plot 
+plt.show();
+```
+
+:::
+::::
+
+## Why deep Learning?
+
+:::: {.columns}
+::: {.column width="50%"}
+
+### For Regression
+
+-   Single layer $\approx$ logistic regression
+-   More layers $\rightarrow$ 
+    -   more complex, non-linear, models
+
+<br><br>
+
+### For classification
+
+-   Single layer $\approx$ one hyper-plane
+-   Adding layers $\rightarrow$
+    -   more hyper planes $\rightarrow$
+    -   more advanced classification
+
+:::
+::: {.column width="50%"}
+
+```{python}
+#| label: figClassification3
+fig = plt.figure(figsize = (5, 5)) 
+
+## Create the plot
+plt.scatter(x, y, c=col);
+plt.plot(z, w1);
+plt.plot(z, w2);
+plt.xlabel('x'); 
+plt.ylabel('y');
+_=plt.xlim((0,10));
+_=plt.ylim((0,10));
+## Show the plot 
+plt.show();
+```
+
+:::
+::::
+
+## Mini exercise
+
+-   <http://playground.tensorflow.org/>
+    -   Try different input "problems"
+    -   Investigate how different depth affect classification
+        -   number of hidden layers
+        -   number of neurons in layer
+    -   Run for several epochs (=iterations)
