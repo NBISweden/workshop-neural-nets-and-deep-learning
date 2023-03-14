@@ -376,19 +376,19 @@ Partial derivative w.r.t.:
 $\begin{array}{ccccccccc} w_2:\qquad\qquad\; & \quad & & \quad &\frac{\partial z_2}{\partial w_2} & \times &\frac{\partial a_2}{\partial z_2} &\times& \frac{\partial L(w,b|x)}{\partial a_2} &=& \frac{\partial L(w,b|x)}{\partial w_2} \qquad\qquad\\ \\ \end{array}$
 
 ::: fragment
-$\frac{\partial z_2}{\partial w_2} \quad = \quad \frac{\partial \left(a_1\times w_2 +b_2\right)}{\partial w_2}$ [$\quad = \quad a_1$]{.fragment} [$\quad = \quad 0.476$]{.fragment}
+$\frac{\partial z_2}{\partial w_2} \quad = \quad \frac{\partial \left(a_1\times w_2 +b_2\right)}{\partial w_2}$ [$\qquad\qquad\qquad = \quad a_1$]{.fragment} [$\qquad\qquad\qquad\qquad = \quad 0.476$]{.fragment}
 :::
 
 ::: fragment
-$\frac{\partial a_2}{\partial z_2} \quad = \quad \frac{\partial \sigma(z_2)}{\partial z_2}$ [$\quad = \quad a_1\left(1-a_1\right)$]{.fragment} [$\quad = \quad 0.601(1-0.601) \quad = \quad 0.238$]{.fragment}
+$\frac{\partial a_2}{\partial z_2} \quad = \quad \frac{\partial \sigma(z_2)}{\partial z_2}$ [$\qquad\qquad\qquad\qquad = \quad a_1\left(1-a_1\right)$]{.fragment} [$\qquad\qquad\quad = \quad 0.601(1-0.601) \quad = \quad 0.238$]{.fragment}
 :::
 
 ::: fragment
-$\frac{\partial L(w,b|x)}{\partial a_2} \quad = \quad \frac{\partial \frac{1}{2}(y - a_2)^2}{\partial a_2}$ [$\quad = \quad \left(a_2-y\right)$]{.fragment} [$\quad = 0.0599$]{.fragment}
+$\frac{\partial L(w,b|x)}{\partial a_2} \quad = \quad \frac{\partial \frac{1}{2}(y - a_2)^2}{\partial a_2}$ [$\qquad\qquad\quad\; = \quad \left(a_2-y\right)$]{.fragment} [$\qquad\qquad\qquad = \quad 0.0599$]{.fragment}
 :::
 
 ::: fragment
-$\frac{\partial L(w,b|x)}{\partial w_2} \quad = \frac{\partial z_2}{\partial w_2} \times \frac{\partial a_2}{\partial z_2} \times \frac{\partial L(w,b|x)}{\partial a_2}$ [$\quad = 0.476 \times 0.238 \times 0.599 \quad = \quad 0.096$]{.fragment}
+$\frac{\partial L(w,b|x)}{\partial w_2} \quad = \frac{\partial z_2}{\partial w_2} \times \frac{\partial a_2}{\partial z_2} \times \frac{\partial L(w,b|x)}{\partial a_2}$ [$\qquad = \quad 0.476 \times 0.238 \times 0.599 \quad = \quad 0.096$]{.fragment}
 :::
 
 ## Back propagation -- Backward pass
