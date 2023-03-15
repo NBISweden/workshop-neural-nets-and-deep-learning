@@ -1,5 +1,10 @@
+/*-- scss:defaults --*/
+$revealjs-block-margin: 0px !default;
+$presentation-slide-text-align: center !default;
+/*-- scss:rules --*/
+
 .reveal div {
-    border: 3px solid black:
+    border: 1px solid gray;
 }
 .column {
     text-align: center;
@@ -54,11 +59,14 @@
     font-size: 0.3em;
 }
 
- /* Set the maximum figure size to 100% of the slide */
+
+
+/* Set the maximum figure size to 100% of the slide */
 img, video, iframe {
   max-width: 100%;
   max-height: 100%;
 }
+
 span.citation {
     font-size: 0.7em;
     float: right;
@@ -69,4 +77,16 @@ span.citation {
     padding-top: -10px;
     padding-bottom: -10px;
 		
+}
+
+.twogridcol {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-row-gap: -200px;
+}
+
+.fourgridcol {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 0px;
 }

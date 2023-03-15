@@ -1,3 +1,4 @@
+/*-- scss:defaults --*/
 // SciLife color scheme: see https://www.scilifelab.se/community-pages/resources/visual-identity/
 
 $lime: #A7C947;
@@ -26,7 +27,6 @@ $darkgray: #3F3F3F;
 
 $blockMargin: 20px;
 $headingMargin: $blockMargin 0 $blockMargin 0;
-
 
 $primary: $lime;
 
@@ -64,13 +64,8 @@ code.sstree {
     font-size: 10px;
 }
 
-
 code.large {
     font-size: 20px;
-}
-
-.citation {
-    font-size: 1em;
 }
 
 .flushright {
@@ -121,10 +116,10 @@ dt {
 section.top h3{
     margin-top: 0px;
 }
-span.citation {
-    font-size: 0.8em;
-    float: right;
-}
+// span.citation {
+//     font-size: 0.7em;
+//     float: right;
+// }
 
 // Special highlighting
 .blockhighlight {
