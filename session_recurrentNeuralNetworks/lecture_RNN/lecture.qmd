@@ -1893,10 +1893,12 @@ ratio:
 import rnnutils
 import numpy as np
 df = rnnutils.airlines()
-data = np.array(df['passengers'].values.astype('float32')).reshape(-1, 1)
+data = np.array(
+    df['passengers'].values
+    .astype('float32')
+).reshape(-1, 1)
 train, test, scaler = rnnutils.make_train_test(data) 
 ```
-
 :::
 
 :::::::
@@ -2344,9 +2346,6 @@ Ask for input\_shape: what is timesteps? (=4) What is features? (=4)
 
 
 
-### An RNN in numers
-
-FIXME: incrementally add the numbers to the network
 
 ### Exercise
 
@@ -3224,17 +3223,18 @@ subtracted. Sigmoid is in (0, 1).
 # LSTMs and GRUs
 
 
-### Motivation behind LSTMs and GRUs
+### Motivation behind LSTMs and GRUs {.smaller}
 
-::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 10px;"}
+::::::::::::::::::: {.twocolgrid .compact}
 
-:::: {}
+:::: {.compact}
 
-<h5 align="center">LSTM</h5>
+LSTM
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:   tikz-lstm
 #| fig-width: 5
+#| out-width: 350px
 \begin{tikzpicture}
   \pic {lstm};
 \end{tikzpicture} 
@@ -3242,13 +3242,14 @@ subtracted. Sigmoid is in (0, 1).
 
 ::::
 
-:::: {}
+:::: {.compact}
 
-<h5 align="center">GRU</h5>
+GRU
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:  tikz-gru
 #| fig-width: 5
+#| out-width: 350px
 \begin{tikzpicture}
   \pic {gru};
 \end{tikzpicture} 
@@ -3258,9 +3259,12 @@ subtracted. Sigmoid is in (0, 1).
 
 :::::::::::::::::::
 
+::: { .compact }
+
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:   tikz-gru-lstm-legend
 #| fig-width: 5
+#| out-width: 600px
 \tikzset{legend/.style={
         font=\sffamily\bfseries\tiny,
         text width=1.4cm,
@@ -3282,6 +3286,8 @@ Long Short Term Memory (LSTM)  (Hochreiter &#38; Schmidhuber, 1997) and Gated
 Recurrent Unit (GRU) (Cho et al., 2014) architectures were
 proposed to solve the vanishing gradient problem.
 
+:::
+
 :::: {.notes}
 
 Based on (Phi, 2020a)
@@ -3295,8 +3301,8 @@ interact via the gates
 ::::
 
 
-### Intuition
-
+### Intuition {.smaller}
+	
 :::: {.element: style="font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter, monospace; font-size: 0.8em;"}
 
 In this paper, we propose a novel neural network model called RNN
@@ -3338,9 +3344,9 @@ Intuition:
 ::::
 
 
-### Intuition
+### Intuition {.smaller}
 
-:::: {.blockhighlight}
+:::: {.element: style="font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter, monospace; font-size: 0.8em;"}
 
 In this paper, we propose a **novel neural network** model called **RNN**
 **Encoder-Decoder** that consists of **two recurrent neural networks** (RNN).
@@ -3389,29 +3395,28 @@ Intuition:
 ::::
 
 
-### LSTM: Cell state flow and gating
+### LSTM: Cell state flow and gating {.smaller}
 
-[@olah_christopher_understanding_nodate]
+::::::::::::::::::: {.twocolgrid }
 
-::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 10px;"}
-
-:::: {}
+:::: {.compact}
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:   tikz-cellstateflow
-#| out-height: 300px
+#| out-height: 250px
 \begin{tikzpicture}
   \pic[\rnntikzbasekey/.cd, add labels=true, highlight=cellstateflow] {lstm} ;
 \end{tikzpicture} 
 ```
 
-:::: {.fragment .center}
+:::: { .fragment .compact}
+
 
 LSTM adds *cell state* that in effect provides the long-term memory
 
 ::::
 
-:::: {.fragment .center}
+:::: {.fragment .compact}
 
 Information flows in the cell state from $c_{t-1}$ to $c_t$.
 
@@ -3419,11 +3424,15 @@ Information flows in the cell state from $c_{t-1}$ to $c_t$.
 
 ::::
 
-:::: {.fragment .center}
+:::: { .compact}
+
+[@olah_christopher_understanding_nodate]
+
+::: {.fragment}
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:  tikz-lstmgate
-#| out-height: 300px
+#| out-height: 250px
 \begin{tikzpicture}
   \pic {lstmgate} ;
 \end{tikzpicture} 
@@ -3432,11 +3441,13 @@ Information flows in the cell state from $c_{t-1}$ to $c_t$.
 Gates affect the amount of information let through. The sigmoid layer
 outputs anything from 0 (nothing) to 1 (everything).
 
+:::
+
 ::::
 
 :::::::::::::::::::
 
-:::: {.fragment .center style="font-size: 0.8em"}
+:::: {.fragment .compact } 
 
 [@cho_learning_2014]
 
@@ -3477,11 +3488,12 @@ providing longer memory, enabled by
 ::::
 
 
-### Forget, input, and output gates
 
-::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-column-gap: 10px;"}
+### Forget, input, and output gates {.smaller}
 
-:::: {}
+::::::::::::::::::: { .threecolgrid }
+
+:::: {.compact}
 
 <h5>forget gate</h5>
 
@@ -3496,7 +3508,7 @@ providing longer memory, enabled by
 
 ::::
 
-:::: {}
+:::: {.compact}
 
 <h5>input gate</h5>
 
@@ -3510,7 +3522,7 @@ providing longer memory, enabled by
 **Purpose:** decide when to read data into cell state
 ::::
 
-:::: {}
+:::: {.compact}
 
 <h5>output gate</h5>
 
@@ -3536,7 +3548,9 @@ state $c_{t-1}$, where 0 means "reset entry", 1 "keep it"
 ::::
 
 
-### The forget gate
+### The forget gate {.smaller .compact} 
+
+::: {  }
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:   tikz-lstm-forget-gate
@@ -3545,6 +3559,7 @@ state $c_{t-1}$, where 0 means "reset entry", 1 "keep it"
 \pic[\rnntikzbasekey/.cd, highlight=forgetgate, add labels=true] {lstm};
 \end{tikzpicture} 
 ```
+:::
 
 **Purpose**: decide what information to keep or throw away
 
@@ -3552,7 +3567,7 @@ Sigmoid squishes vector $[\boldsymbol{h_{t-1}}, \boldsymbol{x_t}]$
 (previous hidden state + input) to $(0, 1)$ for each value in cell
 state $c_{t-1}$, where 0 means "forget entry", 1 "keep it"
 
-:::: {.fragment .center}
+:::: {.fragment}
 
 $$
 f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)
@@ -3573,6 +3588,8 @@ $$
 
 ### Add new information - the input gate
 
+::: { .compact }
+
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:   tikz-lstm-candidatecellstate-input
 #| fig-width: 5
@@ -3581,9 +3598,16 @@ $$
 \end{tikzpicture} 
 ```
 
+:::
+
+::: { .compact }
+
 Two steps to adding new information:
 
 1.  sigmoid layer decides which values to update
+
+:::
+
 
 :::: {.notes}
 
@@ -3594,7 +3618,9 @@ Two steps to adding new information:
 ::::
 
 
-### Add new information - get candidate values
+### Add new information - get candidate values {.smaller}
+
+::: {.compact  }
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:    tikz-lstm-candidatecellstate-input-1
@@ -3604,12 +3630,17 @@ Two steps to adding new information:
 \end{tikzpicture} 
 ```
 
+:::
+
+::: { .compact }
+
+
 Two steps to adding new information:
 
 1.  sigmoid layer decides which values to update
 2.  tanh layer creates vector of new candidate values $\tilde{c}_t$
 
-:::: {.fragment .center}
+:::: {.fragment}
 
 $$
 i_t = \sigma (W_i \cdot [h_{t-1}, x_t] + b_i)\\
@@ -3617,6 +3648,9 @@ i_t = \sigma (W_i \cdot [h_{t-1}, x_t] + b_i)\\
 $$
 
 ::::
+
+
+:::
 
 :::: {.notes}
 
@@ -3627,7 +3661,9 @@ $$
 ::::
 
 
-### Updating the cell state
+### Updating the cell state {.smaller} 
+
+::: { .compact  }
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:   tikz-lstm-update-cell-state
@@ -3637,18 +3673,24 @@ $$
 \end{tikzpicture} 
 ```
 
+:::
+
+::: { .compact }
+
 1.  multiply old cell state by $f_t$ to forget what was decided to
     forget
 2.  add new candidate values scaled by how much we want to update them
     $i_t * \tilde{c}_t$
 
-:::: {.fragment .center}
+:::: {.fragment}
 
 $$
 c_t = f_t * c_{t-1} + i_t * \tilde{c}_t
 $$
 
 ::::
+
+:::
 
 :::: {.notes}
 
@@ -3659,7 +3701,9 @@ $$
 ::::
 
 
-### Cell output
+### Cell output {.smaller}
+
+::: {.compact style="transform: translate(0, -50px);"}
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:   tikz-lstm-output-gate
@@ -3668,13 +3712,16 @@ $$
   \pic[\rnntikzbasekey/.cd, highlight=celloutput, add labels=true] {lstm};
 \end{tikzpicture} 
 ```
+:::
+
+::: {.compact style="transform: translate(0, -80px);"}
 
 Output is filtered version of cell state.
 
 1.  sigmoid output gate decides what parts of cell state to output
 2.  push cell state through tanh and multiply by sigmoid output
 
-:::: {.fragment .center}
+:::: {.fragment}
 
 $$
 o_t = \sigma(W_o [h_{t-1}, x_t] + b_o)\\
@@ -3682,6 +3729,8 @@ h_t = o_t * \mathsf{tanh}(c_t)
 $$
 
 ::::
+
+:::
 
 :::: {.notes}
 
@@ -3720,11 +3769,11 @@ From (, Zhang et al., 2021, p. 9.2.1.3):
 ::::
 
 
-### LSTM: putting it together
+### LSTM: putting it together {.smaller}
 
 [@zhang2021dive]
 
-::::::::::::::::::: {style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 10px;"}
+::::::::::::::::::: {.twocolgrid }
 
 :::: {}
 

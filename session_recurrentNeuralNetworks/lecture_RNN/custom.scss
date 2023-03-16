@@ -3,27 +3,18 @@ $revealjs-block-margin: 0px !default;
 $presentation-slide-text-align: center !default;
 /*-- scss:rules --*/
 
-.reveal div {
-    border: 1px solid gray;
-}
-.column {
-    text-align: center;
-}
-.reveal .center {
-    text-align: center;
-}
-.reveal .fragment.center {
-    text-align: center;
-}
-.reveal .fragment.center.compact {
-    text-align: center;
+// .reveal div {
+//     border: 1px solid red;
+// }
+
+
+.reveal .compact > p {
     margin-top: 0px;
     margin-bottom: 0px;
     padding-top: 0px;
     padding-bottom: 0px;
 }
-.reveal .compact p {
-    text-align: center;
+.reveal .compact img {
     margin-top: 0px;
     margin-bottom: 0px;
     padding-top: 0px;
@@ -70,23 +61,42 @@ img, video, iframe {
 span.citation {
     font-size: 0.7em;
     float: right;
-    margin-left: -20px;
-    margin-top: -10px;
-    margin-bottom: -10px;
-    padding-left: -20px;
-    padding-top: -10px;
-    padding-bottom: -10px;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-left: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
 		
 }
 
-.twogridcol {
+.twocolgrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-row-gap: -200px;
+    grid-row-gap: 0px;
+    //align-items: center;
+    justify-items: stretch; // Make sure images occupy entire area?
 }
 
-.fourgridcol {
+.threecolgrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-row-gap: 0px;
+    //align-items: center;
+    justify-items: stretch; // Make sure images occupy entire area?
+}
+
+.fourcolgrid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-gap: 0px;
+}
+
+// Custom grids for specific slide titles
+
+// Perceptron (single neuron)
+.perceptron-single-neuron {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    grid-column-gap: 10px;
 }
