@@ -9,6 +9,13 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 from sklearn.utils import shuffle
 import matplotlib.pyplot as plt
+import matplotlib
+
+font = {
+    'size'   : 24
+}
+matplotlib.rc('font', **font)
+
 
 def make_train_test(data, train_fraction=0.67, rescale=True):
     """Create train and test data set from a data vector.

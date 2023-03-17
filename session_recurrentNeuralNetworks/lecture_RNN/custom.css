@@ -1,0 +1,72 @@
+.reveal div {
+    border: 3px solid black:
+}
+.column {
+    text-align: center;
+}
+.reveal .center {
+    text-align: center;
+}
+.reveal .fragment.center {
+    text-align: center;
+}
+.reveal .fragment.center.compact {
+    text-align: center;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+.reveal .compact p {
+    text-align: center;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.reveal.smaller .slides h3,
+.reveal .slides section.smaller h3 {
+    margin-top: 0px;
+    /* font-size: 1.43em;  1.0 / 0.7 */
+}
+
+.reveal .slides>section,
+.reveal .slides>section>section {
+    padding: 0px 0px;
+    /* NB: min-height causes some images to disappear?!? */
+    /* min-height: 100%; */
+}
+.reveal .cell {
+    margin-top: 0px;
+    padding-top: 0px;
+}
+
+/* Make sure code blocks are filled */
+.reveal pre code {
+    max-height: 100%;
+}
+.reveal section pre code {
+    max-height: 100%;
+    font-size: 1em;
+}
+.reveal footer {
+    font-size: 0.3em;
+}
+
+ /* Set the maximum figure size to 100% of the slide */
+img, video, iframe {
+  max-width: 100%;
+  max-height: 100%;
+}
+span.citation {
+    font-size: 0.7em;
+    float: right;
+    margin-left: -20px;
+    margin-top: -10px;
+    margin-bottom: -10px;
+    padding-left: -20px;
+    padding-top: -10px;
+    padding-bottom: -10px;
+		
+}
