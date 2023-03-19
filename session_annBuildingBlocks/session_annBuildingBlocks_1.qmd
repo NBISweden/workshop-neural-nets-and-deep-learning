@@ -1,6 +1,6 @@
 ---
 title: "ANN Building Blocks part 1"
-author: "Bengt Sennbladm NBIS"
+author: "Bengt Sennblad, NBIS"
 format: 
   revealjs:
     theme: [default, customBS.scss]
