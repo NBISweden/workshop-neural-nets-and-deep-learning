@@ -285,7 +285,7 @@ $\eta$ is called the *learning rate*
 Same thing really, but we have to have *partial derivatives* for each dimension, which makes it look more complicated.
 
 ::: notes
--   partial derivatives -- derive w.r.t. to each variable
+-   partial derivatives -- derive w.r.t. to each variable -- marked by $\partial$ instead of $d$
 -   Take steps in each variable dimensions/direction, "manhattan distance"'
 
 <br>
