@@ -203,7 +203,7 @@ $a_1 = \sigma(z_1) = \frac{1}{1+e^{-0}} =$ [$0.5$]{.fragment}
 ::: fragment
 #### The *fuss* happens when you connect several neurons into a network
 
-<img src="./assets/figAnn.png" alt="Neuron" width="800"/>
+<img src="./assets/figAnn.png" alt="Neuron" width="600"/>
 :::
 
 ## Feed-forward artifical neural networks (ffANN)
@@ -229,7 +229,7 @@ $a_1 = \sigma(z_1) = \frac{1}{1+e^{-0}} =$ [$0.5$]{.fragment}
         -   Continuous $\hat{y}$: **Regression**
         -   Discrete $\hat{y}$: **Classification**
 
-::: notes
+::: {.notes}
 Use ffANN to illustrate important aspects od ANNs in general
 
 1.  all NNs have Layers
@@ -251,7 +251,7 @@ Use ffANN to illustrate important aspects od ANNs in general
 
 ## ffANN examples
 
-::: {.notes
+::: {.notes}
 -   visualization styles
 -   Several hidden layers
 -   Any number of neurons in each layer
@@ -325,7 +325,7 @@ Often convenient to simplify visualization
     -   A bottleneck early heavily constrains the NN
 
 ::: fragment
-#### Depth
+#### Depth of ANN
 
 -   number of hidden layers + output layers
 :::
@@ -374,7 +374,7 @@ plt.show()
 :::
 :::
 
-## Why deep Learning?
+## Why Deep Learning?
 
 ::: columns
 ::: {.column width="50%"}

@@ -700,10 +700,11 @@ However, used in the output layer for regression problems!
 -   Two main families (+ special cases)
 
 <br>
+
 ::: {.notes}
 - More about activation functions in coming lectures
 :::
-::: columns
+:::: columns
 ::: {.column width="33%"}
 ### Sigmoid (logistic) family
 
@@ -735,4 +736,4 @@ However, used in the output layer for regression problems!
 ::: fragment
 <br><br><br><br><br> *(More about pros and cons of different activation functions in a later lecture)*
 :::
-:::
+::::
