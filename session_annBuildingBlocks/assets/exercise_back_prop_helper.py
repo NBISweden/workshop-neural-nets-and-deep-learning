@@ -65,9 +65,9 @@ def updateTable1(x, y, w1, b1, w2, b2, i1, z1, a1, z2, a2, haty,L):
 
 
 colNames2 = { 
-    "dLda2" : r"$\frac{\partial L(b,w|x)}{\partial a_2}$",
-    "da2dz2" : r"$\frac{\partial a_2}{\partial z_2}$",
     "dz2dw2" : r"$\frac{\partial z_2}{\partial w_2}$",
+    "da2dz2" : r"$\frac{\partial a_2}{\partial z_2}$",
+    "dLda2" : r"$\frac{\partial L(b,w|x)}{\partial a_2}$",
     "dLdw2" : r"$\frac{\partial L(b,w|a)}{\partial w_2}$",
     "eta": r"$\eta$",
     "w2new": r"$w'_2$"
@@ -79,9 +79,10 @@ colNames2 = {
 def updateTable2(dLda2,  da2dz2, dz2dw2, dLdw2, eta, w2new):
     tab = pd.Series(
         { 
-            "dLda2" : format(dLda2, ".3g").center(12, '\u00A0'), # Use this format to display nicely in table
-            "da2dz2" : format(da2dz2, ".3g"),
             "dz2dw2" : format(dz2dw2, ".3g"), 
+            "da2dz2" : format(da2dz2, ".3g"),
+            "dLda2" : format(dLda2, ".3g").center(12, '\u00A0'), # Use this format to display nicely in table
+            "dLdw2" : format(dLdw2, ".3g").center(12, '\u00A0'), # Use this format to display nicely in table
             "eta" : format(eta, ".3g"), 
             "w2new" : format(w2new, ".3g")
         }

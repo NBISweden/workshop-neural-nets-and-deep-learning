@@ -14,19 +14,18 @@ execute:
 ---
 
 ## Biological Neurons
+
 ```{r, setup}
 library(reticulate)
 use_condaenv(condaenv = "nn_dl_python", conda = "auto", required = NULL)
 ```
 
-:::: {.columns}
+::: columns
 ::: {.column width="50%"}
-
 <img src="./assets/neuron2.png" alt="Neuron" width="800"/>
-
 :::
-::: {.column width="50%"}
 
+::: {.column width="50%"}
 ### Algorithm
 
 -   *Multiple input (on/off):*
@@ -35,21 +34,34 @@ use_condaenv(condaenv = "nn_dl_python", conda = "auto", required = NULL)
     -   *Combination*: of inputs
     -   *Activation*: on or off state
 -   *Single output (on/off):* to 1-several neurons
-
 :::
-::::
+:::
+
+::: notes
+-   builds on idea of modeling of the human/animal nerve cells
+-   simplified description
+    -   input
+        -   (note: occur at synapses at dendrites)
+        -   also sensory cells
+    -   Processed
+        -   (note: occurs in cell body)
+        -   axon hillocks
+    -   Output
+        -   (note: occur at axon terminal)
+        -   (transported though axon by electric action potentials, enabled by myelin sheet)
+        -   (neurotransmitters to next neuron)
+:::
 
 ## Artificial neurons
 
-:::: {.columns}
+::: columns
 ::: {.column width="50%"}
-
 <img src="./assets/figNeuron.png" alt="Neuron" width="800"/>
-
 :::
-::: {.column width="50%"}
 
+::: {.column width="50%"}
 #### Algorithm
+
 -   *Multiple input:*
     -   from 1-several neurons
 -   *Processing*:
@@ -59,7 +71,16 @@ use_condaenv(condaenv = "nn_dl_python", conda = "auto", required = NULL)
 
 <br><br>
 
-::: {.fragment}
+::: notes
+-   simplified visualization
+    -   (stripped of not strictly neccessary items:
+        -   axon, myelin sheet)
+-   Some more details of combination
+    -   (note: will be repeated on next slide)
+    -   bias can be viewed as a means to set the threshold for activation
+:::
+
+::: fragment
 ##### Weighted linear combination of input:
 
 $$
@@ -67,22 +88,21 @@ $$
 z_j &=& \sum_{i} w_{i,j} a'_{i} + b_j\\ \textrm{weights}&& w_{i,j}\\ \textrm{bias}&& b_j \end{eqnarray*}
 $$
 :::
-::: {.fragment}
 
-##### Sigmoid (logistic) activation function:
+::: fragment
+##### Activation function:
 
-$a_j = \sigma(z_j)$
+-   e.g., the Sigmoid (logistic) activation function
 
+##### $$a_j = \sigma(z_j)$$
 :::
 :::
-::::
-
+:::
 
 ## The Sigmoid Neuron
 
-:::: {.columns}
+::: columns
 ::: {.column width="50%"}
-
 ```{python}
 #| label: figSigmoid
  
@@ -104,11 +124,11 @@ plt.ylabel('$\sigma(z)$')
 ## Show the plot 
 plt.show() 
 ```
+
 <br><br><br>
-
 :::
-::: {.column width="50%"}
 
+::: {.column width="50%"}
 ##### Weighted linear combination of input:
 
 -   $z_j = \sum_{i} w_{i,j} a'_{i} + b_j$
@@ -117,96 +137,62 @@ plt.show()
 
 -   $a_j=\sigma(z_j) = \frac{1}{1+e^{-z_j}}$
 
+::: notes
+-   logistic = sigmoid
+    -   sigmoid curve
+    -   $\sigma(z)$ very near 0 for $z \ll 0$
+    -   steep activation around 0
+    -   $\sigma(z)$ very near 1 for $z\gg 0$
+    -   note! bias implicitly moves activation area relative to 0
+:::
 
-:::{.fragment}
-
+::: fragment
 ##### Compare with logistic GLM
 
 -   Weighted linear combination of input:
     -   $z = \sum_{i} \beta_{i} x_{i} + \alpha$
 -   Sigmoid/logistic link function
     -   $Pr[y=1|x] = p = \sigma(z) = \frac{1}{1+e^{-z}}$
-
 :::
-:::{.fragment}
 
+::: notes
+-   Maybe more commonly written as...
+:::
+
+::: fragment
 **... or equivalently**
 
-$\begin{eqnarray}  \sigma^{-1}(p)&=&\log\left(\frac{p}{1-p}\right) =\\ logit(p) &=& \sum_{i}\beta_{i} x_{i} + \alpha \end{eqnarray}$
-
+$\begin{eqnarray} \sigma^{-1}(p)&=&\log\left(\frac{p}{1-p}\right) =\\ logit(p) &=& \sum_{i}\beta_{i} x_{i} + \alpha \end{eqnarray}$
 :::
 :::
-::::
+:::
 
 ## Example
 
-:::: {.columns}
+::: columns
 ::: {.column width="50%"}
-
 <img src="./assets/figNeuron1.png" alt="Neuron" width="800"/>
-
 :::
-::: {.column width="50%"}
 
+::: {.column width="50%"}
 Let inputs be:\
 $\begin{eqnarray} a'_1&=&1\\ a'_2&=&0\\ a'_3&=&1 \end{eqnarray}$
+
+<br>
 
 and we have\
 $\begin{eqnarray} z_1 &=& \sum_i w_{i,1}a'_i + b_1\\ a_1 &=& \sigma(z_1) \end{eqnarray}$
 
+<br>
 
-$z_1 = 0.3 \times 1 + 0.8 \times 0 + 0.2 \times 1 - 0.5 = ?$
+$z_1 = 0.3 \times 1 + 0.8 \times 0 + 0.2 \times 1 - 0.5 =$ [$0$]{.fragment}
 
-$a_1 = \sigma(z_1) = ?$
-
+$a_1 = \sigma(z_1) = \frac{1}{1+e^{-0}} =$ [$0.5$]{.fragment}
 :::
-::::
-
-## Example
-
-:::: {.columns}
-::: {.column width="50%"}
-
-<img src="./assets/figNeuron1.png" alt="Neuron" width="800"/>
-
 :::
-::: {.column width="50%"}
 
-Let inputs be:\
-$\begin{eqnarray} a'_1&=&1\\ a'_2&=&0\\ a'_3&=&1 \end{eqnarray}$
-
-and we have\
-$\begin{eqnarray} z_1 &=& \sum_i w_{i,1}a'_i + b_1\\ a_1 &=& \sigma(z_1) \end{eqnarray}$
-
-
-$z_1 = 0.3 \times 1 + 0.8 \times 0 + 0.2 \times 1 - 0.5 = 0$
-
-$a_1 = \sigma(z_1) = \frac{1}{1+e^{-0}} = ?$
+::: notes
 :::
-::::
-
-## Example
-
-:::: {.columns}
-::: {.column width="50%"}
-<img src="./assets/figNeuron1.png" alt="Neuron" width="800"/>
-
-:::
-::: {.column width="50%"}
-
-Let inputs be:\
-$\begin{eqnarray} a'_1&=&1\\ a'_2&=&0\\ a'_3&=&1 \end{eqnarray}$
-
-and we have\
-$\begin{eqnarray} z_1 &=& \sum_i w_{i,1}a'_i + b_1\\ a_1 &=& \sigma(z_1) \end{eqnarray}$
-
-
-$z_1 = 0.3 \times 1 + 0.8 \times 0 + 0.2 \times 1 - 0.5 = 0$
-
-$a_1 = \sigma(z_1) = \frac{1}{1+e^{-0}} = 0.5$
-
-:::
-::::
 
 ## ...
 
@@ -214,16 +200,16 @@ $a_1 = \sigma(z_1) = \frac{1}{1+e^{-0}} = 0.5$
 
 #### ... then what's all the fuss about?
 
+::: fragment
 #### The *fuss* happens when you connect several neurons into a network
 
 <img src="./assets/figAnn.png" alt="Neuron" width="800"/>
-
+:::
 
 ## Feed-forward artifical neural networks (ffANN)
 
-:::: {.columns}
+::: columns
 ::: {.column width="50%"}
-
 #### Layers
 
 -   "Columns" of 1-many neurons
@@ -243,75 +229,91 @@ $a_1 = \sigma(z_1) = \frac{1}{1+e^{-0}} = 0.5$
         -   Continuous $\hat{y}$: **Regression**
         -   Discrete $\hat{y}$: **Classification**
 
-:::{.fragment}
+::: notes
+Use ffANN to illustrate important aspects od ANNs in general
 
+1.  all NNs have Layers
+2.  Connectivity
+:::
+
+::: fragment
 #### Connectivity between layers
 
 -   ffANN are fully connected
     -   each neuron in a layer is connected to each neurons in next layer
+:::
+:::
 
-:::
-:::
 ::: {.column witdth="50%"}
-
-<img src="./assets/figFfAnn.png" alt="Neuron" width="800"/>
-
-
-
+<img src="./assets/figFfAnn.png" alt="ANN1x" width="800"/>
 :::
-::::
+:::
 
 ## ffANN examples
 
-::::{.columns}
-:::{.column width="50%"}
+::: {.notes
+-   visualization styles
+-   Several hidden layers
+-   Any number of neurons in each layer
+:::
 
-<img src="./assets/figFfAnn1.png" alt="Neuron" width="350"/>
+::: columns
+::: {.column width="50%"}
+<img src="./assets/figFfAnn1.png" alt="ANN1" width="350"/>
 
-:::{.fragment}
-<font size="5"> Other drawing style, omitting $w$ and $b$. </font> 
+::: fragment
+<font size="5"> Other drawing style, omitting $w$ and $b$. </font>
 
-<img src="./assets/fig1.png" alt="ANN1" width="350"/>
+<img src="./assets/fig1.png" alt="ANN1alt" width="350"/>
 :::
 :::
-:::{.column width="50%"}
-:::{.fragment}
 
-<img src="./assets/figFfAnn2.png" alt="Neuron" width="350"/>
-
+::: {.column width="50%"}
+::: fragment
+<img src="./assets/figFfAnn2.png" alt="ANN2" width="350"/>
 :::
-:::{.fragment}
-<font size="5"> Often layers are 'boxed' </font> 
 
-<img src="./assets/fig2.png" alt="ANN2" width="350"/>
+::: fragment
+<font size="5"> Often layers are 'boxed' </font>
 
+<img src="./assets/fig2.png" alt="ANN2alt" width="350"/>
 :::
 :::
-::::
+:::
 
 ## ffANN examples
 
-:::: {.columns}
-:::{.column width="50%"}
+::: notes
+Often convenient to simplify visualization
+:::
 
+::: columns
+::: {.column width="50%"}
 <font size="5"> layers w \>1 dimension (e.g., images) -- (messy!)</font> <img src="./assets/fig3.png" alt="Neuron" width="800"/>
 :::
-:::{.column width="50%"}
-:::{.fragment}
 
+::: {.column width="50%"}
+::: fragment
 <font size="5"> Simplify! nodes and arrows implicit</font><img src="./assets/fig3b.png" alt="Neuron" width="800"/>
 :::
-:::{.fragment}
 
+::: fragment
 <font size="5"> Collect similar layers into 'blocks' </font><img src="./assets/fig3c.png" alt="Neuron" width="800"/>
 :::
 :::
-::::
+:::
 
 ## ffANN examples
 
-<font size="5"> Also other type of layers/blocks (cf. coming lectures) </font><img src="./assets/vgg16.png" alt="Neuron" width="1200"/>
+::: notes
+-   also possible to visualize different types of blocks
 
+    -   convolution + max pooling
+
+    -   fully connected
+:::
+
+<font size="5"> Also other type of layers/blocks (cf. coming lectures) </font><img src="./assets/vgg16.png" alt="Neuron" width="1200"/>
 
 ## Hidden Layers
 
@@ -322,14 +324,13 @@ $a_1 = \sigma(z_1) = \frac{1}{1+e^{-0}} = 0.5$
     -   Single neuron layer collapses information and forms a bottleneck
     -   A bottleneck early heavily constrains the NN
 
-::: {.fragment}
+::: fragment
 #### Depth
 
 -   number of hidden layers + output layers
-
 :::
-::: {.fragment}
 
+::: fragment
 #### Deep Learning
 
 -   Formally, ANNs with depth \> 1
@@ -338,16 +339,14 @@ $a_1 = \sigma(z_1) = \frac{1}{1+e^{-0}} = 0.5$
 
 ## Why deep Learning?
 
-:::: {.columns}
+::: columns
 ::: {.column width="50%"}
-
 ### For Regression
 
 -   Single layer $\approx$ logistic regression
-
 :::
-::: {.column width="50%"}
 
+::: {.column width="50%"}
 ```{python}
 #| label: figRegression1
 import random
@@ -372,26 +371,21 @@ plt.ylabel('$\sigma(z)$')
 ## Show the plot 
 plt.show() 
 ```
-
-
 :::
-::::
-
+:::
 
 ## Why deep Learning?
 
-:::: {.columns}
+::: columns
 ::: {.column width="50%"}
-
 ### For Regression
 
 -   Single layer $\approx$ logistic regression
--   More layers $\rightarrow$ 
+-   More layers $\rightarrow$
     -   more complex, non-linear, models
-
 :::
-::: {.column width="50%"}
 
+::: {.column width="50%"}
 ```{python}
 #| label: figRegression2
 import matplotlib.cm as cm 
@@ -416,19 +410,17 @@ plt.scatter(x,y,c = "red", cmap = cm.hsv)
 plt.plot(z,w)
 plt.show()
 ```
-
 :::
-::::
+:::
 
 ## Why deep Learning?
 
-:::: {.columns}
+::: columns
 ::: {.column width="50%"}
-
 ### For Regression
 
 -   Single layer $\approx$ logistic regression
--   More layers $\rightarrow$ 
+-   More layers $\rightarrow$
     -   more complex, non-linear, models
 
 <br><br>
@@ -436,10 +428,9 @@ plt.show()
 ### For classification
 
 -   Single layer $\approx$ one hyper-plane
-
 :::
-::: {.column width="50%"}
 
+::: {.column width="50%"}
 ```{python}
 #| label: figClassification1
 import random
@@ -469,19 +460,17 @@ _=plt.ylim((0,10));
 ## Show the plot 
 plt.show();
 ```
-
 :::
-::::
+:::
 
 ## Why deep Learning?
 
-:::: {.columns}
+::: columns
 ::: {.column width="50%"}
-
 ### For Regression
 
 -   Single layer $\approx$ logistic regression
--   More layers $\rightarrow$ 
+-   More layers $\rightarrow$
     -   more complex, non-linear, models
 
 <br><br>
@@ -489,10 +478,9 @@ plt.show();
 ### For classification
 
 -   Single layer $\approx$ one hyper-plane
-
 :::
-::: {.column width="50%"}
 
+::: {.column width="50%"}
 ```{python}
 #| label: figClassification2
 import random
@@ -508,19 +496,21 @@ _=plt.ylim((0,10));
 ## Show the plot 
 plt.show();
 ```
-
 :::
-::::
+:::
+
+::: notes
+-   fail to correctly classiy the blue points in lower left corner
+:::
 
 ## Why deep Learning?
 
-:::: {.columns}
+::: columns
 ::: {.column width="50%"}
-
 ### For Regression
 
 -   Single layer $\approx$ logistic regression
--   More layers $\rightarrow$ 
+-   More layers $\rightarrow$
     -   more complex, non-linear, models
 
 <br><br>
@@ -531,10 +521,9 @@ plt.show();
 -   Adding layers $\rightarrow$
     -   more hyper planes $\rightarrow$
     -   more advanced classification
-
 :::
-::: {.column width="50%"}
 
+::: {.column width="50%"}
 ```{python}
 #| label: figClassification3
 fig = plt.figure(figsize = (5, 5)) 
@@ -550,9 +539,8 @@ _=plt.ylim((0,10));
 ## Show the plot 
 plt.show();
 ```
-
 :::
-::::
+:::
 
 ## Mini exercise
 
@@ -562,3 +550,14 @@ plt.show();
         -   number of hidden layers
         -   number of neurons in layer
     -   Run for several epochs (=iterations)
+    
+::: {.notes}
+
+Short demo:
+
+- Input complexity/difficulty
+- Change # hidden layers
+- Change # neurons per layer
+- 
+
+:::
