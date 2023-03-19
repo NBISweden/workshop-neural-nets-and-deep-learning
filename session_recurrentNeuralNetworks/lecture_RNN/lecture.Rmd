@@ -1,4 +1,3 @@
-
 ---
 title: "Recurrent neural networks"
 author:

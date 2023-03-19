@@ -1,0 +1,137 @@
+/*-- scss:defaults --*/
+// SciLife color scheme: see https://www.scilifelab.se/community-pages/resources/visual-identity/
+
+$lime: #A7C947;
+$lime25: #E9F2D1;
+$lime50: #E9F2D1;
+$lime75: #E9F2D1;
+
+$teal: #045C64;
+$teal25: #C0D6D8;
+$teal50: #82AEB2;
+$teal75: #43858B;
+
+$aqua: #4C979F;
+$aqua25: #D2E5E7;
+$aqua50: #A6CBCF;
+$aqua75: #79B1B7;
+
+$grape: #491F53;
+$grape25: #D2C7D4;
+$grape50: #A48FA9;
+$grape75: #77577E;
+
+$lightgray: #E5E5E5;
+$mediumgray: #A6A6A6;
+$darkgray: #3F3F3F;
+
+$blockMargin: 20px;
+$headingMargin: $blockMargin 0 $blockMargin 0;
+
+$primary: $lime;
+
+/*-- scss:rules --*/
+
+pre.out {
+  background-color: lightgreen;
+}
+pre.sourceCode.src {
+  background-color: lightblue;
+}
+
+.green { color: $lime; font-weight: bold }
+
+.label { color: $lime; font-weight: bold ; background-color: white; font-size: 1.0em;}
+
+strong { color: $lime; font-weight: bold;}
+
+code {
+    color: $grape; font-weight: bold; background-color: white;
+}
+
+code.tree {
+    line-height: 8px;
+    font-size: 18px;
+}
+
+code.stree {
+    line-height: 6.6px;
+    font-size: 12px;
+}
+
+code.sstree {
+    line-height: 5.6px;
+    font-size: 10px;
+}
+
+code.large {
+    font-size: 20px;
+}
+
+.flushright {
+    float: right;
+}
+
+.center {
+    margin: auto;
+}
+
+.highlight {
+    background-color: $lime25;
+    padding: 10px;
+    border-radius: 20px;
+    border-color: $grape;
+    border-style: solid;
+    border-width: 5px;
+}
+
+.graynote {
+    color: $mediumgray;
+    font-size: 0.7em;
+}
+
+dt {
+    font-weight: bold;
+    color: $grape;
+}
+
+.software {
+    font-weight: bold;
+    font-style: italic;
+    color: $teal50;
+}
+
+.dna {
+    font-weight: normal;
+    font-family: monospace;
+}
+
+.dna .italic {
+    font-weight: bold;
+    font-family: monospace;
+    color: $aqua75;
+}
+
+// Make H3 heading stay on top
+section.top h3{
+    margin-top: 0px;
+}
+// span.citation {
+//     font-size: 0.7em;
+//     float: right;
+// }
+
+// Special highlighting
+.blockhighlight {
+    font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    font-size: 0.8em;
+}
+.blockhighlight p {
+    font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    font-size: 0.8em;
+    color: LightGray;
+}
+.blockhighlight strong {
+    font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+    color: black;
+}

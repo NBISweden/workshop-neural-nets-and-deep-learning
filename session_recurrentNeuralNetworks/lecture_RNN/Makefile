@@ -1,4 +1,4 @@
-all: lecture.html lecture.serve.html
+all: lecture.html
 
 %.pdf: %.tex
 	xelatex $<
@@ -9,8 +9,8 @@ all: lecture.html lecture.serve.html
 lecture.serve.Rmd: lecture.Rmd
 	@cat $< | sed -e "s/self_contained: true/self_contained: false/" | sed -e "s/reveal_plugins: \[\]/reveal_plugins: \[\"notes\"\]/" > $@
 
-%.html: %.Rmd
-	R -e "library('rmarkdown'); rmarkdown::render('$<', output_file='$@')"
+%.html: %.qmd
+	quarto render $<
 
 clean:
 	rm -rf lecture_cache
