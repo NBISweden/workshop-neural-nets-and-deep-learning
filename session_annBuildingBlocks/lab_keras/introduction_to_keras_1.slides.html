@@ -13241,7 +13241,8 @@ a.anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="https://tensorflow.org"><a href="https://tensorflow.org">https://tensorflow.org</a><a class="anchor-link" href="#https://tensorflow.org">¶</a></h2><p>Use <em>TensorFlow</em> if you want a finer level of control:</p>
+<h2 id="https://tensorflow.org"><a href="https://tensorflow.org">https://tensorflow.org</a><a class="anchor-link" href="#https://tensorflow.org">¶</a></h2><p>More generic library for Machine Learning</p>
+<p>Use <em>TensorFlow</em> if you want a finer level of control:</p>
 <ul>
 <li>Build your own NN layers</li>
 <li>Personalized cost function</li>
@@ -13260,6 +13261,23 @@ a.anchor-link {
 <li>(but, you know, with &lt;- instead of =)</li>
 <li>You find the docs here: <a href="https://keras.rstudio.com/">https://keras.rstudio.com/</a></li>
 <li>Probably better support if you stick with python</li>
+</ul>
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Some-terminology">Some terminology<a class="anchor-link" href="#Some-terminology">¶</a></h2><ul>
+<li>A dataset in supervised learning is made of a number of (features, label) pairs</li>
+<li>Example, a dataset of diabetic patients is made of:<ul>
+<li>Features: information describing each patient (weight, height, blood pressure...)</li>
+<li>Labels: whether each patient is diabetic or not (glucose levels higher or lower than...)</li>
+</ul>
+</li>
+<li>Each (features, label) pair is also called a <em>sample</em> or <em>example</em>. Basically a data point</li>
+<li>Features are also sometimes called <em>inputs</em> when referred to something you feed to a NN</li>
+<li>Labels are compared to the NN's <em>outputs</em> to see how well the network is doing compared to the truth</li>
 </ul>
 </div>
 </div>
@@ -13532,15 +13550,17 @@ The above is equal to having this network:</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Keras-layers-(https://keras.io/api/layers/)">Keras layers (<a href="https://keras.io/api/layers/">https://keras.io/api/layers/</a>)<a class="anchor-link" href="#Keras-layers-(https://keras.io/api/layers/)">¶</a></h2><p>Common layers (we will cover most of these!)</p>
 <ul>
-<li>Trainable<ul>
+<li><p>Trainable</p>
+<ul>
 <li><font color="red">Dense (fully connected/MLP)</font></li>
 <li><font color="red">Conv1D (2D/3D)</font></li>
-<li>Recurrent: LSTM/GRU/Bidirectional</li>
+<li><font color="red">Recurrent: LSTM/GRU/Bidirectional</font></li>
+<li><font color="red">Embedding</font></li>
+<li><font color="red">Lambda (apply your own function)</font></li>
 </ul>
 </li>
-</ul>
+<li><p>Non-trainable</p>
 <ul>
-<li>Non-trainable<ul>
 <li><font color="red">Dropout</font></li>
 <li><font color="red">Flatten</font></li>
 <li>BatchNormalization</li>
