@@ -1,6 +1,6 @@
 ---
 title: "ANN Building Blocks part 2"
-author: "BS"
+author: "Bengt Sennblad, NBIS"
 format: 
   revealjs:
     theme: [default, customBS.scss]
@@ -43,6 +43,11 @@ use_condaenv(condaenv = "nn_dl_python", conda = "auto", required = NULL)
 :::
 :::
 
+::: notes
+-   std stat tests, e.g., linear regression, have closed form solutions
+-   complex model, deep learning, cannot be reduced to closed solution
+:::
+
 ## Supervised Learning
 
 ::: columns
@@ -51,72 +56,122 @@ use_condaenv(condaenv = "nn_dl_python", conda = "auto", required = NULL)
 
 Find optimal values of $w_{\cdot,j}$ and $b_j$ over all neurons $j$
 
+<img src="./assets/figFfAnnClaudio.png" alt="Neuron" width="400"/>
+:::
+
+::: {.column width="50%"}
+### Data
+
+-   $x$ = input
+-   $y$ = *labels*, i.e., the **known** output corresponding to $x$
+-   (Recall: $\hat{y}$ is the **estimated** output)
+
 ### Tools
 
--   Loss function
-    -   (equiv. Cost/Error Function)
--   Gradient descent
-    -   Back-propagation
 -   Cross-validation
     -   Data
         -   Training set
-            -   for learning
         -   Validation set
-            -   know when to stop
         -   Test set
-            -   quality control
-:::
-
-::: {.column width="50%"}
-<img src="./assets/figFfAnnClaudio.png" alt="Neuron" width="400"/>
-
--   $x$ = input
--   $y$ **known** output corresponding to $x$
--   (Recall: $\hat{y}$ is the **estimated** output)
+-   Loss function
+    -   (equiv. Cost/Error Function)
+    -   *"How good is the ANNs estimate?"*
+-   Optimizers
+    -   *"How can the ANN improve?"*
+    -   Gradient descent
+        -   Back-propagation
 :::
 :::
 
-## Cross-validation (reminder)
+::: notes
+-   I will go through the tools in order
+:::
 
-Split data into
+## Cross-validation (a reminder)
+
+Split data into:
 
 1.  training set
+    -   for learning
     -   use in gradient descent during learning
 2.  validation set
+    -   know when to stop learning, avoid overfitting
     -   evaluate progress/convergence during learning
 3.  test set
+    -   quality control
     -   evaluate final result after learning
+
+::: notes
+-   Should be familiar from general ML
+-   Brief recap
+-   more detailed info in future lectures on how CV used in ANNs
+:::
 
 ## Loss Function
 
-::: columns
-::: {.column width="50%"}
+::: notes
+-   Training: learning from mistakes and do better next time.
+-   **Q:** How do we define better?
+-   **A:** Use a *Loss function*
+:::
+
+::: {.fragment fragment-index="1"}
 Suppose we have
 
 1.  an ANN that, with input $x$, produces an estimated output $\hat{y}$
-2.  training samples $X=(x^{(1)},\ldots,x^{(K)})$ with true output values $Y=(y^{(1)},\ldots,y^{(K)})$.
+2.  training samples $X=(x^{(1)},\ldots,x^{(K)})$ with labels (true output values) $Y=(y^{(1)},\ldots,y^{(K)})$. <br> Then the **Quadratic Loss Function** is defined as follows:
+:::
 
-Then the **Quadratic Loss Function** is defined as follows:
+::: columns
+::: {.column width="50%"}
+::: {.fragment fragment-index="2"}
+1.  For each $x\in X$, use the residual sum of squares, *RSS*, as an error measure
 
-::: {.fragment fragment-index="1"}
-1, For each $x\in X$, use the residual sum of squares, *RSS*, as an error measure
-
-$\begin{eqnarray*}L(w,b|x) &=& \sum_i\frac{1}{2} \left(y_i-\hat{y}_i\right)^2\end{eqnarray*}$
+$$\begin{eqnarray*}L(w,b|x) &=& \sum_i\frac{1}{2} \left(y_i-\hat{y}_i\right)^2\end{eqnarray*}$$
 :::
 
 ::: {.fragment fragment-index="3"}
-2, The full quadratic cost function is simply the Mean Squared Error (MSE) used in cross-validation $$\begin{eqnarray} 
-L(w,b) &=& \frac{1}{K} \sum_{k=1}^K L(w,b|x^{(k)})\\ 
-\end{eqnarray}$$
+2.  The full quadratic cost function is simply the Mean Squared Error (MSE) used in cross-validation $$\begin{eqnarray} 
+    L(w,b) &=& \frac{1}{K} \sum_{k=1}^K L(w,b|x^{(k)})\\ 
+    \end{eqnarray}$$
 :::
 :::
 
 ::: {.column width="50%"}
-<img src="./assets/figRss.png" alt="Neuron" width="400"/>
+::: {.fragment fragment-index="2"}
+<img src="./assets/figRss.png" alt="RSS" width="400"/>
+:::
 :::
 :::
 
+::: columns
+::: {.column width="50%"}
+::: {.fragment fragment-index="4"}
+### Loss functions for regression
+
+-   **Quadratic loss function/Mean square error** or variants thereof
+:::
+:::
+
+::: {.column width="50%"}
+::: {.fragment fragment-index="5"}
+### Loss functions for classification
+
+-   (Categorical) **Cross-entropy** or variants thereof
+:::
+:::
+:::
+
+::: notes
+More on loss functions in coming lectures
+:::
+
 ## Gradient Descent
+
+::: notes
+-   How can ANN get better -- learn how to improve the loss score?
+-   optimization problem
+:::
 
 ##### Optimization
 
@@ -128,7 +183,7 @@ Consider inverted hill-climbing in one dimension $v$, i.e., we want to find the 
 :::
 
 ::: {.column width="50%"}
-<img src="./assets/figGradDesc1.png" alt="Neuron" width="400"/>
+<img src="./assets/figGradDesc1.png" alt="HillClimbing1" width="400"/>
 :::
 :::
 
@@ -145,13 +200,18 @@ Consider inverted hill-climbing in one dimension $v$, i.e., we want to find the 
 1.  randomly choose direction and length to change $v$
 2.  stay if $L(v|x)$ got lower, else go back.
 
+::: notes
+-   what could be a problem here?
+-   Local optima
+:::
+
 ::: fragment
 ##### We want to be smarter!
 :::
 :::
 
 ::: {.column width="50%"}
-<img src="./assets/figGradDesc2.png" alt="Neuron" width="400"/>
+<img src="./assets/figGradDesc2.png" alt="HillClimbing2" width="400"/>
 :::
 :::
 
@@ -167,25 +227,7 @@ Consider inverted hill-climbing in one dimension $v$, i.e., we want to find the 
 :::
 
 ::: {.column width="50%"}
-<img src="./assets/figGradDesc1.png" alt="Neuron" width="400"/>
-:::
-:::
-
-## Gradient Descent
-
-##### Optimization
-
-Consider inverted hill-climbing in one dimension $v$, i.e., we want to find the minimum instead of the maximum.
-
-::: columns
-::: {.column width="50%"}
-##### *Gradient descent*
-
-1.  compute the derivative $\frac{dL(v|x)}{dv}$ to see which way *down* is
-:::
-
-::: {.column width="50%"}
-<img src="./assets/figGradDesc3.png" alt="Neuron" width="400"/>
+<img src="./assets/figGradDesc1.png" alt="GradientDescent1" width="400"/>
 :::
 :::
 
@@ -200,7 +242,33 @@ Consider inverted hill-climbing in one dimension $v$, i.e., we want to find the 
 ##### *Gradient descent*
 
 1.  compute the derivative $\frac{dL(v|x)}{dv}$ to see which way *down* is
-2.  Take a reasonably long step in that direction, $v' = v-\eta\frac{dL(v|x)}{dv}$
+:::
+
+::: notes
+-   The gradient is defined to show which way up is
+:::
+
+::: {.column width="50%"}
+<img src="./assets/figGradDesc3.png" alt="GradientDescent2" width="400"/>
+:::
+:::
+
+## Gradient Descent
+
+##### Optimization
+
+Consider inverted hill-climbing in one dimension $v$, i.e., we want to find the minimum instead of the maximum.
+
+::: columns
+::: {.column width="50%"}
+##### *Gradient descent*
+
+1.  compute the derivative $\frac{dL(v|x)}{dv}$ to see which way *down* is
+2.  Take a reasonably long step ($\eta$) in that direction, $v' = v-\eta\frac{dL(v|x)}{dv}$
+
+::: notes
+$\eta$ determines the resonable length of the step - Too long -\> might miss the minima (but might be able to escape local minima) - To short -\> very slow (easier to get stuck in local minima)
+:::
 
 ::: fragment
 $\eta$ is called the *learning rate*
@@ -208,13 +276,22 @@ $\eta$ is called the *learning rate*
 :::
 
 ::: {.column width="50%"}
-<img src="./assets/figGradDesc4.png" alt="Neuron" width="400"/>
+<img src="./assets/figGradDesc4.png" alt="GradientDescent3" width="400"/>
 :::
 :::
 
 ## Gradient Descent in higher dimensions
 
 Same thing really, but we have to have *partial derivatives* for each dimension, which makes it look more complicated.
+
+::: notes
+-   partial derivatives -- derive w.r.t. to each variable -- marked by $\partial$ instead of $d$
+-   Take steps in each variable dimensions/direction, "manhattan distance"'
+
+<br>
+
+-   This is a simplified illustration. A more realistic (but still simplified) is \<show next slide\>
+:::
 
 ::: columns
 ::: {.column width="50%"}
@@ -231,7 +308,9 @@ Consider a 2-dimensional case. We will treat each dimension separately
     \end{pmatrix}$$
 
 2.  Take a resonably long step $\begin{eqnarray*} \begin{pmatrix} v'_1\\ v'_2\end{pmatrix} &=& \begin{pmatrix}v_1-\eta\frac{\partial L(x,w)}{\partial v_1} \\ v_2-\eta\frac{\partial L(x,v)}{\partial v_2} \end{pmatrix} \end{eqnarray*}$
+:::
 
+::: fragment
 (A vector of partial derivatives is called a **gradient**)
 :::
 :::
@@ -268,9 +347,9 @@ Consider a 2-dimensional case. We will treat each dimension separately
 ::: {.column width="50%"}
 ##### Algorithm
 
-1.  Initialize weights and biases randomly $\sim N(0, \sigma^2)$
+1.  Initialize weights and biases randomly, e.g. $\sim N(0, \sigma^2)$
 2.  Loop for $M$ epochs or until convergence:
-    -   For each weight $w_{i,j}$ and each bias $b_j$ :
+    -   In each epoch and for each weight $w_{i,j}$ and each bias $b_j$ :
         1.  Compute partial derivatives: $$\begin{eqnarray*}  \frac{\partial L(w,b|x)}{\partial w_{i,j}}\\  \frac{\partial L(w,b|x)}{\partial b_{j}}  \end{eqnarray*}$$
         2.  Update: $$\begin{eqnarray*}  w_{i,j} &=& w_{i,j} - \eta \frac{\partial L(w,b|x)}{\partial w_{i,j}}\\  b_{j} &=& b_{j} - \eta \frac{\partial L(w,b|x)}{\partial b_{j}}  \end{eqnarray*}$$
 3.  Return final weights and biases
@@ -289,37 +368,35 @@ Consider a 2-dimensional case. We will treat each dimension separately
 :::
 :::
 
-## Back propagation -- Forward pass (Skip this slide)
-
-<img src="./assets/figExercise.png" alt="Neuron" height="300"/>
-
-$$\begin{array}{lllll}
-i_1 & \Rightarrow z_1 & \Rightarrow a_1 & \Rightarrow z_2 & \Rightarrow a_2 \\
-\\
-x=i_1 \\
-&\Rightarrow i_1 \times w_1 + b_1 = z_1 \\
-&&\Rightarrow \sigma(z_1) = a_1 \\
-&&&\Rightarrow a_1 \times w_2 + b_2 = z_2 \\
-&&&&\Rightarrow \sigma(z_2) = a_2 = \hat{y}
-\end{array}$$
-
 ## Back propagation -- Forward pass
 
 <img src="./assets/figExercise.png" alt="Neuron" height="300"/>
 
 $\begin{array}{lllll} \qquad\qquad\; i_1 & \qquad\quad\Rightarrow z_1 & \Rightarrow a_1 & \quad \Rightarrow z_2 & \Rightarrow a_2 \Rightarrow \widehat{y}\\ \\ \end{array}$
 
+::: notes
+-   Instead of conputed final answer directly
+-   Can be computed stepwise using "help variables" -- a form of variable substitution
+    -   "we decompose the full expression using help variables"
+-   Once we know the answer of one step, it is used in the next step
+-   <first incremental>
+-   Let's take the above example and compute the actual numbers
+    -   (potentially ask audience for the answers) \< second incremental\>
+:::
+
 ::: columns
 ::: {.column width="50%"}
-$i_1 \quad = \quad x$
+::: incremental
+-   $i_1 \quad = \quad x$
 
-$z_1 \quad = \quad i_1 \times w_1 + b_1$
+-   $z_1 \quad = \quad i_1 \times w_1 + b_1$
 
-$a_1 \quad = \quad \sigma(z_1)$
+-   $a_1 \quad = \quad \sigma(z_1)$
 
-$z_2 \quad = \quad a_1 \times w_2 + b_2$
+-   $z_2 \quad = \quad a_1 \times w_2 + b_2$
 
-$\hat{y} = a_2 \quad = \quad \sigma(z_2)$
+-   $\hat{y} = a_2 \quad = \quad \sigma(z_2)$
+:::
 :::
 
 ::: {.column width="50%"}
@@ -365,13 +442,31 @@ $a_1 \quad = \quad 0.476$
 
 $z_2 \quad = \quad 0.443$
 
-$a_2 \quad = \quad 0.609$
+$a_2 \quad = \quad 0.609 \quad (=\hat{y})$
 
-$y = \quad = \quad 0.01$
+$y \quad = \quad 0.01$
+:::
+
+::: notes
+-   We will reuse the variable values from forward pass when doing the backward pass, so let's store them
+
+-   A similar decomposition tactic can be used in backward pass
+
+    -   example partial derivative of loss w.r.t. $w_2$
+
+-   but here we can use the help variables to express final answer as a product of help variable derivatives
+
+    -   Use "chain rule" of derivation.
+
+-   \<go backward through formula to explain the variable substitutions (before doing first incremental)\>
+
+-   \<then go through first incremental (forward)\> ...
+
+-   Now, the nice thing with doing it this way is that we can reuse our computations
 :::
 :::
 
-Partial derivative w.r.t.:
+Partial derivative of loss function w.r.t.:
 
 $\begin{array}{ccccccccc} w_2:\qquad\qquad\; & \quad & & \quad &\frac{\partial z_2}{\partial w_2} & \times &\frac{\partial a_2}{\partial z_2} &\times& \frac{\partial L(w,b|x)}{\partial a_2} &=& \frac{\partial L(w,b|x)}{\partial w_2} \qquad\qquad\\ \\ \end{array}$
 
@@ -380,15 +475,15 @@ $\frac{\partial z_2}{\partial w_2} \quad = \quad \frac{\partial \left(a_1\times 
 :::
 
 ::: fragment
-$\frac{\partial a_2}{\partial z_2} \quad = \quad \frac{\partial \sigma(z_2)}{\partial z_2}$ [$\qquad\qquad\qquad\qquad = \quad a_1\left(1-a_1\right)$]{.fragment} [$\qquad\qquad\quad = \quad 0.601(1-0.601) \quad = \quad 0.238$]{.fragment}
+$\frac{\partial a_2}{\partial z_2} \quad = \quad \frac{\partial \sigma(z_2)}{\partial z_2}$ [$\qquad\qquad\qquad\qquad = \quad a_2\left(1-a_2\right)$]{.fragment} [$\qquad\qquad\quad = \quad 0.609(1-0.609) \quad = \quad 0.238$]{.fragment}
 :::
 
 ::: fragment
-$\frac{\partial L(w,b|x)}{\partial a_2} \quad = \quad \frac{\partial \frac{1}{2}(y - a_2)^2}{\partial a_2}$ [$\qquad\qquad\quad\; = \quad \left(a_2-y\right)$]{.fragment} [$\qquad\qquad\qquad = \quad 0.0599$]{.fragment}
+$\frac{\partial L(w,b|x)}{\partial a_2} \quad = \quad \frac{\partial \frac{1}{2}(y - \hat{y})^2}{\partial a_2} = \frac{\partial \frac{1}{2}(y - a_2)^2}{\partial a_2}$ [$\quad\; = \quad \left(a_2-y\right)$]{.fragment} [$\qquad\qquad\qquad = \quad 0.609 - 0.01\quad = \quad 0.599$]{.fragment}
 :::
 
 ::: fragment
-$\frac{\partial L(w,b|x)}{\partial w_2} \quad = \frac{\partial z_2}{\partial w_2} \times \frac{\partial a_2}{\partial z_2} \times \frac{\partial L(w,b|x)}{\partial a_2}$ [$\qquad = \quad 0.476 \times 0.238 \times 0.599 \quad = \quad 0.096$]{.fragment}
+$\frac{\partial L(w,b|x)}{\partial w_2} \quad = \frac{\partial z_2}{\partial w_2} \times \frac{\partial a_2}{\partial z_2} \times \frac{\partial L(w,b|x)}{\partial a_2}$ [$\qquad = \quad 0.476 \times 0.238 \times 0.599 \quad = \quad 0.0679$]{.fragment}
 :::
 
 ## Back propagation -- Backward pass
@@ -411,13 +506,13 @@ $a_1 \quad = \quad 0.476$
 
 $z_2 \quad = \quad 0.443$
 
-$a_2 \quad = \quad 0.609$
+$a_2 \quad = \quad 0.609 \quad (=\hat{y})$
 
 $y = \quad = \quad 0.01$
 :::
 :::
 
-Partial derivative w.r.t.:
+Partial derivative of loss function w.r.t.:
 
 $w_2:\qquad\qquad \qquad\qquad \qquad\qquad\; \frac{\partial z_2}{\partial w_2} \times$ [$\frac{\partial a_2}{\partial z_2} \times \frac{\partial L(w,b|x)}{\partial a_2}$]{.fragment .highlight-red fragment-index="2"} $= \frac{\partial L(w,b|x)}{\partial w_2}$
 
@@ -433,14 +528,34 @@ $w_1:\qquad\qquad\qquad\qquad \frac{\partial z_1}{\partial w_1}$ [$\times \frac{
 $b_1:\qquad\qquad\qquad\qquad\ \frac{\partial z_1}{\partial b_1}$ [$\times \frac{\partial a_1}{\partial z_1} \times \frac{\partial z_2}{\partial a_1}$ $\times \frac{\partial a_2}{\partial z_2} \times \frac{\partial L(w,b|x)}{\partial a_2}$]{.fragment .highlight-red fragment-index="5"} $= \frac{\partial L(w,b|x)}{\partial b_1}$
 :::
 
+::: notes
+-   \<indicate on figure the variable relevant for partial derivative, e.g., w_1, b_1 etc\>
+:::
+
 ## Back propagation IRL
+
+::: notes
+-   Same thing... some complications
+
+-   \<multidim matrices leads to tensors\>
+
+    -   in practice most computations are performed using tensors
+
+    -   NB! slightly diff def of tensors in ANN compared to math def "tensors on vector space"
+
+    -   number of diff operations on tensors (examples)
+
+-   Tensorflow, the ANN platform that we will used in this course
+
+-   
+:::
 
 ::: columns
 ::: {.column width="50%"}
 ### Multiple neurons per layer
 
-1.  Interactions between layers
-2.  Requires vector and matrix multiplication
+1.  Complication: Interactions between layers
+2.  Solution: Requires vector and matrix multiplication
 
 ::: {.fragment fragment-index="2"}
 ### Even more complex designs
@@ -460,10 +575,12 @@ $b_1:\qquad\qquad\qquad\qquad\ \frac{\partial z_1}{\partial b_1}$ [$\times \frac
 ::: {.fragment fragment-index="4"}
 ### TensorFlow
 
+::: {.fragment fragment-index="1"}
 ::: incremental
 -   The forward and backward passes are viewed as\
     "Tensors (e.g., layers) that flow through the network"
 -   Additional twist is that tensors allow running all or chunks of test samples simultaneously
+:::
 :::
 :::
 :::
@@ -479,13 +596,18 @@ $b_1:\qquad\qquad\qquad\qquad\ \frac{\partial z_1}{\partial b_1}$ [$\times \frac
 
 ## Summary Learning
 
-### (Quadratic) Loss function
+### Loss function
 
-\begin{eqnarray}
-L(w,b|x) &=& \frac{1}{2}\sum_i\left(y_i-\hat{y}_i\right)^2\\
-L(w,b) &=& \frac{1}{K}\sum_{k=1}^K  L(w,b|x^{(k)})
-\end{eqnarray} - Residual sum of squares (RSS) - Mean squared error (MSE)
+Measures how good the currrent output, $\hat{y}$ are to the labels, $y$.
 
+##### (Quadratic) Loss function
+
+```{=tex}
+\begin{array}{rcll}
+L(w,b|x) &=& \frac{1}{2}\sum_i\left(y_i-\hat{y}_i\right)^2&\textsf{Residual sum of squares (RSS)}\\
+L(w,b) &=& \frac{1}{K}\sum_{k=1}^K  L(w,b|x^{(k)})&\textsf{Mean square error (MSE)}
+\end{array}
+```
 ### Gradient descent
 
 -   "Clever hill-climbing" in several dimensions
@@ -580,12 +702,16 @@ However, used in the output layer for regression problems!
 
 -   Meaningfully differentiable is important
 -   Often needs to balance pros and cons
--   Two main families
+-   Two main families (+ special cases)
 
 <br>
 
+::: notes
+-   More about activation functions in coming lectures
+:::
+
 ::: columns
-::: {.column width="50%"}
+::: {.column width="33%"}
 ### Sigmoid (logistic) family
 
 ##### Examples
@@ -594,7 +720,7 @@ However, used in the output layer for regression problems!
 -   Tanh
 :::
 
-::: {.column width="50%"}
+::: {.column width="33%"}
 ### ReLu family
 
 ##### Examples
@@ -604,7 +730,16 @@ However, used in the output layer for regression problems!
 -   PreLu
 :::
 
+::: {.column width="33%"}
+### Special uses (e.g., output layers)
+
+##### Examples
+
+-   SoftMax (classification)
+-   Linear (regression)
+:::
+
 ::: fragment
-<br><br><br><br><br> *(More about pros and cons of different activation functionsin a later lecture)*
+<br><br><br><br><br> *(More about pros and cons of different activation functions in a later lecture)*
 :::
 :::
