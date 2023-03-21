@@ -2,7 +2,7 @@
 title: "Recurrent neural networks"
 author:
   - Per Unneberg
-date: "23 March, 2022"
+date: "22 March, 2023"
 institute: NBIS
 from: markdown+emoji
 format:
@@ -1813,6 +1813,7 @@ From (Cho et al., 2014):
 ::::
 
 
+# Exercise
 ### [Example: Box & Jenkins airline passenger data set]{style="font-size: 0.9em;"} {.smaller}
 
 ::::::: {.twocolgrid style="grid-template-columns: 60% auto;"}
@@ -2068,17 +2069,16 @@ model.summary()
 
 ::::
 
-:::: {.columns}
 
-::: {.column width="70%"}
+:::: {.twocolgrid style="grid-template-columns: 2fr 1fr;"}
 
-:::: {.fragment}
+::: {.compact}
+
 
 ```{r , fig.ext='svg', engine='tikz' }
 #| label:  tikz-rnn-model-topology-writ-out-1
-#| out-height: 200px
+#| out-height: 300px
 \begin{tikzpicture}[rotate=90, transform shape]
-  \useasboundingbox (-0.5*\basenodesep, -12*\basenodesep) rectangle (6.5*\basenodesep, 11*\basenodesep);
   \tikzset{
     iolabel/.append style={rotate=-90},
     nncon/.append style={->},
@@ -2089,20 +2089,24 @@ model.summary()
   \pic[xshift=6*\basenodesep] (yt) {nnlayer={1}{output}{}{}{red}};
   \end{scope}
 
+\begin{scope}[yshift=5*\basenodesep]
+    \pic[xshift=3*\basenodesep, opacity=0.0] (h1) {nnlayer={3}{hidden}{}{}{green}};
+  \end{scope}
+
+\begin{scope}[yshift=-5*\basenodesep]
+    \pic[xshift=3*\basenodesep, opacity=0.0] (hn) {nnlayer={3}{hidden}{}{}{green}};
+  \end{scope}
   \pic {connectlayers={xt}{ht}{1}{3}};
   \pic {connectlayers={ht}{yt}{3}{1}};
-
   \node[iolabel] at (xt_n1) {$X_t$};
   \node[iolabel] at (yt_n1) {$Y_t$};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
-
-::::
 
 
 :::
 
-::: {.column width="30%"}
+::: {}
 
 :::
 
@@ -2128,15 +2132,15 @@ model.summary()
 
 ::::
 
-:::: {.columns}
+:::: {.twocolgrid style="grid-template-columns: 2fr 1fr;"}
 
-::: {.column width="70%"}
+
+::: {.compact}
 
 ```{r, fig.ext='svg', engine='tikz' }
 #| label:   tikz-rnn-model-topology-writ-out-2
-#| out-height: 200px
+#| out-height: 300px
 \begin{tikzpicture}[rotate=90, transform shape]
-  \useasboundingbox (-0.5*\basenodesep, -12*\basenodesep) rectangle (6.5*\basenodesep, 11*\basenodesep);
   \tikzset{
     iolabel/.append style={rotate=-90},
     nncon/.append style={->},
@@ -2147,13 +2151,13 @@ model.summary()
   \pic[xshift=6*\basenodesep] (yt) {nnlayer={1}{output}{}{}{red}};
   \end{scope}
 
-  \begin{scope}[yshift=10*\basenodesep]
+  \begin{scope}[yshift=5*\basenodesep]
     \pic (x1) {nnlayer={1}{input}{}{}{blue}};
     \pic[xshift=3*\basenodesep] (h1) {nnlayer={3}{hidden}{}{}{green}};
     \pic[xshift=6*\basenodesep] (y1) {nnlayer={1}{output}{}{}{red}};
   \end{scope}
 
-  \begin{scope}[yshift=-10*\basenodesep]
+  \begin{scope}[yshift=-5*\basenodesep]
     \pic (xn) {nnlayer={1}{input}{}{}{blue}};
     \pic[xshift=3*\basenodesep] (hn) {nnlayer={3}{hidden}{}{}{green}};
     \pic[xshift=6*\basenodesep] (yn) {nnlayer={1}{output}{}{}{red}};
@@ -2204,13 +2208,14 @@ model.summary()
     \node[iolabel] at (yn_n1) {$Y_{12}$};
 
     \node at ($(h1_n3.west) !.5! (ht_n1.west)$) {\Huge$\vdots$};
-    \node at ($(ht_n3.west) !.5! (hn_n1.west)$) {\Huge$\vdots$};
+\node at ($(ht_n3.west) !.5! (hn_n1.west)$) {\Huge$\vdots$};
+
 \end{tikzpicture} 
 ```
 
 :::
 
-::: {.column width="30%"}
+::: {}
 
 :::: {.fragment }
 
@@ -2237,7 +2242,7 @@ NB! In keras, RNN input is a 3D tensor with shape `[batch, timesteps, feature]`
 
 ```{r, fig.ext='svg', engine='tikz' }
 #| label:   tikz-karpathy-rnn-example-numbers
-#| out-width: 50%
+#| out-width: 70%
 \begin{tikzpicture}
   \tikzset{
     input/.style={rectangle, draw=black, fill=blue!30, text width=0.8cm, align=center},
@@ -3221,8 +3226,6 @@ subtracted. Sigmoid is in (0, 1).
 
 
 # LSTMs and GRUs
-
-
 ### Motivation behind LSTMs and GRUs {.smaller}
 
 ::::::::::::::::::: {.twocolgrid .compact}
@@ -3620,7 +3623,7 @@ Two steps to adding new information:
 
 ### Add new information - get candidate values {.smaller}
 
-::: {.compact  }
+::: {.compact  style="transform: translate(0, -50px);" }
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:    tikz-lstm-candidatecellstate-input-1
@@ -3632,7 +3635,7 @@ Two steps to adding new information:
 
 :::
 
-::: { .compact }
+::: { .compact  style="transform: translate(0, -80px);"}
 
 
 Two steps to adding new information:
@@ -3842,7 +3845,108 @@ Comparison (Lendave, 2021):
 ::::
 
 
-### Exercise
+# Concluding remarks
+
+### Example applications in genomics {.smaller}
+
+:::: { .twocolgrid style="grid-template-columns: 1fr 1.3fr; align-items: center;" }
+
+::: {}
+
+Prediction of transcriptor factor binding sites
+
+![](https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41598-018-33321-1/MediaObjects/41598_2018_33321_Fig5_HTML.png?as=webp){width=350}
+
+[@shen_recurrent_2018]
+
+:::
+
+::: {}
+
+Recombination landscape prediction
+
+![](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/mbe/37/6/10.1093_molbev_msaa038/1/m_msaa038f1.jpeg?Expires=1682056940&Signature=xYVVC0r-NfiwbF6VFCYWlzZRXKjhy2Z79R1k69YOfgMxfnNunKVZOrgbINEsih4d2esZEZTXZLlaE5slTFergEmhepvDCxgnzBCZiEwn4EmymE31QZpoXoib4ROT~jHPrgYWVUgR6JB2sqqi8KFwCh352mnO3CgNGt0xZj18gQhaAmH3nbbV3ZejsSRBy1NF88ejSh3BXROuPEA7-EwNLUeqbqetpDR35zvZ71VU-jiYJZkx1z6QTH3zJRhcg4zpbcHq0kV4VQdh5ld6CZhDDQyisONbw3w5SENibVYTUMFZtDNgfowyBQHlfvoZveFfV-6LHAdMycv8vybvOJRdBg__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA){width=500}
+
+[@adrion_PredictingLandscapeRecombination_2020]
+
+:::
+
+::::
+
+### Limitations of recurrent neural networks
+
+::: { .incremental }
+
+- Encoding bottleneck
+  - How to represent (embed) and compress data?
+- Slow and difficult to parallelize
+  - Slow convergence
+  - Sequential nature not well adapted for parallelization
+- Short memory
+  - Don't scale to sequences > thousands of time steps
+
+
+:::
+
+### Attention {.smaller}
+
+:::: {.element: style="font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter, monospace; font-size: 0.8em;"}
+
+In this paper, we propose a **novel neural network** model called **RNN**
+**Encoder-Decoder** that consists of **two recurrent neural networks** (RNN).
+One RNN **encodes** a **sequence of symbols** into a fixed-length vector
+representation, and the other **decodes the representation** into another
+sequence of symbols. The encoder and decoder of the proposed model are
+**jointly trained** to maximize the conditional probability of a target
+sequence given a source sequence. The performance of a **statistical**
+**machine translation system** is empirically found to improve by using
+the conditional probabilities of phrase pairs computed by the RNN
+Encoder-Decoder as an additional feature in the existing log-linear
+model. Qualitatively, we show that the proposed model learns a
+**semantically and syntactically meaningful representation** of linguistic
+phrases.
+
+::::
+
+
+### Transformers
+
+- process sequential input data (e.g., natural language)
+- process **entire** input at once
+- apply *attention* mechanism to provide positional context
+
+
+:::: {.element: style="font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter, monospace; font-size: 0.8em;" .fragment}
+
+Transformers were introduced in 2017 by a team at Google Brain and are
+increasingly the model of choice for NLP problems, replacing RNN
+models such as long short-term memory (LSTM). The additional training
+parallelization allows training on larger datasets
+
+[@_TransformerMachineLearning_2023]
+
+::::
+
+
+	
+### Summary
+
+::: { .incremental }
+
+1. Sequential data can be modelled with **RNNs**
+2. **Recurrence** to model sequences
+3. Training with **back-propagation through time**
+4. Gated units (**LSTM**, **GRU**) partially solve the vanishing
+   gradient problem
+5. **Transformers** model sequences **without** recurrence and have
+   increasingly become the model of choice for many natural language
+   processing (NLP) problems
+
+:::
+
+
+# Exercise
+###
 
 
 #### 1. Analyse airline passengers with LSTM
