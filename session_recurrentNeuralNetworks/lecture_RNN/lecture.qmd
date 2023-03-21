@@ -158,7 +158,7 @@ $$\begin{array}{ccc}
 a & \rightarrow & y(a)
 \end{array}$$
 
-[@mackay_information_2003]
+[@mackay_InformationTheoryInference_2003]
 
 ::::
 
@@ -215,7 +215,7 @@ $$\begin{array}{ccc}
 a & \rightarrow & y(a)
 \end{array}$$
 
-[@mackay_information_2003]
+[@mackay_InformationTheoryInference_2003]
 ::::
 
 ::::::::
@@ -228,10 +228,10 @@ Beware of notation here. Points to make:
 -   activation -> activity can be separated (next slide)
 
 Alternative view of bias: an additional weight $w_0$ with input
-permanently set to 1 (MacKay, 2003, p. 471)
+permanently set to 1 [@mackay_InformationTheoryInference_2003, p. 471]
 
-(NO_ITEM_DATA:alexander_amini_mit_2021) point out inputs $x_i$ represent
-**one** time point
+[@alexanderamini_MITS191Recurrent_2021] point out inputs $x_i$
+represent **one** time point
 
 :::
 
@@ -272,7 +272,7 @@ $$\quad\mathbf{X}=
 \quad \mathbf{W}=\begin{bmatrix}w_1\\ \vdots \\ w_n\end{bmatrix}$$
 
 ::::
-[@alexander_amini_mit_2021_rnn]
+[@alexanderamini_MITS191Recurrent_2021]
 ::::
 
 ::::::::
@@ -312,8 +312,8 @@ $$a = \boldsymbol{wx}$$
 
 :::: {.notes}
 
-FIXME: inconsistent notation? Weights are depicted as attached to
-first arrow, then the labels indicate what **value** is passed along
+Weights are depicted as attached to first arrow, then the labels
+indicate what **value** is passed along
 
 ::::
 
@@ -349,7 +349,9 @@ first arrow, then the labels indicate what **value** is passed along
 
 :::: {.notes}
 
-Show multi-valued (vector) output and hidden layer
+Show multi-valued (vector) output and hidden layer.
+
+Make mental image: from now on inputs are **vectors**
 
 ::::
 
@@ -552,7 +554,7 @@ Genomics
 
 :::: {.notes}
 
-Word prediction according to (Karpathy, 2015):
+Word prediction according to [@karpathyandrej_UnreasonableEffectivenessRecurrent_2015]:
 
 > model the probability distribution of the next character in the
 > sequence given a sequence of previous characters.
@@ -694,13 +696,13 @@ Machine translation
 
 ::::::::
 
-[@karpathy_unreasonable_effectiveness_of_RNNs]
+[@karpathyandrej_UnreasonableEffectivenessRecurrent_2015]
 
 :::: {.notes}
 
 Important point here: each input/output/hidden are **vectors**
 
-(Karpathy, 2015)
+[@karpathyandrej_UnreasonableEffectivenessRecurrent_2015]
 
 Issues with Vanilla NNs and CNNs:
 
@@ -742,12 +744,11 @@ Data:
 We will now look at the essentials of RNNs. As the figure implies, the
 output of the network
 
-(NO_ITEM_DATA:alexander_amini_mit_2021) point out inputs $x_i$ represent
-**one** time point
+[@alexanderamini_MITS191Recurrent_2021] point out inputs $x_i$
+represent **one** time point
 
 input, output, green box: contains vectors of data, arrows represent
-operations/functions
-(Karpathy, 2015)
+operations/function [@karpathyandrej_UnreasonableEffectivenessRecurrent_2015]
 
 Key feature: the recurrence (green) can be applied as many times as we
 want, i.e. no constraint on input size
@@ -1484,7 +1485,7 @@ for x, y in input_data:
 yhat = rnn.predict() 
 ```
 
-(Karpathy, 2015)
+[@karpathyandrej_UnreasonableEffectivenessRecurrent_2015]
 
 ```{r  engine='python' }
 rnn = RNN()
@@ -2238,7 +2239,7 @@ NB! In keras, RNN input is a 3D tensor with shape `[batch, timesteps, feature]`
 
 ### An RNN in numbers {.smaller}
 
-[@karpathy_unreasonable_effectiveness_of_RNNs]
+[@karpathyandrej_UnreasonableEffectivenessRecurrent_2015]
 
 ```{r, fig.ext='svg', engine='tikz' }
 #| label:   tikz-karpathy-rnn-example-numbers
@@ -2300,7 +2301,7 @@ NB! In keras, RNN input is a 3D tensor with shape `[batch, timesteps, feature]`
 \end{tikzpicture} 
 ```
 
-Example network trained on "hello" showing activations in forward pass
+Example network trained on "hello" showing *activations* in forward pass
 given input "hell". The outputs contain confidences in outputs
 (vocabulary={h, e, l, o}). We want blue numbers high, red numbers low.
 P(e) is in context of "h", P(l) in context of "he" and so on.
@@ -2366,7 +2367,7 @@ try:
 
 ### Recap: backpropagation algorithm in ffns
 
-[@alexander_amini_mit_2021_rnn]
+[@alexanderamini_MITS191Recurrent_2021]
 
 <br/>
 
@@ -2409,7 +2410,7 @@ general and applies also to ffns.
 
 ### Recap: backpropagation algorithm in ffns
 
-[@alexander_amini_mit_2021_rnn]
+[@alexanderamini_MITS191Recurrent_2021]
 
 <br/>
 
@@ -2458,7 +2459,7 @@ general and applies also to ffns.
 
 ### Recap: backpropagation algorithm in ffns
 
-[@alexander_amini_mit_2021_rnn]
+[@alexanderamini_MITS191Recurrent_2021]
 
 <br/>
 
@@ -2511,7 +2512,7 @@ general and applies also to ffns.
 
 ### Recap: backpropagation algorithm in ffns
 
-[@alexander_amini_mit_2021_rnn]
+[@alexanderamini_MITS191Recurrent_2021]
 
 <br/>
 
@@ -2566,7 +2567,7 @@ general and applies also to ffns.
 
 ### Backpropagation through time (BPTT) {.smaller}
 
-[@alexander_amini_mit_2021_rnn]
+[@alexanderamini_MITS191Recurrent_2021]
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-1
 #| out-height: 400px
@@ -2601,7 +2602,7 @@ general and applies also to ffns.
 
 ### Backpropagation through time (BPTT) {.smaller}
 
-[@alexander_amini_mit_2021_rnn]
+[@alexanderamini_MITS191Recurrent_2021]
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-2
 #| out-height: 400px
@@ -2641,7 +2642,7 @@ general and applies also to ffns.
 
 ### Backpropagation through time (BPTT) {.smaller}
 
-[@alexander_amini_mit_2021_rnn]
+[@alexanderamini_MITS191Recurrent_2021]
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-3
 #| out-height: 400px
@@ -2691,7 +2692,7 @@ general and applies also to ffns.
 
 ### Backpropagation through time (BPTT) {.smaller}
 
-[@alexander_amini_mit_2021_rnn]
+[@alexanderamini_MITS191Recurrent_2021]
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-4
 #| out-height: 400px
@@ -2754,7 +2755,7 @@ general and applies also to ffns.
 
 ### Backpropagation through time (BPTT) {.smaller}
 
-[@alexander_amini_mit_2021_rnn]
+[@alexanderamini_MITS191Recurrent_2021]
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-5
 #| out-height: 400px
@@ -2828,7 +2829,7 @@ general and applies also to ffns.
 
 ### Backpropagation through time (BPTT) {.smaller}
 
-[@alexander_amini_mit_2021_rnn]
+[@alexanderamini_MITS191Recurrent_2021]
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-6
 #| out-height: 400px
@@ -3888,23 +3889,30 @@ Recombination landscape prediction
 
 :::
 
-### Attention {.smaller}
+### Attention is all you need {.smaller}
+
+[@vaswani_AttentionAllYou_2017]
 
 :::: {.element: style="font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter, monospace; font-size: 0.8em;"}
 
-In this paper, we propose a **novel neural network** model called **RNN**
-**Encoder-Decoder** that consists of **two recurrent neural networks** (RNN).
-One RNN **encodes** a **sequence of symbols** into a fixed-length vector
-representation, and the other **decodes the representation** into another
-sequence of symbols. The encoder and decoder of the proposed model are
-**jointly trained** to maximize the conditional probability of a target
-sequence given a source sequence. The performance of a **statistical**
-**machine translation system** is empirically found to improve by using
-the conditional probabilities of phrase pairs computed by the RNN
-Encoder-Decoder as an additional feature in the existing log-linear
-model. Qualitatively, we show that the proposed model learns a
-**semantically and syntactically meaningful representation** of linguistic
-phrases.
+The **dominant sequence transduction models** are based on complex
+**recurrent** or **convolutional neural networks** in an
+**encoder-decoder configuration**. The best performing models also
+connect the encoder and decoder through an **attention mechanism**. We
+propose a new simple network architecture, the **Transformer, based
+solely on attention mechanisms**, dispensing with recurrence and
+convolutions entirely. Experiments on two machine translation tasks
+show these models to be **superior in quality** while being more
+parallelizable and requiring **significantly less time to train**. Our
+model achieves 28.4 BLEU on the WMT 2014 English-to-German translation
+task, improving over the existing best results, including ensembles by
+over 2 BLEU. On the WMT 2014 English-to-French translation task, our
+model establishes a new single-model state-of-the-art BLEU score of
+41.8 after training for 3.5 days on eight GPUs, a small fraction of
+the training costs of the best models from the literature. We show
+that the **Transformer generalizes well to other tasks** by applying
+it successfully to English constituency parsing both with large and
+limited training data.
 
 ::::
 
@@ -3982,8 +3990,8 @@ Predict next character in sequence of strings
 
 :::: {.notes}
 
-Use (Karpathy, 2015) hello example
-to illustrate how the modelling is done
+Use [@karpathyandrej_UnreasonableEffectivenessRecurrent_2015] hello
+example to illustrate how the modelling is done
 
 ::::
 
