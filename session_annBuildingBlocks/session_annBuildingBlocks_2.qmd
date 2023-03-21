@@ -63,7 +63,7 @@ Find optimal values of $w_{\cdot,j}$ and $b_j$ over all neurons $j$
 ### Data
 
 -   $x$ = input
--   $y$ **known** output corresponding to $x$
+-   $y$ = *labels*, i.e., the **known** output corresponding to $x$
 -   (Recall: $\hat{y}$ is the **estimated** output)
 
 ### Tools
@@ -99,7 +99,7 @@ Split data into:
     -   evaluate progress/convergence during learning
 3.  test set
     -   quality control
-    -   evaluate final result after learnin
+    -   evaluate final result after learning
 
 ::: notes
 -   Should be familiar from general ML
@@ -119,7 +119,7 @@ Split data into:
 Suppose we have
 
 1.  an ANN that, with input $x$, produces an estimated output $\hat{y}$
-2.  training samples $X=(x^{(1)},\ldots,x^{(K)})$ with true output values $Y=(y^{(1)},\ldots,y^{(K)})$. <br> Then the **Quadratic Loss Function** is defined as follows:
+2.  training samples $X=(x^{(1)},\ldots,x^{(K)})$ with labels (true output values) $Y=(y^{(1)},\ldots,y^{(K)})$. <br> Then the **Quadratic Loss Function** is defined as follows:
 :::
 
 ::: columns
@@ -377,7 +377,7 @@ $\begin{array}{lllll} \qquad\qquad\; i_1 & \qquad\quad\Rightarrow z_1 & \Rightar
 ::: notes
 -   Instead of conputed final answer directly
 -   Can be computed stepwise using "help variables" -- a form of variable substitution
-    -    "we decompose the full expression using help variables"
+    -   "we decompose the full expression using help variables"
 -   Once we know the answer of one step, it is used in the next step
 -   <first incremental>
 -   Let's take the above example and compute the actual numbers
@@ -442,15 +442,15 @@ $a_1 \quad = \quad 0.476$
 
 $z_2 \quad = \quad 0.443$
 
-$a_2 \quad = \quad 0.609$
+$a_2 \quad = \quad 0.609 \quad (=\hat{y})$
 
-$y = \quad = \quad 0.01$
+$y \quad = \quad 0.01$
 :::
 
 ::: notes
 -   We will reuse the variable values from forward pass when doing the backward pass, so let's store them
 
--   A similar decompposition tactic can be used in backward pass
+-   A similar decomposition tactic can be used in backward pass
 
     -   example partial derivative of loss w.r.t. $w_2$
 
@@ -479,7 +479,7 @@ $\frac{\partial a_2}{\partial z_2} \quad = \quad \frac{\partial \sigma(z_2)}{\pa
 :::
 
 ::: fragment
-$\frac{\partial L(w,b|x)}{\partial a_2} \quad = \quad \frac{\partial \frac{1}{2}(y - a_2)^2}{\partial a_2}$ [$\qquad\qquad\quad\; = \quad \left(a_2-y\right)$]{.fragment} [$\qquad\qquad\qquad = \quad 0.609 - 0.01\quad = \quad 0.599$]{.fragment}
+$\frac{\partial L(w,b|x)}{\partial a_2} \quad = \quad \frac{\partial \frac{1}{2}(y - \hat{y})^2}{\partial a_2} = \frac{\partial \frac{1}{2}(y - a_2)^2}{\partial a_2}$ [$\quad\; = \quad \left(a_2-y\right)$]{.fragment} [$\qquad\qquad\qquad = \quad 0.609 - 0.01\quad = \quad 0.599$]{.fragment}
 :::
 
 ::: fragment
@@ -506,7 +506,7 @@ $a_1 \quad = \quad 0.476$
 
 $z_2 \quad = \quad 0.443$
 
-$a_2 \quad = \quad 0.609$
+$a_2 \quad = \quad 0.609 \quad (=\hat{y})$
 
 $y = \quad = \quad 0.01$
 :::
@@ -596,13 +596,18 @@ $b_1:\qquad\qquad\qquad\qquad\ \frac{\partial z_1}{\partial b_1}$ [$\times \frac
 
 ## Summary Learning
 
-### (Quadratic) Loss function
+### Loss function
 
+Measures how good the currrent output, $\hat{y}$ are to the labels, $y$.
+
+##### (Quadratic) Loss function
+
+```{=tex}
 \begin{array}{rcll}
 L(w,b|x) &=& \frac{1}{2}\sum_i\left(y_i-\hat{y}_i\right)^2&\textsf{Residual sum of squares (RSS)}\\
 L(w,b) &=& \frac{1}{K}\sum_{k=1}^K  L(w,b|x^{(k)})&\textsf{Mean square error (MSE)}
 \end{array}
-
+```
 ### Gradient descent
 
 -   "Clever hill-climbing" in several dimensions
@@ -701,10 +706,11 @@ However, used in the output layer for regression problems!
 
 <br>
 
-::: {.notes}
-- More about activation functions in coming lectures
+::: notes
+-   More about activation functions in coming lectures
 :::
-:::: columns
+
+::: columns
 ::: {.column width="33%"}
 ### Sigmoid (logistic) family
 
@@ -729,11 +735,11 @@ However, used in the output layer for regression problems!
 
 ##### Examples
 
-- SoftMax (classification)
-- Linear (regression)
+-   SoftMax (classification)
+-   Linear (regression)
 :::
 
 ::: fragment
 <br><br><br><br><br> *(More about pros and cons of different activation functions in a later lecture)*
 :::
-::::
+:::
