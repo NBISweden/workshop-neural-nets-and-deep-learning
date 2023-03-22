@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 
 font = {
-    'size'   : 24
+    'size'   : 12
 }
 matplotlib.rc('font', **font)
 
@@ -81,13 +81,13 @@ def plot_pred(data, scaler=None, rmse=True, plotmarkers=False, **kw):
         Ypred, Y, Y_indices = v
         X = np.arange(len(Y)) + shift
         shift = shift + len(X)
+        if scaler is not None:
+            Y = scaler.inverse_transform(Y.reshape(-1, 1)).flatten()
+            Ypred = scaler.inverse_transform(Ypred.reshape(-1, 1)).flatten()
         e = math.sqrt(mean_squared_error(Y[Y_indices], Ypred))
         if rmse:
             k = f"{k} (RMSE: {e:.4f})"
         legend.append(k)
-        if scaler is not None:
-            Y = scaler.inverse_transform(Y.reshape(-1, 1)).flatten()
-            Ypred = scaler.inverse_transform(Ypred.reshape(-1, 1)).flatten()
         col = colors.pop()
         ax.plot(X[Y_indices], Ypred, color=col)
         if plotmarkers:

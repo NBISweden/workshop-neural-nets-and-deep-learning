@@ -239,7 +239,7 @@ Use ffANN to illustrate important aspects od ANNs in general
 ::: fragment
 #### Connectivity between layers
 
--   ffANN are fully connected
+-   ffANN are fully connected ("dense layers")
     -   each neuron in a layer is connected to each neurons in next layer
 :::
 :::
