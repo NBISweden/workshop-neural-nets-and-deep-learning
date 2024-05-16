@@ -2,55 +2,11 @@
 title: "Recurrent neural networks"
 author:
   - Per Unneberg
-date: "22 March, 2023"
+date: "23 May, 2024"
 institute: NBIS
-from: markdown+emoji
-format:
-  revealjs:
-    theme:
-      - white
-      - ../../common_assets/nbis.scss
-      - custom.scss
-    self-contained: true
-    toc: true
-    toc-depth: 1
-    slide-level: 3
-    slide-number: true
-    preview-links: true
-    chalkboard: false
-    footer: Recurrent neural networks
-    logo: https://nbis.se/assets/img/logos/nbislogo-green.svg
-    smaller: false
-    highlight-style: gruvbox
-    fig-width: 12
-    fig-height: 10
-    fig-align: center
-    text-align: center
-    width: 1050
-    height: 700
-    margin: 0.1
-    navigation-mode: vertical
-csl: https://raw.githubusercontent.com/citation-style-language/styles/master/apa.csl
-execute:
-  echo: false
-  warning: false
-  cache: false
-  include: true
-  autodep: true
-  eval: true
-  error: true
-  freeze: auto
-opts:
-  knitr:
-    code-fold: true
-    tidy: true
-    fig-format: svg
-bibliography: references.bib
-nocite: |
-  @hochreiter_long_1997
 ---
 
-### Setup  {visibility="hidden" .unnumbered .unlisted}
+## Setup  {visibility="hidden" .unnumbered .unlisted}
 
 ```{r  knitr-setup }
 #| echo: false
@@ -64,78 +20,48 @@ options(browser = "firefox")
 knitr::knit_hooks$set(inline = function(x) {
                       prettyNum(x, big.mark =" ")
 })
-font_opts <- list(template = "tikzfig.tex",
-                  dvisvgm.opts = "--font-format=woff")
-knitr::opts_chunk$set(engine.opts = font_opts)
-```
-```{r  load-python-libraries, engine='python' }
-import os
-import sys
-import pandas as pd
-import rnnutils
-import bokeh
-from bokeh.models import ColumnDataSource, HoverTool
-from bokeh import plotting
-from bokeh.io import output_notebook
-from bokeh.embed import components 
-```
-
-```{r  python-load-bokeh-scripts, results="asis", engine='python' }
-print("""
-<script src="https://cdn.bokeh.org/bokeh/release/bokeh-2.4.0.min.js"
-        crossorigin="anonymous"></script>
-<script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.4.0.min.js"
-        crossorigin="anonymous"></script>
-<script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.4.0.min.js"
-        crossorigin="anonymous"></script>
-<script src="https://cdn.bokeh.org/bokeh/release/bokeh-gl-2.4.0.min.js"
-        crossorigin="anonymous"></script>
-<script src="https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-2.4.0.min.js"
-        crossorigin="anonymous"></script>
-""") 
 ```
 
 :::: {.notes}
 
-1.  Recap perceptron
-    -   Even if it has been done before recap perceptron with my notation
-    -   want to show what it looks like with a perceptron in a
-        sequential model
-2.  Sequential models
-    -   begin with simple model, e.g. sinus time series
-    -   DNA sequence characteristics, language processing, time series
-        (maybe intuitively simplest)
-    -   solve with perceptron
-    -   highlight problems with perceptron
-3.  RNNs
-    -
-4.  LSTMs and GRUs
-    -   solution to vanishing gradients
-    -   need to explain **what** they do and **how** they solve the
-        issue:
-        -   gated inputs / outputs
-        -   ReLUs (indep from above or part of?)
-5.  Practical applications
-    -   look in literature to focus on life sciences; possibly also
-        languages as this is interesting in itself (e.g. google
-        translate)
+- Recap perceptron
+  - Even if it has been done before recap perceptron with my notation
+  - want to show what it looks like with a perceptron in a sequential
+    model
+- Sequential models
+  - begin with simple model, e.g. sinus time series
+  - DNA sequence characteristics, language processing, time series
+    (maybe intuitively simplest)
+  - solve with perceptron
+  - highlight problems with perceptron
+- RNNs
+- LSTMs and GRUs
+  - solution to vanishing gradients
+  - need to explain **what** they do and **how** they solve the issue:
+    - gated inputs / outputs
+    - ReLUs (indep from above or part of?)
+- Practical applications
+  - look in literature to focus on life sciences; possibly also
+    languages as this is interesting in itself (e.g. google translate)
 
 ::::
 
-
 # Recap
-### Perceptron (single neuron) { .smaller }
+
+## Perceptron (single neuron)
 
 ::::::::::::::::::: { .twocolgrid style="grid-template-columns: 0.5fr 1fr;"}
 
 :::: {}
 
-```{r tikz-rnn-recap-perceptron-simple, fig.ext="svg", engine='tikz' }
+```{r }
+#| label: tikz-rnn-recap-perceptron-simple
+#| engine: tikz
 #| fig-width: 5
 #| out-width: 100%
 \begin{tikzpicture}
   \pic {mackayperceptron};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -179,20 +105,20 @@ permanently set to 1 (MacKay, 2003, p. 471)
 
 :::
 
-
-### Perceptron (single neuron) { .smaller }
+## Perceptron (single neuron)
 
 ::::::::::::::::::: { .twocolgrid style="grid-template-columns: 0.5fr 1fr;"}
 
 :::: {}
 
-```{r, fig.ext="svg", engine='tikz' }
-#| label:   tikz-rnn-recap-perceptron-activity
+```{r }
+#| label: tikz-rnn-recap-perceptron-activity
+#| engine: tikz
 #| fig-width: 5
 #| out-width: 100%
 \begin{tikzpicture}
   \pic {mackayperceptronactivity};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -235,20 +161,20 @@ represent **one** time point
 
 :::
 
-
-### Perceptron (single neuron) { .smaller }
+## Perceptron (single neuron)
 
 :::::::::::::::::::  { .twocolgrid style="grid-template-columns: 0.5fr 1fr;" }
 
 :::: {}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r }
 #| label:   tikz-rnn-recap-perceptron-vectorized
+#| engine: tikz
 #| fig-width: 10
 #| out-width: 100%
 \begin{tikzpicture}
   \pic {mackayperceptronactivity};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -283,10 +209,13 @@ Follow MIT notation: g() is the non-linear activation (function)
 
 :::
 
-### Simplified illustration and notation
+## Simplified illustration and notation
 
-```{r, fig.ext="svg", engine='tikz' }
+<!-- markdownlint-disable MD013 -->
+
+```{r }
 #| label:   tikz-rnn-recap-perceptron-simplified
+#| engine: tikz
 #| fig-width: 10
 \begin{tikzpicture}[node distance=4*\basenodesep, >=latex]
 
@@ -298,8 +227,10 @@ Follow MIT notation: g() is the non-linear activation (function)
 \draw[->] (x) -- (sum) node [midway, above] {$\boldsymbol{w}$};
 \draw[->] (sum) -- (tanh) node [midway, above] {$\boldsymbol{wx}$};
 \draw[->] (tanh) -- (y) node [midway, above] {$\mathrm{tanh(}\boldsymbol{wx}\mathrm{)}$};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
+
+<!-- markdownlint-enable MD013 -->
 
 #### Architecture
 
@@ -317,10 +248,11 @@ indicate what **value** is passed along
 
 ::::
 
-### Feed forward network
+## Feed forward network
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r}
 #| label: tikz-rnn-recap-perceptron-multiout
+#| engine: tikz
 #| out-height: 500px
 \begin{tikzpicture}
   \tikzset{
@@ -344,7 +276,7 @@ indicate what **value** is passed along
 
   \node[yshift=-4*\basenodesep] {$\mathbf{X} \in \mathbb{R}^m$};
   \node[xshift=7*\basenodesep, yshift=-4*\basenodesep] {$\mathbf{Y} \in \mathbb{R}^n$};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 :::: {.notes}
@@ -355,8 +287,7 @@ Make mental image: from now on inputs are **vectors**
 
 ::::
 
-
-### Simplified illustration
+## Simplified illustration
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label: tikz-rnn-recap-perceptron-multiout-simple
@@ -371,7 +302,7 @@ Make mental image: from now on inputs are **vectors**
   \end{scope}
   \node[yshift=-2*\basenodesep] {$\mathbf{X} \in \mathbb{R}^m$};
   \node[xshift=3*\basenodesep, yshift=-2*\basenodesep] {$\mathbf{Y} \in \mathbb{R}^n$};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 :::: {.notes}
@@ -380,9 +311,7 @@ Condense hidden layers to a box.
 
 ::::
 
-
-### Simplified illustration
-
+## Simplified illustration
 
 ```{r,  fig.ext="svg", engine='tikz' }
 #| label: tikz-rnn-recap-perceptron-multiout-simple-rotated
@@ -397,9 +326,8 @@ Condense hidden layers to a box.
   \end{scope}
   \node[yshift=0*\basenodesep] {$\mathbf{X} \in \mathbb{R}^m$};
   \node[yshift=3*\basenodesep] {$\mathbf{Y} \in \mathbb{R}^n$};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
-
 
 :::: {.notes}
 
@@ -407,9 +335,8 @@ Condense hidden layers to a box.
 
 ::::
 
-
 # Sequential models
-### Motivation
+## Motivation
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label: tikz-rnn-motivation-time-series
@@ -418,7 +345,7 @@ Condense hidden layers to a box.
 \node[obs, fill=black!50] (x0) at (100pt, 0pt) {};
 \node[obs, fill=white] (x1) at (50pt, 50pt) {};
 \node[obs, fill=white] (x2) at (0pt, 0pt) {};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::: {.notes}
@@ -430,8 +357,7 @@ incremental figure showing time series (e.g. sinus) that highlights
 
 :::
 
-
-### Motivation
+## Motivation
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:  tikz-rnn-motivation-time-series-1
@@ -440,7 +366,7 @@ incremental figure showing time series (e.g. sinus) that highlights
 \node[obs, fill=black!50] (x0) at (100pt, 0pt) {};
 \node[obs, fill=black!20] (x1) at (50pt, 50pt) {};
 \node[obs, fill=white] (x2) at (0pt, 0pt) {};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::: {.notes}
@@ -452,8 +378,7 @@ incremental figure showing time series (e.g. sinus) that highlights
 
 :::
 
-
-### Motivation
+## Motivation
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label: tikz-rnn-motivation-time-series-2
@@ -462,20 +387,19 @@ incremental figure showing time series (e.g. sinus) that highlights
 \node[obs, fill=black!50] (x0) at (100pt, 0pt) {};
 \node[obs, fill=black!20] (x1) at (50pt, 50pt) {};
 \node[obs, fill=black!20] (x2) at (0pt, 0pt) {};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::: {.notes}
 
 incremental figure showing time series (e.g. sinus) that highlights
 
--   dependency on previous time point
--   (weaker) dependency on more distant time points
+- dependency on previous time point
+- (weaker) dependency on more distant time points
 
 :::
 
-
-### Motivation
+## Motivation
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label: tikz-rnn-motivation-time-series-3
@@ -485,29 +409,31 @@ incremental figure showing time series (e.g. sinus) that highlights
 \node[obs, fill=black!20] (x1) at (50pt, 50pt) {};
 \node[obs, fill=black!20] (x2) at (0pt, 0pt) {};
 \draw[->, thick, black!50, dotted] (x2) to[out=90, in=180] (x1) to[out=0, in=90] (x0);
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::: {.notes}
 
 incremental figure showing time series (e.g. sinus) that highlights
 
--   dependency on previous time point
--   (weaker) dependency on more distant time points
+- dependency on previous time point
+- (weaker) dependency on more distant time points
 
 :::
 
+## Sequences around us
 
-
-### Sequences around us {.smaller}
+<!-- markdownlint-disable MD013 -->
 
 ::::::::::::::::::: { style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 2fr; grid-row-gap: 0px;" }
+
+<!-- markdownlint-enable MD013 -->
 
 :::: {.compact}
 
 Word prediction
 
-![](grf/whattimeisit.png){width=250}
+![](grf/whattimeisit.png){width=350}
 
 ::::
 
@@ -516,38 +442,49 @@ Word prediction
 Language translation
 
 :::  {}
+
+<!-- markdownlint-disable MD013 -->
+
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:   rnn-example-language-translation
-#| out-height: 200px
+#| out-height: 300px
 \begin{tikzpicture}[node distance=2cm, >=latex]
-  \node[align=left, font=\ttfamily, text width=22pt, rectangle, draw=black, thick] (vec) {+0.5 +0.2 -0.1 -0.3 +0.4 +1.2};
-  \node[left of=vec, rectangle, minimum width=1.5cm, text height=1cm, align=center, fill=blue!20, draw=blue!80, anchor=east, rounded corners, thick, label={center:Encoder}] (encoder) {};
-  \node[left of=encoder, anchor=east] (swedish) {jag är en student};
-  \node[right of=vec, rectangle, minimum width=1.5cm, text height=1cm, align=center, fill=violet!20, draw=violet!80, anchor=west, rounded corners, thick, label={center:Decoder}] (decoder) {};
-  \node[right of=decoder, anchor=west] (english) {I am a student};
+  \node[align=left, font=\ttfamily\LARGE, text width=34pt, rectangle, draw=black, thick] (vec) {+0.5 +0.2 -0.1 -0.3 +0.4 +1.2};
+  \node[left of=vec, rectangle, minimum width=2cm, text height=1cm, align=center, fill=blue!20, draw=blue!80, anchor=east, rounded corners, thick, label={[font=\LARGE]center:Encoder}] (encoder) {};
+  \node[left of=encoder, anchor=east, font=\Huge] (swedish) {jag är en student};
+  \node[right of=vec, rectangle, minimum width=2cm, text height=1cm, align=center, fill=violet!20, draw=violet!80, anchor=west, rounded corners, thick, label={[font=\LARGE]center:Decoder}] (decoder) {};
+  \node[right of=decoder, anchor=west, font=\Huge] (english) {I am a student};
   \draw[->] (swedish) -- (encoder);
   \draw[->] (encoder) -- (vec);
   \draw[->] (vec) -- (decoder);
   \draw[->] (decoder) -- (english);
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
+
+<!-- markdownlint-enable MD013 -->
+
 :::
+
 ::::
 
 ::::  {.compact style="transform: translate(0, -60px);" }
+
 Time series
 
-![](https://github.com/unit8co/darts/raw/master/static/images/example.png){width=300}
+![](https://github.com/unit8co/darts/raw/master/static/images/example.png){width=350}
 
 [@herzen2021darts]
+
 ::::
 
 ::::  {.compact style="transform: translate(0, -60px);" }
+
 Genomics
 
-![](https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41598-018-33321-1/MediaObjects/41598_2018_33321_Fig5_HTML.png?as=webp){width=240}
+![](https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41598-018-33321-1/MediaObjects/41598_2018_33321_Fig5_HTML.png?as=webp){width=200}
 
 [@shen_recurrent_2018]
+
 ::::
 
 :::::::::::::::::::
@@ -561,13 +498,11 @@ Word prediction according to [@karpathyandrej_UnreasonableEffectivenessRecurrent
 
 ::::
 
-
-
-### Types of models {.smaller}
+## Types of models {.smaller}
 
 :::::::: {.fourcolgrid}
 
-:::: {} 
+:::: {}
 
 one to one
 
@@ -578,11 +513,10 @@ one to one
   \tikzset{rnnw=0.75\rnninnerwidth}
   \tikzset{rnnh=1.5\rnninnerheight}
   \pic{rnnio={}{}{}};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
-
 
 :::: {.fragment .item2 data-fragment-index="2"}
 
@@ -599,7 +533,7 @@ many to one
   \pic[xshift=2*\rnnouterwidth] (r3) {rnnio={}{}{}};
   \draw[->] (r1_center) -- (r2_center);
   \draw[->] (r2_center) -- (r3_center);
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -619,7 +553,7 @@ one to many
   \pic[xshift=2*\rnnouterwidth] (r3) {rnnioout};
   \draw[->] (r1_center) -- (r2_center);
   \draw[->] (r2_center) -- (r3_center);
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -639,7 +573,7 @@ many to many
   \pic[xshift=2*\rnnouterwidth] (r3) {rnnio={}{}{}};
   \draw[->] (r1_center) -- (r2_center);
   \draw[->] (r2_center) -- (r3_center);
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -648,14 +582,16 @@ many to many
 
 Image classification
 
-```{r, engine='python' }
+```{python}
 #| label:   fashion-mnist-image-classification
 from tensorflow import keras
 import matplotlib.pyplot as plt
 fashion_mnist = keras.datasets.fashion_mnist
 img = fashion_mnist.load_data()[0][0:2][0][0:2]
 label = fashion_mnist.load_data()[0][0:2][1][0:2]
-class_names = [ "T-shirt/top" , "Trouser" , "Pullover" , "Dress" , "Coat" , "Sandal" , "Shirt" , "Sneaker" , "Bag" , "Ankle boot" ]
+class_names = [ "T-shirt/top" , "Trouser" , "Pullover" , "Dress" ,
+                "Coat" , "Sandal" , "Shirt" , "Sneaker" , "Bag" ,
+                "Ankle boot" ]
 plt.figure(figsize=(10,5))
 plt.rc('axes', labelsize=40)
 for i in range(2):
@@ -665,7 +601,7 @@ for i in range(2):
     plt.grid(False)
     plt.imshow(img[i], cmap=plt.cm.binary)
     plt.xlabel(class_names[label[i]])
-plt.show() 
+plt.show()
 ```
 
 ::::
@@ -706,18 +642,18 @@ Important point here: each input/output/hidden are **vectors**
 
 Issues with Vanilla NNs and CNNs:
 
--   dependency on **fixed** size input
--   fixed amount of computational steps
+- dependency on **fixed** size input
+- fixed amount of computational steps
 
 Models:
 
--   **one to one:** Vanilla processing without RNN, from fixed input to
-    fixed output e.g. image classification (aka vanilla neural network)
--   **one to many:** sequence output, e.g. image captioning
--   **many to one:** sequence input, e.g. sentiment analysis (classify
-    sequence as happy/sad/&#x2026;)
--   **many to many:** sequence input and sequence output, e.g. machine
-    translation
+- **one to one:** Vanilla processing without RNN, from fixed input to
+  fixed output e.g. image classification (aka vanilla neural network)
+- **one to many:** sequence output, e.g. image captioning
+- **many to one:** sequence input, e.g. sentiment analysis (classify
+  sequence as happy/sad/&#x2026;)
+- **many to many:** sequence input and sequence output, e.g. machine
+  translation
 
 Data:
 
@@ -727,7 +663,6 @@ Data:
 
 ::::
 
-
 # Recurrent Neural Networks (RNNs)
 
 ```{r, fig.ext="svg", engine='tikz' }
@@ -736,7 +671,7 @@ Data:
 \begin{tikzpicture}[thick]
   \tikzset{nnlabel/.style={font=\bfseries\small\sffamily\sansmath}}
   \pic[\rnntikzbasekey/folded=true] {rnnio={A}{$X_t$}{$\widehat{Y}_t$}};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 :::: {.notes}
@@ -758,30 +693,36 @@ Why recurrent networks?
 
 FFNs
 
--   Cannot handle sequential data
--   Considers only the current input
--   Cannot memorize previous inputs
+- Cannot handle sequential data
+- Considers only the current input
+- Cannot memorize previous inputs
 
 and information only flows forward (i.e. no memory)
 
 ::::
 
-### Feed forward network implementation to sequential data {.smaller}
+## Feed forward network implementation to sequential data
+
+<!-- markdownlint-disable MD013 -->
 
 ::::::::::::::::::: {.compact .twocolgrid style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;"}
 
+<!-- markdownlint-enable MD013 -->
+
 :::: {}
+
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:  ffn-xt-1
 #| out-height: 250px
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
   \pic {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
+
 ::::
 
-:::: {.fragment	data-fragment-index="2" style="border-left: 2px black solid;"}
+:::: {.fragment data-fragment-index="2" style="border-left: 2px black solid;"}
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:   ffn-x0-xt-1
@@ -792,7 +733,7 @@ and information only flows forward (i.e. no memory)
   \begin{scope}[xshift=0.2*\rnnioxshiftsmall]
   \pic {rnnio={}{$X_0$}{$\widehat{Y}_0$}};
   \end{scope}
-  \end{tikzpicture} 
+  \end{tikzpicture}
 ```
 
 ::::
@@ -815,14 +756,18 @@ Rotated FFN: take a moment to recap the ffn. Input $X_t \in
 \mathbb{R}^{m}$ is mapped to output $\widehat{Y}_t \in \mathbb{R}^n$ via
 the network ($f(\cdot)$
 
-Now assume we have several time steps, starting at e.g. time 0. Also we predict the outputs individually.
+Now assume we have several time steps, starting at e.g. time 0. Also
+we predict the outputs individually.
 
 ::::
 
+## Feed forward network implementation to sequential data
 
-### Feed forward network implementation to sequential data {.smaller}
+<!-- markdownlint-disable MD013 -->
 
 ::::::::::::::::::: {.compact .twocolgrid style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;"}
+
+<!-- markdownlint-enable MD013 -->
 
 :::: {}
 
@@ -832,8 +777,9 @@ Now assume we have several time steps, starting at e.g. time 0. Also we predict 
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
   \pic {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
+
 ::::
 
 :::: { style="border-left: 2px black solid;"}
@@ -848,7 +794,7 @@ Now assume we have several time steps, starting at e.g. time 0. Also we predict 
   \pic {rnnio={}{$X_0$}{$\widehat{Y}_0$}};
   \pic[xshift=\rnnioxshiftsmall] {rnnio={}{$X_1$}{$\widehat{Y}_1$}};
   \end{scope}
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -871,10 +817,13 @@ Add another time step&#x2026;
 
 ::::
 
+## Feed forward network implementation to sequential data
 
-### Feed forward network implementation to sequential data {.smaller}
+<!-- markdownlint-disable MD013 -->
 
 ::::::::::::::::::: {.compact .twocolgrid style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;"}
+
+<!-- markdownlint-enable MD013 -->
 
 :::: {}
 
@@ -884,7 +833,7 @@ Add another time step&#x2026;
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
   \pic {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -904,7 +853,7 @@ Add another time step&#x2026;
   \pic[xshift=3.5*\rnnioxshiftsmall] (xt) {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
   \node[font=\Huge] at ($ (x2_input) !.5! (xt_input) $) {$\dots$};
   \end{scope}
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -918,7 +867,7 @@ Add another time step&#x2026;
 Assume multiple time points.
 
 > - Dependency of inputs not modelled such that ambiguous sequences
-  cannot be distinguished:
+>   cannot be distinguished:
 
 :::: fragment
 
@@ -943,10 +892,13 @@ Emphasize fact that any prediction is based only on the current input
 
 ::::
 
+## Feed forward network implementation to sequential data
 
-### Feed forward network implementation to sequential data {.smaller}
+<!-- markdownlint-disable MD013 -->
 
 ::::::::::::::::::: { .compact .twocolgrid style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;"}
+
+<!-- markdownlint-enable MD013  -->
 
 :::: {}
 
@@ -956,7 +908,7 @@ Emphasize fact that any prediction is based only on the current input
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
   \pic {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -976,7 +928,7 @@ Emphasize fact that any prediction is based only on the current input
   \pic[xshift=3.5*\rnnioxshiftsmall, \rnntikzbasekey/shade=both] (xt) {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
   \node[font=\Huge] at ($ (x2_input) !.5! (xt_input) $) {$\dots$};
   \end{scope}
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -1005,10 +957,13 @@ state via a hidden (latent) variable
 
 ::::
 
+## Feed forward network implementation to sequential data
 
-### Feed forward network implementation to sequential data {.smaller}
+<!-- markdownlint-disable MD013 -->
 
 ::::::::::::::::::: {.compact .twocolgrid style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;"}
+
+<!-- markdownlint-enable MD013 -->
 
 :::: {}
 
@@ -1018,7 +973,7 @@ state via a hidden (latent) variable
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
   \pic {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -1038,7 +993,7 @@ state via a hidden (latent) variable
   \pic[xshift=3.5*\rnnioxshiftsmall, \rnntikzbasekey/shade=output] (xt) {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
   \node[font=\Huge] at ($ (x2_input) !.5! (xt_input) $) {$\dots$};
   \end{scope}
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -1068,10 +1023,13 @@ state via a hidden (latent) variable
 
 ::::
 
+## Adding recurrence relations
 
-### Adding recurrence relations {.smaller}
+<!-- markdownlint-disable MD013 -->
 
 ::::::::::::::::::: {.compact .twocolgrid style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;"}
+
+<!-- markdownlint-enable MD013 -->
 
 :::: {}
 
@@ -1081,7 +1039,7 @@ state via a hidden (latent) variable
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
   \pic {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -1101,7 +1059,7 @@ state via a hidden (latent) variable
   \pic[xshift=3.5*\rnnioxshiftsmall] (xt) {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
   \node[font=\Huge] at ($ (x2_input) !.5! (xt_input) $) {$\dots$};
   \end{scope}
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -1119,13 +1077,17 @@ state via a hidden (latent) variable
 :::: {.notes}
 
 We want to model dependencies over time. Solution is to model the cell
-state (a hidden state) and pass this information on to the next 
+state (a hidden state) and pass this information on to the next
 
 ::::
 
+## Adding recurrence relations
 
-### Adding recurrence relations {.smaller}
+<!-- markdownlint-disable MD013 -->
+
 ::::::::::::::::::: {.compact .twocolgrid style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;"}
+
+<!-- markdownlint-enable MD013 -->
 
 :::: {}
 
@@ -1136,7 +1098,7 @@ state (a hidden state) and pass this information on to the next
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
   \pic {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -1159,7 +1121,7 @@ state (a hidden state) and pass this information on to the next
   \draw[nnconarr] (x0_right) -- (x1_left);
   \draw[nnconarr] (x1_right) -- (x2_left);
   \draw[nnconarr] (x2_right) -- (xt_left);
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -1174,9 +1136,13 @@ state (a hidden state) and pass this information on to the next
 
 :::::::::::::::::::
 
+## Adding recurrence relations
 
-### Adding recurrence relations {.smaller}
+<!-- markdownlint-disable MD013 -->
+
 ::::::::::::::::::: {.compact .twocolgrid style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;"}
+
+<!-- markdownlint-enable MD013 -->
 
 :::: {}
 
@@ -1186,7 +1152,7 @@ state (a hidden state) and pass this information on to the next
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
   \pic {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -1209,7 +1175,7 @@ state (a hidden state) and pass this information on to the next
   \draw[nnconarr] (x0_right) -- node[above] {$h_0$} (x1_left);
   \draw[nnconarr] (x1_right) -- node[above] {$h_1$} (x2_left);
   \draw[nnconarr] (x2_right) -- node[above] {$h_2, ..., h_{t-1}$} (xt_left);
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -1224,9 +1190,13 @@ state (a hidden state) and pass this information on to the next
 
 :::::::::::::::::::
 
-	
-### Adding recurrence relations {.smaller}
+## Adding recurrence relations
+
+<!-- markdownlint-disable MD013 -->
+
 ::::::::::::::::::: {.compact .twocolgrid style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;"}
+
+<!-- markdownlint-enable MD013 -->
 
 :::: {}
 
@@ -1236,7 +1206,7 @@ state (a hidden state) and pass this information on to the next
 \begin{tikzpicture}
   \useasboundingbox (0, -\ionodesize) rectangle (\rnnouterwidth, \rnnouterheight + \ionodesize);
   \pic[\rnntikzbasekey/.cd, add labels=true, folded=true] {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -1261,7 +1231,7 @@ state (a hidden state) and pass this information on to the next
   \draw[nnconarr] (x0_right) -- node[above] {$h_0$} (x1_left);
   \draw[nnconarr] (x1_right) -- node[above] {$h_1$} (x2_left);
   \draw[nnconarr] (x2_right) -- node[above] {$h_2, ..., h_{t-1}$} (xt_left);
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -1303,23 +1273,23 @@ $h_t$ is a summary of the inputs we've seen sofar
 > to store |V|n numbers for a vocabulary set V. Hence, rather than
 > modeling P(xt∣xt−1,…,xt−n+1) it is preferable to use a latent variable
 > model:
-> 
+>
 > P(xt∣xt−1,&#x2026;,x1) ~ P(xt∣ht−1),
 
 IOW, with ht the recurrence becomes a latent variable model.
 
 ::::
 
+## Sequential memory of RNNs
 
-### Sequential memory of RNNs { .smaller}
+RNNs have what one could call "sequential memory"
+[@phi_illustrated_2020_RNN]
 
-RNNs have what one could call "sequential memory" [@phi_illustrated_2020_RNN]
-
-#### Alphabet
+### Alphabet
 
 Exercise: say alphabet in your head
 
-[A B C ... X Y Z]{style="font-size: 1.5em; text-align: center; font-family: DejaVu Sans Mono;"} 
+[A B C ... X Y Z]{style="font-size: 1.5em; text-align: center; font-family: DejaVu Sans Mono;"}
 
 :::: {.fragment}
 
@@ -1333,7 +1303,7 @@ May take time to get started, but from there on it's easy
 
 Now read the alphabet in reverse:
 
-[Z Y X ... C B A]{style="font-size: 1.5em; text-align: center; font-family: DejaVu Sans Mono;"} 
+[Z Y X ... C B A]{style="font-size: 1.5em; text-align: center; font-family: DejaVu Sans Mono;"}
 
 ::::
 
@@ -1354,8 +1324,7 @@ cf (, Haykin, 2010, p. 203):
 
 ::::
 
-### Recurrent Neural Networks {.smaller}
-
+## Recurrent Neural Networks
 
 ::::::::::::::::::: {.twocolgrid style="grid-template-columns: 300px auto;"}
 
@@ -1367,10 +1336,10 @@ cf (, Haykin, 2010, p. 203):
 \begin{tikzpicture}[thick]
   \tikzset{nnlabel/.style={font=\bfseries\small\sffamily\sansmath}}
   \pic[\rnntikzbasekey/folded=true] {rnnio={RNN}{$X_t$}{$\hat{Y}_t$}};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
-:::: 
+::::
 
 :::: {}
 
@@ -1393,14 +1362,17 @@ steps!
 
 ::::
 
-:::: 
+::::
 
 :::::::::::::::::::
 
+## Recurrent Neural Networks - pseudocode
 
-### Recurrent Neural Networks - pseudocode {.smaller}
+<!-- markdownlint-disable MD013 -->
 
-::::::::::::::::::: {.twocolgrid style="grid-template-columns: 300px auto;"}
+::::::::::::::::::: {.twocolgrid style="grid-template-columns: 300px auto; grid-column-gap: 20px;"}
+
+<!-- markdownlint-enable MD013 -->
 
 :::: {}
 
@@ -1410,19 +1382,20 @@ steps!
 \begin{tikzpicture}[thick]
   \tikzset{nnlabel/.style={font=\bfseries\small\sffamily\sansmath}}
   \pic[\rnntikzbasekey/folded=true] {rnnio={RNN}{$X_t$}{$\hat{Y}_t$}};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
-:::: 
+::::
 
 :::: {}
 
-:::: {style="font-size: 1.2em"}
+:::: {style="font-size: 0.9em"}
 
-```{r, engine='python' }
+```{python}
 #| label: rnn-simple-pseudocode
 #| echo: true
 #| eval: false
+#| code-fold: false
 class RNN:
   # ...
   # Description of forward pass
@@ -1439,12 +1412,12 @@ ff = FeedForwardNN()
 for word in input:
     output = rnn.step(word)
 
-prediction = ff(output) 
+prediction = ff(output)
 ```
 
 ::::
 
-:::: 
+::::
 
 :::::::::::::::::::
 
@@ -1452,7 +1425,7 @@ prediction = ff(output)
 
 Pseudocode examples, my example:
 
-```{r  engine='python' }
+```{python}
 
 
 class RNN:
@@ -1466,7 +1439,7 @@ class RNN:
     def update_cell_state(self, x):
         # function is some function that updates cell state
         self._h = function(self._h * self._Whh + x * self.Wxh)
-    
+
     def predict(self):
         return self._h * self._Why
 
@@ -1482,12 +1455,12 @@ for x, y in input_data:
     rnn.update_weights(y)
 
 # Retrieve next prediction
-yhat = rnn.predict() 
+yhat = rnn.predict()
 ```
 
 [@karpathyandrej_UnreasonableEffectivenessRecurrent_2015]
 
-```{r  engine='python' }
+```{python}
 rnn = RNN()
 y = rnn.step(x) # x is an input vector, y is the RNN's output vector
 
@@ -1500,19 +1473,19 @@ class RNN:
     # compute the output vector
     y = np.dot(self.W_hy, self.h)
     return y
- 
+
 ```
 
 A two-layer network would look as follows:
 
-```{r  engine='python' }
+```{python}
 y1 = rnn.step(x)
-y2 = rnn.step(y1) 
+y2 = rnn.step(y1)
 ```
 
 Keras version (<https://keras.io/api/layers/recurrent_layers/rnn/#rnn-class>):
 
-```{r  engine='python' }
+```{python}
 class MinimalRNNCell(keras.layers.Layer):
 
     def __init__(self, units, **kwargs):
@@ -1534,12 +1507,12 @@ class MinimalRNNCell(keras.layers.Layer):
         prev_output = states[0]
         h = backend.dot(inputs, self.kernel)
         output = h + backend.dot(prev_output, self.recurrent_kernel)
-        return output, [output] 
+        return output, [output]
 ```
 
 Also (Phi, 2020b)
 
-```{r  engine='python' }
+```{python}
 rnn = RNN()
 ff = FeedForwardNN()
 hidden_state = [0.0, 0.0, 0.0, 0.0]
@@ -1547,12 +1520,12 @@ hidden_state = [0.0, 0.0, 0.0, 0.0]
 for word in input:
     output, hidden_state = rnn(word, hidden_state)
 
-prediction = ff(output) 
+prediction = ff(output)
 ```
 
 Also (Phi, 2020a) :
 
-```{r  engine='python' }
+```{python}
 def LSTMCell(prev_ct, prev_ht, input):
     combine = prev_ct + input
     candidate = candidate_layer(combine)
@@ -1566,12 +1539,12 @@ ct = [0, 0, 0]
 ht = [0, 0, 0]
 
 for input in inputs:
-    ct, ht = LSTMCell(ct, ht, input) 
+    ct, ht = LSTMCell(ct, ht, input)
 ```
 
 ::::
 
-### Vanilla RNNs {.smaller}
+## Vanilla RNNs
 
 ::::::::::::::::::: { .twocolgrid style="grid-template-columns: 400px auto;" }
 
@@ -1582,10 +1555,10 @@ for input in inputs:
 #| out-width: 300px
 \begin{tikzpicture}[thick]
   \pic[\rnntikzbasekey/.cd, folded=true, add labels=true] {rnnio={tanh}{$X_t$}{$\hat{Y}_t$}};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
-:::: 
+::::
 
 :::: {}
 
@@ -1619,14 +1592,15 @@ $$
 
 ::::
 
-:::: 
+::::
 
-::::::::::::::::::: 
+:::::::::::::::::::
 
-
-### Vanilla RNNs
+## Vanilla RNNs
 
 [@olah_christopher_understanding_nodate]
+
+<!-- markdownlint-disable MD013 -->
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:   tikz-vanilla-rnn-unfolded-weights-1
@@ -1638,8 +1612,10 @@ $$
   \pic[xshift=0] (rl) {RNNio={A}{$X_{t-1}$}{$\widehat{Y}_{t-1}$}};
   \pic[xshift=2*\xd] (rr) {RNNio={A}{$X_{t+1}$}{$\widehat{Y}_{t+1}$}};
   \pic[xshift=3.1*\xd, yshift=0.6*\xd, anchor=west, scale=1.5, transform shape, \rnntikzbasekey/rotate=true] {rnnlegend};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
+
+<!-- markdownlint-enable MD013 -->
 
 :::: {.notes}
 
@@ -1655,8 +1631,9 @@ Add pseudocode to exemplify
 
 ::::
 
+## Vanilla RNNs
 
-### Vanilla RNNs
+<!-- markdownlint-disable MD013 -->
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label: tikz-vanilla-rnn-unfolded-weights-2
@@ -1671,8 +1648,10 @@ Add pseudocode to exemplify
   \node[nncon, iolabel, anchor=west] at ($(r_xt) !.4! (r_xt |- r_hin) $) {$\mathbf{W_{xh}}$};
   \node[nncon, iolabel, anchor=west] at ($(rl_xt) !.4! (rl_xt |- rl_hin) $) {$\mathbf{W_{xh}}$};
   \node[nncon, iolabel, anchor=west] at ($(rr_xt) !.4! (rr_xt |- rr_hin) $) {$\mathbf{W_{xh}}$};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
+
+<!-- markdownlint-enable MD013 -->
 
 :::: {.notes}
 
@@ -1688,8 +1667,9 @@ Add pseudocode to exemplify
 
 ::::
 
+## Vanilla RNNs
 
-### Vanilla RNNs
+<!-- markdownlint-disable MD013 -->
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:   tikz-vanilla-rnn-unfolded-weights-3
@@ -1707,8 +1687,10 @@ Add pseudocode to exemplify
   \node[nncon, iolabel, anchor=south] at (r_cout) {$\mathbf{W_{hh}}$};
   \node[nncon, iolabel, anchor=south] at (rl_cout) {$\mathbf{W_{hh}}$};
   \node[nncon, iolabel, anchor=south] at (rr_cout) {$\mathbf{W_{hh}}$};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
+
+<!-- markdownlint-enable MD013 -->
 
 :::: {.notes}
 
@@ -1725,8 +1707,9 @@ Add pseudocode to exemplify
 
 ::::
 
+## Vanilla RNNs
 
-### Vanilla RNNs
+<!-- markdownlint-disable MD013 -->
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:   tikz-vanilla-rnn-unfolded-weights-4
@@ -1747,8 +1730,10 @@ Add pseudocode to exemplify
   \node[nncon, iolabel, anchor=north west] at (r_yt.south) {$\mathbf{W_{hy}}$};
   \node[nncon, iolabel, anchor=north west] at (rl_yt.south) {$\mathbf{W_{hy}}$};
   \node[nncon, iolabel, anchor=north west] at (rr_yt.south) {$\mathbf{W_{hy}}$};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
+
+<!-- markdownlint-enable MD013 -->
 
 :::: {.fragment .center}
 
@@ -1759,7 +1744,8 @@ shared across all cells!
 
 :::: {.notes}
 
-From MIT lecture: use the folded version and incrementally reveal the equation
+From MIT lecture: use the folded version and incrementally reveal the
+equation
 
 $$
 h_t = f_W(x_t, h_{t-1})
@@ -1771,39 +1757,46 @@ Add pseudocode to exemplify
 
 ::::
 
-
-### Desired features of RNN {.smaller}
+## Desired features of RNN
 
 <div class="fragment">
+
 #### 1. Variable sequence lengths
 
 Not all inputs are of equal length
+
 <br/>
 </div>
 
 <div class="fragment">
+
 #### 2. Long-term memory
 
 "I grew up in England, and &#x2026; I speak fluent English"
+
 <br/>
 </div>
 
 <div class="fragment">
+
 #### 3. Preserve order
 "dog bites man" != "man bites dog"
+
 <br/>
 </div>
 
 <div class="fragment">
+
 #### 4. Share parameters
 
 Adresses points 2 and 3.
+
 <br/>
 </div>
 
 :::: {.notes}
 
--   variable sequence lengths
+- variable sequence lengths
 
 From (Cho et al., 2014):
 
@@ -1813,39 +1806,25 @@ From (Cho et al., 2014):
 
 ::::
 
-
 # Exercise
-### [Example: Box & Jenkins airline passenger data set]{style="font-size: 0.9em;"} {.smaller}
+
+## Example: Box & Jenkins airline passenger data set
 
 ::::::: {.twocolgrid style="grid-template-columns: 60% auto;"}
 
 ::: { }
 
-```{r, fig.ext="png", engine='python' }
-#| label:   box-jenkins-airline-1
-#| out-width: 500px
-#| echo: false
-#| fig-align: center
-df = rnnutils.airlines()
-fig, ax = rnnutils.plt.subplots()
-p = ax.plot(df.time, df.passengers)
-rnnutils.plt.show() 
-```
+![Airline data](airline.png)
+
 [@onnen_temporal_2021]
+
 :::
 
 ::: {}
 
-
-
 :::
 
-
-
 :::::::
-
-
-
 
 :::: {.notes}
 
@@ -1862,36 +1841,29 @@ be difficult to understand
 
 Herzen article on darts:
 <https://medium.com/unit8-machine-learning-publication/training-forecasting-models-on-multiple-time-series-with-darts-dc4be70b1844>
+
 ::::
 
-### Example: generate test and training data {.smaller}
+## Example: generate test and training data
 
 ::::::: {.twocolgrid style="grid-template-columns: 60% auto;"}
 
 ::: {}
 
-```{r, fig.ext="png", engine='python' }
-#| label:  box-jenkins-airline-2
-#| echo: false
-#| out-width: 500px
-fig, ax = rnnutils.plt.subplots()
-p = ax.plot(df.time, df.passengers)
-p = ax.plot(df.time[100:144], df.passengers[100:144], color="red")
-p = ax.legend(["train", "test"])
-rnnutils.plt.show() 
-```
+![Airline train test data](airline-train-test.png)
 
 :::
 
-::: {.fragment}
+::: {.fragment style="font-size: 0.8em;"}
 
 Partition time series into training and test data sets at an e.g. 2:1
 ratio:
 
-```{r, engine='python' }
-#| label:   box-jenkins-airline-partition-data
+```{python }
+#| label: box-jenkins-airline-partition-data
 #| echo: true
-#| eval: true
+#| eval: false
+#| code-fold: false
 import rnnutils
 import numpy as np
 df = rnnutils.airlines()
@@ -1899,20 +1871,21 @@ data = np.array(
     df['passengers'].values
     .astype('float32')
 ).reshape(-1, 1)
-train, test, scaler = rnnutils.make_train_test(data) 
+train, test, scaler = rnnutils.make_train_test(data)
 ```
+
 :::
 
 :::::::
 
+## Example: prepare data for keras
 
-
-### Example: prepare data for keras {.smaller}
+<!-- markdownlint-disable MD013 -->
 
 ```{r , fig.ext="svg", engine='tikz' }
 #| label:  tikz-prepare-airline-data-for-keras
 #| cache: false
-#| out-width: 600px
+#| out-width: 500px
 \begin{tikzpicture}[node distance=2cm, align=center, >=latex]
   \node (data) {data = [0, 10, 20, 30, 40, 50, 60, 70]};
   \node[below left of=data, text width=1cm, rectangle, draw=black, node distance=4cm] (t) {t=0,1 t=2,3 t=4,5};
@@ -1922,48 +1895,50 @@ train, test, scaler = rnnutils.make_train_test(data)
   \node[above of=x, node distance=0.9cm] (xlab) {X};
   \node[above of=y, node distance=0.9cm] (ylab) {Y};
   \draw (xlab.north) edge["predict Y from X by row", ->, bend left] (ylab.north);
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
-:::: {.fragment }
+<!-- markdownlint-enable MD013 -->
 
-```{r, engine='python' }
+:::: {.fragment style="font-size: 0.8em;"}
+
+```{python}
 #| label:  airline-example-makexy
 #| echo: true
-#| eval: true
+#| eval: false
+#| code-fold: false
 time_steps = 12
 trainX, trainY, trainX_indices, trainY_indices = rnnutils.make_xy(train, time_steps)
-testX, testY, testX_indices, testY_indices = rnnutils.make_xy(test, time_steps) 
+testX, testY, testX_indices, testY_indices = rnnutils.make_xy(test, time_steps)
 ```
 
 ::::
 
+## Example: create vanilla RNN model{.smaller}
 
-### Example: create vanilla RNN model {.smaller}
-
-```{r, engine='python' }
-#| label:   airline-rnn-model
+```{r engine="python"}
+#| label: airline-rnn-model
 #| echo: true
 #| eval: true
 from keras.models import Sequential
 from keras.layers import Dense, SimpleRNN
-
+time_steps = 12 #| hide_line
 model = Sequential()
 model.add(SimpleRNN(units=3, input_shape=(time_steps, 1),
                     activation="tanh"))
 model.add(Dense(units=1, activation="tanh"))
 model.compile(loss='mean_squared_error', optimizer='adam')
-model.summary() 
+model.summary()
 ```
 
 :::: {.notes}
 
 On RNN layers and time steps (<https://keras.io/guides/working_with_rnns/>):
 
--   the units correspond to the output size (yhat)
--   an RNN layer processes batches of input sequences
--   an RNN layer loops RNN cells that process one input at a time (e.g.
-    one word, one time point)
+- the units correspond to the output size (yhat)
+- an RNN layer processes batches of input sequences
+- an RNN layer loops RNN cells that process one input at a time (e.g.
+  one word, one time point)
 
 Also from the source code (LSTMCell):
 
@@ -1972,109 +1947,81 @@ Also from the source code (LSTMCell):
 
 The number of LSTMCells is defined by the units parameter, e.g.:
 
-```{r  engine='python' }
+```{python}
 # Stacked layer
-rnn_cells = [tf.keras.layers.LSTMCell(128) for _ in range(2)] 
+rnn_cells = [tf.keras.layers.LSTMCell(128) for _ in range(2)]
 ```
 
 ::::
 
-
-### Example: fit the model and evaluate {.smaller}
+## Example: fit the model and evaluate{.smaller}
 
 :::: {style="font-size: 1.0em"}
 
-```{r, engine='python' }
+```{python }
 #| label:   airline-model-fit
 #| echo: true
 #| eval: false
 history = model.fit(trainX, trainY, epochs=20, batch_size=1, verbose=2)
 Ytrainpred = model.predict(trainX)
-Ytestpred = model.predict(testX) 
+Ytestpred = model.predict(testX)
 ```
 
 ::::
 
+<!-- markdownlint-disable MD013 -->
+
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 50% 50%; grid-column-gap: 10px; grid-row-gap: 0px"}
 
+<!-- markdownlint-enable MD013 -->
+
 :::: {style="font-size: 1.0em"}
 
-```{r, engine='python' }
-#| label:   airline-plot-history-command
+```{python }
+#| label: airline-model-training-history
 #| echo: true
 #| eval: false
-rnnutils.plot_history(history) 
+rnnutils.plot_history(history)
 ```
 
-:::: 
+![](airline-training-history.png)
+
+::::
 
 :::: {style="font-size: 1.0em"}
 
 ```{r, engine='python' }
-#| label:   airline-plot-model-fit-command
+#| label: airline-plot-model-fit-command
 #| echo: true
 #| eval: false
 data = {'train': (model.predict(trainX), train, trainY_indices),
         'test': (model.predict(testX), test, testY_indices)}
 rnnutils.plot_pred(data, scaler=scaler, ticks=range(0, 144, 20),
-                   labels=df.year[range(0, 144, 20)]) 
+                   labels=df.year[range(0, 144, 20)])
 ```
 
-:::: 
-
-:::: {}
-
-```{r, fig.ext="png", engine='python' }
-#| label:   airline-plot-history
-#| echo: false
-#| eval: true
-#| out-width: 80%
-d = {'loss': [0.15468591451644897, 0.04875592887401581,
-              0.026622500270605087, 0.02037993259727955, 0.01717367395758629,
-              0.01483415998518467, 0.013102399185299873, 0.011407987214624882,
-              0.01016605831682682, 0.009000968188047409, 0.008080212399363518,
-              0.007306812796741724, 0.006582655943930149, 0.005831228103488684,
-              0.0052399300038814545, 0.004740677773952484, 0.004358494654297829,
-              0.003976745996624231, 0.0037244476843625307, 0.003332830499857664]}
-rnnutils.plot_history(d) 
-```
+![](airline-prediction-prepared.png)
 
 ::::
 
-:::: {}
+:::::::::::::::::::
 
-```{r, fig.ext="png", engine='python' }
-#| label:   airline-plot-model-fit
-#| out-width: 80%
-#| eval: true
-#| echo: false
-data = {"train": [np.array([[0.07300922274589539], [0.049322694540023804], [0.12263555824756622], [0.10771659016609192], [0.08678102493286133], [0.0807582437992096], [0.16047000885009766], [0.13826081156730652], [0.12276159226894379], [0.09296061843633652], [0.005158169195055962], [0.07526839524507523], [0.058306947350502014], [0.050476402044296265], [0.1301475316286087], [0.11820383369922638], [0.05991018936038017], [0.08855298906564713], [0.18303704261779785], [0.2147040069103241], [0.12630178034305573], [0.18395473062992096], [-0.05559101700782776], [0.12674248218536377], [0.13126012682914734], [0.07171593606472015], [0.2608124911785126], [0.1329176276922226], [0.22195808589458466], [0.16103020310401917], [0.2596116065979004], [0.2631970942020416], [0.222457155585289], [0.19196732342243195], [0.08305624127388], [0.13445650041103363], [0.23295335471630096], [0.12711040675640106], [0.2997269332408905], [0.19363194704055786], [0.16322757303714752], [0.29337525367736816], [0.2702861726284027], [0.3810942769050598], [0.24219587445259094], [0.29155629873275757], [0.1209971085190773], [0.22091759741306305], [0.31695908308029175], [0.14803078770637512], [0.37239915132522583], [0.33496564626693726], [0.3264579474925995], [0.3433589041233063], [0.32992351055145264], [0.41659021377563477], [0.2793201804161072], [0.3563149571418762], [0.11158497631549835], [0.229257732629776], [0.33076655864715576], [0.10553482174873352], [0.3575865626335144], [0.30193302035331726], [0.3180869221687317], [0.33221328258514404], [0.4005788266658783], [0.406070739030838], [0.3288029730319977], [0.34573444724082947], [0.18024373054504395], [0.2741532623767853], [0.3648494482040405], [0.25930526852607727], [0.37611520290374756], [0.36360082030296326], [0.3635270297527313], [0.3676840662956238], [0.43250808119773865], [0.41396385431289673], [0.37228304147720337], [0.38717105984687805], [0.23085232079029083], [0.3464904725551605]]), np.array([0.015444010496139526, 0.027027025818824768, 0.054054051637649536, 0.04826255142688751, 0.03281852602958679, 0.059845566749572754, 0.08494207262992859, 0.08494207262992859, 0.06177607178688049, 0.028957530856132507, 0.0, 0.027027025818824768, 0.021235525608062744, 0.042471036314964294, 0.0714285671710968, 0.059845566749572754, 0.04054054617881775, 0.08687257766723633, 0.12741312384605408, 0.12741312384605408, 0.1042470932006836, 0.055984556674957275, 0.019305020570755005, 0.06949806213378906, 0.07915058732032776, 0.08880308270454407, 0.1428571343421936, 0.11389961838722229, 0.13127413392066956, 0.1428571343421936, 0.18339768052101135, 0.18339768052101135, 0.15444016456604004, 0.11196911334991455, 0.0810810923576355, 0.11969110369682312, 0.12934362888336182, 0.14671814441680908, 0.1718146800994873, 0.14864864945411682, 0.1525096595287323, 0.22007721662521362, 0.2432432472705841, 0.2664092481136322, 0.20270270109176636, 0.16795367002487183, 0.13127413392066956, 0.17374518513679504, 0.17760616540908813, 0.17760616540908813, 0.25482624769210815, 0.2528957426548004, 0.24131274223327637, 0.26833975315093994, 0.3088802993297577, 0.3243243396282196, 0.2567567527294159, 0.20656371116638184, 0.14671814441680908, 0.18725869059562683, 0.19305017590522766, 0.1621621549129486, 0.2528957426548004, 0.2374517321586609, 0.2509652376174927, 0.3088802993297577, 0.38223937153816223, 0.36486485600471497, 0.2992278039455414, 0.24131274223327637, 0.1911197006702423, 0.24131274223327637, 0.2664092481136322, 0.24903473258018494, 0.3146717846393585, 0.318532794713974, 0.3204633295536041, 0.40733590722084045, 0.5019304752349854, 0.46911194920539856, 0.4015444219112396, 0.3281853497028351, 0.2567567527294159, 0.33590731024742126, 0.3474903404712677, 0.3339768350124359, 0.41119691729545593, 0.403474897146225, 0.4131273925304413, 0.521235466003418, 0.5965250730514526, 0.5810810327529907, 0.4845559895038605, 0.3899613916873932, 0.3223938047885895, 0.3899613916873932]), np.array([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95])], "test": [np.array([[0.41985487937927246], [0.2897593379020691], [0.43206876516342163], [0.3984266519546509], [0.39088255167007446], [0.43195009231567383], [0.4271005094051361], [0.42042967677116394], [0.37909582257270813], [0.3912075459957123], [0.33704182505607605], [0.35475632548332214], [0.43653494119644165], [0.28377869725227356], [0.4360058009624481], [0.35397568345069885], [0.3680872619152069], [0.4023270905017853], [0.3970481753349304], [0.40373513102531433], [0.3252890706062317], [0.37355899810791016], [0.2793232798576355], [0.31504255533218384], [0.38788625597953796], [0.25943249464035034], [0.414558470249176], [0.3525553047657013], [0.3922974467277527], [0.3646024167537689], [0.3950953483581543], [0.34701961278915405], [0.3233894407749176], [0.32918328046798706], [0.2957551181316376], [0.3380872905254364]]), np.array([0.40733590722084045, 0.3803088963031769, 0.4864864647388458, 0.4710424840450287, 0.4845559895038605, 0.6138995885848999, 0.6969112157821655, 0.7007721662521362, 0.5791505575180054, 0.46911194920539856, 0.38803085684776306, 0.4478764235973358, 0.4555984437465668, 0.4131273925304413, 0.49806949496269226, 0.4710424840450287, 0.4999999701976776, 0.6389961242675781, 0.747104287147522, 0.7741312980651855, 0.5791505575180054, 0.49227800965309143, 0.39768341183662415, 0.44980695843696594, 0.4942084848880768, 0.45945945382118225, 0.5830116271972656, 0.5637065172195435, 0.6100386381149292, 0.7104246616363525, 0.8571429252624512, 0.8783783912658691, 0.6930501461029053, 0.584942102432251, 0.49806949496269226, 0.5810810327529907, 0.6042470932006836, 0.5540540218353271, 0.6081080436706543, 0.6891891956329346, 0.7104246616363525, 0.832046389579773, 1.0, 0.9691120386123657, 0.7799227237701416, 0.6891891956329346, 0.5521235466003418, 0.6332045793533325]), np.array([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47])]}
-rnnutils.plot_pred(data, scaler=scaler, ticks=range(0, 144, 20), labels=df.year[range(0, 144, 20)]) 
-```
+## Example: model topology writ out
 
-::::
-
-::::::::::::::::::: 
-
-
-### Example: model topology writ out {.smaller}
-
-:::: {style="font-size: 1.0em; text-align: center;"}
+:::: {style="font-size: .75em; text-align: center;"}
 
 ```{r, engine='python' }
 #| label:   airline-rnn-model-2
 #| echo: false
 #| eval: true
-model.summary() 
+model.summary()
 ```
 
 ::::
 
-
 :::: {.twocolgrid style="grid-template-columns: 2fr 1fr;"}
 
 ::: {.compact}
-
 
 ```{r , fig.ext='svg', engine='tikz' }
 #| label:  tikz-rnn-model-topology-writ-out-1
@@ -2104,7 +2051,6 @@ model.summary()
 \end{tikzpicture}
 ```
 
-
 :::
 
 ::: {}
@@ -2119,22 +2065,20 @@ model.summary()
 
 ::::
 
+## Example: model topology writ out
 
-### Example: model topology writ out {.smaller}
-
-:::: {style="font-size: 1.0em; text-align: center;"}
+:::: {style="font-size: .75em; text-align: center;"}
 
 ```{r, engine='python' }
 #| label:   airline-rnn-model-3
 #| echo: false
 #| eval: true
-model.summary() 
+model.summary()
 ```
 
 ::::
 
 :::: {.twocolgrid style="grid-template-columns: 2fr 1fr;"}
-
 
 ::: {.compact}
 
@@ -2170,7 +2114,7 @@ model.summary()
   \pic {connectlayers={ht}{yt}{3}{1}};
   \pic {connectlayers={xn}{hn}{1}{3}};
   \pic {connectlayers={hn}{yn}{3}{1}};
-  
+
   \draw (h1_n1.east) edge[->, bend left] (ht_n1.east)
     (h1_n2.east) edge[->, bend left] (ht_n2.east)
     (h1_n3.east) edge[->, bend left] (ht_n3.east)
@@ -2183,7 +2127,7 @@ model.summary()
 
     (h1_n3.west) edge[->, bend right] (ht_n1.west)
     (h1_n3.west) edge[->, bend right] (ht_n2.west)
-    
+
     (h1_n3.south) edge[->] (ht_n1.north);
 
     \draw (ht_n1.east) edge[->, bend left] (hn_n1.east)
@@ -2198,7 +2142,7 @@ model.summary()
 
     (ht_n3.west) edge[->, bend right] (hn_n1.west)
     (ht_n3.west) edge[->, bend right] (hn_n2.west)
-    
+
     (ht_n3.south) edge[->] (hn_n1.north);
 
     \node[iolabel] at (xt_n1) {$X_t$};
@@ -2211,7 +2155,7 @@ model.summary()
     \node at ($(h1_n3.west) !.5! (ht_n1.west)$) {\Huge$\vdots$};
 \node at ($(ht_n3.west) !.5! (hn_n1.west)$) {\Huge$\vdots$};
 
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 :::
@@ -2226,7 +2170,6 @@ NB! In keras, RNN input is a 3D tensor with shape `[batch, timesteps, feature]`
 
 ::::
 
-
 :::
 
 ::::
@@ -2237,7 +2180,7 @@ NB! In keras, RNN input is a 3D tensor with shape `[batch, timesteps, feature]`
 
 ::::
 
-### An RNN in numbers {.smaller}
+## An RNN in numbers {.smaller}
 
 [@karpathyandrej_UnreasonableEffectivenessRecurrent_2015]
 
@@ -2298,7 +2241,7 @@ NB! In keras, RNN input is a 3D tensor with shape `[batch, timesteps, feature]`
   (h2) edge[->] (o2)
   (h3) edge[->] (o3)
   (h4) edge[->] node[left] {\color{red!70}$\mathbf{W_{hy}}$\color{black}} (o4);
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 Example network trained on "hello" showing *activations* in forward pass
@@ -2333,39 +2276,36 @@ What is the topology of the network?
 :::: {.notes}
 
 NB! This is what it could look like after a forward pass! During
-training, we **want** to increase confidence for blue characters. Also,
-for output 2 and more the output depends on all preceding **hidden**
-states + the input.
+training, we **want** to increase confidence for blue characters.
+Also, for output 2 and more the output depends on all preceding
+**hidden** states + the input.
 
 Mention: e is conditional on h
 
-l is conditional on input e + hidden state based on h. Quoting Karpathy:
+l is conditional on input e + hidden state based on h. Quoting
+Karpathy:
 
 > This training sequence is in fact a source of 4 separate training
-> examples: 1. The probability of “e” should be likely given the context
-> of “h”, 2. “l” should be likely in the context of “he”, 3. “l” should
-> also be likely given the context of “hel”, and finally 4. “o” should
-> be likely given the context of “hell”.
+> examples: 1. The probability of “e” should be likely given the
+> context of “h”, 2. “l” should be likely in the context of “he”, 3.
+> “l” should also be likely given the context of “hel”, and finally 4.
+> “o” should be likely given the context of “hell”.
 
 Ask for input\_shape: what is timesteps? (=4) What is features? (=4)
 ::::
 
-
-
-
-### Exercise
+## Exercise
 
 See if you can improve the airline passenger model. Some things to
 try:
 
--   change the number of units
--   change time\_steps
--   change the number of epochs
-
+- change the number of units
+- change time\_steps
+- change the number of epochs
 
 # Training
 
-### Recap: backpropagation algorithm in ffns
+## Recap: backpropagation algorithm in ffns
 
 [@alexanderamini_MITS191Recurrent_2021]
 
@@ -2388,16 +2328,16 @@ try:
   \pic[xshift=4*\basenodesep, \rnntikzbasekey/.cd, boxed=true, dotted=true] (o) {nnlayer={3}{output}{}{}{red}};
   \pic {connectlayers={i}{h}{6}{4}};
   \pic {connectlayers={h}{o}{4}{3}};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
-:::: 
+::::
 
 :::: {}
 
-:::: 
+::::
 
-::::::::::::::::::: 
+:::::::::::::::::::
 
 :::: {.notes}
 
@@ -2407,8 +2347,7 @@ general and applies also to ffns.
 
 ::::
 
-
-### Recap: backpropagation algorithm in ffns
+## Recap: backpropagation algorithm in ffns
 
 [@alexanderamini_MITS191Recurrent_2021]
 
@@ -2417,7 +2356,6 @@ general and applies also to ffns.
 ::::::::::::::::::: {.twocolgrid style="grid-template-columns: 50% auto;"}
 
 :::: {}
-
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:   tikz-backpropagation-ffn-2
@@ -2435,18 +2373,18 @@ general and applies also to ffns.
   \node[below of=i_n6] (start) {};
   \node[right of=start, node distance=4*\basenodesep] (end) {};
   \draw[->, thick] (start) -- (end);
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
-:::: 
+::::
 
 :::: {}
 
-1.  perform forward pass and generate prediction
+1. perform forward pass and generate prediction
 
-:::: 
+::::
 
-::::::::::::::::::: 
+:::::::::::::::::::
 
 :::: {.notes}
 
@@ -2456,8 +2394,7 @@ general and applies also to ffns.
 
 ::::
 
-
-### Recap: backpropagation algorithm in ffns
+## Recap: backpropagation algorithm in ffns
 
 [@alexanderamini_MITS191Recurrent_2021]
 
@@ -2466,6 +2403,8 @@ general and applies also to ffns.
 ::::::::::::::::::: {.twocolgrid style="grid-template-columns: 50% auto;"}
 
 :::: {}
+
+<!-- markdownlint-disable MD013 -->
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:   tikz-backpropagation-ffn-3
@@ -2482,23 +2421,23 @@ general and applies also to ffns.
   \node[below of=i_n6] (start) {};
   \node[right of=start, node distance=4*\basenodesep] (end) {};
   \draw[thick, ->] (start) -- (end);
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
-:::: 
+<!-- markdownlint-enable MD013 -->
+
+::::
 
 :::: {}
 
-1.  perform forward pass and generate prediction
-2.  calculate prediction error $\epsilon_i$ wrt (known) output: $\epsilon_i =
-       \mathcal{L}(\hat{y}_i, y_i)$, loss function $\mathcal{L}$
+1. perform forward pass and generate prediction
+2. calculate prediction error $\epsilon_i$ wrt (known) output:
+   $\epsilon_i = \mathcal{L}(\hat{y}_i, y_i)$, loss function
+   $\mathcal{L}$
 
-:::: 
+::::
 
-::::::::::::::::::: 
-
-
-
+:::::::::::::::::::
 
 :::: {.notes}
 
@@ -2508,9 +2447,7 @@ general and applies also to ffns.
 
 ::::
 
-
-
-### Recap: backpropagation algorithm in ffns
+## Recap: backpropagation algorithm in ffns
 
 [@alexanderamini_MITS191Recurrent_2021]
 
@@ -2539,23 +2476,22 @@ general and applies also to ffns.
   \node[below of=end] (bptt_start) {};
   \node[below of=start] (bptt_end) {};
   \draw[thick, ->, color=red] (bptt_start) -- (bptt_end);
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
-:::: 
+::::
 
 :::: {}
 
-1.  perform forward pass and generate prediction
-2.  calculate prediction error $\epsilon_i$ wrt (known) output: $\epsilon_i =
-       \mathcal{L}(\hat{y}_i, y_i)$, loss function $\mathcal{L}$
-3.  back propagate errors and update weights to minimize loss
+1. perform forward pass and generate prediction
+2. calculate prediction error $\epsilon_i$ wrt (known) output:
+   $\epsilon_i = \mathcal{L}(\hat{y}_i, y_i)$, loss function
+   $\mathcal{L}$
+3. back propagate errors and update weights to minimize loss
 
-:::: 
+::::
 
-::::::::::::::::::: 
-
-
+:::::::::::::::::::
 
 :::: {.notes}
 
@@ -2565,15 +2501,16 @@ general and applies also to ffns.
 
 ::::
 
-### Backpropagation through time (BPTT) {.smaller}
+## Backpropagation through time (BPTT)
 
 [@alexanderamini_MITS191Recurrent_2021]
+
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-1
 #| out-height: 400px
 #| out-width: 100%
 \begin{tikzpicture}
-  \useasboundingbox (-\ionodesize, -\ionodesize) rectangle (6*\rnnioxshiftsmall, 7*\basenodesep);  
+  \useasboundingbox (-\ionodesize, -\ionodesize) rectangle (6*\rnnioxshiftsmall, 7*\basenodesep);
   \tikzset{nnlabel/.style={font=\bfseries\normalsize\sffamily\sansmath}}
   \rnntikzset{folded=true}
   \pic (xfolded)  {rnnio={RNN}{$X_t$}{$Y_t$}};
@@ -2592,23 +2529,21 @@ general and applies also to ffns.
   \draw[nnconarr] (x0_right) -- (x1_left);
   \draw[nnconarr] (x1_right) -- (x2_left);
   \draw[nnconarr] (x2_right) -- (xt_left);
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
-
-
-
-
-
-### Backpropagation through time (BPTT) {.smaller}
+## Backpropagation through time (BPTT)
 
 [@alexanderamini_MITS191Recurrent_2021]
+
+<!-- markdownlint-disable MD013 -->
+
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-2
 #| out-height: 400px
 #| out-width: 100%
 \begin{tikzpicture}
-  \useasboundingbox (-\ionodesize, -\ionodesize) rectangle (6*\rnnioxshiftsmall, 7*\basenodesep);  
+  \useasboundingbox (-\ionodesize, -\ionodesize) rectangle (6*\rnnioxshiftsmall, 7*\basenodesep);
   \tikzset{nnlabel/.style={font=\bfseries\normalsize\sffamily\sansmath}}
   \rnntikzset{folded=true}
   \pic (xfolded)  {rnnio={RNN}{$X_t$}{$Y_t$}};
@@ -2637,18 +2572,23 @@ general and applies also to ffns.
   \draw[nnconarr] (x1_output) -- (l1);
   \draw[nnconarr] (x2_output) -- (l2);
   \draw[nnconarr] (xt_output) -- (lt);
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
-### Backpropagation through time (BPTT) {.smaller}
+<!-- markdownlint-enable MD013 -->
+
+## Backpropagation through time (BPTT)
 
 [@alexanderamini_MITS191Recurrent_2021]
+
+<!-- markdownlint-disable MD013 -->
+
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-3
 #| out-height: 400px
 #| out-width: 100%
 \begin{tikzpicture}
-  \useasboundingbox (-\ionodesize, -\ionodesize) rectangle (6*\rnnioxshiftsmall, 7*\basenodesep);  
+  \useasboundingbox (-\ionodesize, -\ionodesize) rectangle (6*\rnnioxshiftsmall, 7*\basenodesep);
   \tikzset{nnlabel/.style={font=\bfseries\normalsize\sffamily\sansmath}}
   \rnntikzset{folded=true}
   \pic (xfolded)  {rnnio={RNN}{$X_t$}{$Y_t$}};
@@ -2677,7 +2617,7 @@ general and applies also to ffns.
   \draw[nnconarr] (x1_output) -- (l1);
   \draw[nnconarr] (x2_output) -- (l2);
   \draw[nnconarr] (xt_output) -- (lt);
-  
+
   \node[loss, node distance=2*\basenodesep, above of=l2, minimum height=30pt, minimum width=30pt, font=\Large] (L) {$\mathcal{L}$};
 
   \begin{scope}[bend angle=5]
@@ -2686,19 +2626,23 @@ general and applies also to ffns.
   \draw (l2) edge[->, bend left] (L);
   \draw (lt) edge [->, bend right] (L);
   \end{scope}
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
+<!-- markdownlint-enable MD013 -->
 
-### Backpropagation through time (BPTT) {.smaller}
+## Backpropagation through time (BPTT)
 
 [@alexanderamini_MITS191Recurrent_2021]
+
+<!-- markdownlint-disable MD013 -->
+
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-4
 #| out-height: 400px
 #| out-width: 100%
 \begin{tikzpicture}
-  \useasboundingbox (-\ionodesize, -\ionodesize) rectangle (6*\rnnioxshiftsmall, 7*\basenodesep);  
+  \useasboundingbox (-\ionodesize, -\ionodesize) rectangle (6*\rnnioxshiftsmall, 7*\basenodesep);
   \tikzset{nnlabel/.style={font=\bfseries\normalsize\sffamily\sansmath}}
   \rnntikzset{folded=true}
   \pic (xfolded)  {rnnio={RNN}{$X_t$}{$Y_t$}};
@@ -2727,7 +2671,7 @@ general and applies also to ffns.
   \draw[nnconarr] (x1_output) -- (l1);
   \draw[nnconarr] (x2_output) -- (l2);
   \draw[nnconarr] (xt_output) -- (lt);
-  
+
   \node[loss, node distance=2*\basenodesep, above of=l2, minimum height=30pt, minimum width=30pt, font=\Large] (L) {$\mathcal{L}$};
 
   \begin{scope}[bend angle=5]
@@ -2748,20 +2692,24 @@ general and applies also to ffns.
   \draw[nnconarr] (l1) edge[->, bend left] (x1_output);
   \draw[nnconarr] (l2) edge[->, bend left] (x2_output);
   \draw[nnconarr] (lt) edge[->, bend left] (xt_output);
-\end{scope}  
-\end{tikzpicture} 
+\end{scope}
+\end{tikzpicture}
 ```
 
+<!-- markdownlint-enable MD013 -->
 
-### Backpropagation through time (BPTT) {.smaller}
+## Backpropagation through time (BPTT)
 
 [@alexanderamini_MITS191Recurrent_2021]
+
+<!-- markdownlint-disable MD013 -->
+
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-5
 #| out-height: 400px
 #| out-width: 100%
 \begin{tikzpicture}
-  \useasboundingbox (-\ionodesize, -\ionodesize) rectangle (6*\rnnioxshiftsmall, 7*\basenodesep);  
+  \useasboundingbox (-\ionodesize, -\ionodesize) rectangle (6*\rnnioxshiftsmall, 7*\basenodesep);
   \tikzset{nnlabel/.style={font=\bfseries\normalsize\sffamily\sansmath}}
   \rnntikzset{folded=true}
   \pic (xfolded)  {rnnio={RNN}{$X_t$}{$Y_t$}};
@@ -2790,7 +2738,7 @@ general and applies also to ffns.
   \draw[nnconarr] (x1_output) -- (l1);
   \draw[nnconarr] (x2_output) -- (l2);
   \draw[nnconarr] (xt_output) -- (lt);
-  
+
   \node[loss, node distance=2*\basenodesep, above of=l2, minimum height=30pt, minimum width=30pt, font=\Large] (L) {$\mathcal{L}$};
 
   \begin{scope}[bend angle=5]
@@ -2811,31 +2759,36 @@ general and applies also to ffns.
   \draw[nnconarr] (l1) edge[->, bend left] (x1_output);
   \draw[nnconarr] (l2) edge[->, bend left] (x2_output);
   \draw[nnconarr] (lt) edge[->, bend left] (xt_output);
-\end{scope}  
+\end{scope}
 \begin{scope}[draw=red, bend angle=-10]
   \draw (x0_output) edge[->, bend left] (x0_center);
   \draw (x1_output) edge[->, bend left] (x1_center);
   \draw (x2_output) edge[->, bend left] (x2_center);
   \draw (xt_output) edge[->, bend left] (xt_center);
-\end{scope}  
+\end{scope}
 \begin{scope}[draw=red, bend angle=-20]
   \draw (x1_left) edge[->, bend left] (x0_right);
   \draw (x2_left) edge[->, bend left] (x1_right);
   \draw (xt_left) edge[->, bend left] (x2_right);
-\end{scope}  
+\end{scope}
 
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
-### Backpropagation through time (BPTT) {.smaller}
+<!-- markdownlint-enable MD013 -->
+
+## Backpropagation through time (BPTT)
 
 [@alexanderamini_MITS191Recurrent_2021]
+
+<!-- markdownlint-disable MD013 -->
+
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-6
 #| out-height: 400px
 #| out-width: 100%
 \begin{tikzpicture}
-  \useasboundingbox (-\ionodesize, -\ionodesize) rectangle (6*\rnnioxshiftsmall, 7*\basenodesep);  
+  \useasboundingbox (-\ionodesize, -\ionodesize) rectangle (6*\rnnioxshiftsmall, 7*\basenodesep);
   \tikzset{nnlabel/.style={font=\bfseries\normalsize\sffamily\sansmath}}
   \rnntikzset{folded=true}
   \pic (xfolded)  {rnnio={RNN}{$X_t$}{$Y_t$}};
@@ -2864,7 +2817,7 @@ general and applies also to ffns.
   \draw[nnconarr] (x1_output) -- (l1);
   \draw[nnconarr] (x2_output) -- (l2);
   \draw[nnconarr] (xt_output) -- (lt);
-  
+
   \node[loss, node distance=2*\basenodesep, above of=l2, minimum height=30pt, minimum width=30pt, font=\Large] (L) {$\mathcal{L}$};
 
   \begin{scope}[bend angle=5]
@@ -2885,13 +2838,13 @@ general and applies also to ffns.
   \draw[nnconarr] (l1) edge[->, bend left] (x1_output);
   \draw[nnconarr] (l2) edge[->, bend left] (x2_output);
   \draw[nnconarr] (lt) edge[->, bend left] (xt_output);
-\end{scope}  
+\end{scope}
 \begin{scope}[draw=red, bend angle=-10]
   \draw (x0_output) edge[->, bend left] (x0_center);
   \draw (x1_output) edge[->, bend left] (x1_center);
   \draw (x2_output) edge[->, bend left] (x2_center);
   \draw (xt_output) edge[->, bend left] (xt_center);
-\end{scope}  
+\end{scope}
 \begin{scope}[draw=red, bend angle=-20]
   \draw (x1_left) edge[->, bend left] (x0_right);
   \draw (x2_left) edge[->, bend left] (x1_right);
@@ -2899,35 +2852,38 @@ general and applies also to ffns.
   \node[ultra thick, node distance=.7*\basenodesep, below right of=xt_input]  (gradstart) {};
   \node[ultra thick, node distance=.7*\basenodesep, below left of=x0_input]  (gradend) {};
   \draw (gradstart) edge [->] (gradend);
-\end{scope}  
+\end{scope}
 
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
+
+<!-- markdownlint-enable MD013 -->
+
 :::::: {style="transform: translate(0, -30px);"}
 
 :::: {.columns }
 
 ::: {.column width="50%"}
+
 Errors are propagated backwards in time from $t=t$ to $t=0$.
+
 :::
 
 ::: {.column width="50%"}
 
 :::: {.fragment .center}
+
 Problem: calculating gradient may depend on large powers of
 $\mathbf{W_{hh}}^{\mathsf{T}}$ (e.g. $\delta\mathcal{L} / \delta h_0
 \sim f((\mathbf{W_{hh}}^{\mathsf{T}})^t)$
+
 ::::
+
 :::
 
 ::::
 
 ::::::
-
-
-
-
-
 
 :::: {.notes}
 
@@ -2943,10 +2899,13 @@ size of gradient
 
 ::::
 
+## The effect of vanishing gradients on long-term memory
 
-### The effect of vanishing gradients on long-term memory {.smaller}
+<!-- markdownlint-disable MD013 -->
 
 ::::::::::::::::::: {style="display: grid; grid-template-columns: 30% auto; grid-column-gap: 0px; font-size: 0.7em; align: center;"}
+
+<!-- markdownlint-enable MD013 -->
 
 :::: {}
 
@@ -2976,7 +2935,7 @@ Early layers tend to "see" small gradients and do very little updating
 
 $\downarrow$
 
-Bias parameters to learn recent events 
+Bias parameters to learn recent events
 
 ::::
 
@@ -2988,7 +2947,7 @@ RNN suffer short term memory
 
 ::::
 
-:::: 
+::::
 
 :::: {}
 
@@ -3017,7 +2976,7 @@ RNN suffer short term memory
   (x2_right) edge (x3_left)
   (x3_right) edge (x4_left)
   (x4_right) edge (x5_left);
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 <br/>
@@ -3026,7 +2985,8 @@ RNN suffer short term memory
 
 :::: {.fragment .center .compact}
 
-"I grew up in England &#x2026; I speak fluent <span class="underline">\_</span>"
+"I grew up in England &#x2026; I speak fluent <span
+class="underline">\_</span>"
 
 ::::
 
@@ -3041,7 +3001,7 @@ RNN suffer short term memory
   \pic[xshift=2*\rnnioxshiftsmall, \rnntikzbasekey/shade=input] (x2) {rnnio={}{$X_2$}{$\widehat{Y}_2$}};
   \pic[xshift=3.5*\rnnioxshiftsmall] (xt) {rnnio={}{$X_t$}{$\widehat{Y}_t$}};
   \node[font=\Huge] at ($ (x2_input) !.5! (xt_input) $) {$\dots$};
-  
+
   \pic[xshift=4.5*\rnnioxshiftsmall, \rnntikzbasekey/shade=output] (xt1) {rnnio={}{$X_{t+1}$}{$\widehat{Y}_{t+1}$}};
   \pic[xshift=5.5*\rnnioxshiftsmall] (xt2) {rnnio={}{$X_{t+2}$}{$\widehat{Y}_{t+2}$}};
 
@@ -3051,14 +3011,14 @@ RNN suffer short term memory
   (xt_right) edge (xt1_left)
   (xt1_right) edge (xt2_left);
 
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
 
-:::: 
+::::
 
-::::::::::::::::::: 
+:::::::::::::::::::
 
 :::: {.notes}
 
@@ -3079,12 +3039,7 @@ is long, we need context from much farther back.
 
 ::::
 
-
-
-
-
-
-### Solutions to vanishing gradient
+## Solutions to vanishing gradient
 
 :::: {.columns}
 
@@ -3118,7 +3073,7 @@ activation functions.
   \pgfplotsset{every axis plot/.append style={thick}}
 \begin{axis}%
   [
-  grid=major,     
+  grid=major,
   xmin=-4,
   xmax=4,
   axis x line=bottom,
@@ -3138,13 +3093,14 @@ activation functions.
 
   \legend{$\sigma'(x)$, $\mathsf{tanh}'(x)$, $\mathsf{ReLU}'$}
 \end{axis}
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
+
 :::
 
 ::::
 
-### Solutions to vanishing gradient
+## Solutions to vanishing gradient
 
 :::: {.columns}
 
@@ -3157,11 +3113,12 @@ Set bias=0, weights to identity matrix
 :::
 
 ::: {.column width="50%"}
+
 ```{r, fig.ext='svg', engine='tikz' }
 #| label: tikz-vanishing-gradient-trick-2
 #| out-height: 400px
 \begin{tikzpicture}
-  \matrix [matrix of math nodes,left delimiter=(,right delimiter=), anchor=west](W){ 
+  \matrix [matrix of math nodes,left delimiter=(,right delimiter=), anchor=west](W){
     1 & 0 & \dots  & 0\\
     0 & 1 & \dots  & 0\\
     \vdots  & \vdots  & \ddots & \vdots\\
@@ -3169,7 +3126,7 @@ Set bias=0, weights to identity matrix
   };
   \node [left of=W, anchor=east, node distance=1.5cm] {W =};
 
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 :::
@@ -3182,15 +3139,14 @@ Prevents weights from shrinking too much
 
 :::
 
+## Solutions to vanishing gradient
 
-### Solutions to vanishing gradient
 :::: {.columns}
 
 ::: {.column width="50%"}
 
-
 #### 3. More complex cells using "gating"
-    
+
 For example LSTM. Idea is to control what information is retained
 within each RNN unit.
 
@@ -3204,14 +3160,13 @@ Make use regular multiplication (x) and addition (+).
 #| label:   tikz-vanishing-gradient-trick-3
 #| out-height: 400px
 \begin{tikzpicture}
-  \pic {lstm};  
-\end{tikzpicture} 
+  \pic {lstm};
+\end{tikzpicture}
 ```
 
 :::
 
 ::::
-
 
 :::: {.notes}
 
@@ -3223,11 +3178,9 @@ subtracted. Sigmoid is in (0, 1).
 
 ::::
 
-
-
-
 # LSTMs and GRUs
-### Motivation behind LSTMs and GRUs {.smaller}
+
+## Motivation behind LSTMs and GRUs
 
 ::::::::::::::::::: {.twocolgrid .compact}
 
@@ -3241,7 +3194,7 @@ LSTM
 #| out-width: 350px
 \begin{tikzpicture}
   \pic {lstm};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -3256,7 +3209,7 @@ GRU
 #| out-width: 350px
 \begin{tikzpicture}
   \pic {gru};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -3264,6 +3217,8 @@ GRU
 :::::::::::::::::::
 
 ::: { .compact }
+
+<!-- markdownlint-disable MD013 -->
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:   tikz-gru-lstm-legend
@@ -3283,11 +3238,13 @@ GRU
 \node[pwise={1-}, right of=padd, label={[legend]below:pointwise inversion}] (pinvert) {};
 \node[vcon=1cm, right of=pinvert, label={[legend]below:vector concatenation}] (vconcat) {};
 \node[vcopy=1cm, right of=vconcat, label={[legend]below:vector copy}] (vcopy) {};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
-Long Short Term Memory (LSTM)  (Hochreiter &#38; Schmidhuber, 1997) and Gated
-Recurrent Unit (GRU) (Cho et al., 2014) architectures were
+<!-- markdownlint-enable MD013 -->
+
+Long Short Term Memory (LSTM) (Hochreiter &#38; Schmidhuber, 1997) and
+Gated Recurrent Unit (GRU) (Cho et al., 2014) architectures were
 proposed to solve the vanishing gradient problem.
 
 :::
@@ -3296,17 +3253,19 @@ proposed to solve the vanishing gradient problem.
 
 Based on (Phi, 2020a)
 
--   solution to short-term memory
--   gates **regulate** the flow of information, concentrating on the important parts
+- solution to short-term memory
+- gates **regulate** the flow of information, concentrating on the
+  important parts
 
 In contrast to RNN, LSTM has *four* neural network layers that
 interact via the gates
 
 ::::
 
+## Intuition
 
-### Intuition {.smaller}
-	
+<!-- markdownlint-disable MD013 -->
+
 :::: {.element: style="font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter, monospace; font-size: 0.8em;"}
 
 In this paper, we propose a novel neural network model called RNN
@@ -3325,6 +3284,8 @@ phrases.
 
 ::::
 
+<!-- markdownlint-enable MD013 -->
+
 :::: {.element: style="font-size: 0.6em;"}
 
 Learning Phrase Representations using RNN Encoder-Decoder for
@@ -3342,31 +3303,34 @@ focus on relevant information.
 
 Intuition:
 
--   solution to vanishing gradient problem
--   gates regulate flow of information, focusing on the important parts
+- solution to vanishing gradient problem
+- gates regulate flow of information, focusing on the important parts
 
 ::::
 
+## Intuition
 
-### Intuition {.smaller}
+<!-- markdownlint-disable MD013 -->
 
 :::: {.element: style="font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter, monospace; font-size: 0.8em;"}
 
-In this paper, we propose a **novel neural network** model called **RNN**
-**Encoder-Decoder** that consists of **two recurrent neural networks** (RNN).
-One RNN **encodes** a **sequence of symbols** into a fixed-length vector
-representation, and the other **decodes the representation** into another
-sequence of symbols. The encoder and decoder of the proposed model are
-**jointly trained** to maximize the conditional probability of a target
-sequence given a source sequence. The performance of a **statistical**
-**machine translation system** is empirically found to improve by using
-the conditional probabilities of phrase pairs computed by the RNN
-Encoder-Decoder as an additional feature in the existing log-linear
-model. Qualitatively, we show that the proposed model learns a
-**semantically and syntactically meaningful representation** of linguistic
-phrases.
+In this paper, we propose a **novel neural network** model called
+**RNN** **Encoder-Decoder** that consists of **two recurrent neural
+networks** (RNN). One RNN **encodes** a **sequence of symbols** into a
+fixed-length vector representation, and the other **decodes the
+representation** into another sequence of symbols. The encoder and
+decoder of the proposed model are **jointly trained** to maximize the
+conditional probability of a target sequence given a source sequence.
+The performance of a **statistical** **machine translation system** is
+empirically found to improve by using the conditional probabilities of
+phrase pairs computed by the RNN Encoder-Decoder as an additional
+feature in the existing log-linear model. Qualitatively, we show that
+the proposed model learns a **semantically and syntactically
+meaningful representation** of linguistic phrases.
 
 ::::
+
+<!-- markdownlint-enable MD013 -->
 
 :::: {.element: style="font-size: 0.6em;"}
 
@@ -3393,13 +3357,12 @@ focus on relevant information.
 
 Intuition:
 
--   solution to vanishing gradient problem
--   gates regulate flow of information, focusing on the important parts
+- solution to vanishing gradient problem
+- gates regulate flow of information, focusing on the important parts
 
 ::::
 
-
-### LSTM: Cell state flow and gating {.smaller}
+## LSTM: Cell state flow and gating
 
 ::::::::::::::::::: {.twocolgrid }
 
@@ -3410,11 +3373,10 @@ Intuition:
 #| out-height: 250px
 \begin{tikzpicture}
   \pic[\rnntikzbasekey/.cd, add labels=true, highlight=cellstateflow] {lstm} ;
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 :::: { .fragment .compact}
-
 
 LSTM adds *cell state* that in effect provides the long-term memory
 
@@ -3439,7 +3401,7 @@ Information flows in the cell state from $c_{t-1}$ to $c_t$.
 #| out-height: 250px
 \begin{tikzpicture}
   \pic {lstmgate} ;
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 Gates affect the amount of information let through. The sigmoid layer
@@ -3451,7 +3413,7 @@ outputs anything from 0 (nothing) to 1 (everything).
 
 :::::::::::::::::::
 
-:::: {.fragment .compact } 
+:::: {.fragment .compact }
 
 [@cho_learning_2014]
 
@@ -3476,8 +3438,8 @@ predict the next output
 
 Difference between cell and hidden state (<https://datascience.stackexchange.com/questions/82808/difference-between-lstm-cell-state-and-hidden-state>):
 
--   Cell state: Long term memory of the model, only part of LSTM models
--   Hidden state: Working memory, part of LSTM and RNN models
+- Cell state: Long term memory of the model, only part of LSTM models
+- Hidden state: Working memory, part of LSTM and RNN models
 
 for RNN, *every* previous state is considered in calculation of
 backpropagation
@@ -3485,15 +3447,13 @@ backpropagation
 LSTM: introduce cell state, in addition to hidden state, simply
 providing longer memory, enabled by
 
--   the storage of useful beliefs from new inputs
--   the loading of beliefs into the working memory (i.e. cell state)
-    that are immediately useful.
+- the storage of useful beliefs from new inputs
+- the loading of beliefs into the working memory (i.e. cell state)
+  that are immediately useful.
 
 ::::
 
-
-
-### Forget, input, and output gates {.smaller}
+## Forget, input, and output gates
 
 ::::::::::::::::::: { .threecolgrid }
 
@@ -3505,7 +3465,7 @@ providing longer memory, enabled by
 #| label:   tikz-lstm-forget-gate-only
 \begin{tikzpicture}
   \pic[\rnntikzbasekey/highlight=forgetgate, \rnntikzbasekey/add labels=true] {lstm};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 **Purpose:** reset content of cell state
@@ -3520,10 +3480,11 @@ providing longer memory, enabled by
 #| label:   tikz-lstm-input-gate-only
 \begin{tikzpicture}
   \pic[\rnntikzbasekey/.cd, add labels=true, highlight=inputgate] {lstm};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 **Purpose:** decide when to read data into cell state
+
 ::::
 
 :::: {.compact}
@@ -3534,7 +3495,7 @@ providing longer memory, enabled by
 #| label:   tikz-lstm-output-gate-only
 \begin{tikzpicture}
   \pic[\rnntikzbasekey/highlight=outputgate, \rnntikzbasekey/add labels=true] {lstm};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 **Purpose:** read entries from cell state
@@ -3551,8 +3512,7 @@ state $c_{t-1}$, where 0 means "reset entry", 1 "keep it"
 
 ::::
 
-
-### The forget gate {.smaller .compact} 
+## The forget gate {.compact}
 
 ::: {  }
 
@@ -3561,8 +3521,9 @@ state $c_{t-1}$, where 0 means "reset entry", 1 "keep it"
 #| fig-width: 5
 \begin{tikzpicture}
 \pic[\rnntikzbasekey/.cd, highlight=forgetgate, add labels=true] {lstm};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
+
 :::
 
 **Purpose**: decide what information to keep or throw away
@@ -3589,8 +3550,7 @@ $$
 
 ::::
 
-
-### Add new information - the input gate
+## Add new information - the input gate
 
 ::: { .compact }
 
@@ -3599,7 +3559,7 @@ $$
 #| fig-width: 5
 \begin{tikzpicture}
   \pic[\rnntikzbasekey/.cd, highlight=inputgate, add labels=true] {lstm};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 :::
@@ -3608,10 +3568,9 @@ $$
 
 Two steps to adding new information:
 
-1.  sigmoid layer decides which values to update
+1. sigmoid layer decides which values to update
 
 :::
-
 
 :::: {.notes}
 
@@ -3621,30 +3580,28 @@ Two steps to adding new information:
 
 ::::
 
+## Add new information - get candidate values
 
-### Add new information - get candidate values {.smaller}
-
-::: {.compact  style="transform: translate(0, -50px);" }
+::: {.compact}
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:    tikz-lstm-candidatecellstate-input-1
 #| fig-width: 5
 \begin{tikzpicture}
   \pic[\rnntikzbasekey/.cd, highlight=candidatecellstate, add labels=true] {lstm};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 :::
 
-::: { .compact  style="transform: translate(0, -80px);"}
-
+::: { .compact}
 
 Two steps to adding new information:
 
-1.  sigmoid layer decides which values to update
-2.  tanh layer creates vector of new candidate values $\tilde{c}_t$
+1. sigmoid layer decides which values to update
+2. tanh layer creates vector of new candidate values $\tilde{c}_t$
 
-:::: {.fragment}
+:::: {.fragment style="transform: translate(0, -20px);"}
 
 $$
 i_t = \sigma (W_i \cdot [h_{t-1}, x_t] + b_i)\\
@@ -3653,7 +3610,6 @@ $$
 
 ::::
 
-
 :::
 
 :::: {.notes}
@@ -3664,8 +3620,7 @@ $$
 
 ::::
 
-
-### Updating the cell state {.smaller} 
+## Updating the cell state
 
 ::: { .compact  }
 
@@ -3674,17 +3629,17 @@ $$
 #| fig-width: 5
 \begin{tikzpicture}
   \pic[\rnntikzbasekey/.cd, highlight=updatecellstate, add labels=true] {lstm};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 :::
 
 ::: { .compact }
 
-1.  multiply old cell state by $f_t$ to forget what was decided to
-    forget
-2.  add new candidate values scaled by how much we want to update them
-    $i_t * \tilde{c}_t$
+1. multiply old cell state by $f_t$ to forget what was decided to
+   forget
+2. add new candidate values scaled by how much we want to update them
+   $i_t * \tilde{c}_t$
 
 :::: {.fragment}
 
@@ -3704,28 +3659,28 @@ $$
 
 ::::
 
+## Cell output
 
-### Cell output {.smaller}
-
-::: {.compact style="transform: translate(0, -50px);"}
+::: {.compact}
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:   tikz-lstm-output-gate
 #| fig-width: 5
 \begin{tikzpicture}
   \pic[\rnntikzbasekey/.cd, highlight=celloutput, add labels=true] {lstm};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
+
 :::
 
-::: {.compact style="transform: translate(0, -80px);"}
+::: {.compact }
 
 Output is filtered version of cell state.
 
 1.  sigmoid output gate decides what parts of cell state to output
 2.  push cell state through tanh and multiply by sigmoid output
 
-:::: {.fragment}
+:::: {.fragment style="transform: translate(0, -20px);"}
 
 $$
 o_t = \sigma(W_o [h_{t-1}, x_t] + b_o)\\
@@ -3738,42 +3693,39 @@ $$
 
 :::: {.notes}
 
-> For the language model example, since it just saw a subject, it might
-> want to output information relevant to a verb, in case that’s what is
-> coming next. For example, it might output whether the subject is
-> singular or plural, so that we know what form a verb should be
-> conjugated into if that’s what follows next.
+> For the language model example, since it just saw a subject, it
+> might want to output information relevant to a verb, in case that’s
+> what is coming next. For example, it might output whether the
+> subject is singular or plural, so that we know what form a verb
+> should be conjugated into if that’s what follows next.
 
 ::::
 
-
-### LSTM: putting it together
+## LSTM: putting it together
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label: tikz-lstm-intuition
 #| fig-width: 5
 \begin{tikzpicture}
   \pic[\rnntikzbasekey/add labels=true] {lstm};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
+## Intuition
 
-### Intuition
-
--   if forget ~ 1, input ~ 0, $c_{t-1}$ will be saved to next time step
-    (input irrelevant for cell state)
--   if forget ~ 0, input ~ 1, pay attention to the current input
+- if forget ~ 1, input ~ 0, $c_{t-1}$ will be saved to next time
+  step (input irrelevant for cell state)
+- if forget ~ 0, input ~ 1, pay attention to the current input
 
 :::: {.notes}
 
 From (, Zhang et al., 2021, p. 9.2.1.3):
 
--   if forget ~ 1, input ~ 0, C<sub>t-1</sub> will be saved over time
+- if forget ~ 1, input ~ 0, C<sub>t-1</sub> will be saved over time
 
 ::::
 
-
-### LSTM: putting it together {.smaller}
+## LSTM: putting it together
 
 [@zhang2021dive]
 
@@ -3786,7 +3738,7 @@ From (, Zhang et al., 2021, p. 9.2.1.3):
 #| fig-width: 5
 \begin{tikzpicture}
   \pic[\rnntikzbasekey/add labels=true] {lstm};
-\end{tikzpicture} 
+\end{tikzpicture}
 ```
 
 ::::
@@ -3806,6 +3758,8 @@ $$
 
 :::::::::::::::::::
 
+<!-- markdownlint-disable MD013 -->
+
 $$
 x_t \in \mathbb{R}^{n\times d}, h_{t-1} \in \mathbb{n \times h},
 i_t \in \mathbb{R}^{n\times h}, f_t \in \mathbb{R}^{n\times h}, o_t \in \mathbb{R}^{n\times h},
@@ -3817,20 +3771,21 @@ $$
 W_f \in \mathbb{R}^{n \times (h+d)}, W_i \in \mathbb{R}^{n \times (h+d)}, W_o \in \mathbb{R}^{n \times (h+d)}, W_c \in \mathbb{R}^{n \times (h+d)}
 $$
 
+<!-- markdownlint-enable MD013 -->
 
-### GRU
+## GRU
 
 ```{r, fig.ext="svg", engine='tikz' }
 #| label:  tikz-big-gru
 #| fig-width: 6
 \begin{tikzpicture}
-\pic {gru};  
-\end{tikzpicture} 
+\pic {gru};
+\end{tikzpicture}
 ```
 
--   forget and input states combined to single *update* gate
--   merge cell and hidden state
--   simpler model than LSTM
+- forget and input states combined to single *update* gate
+- merge cell and hidden state
+- simpler model than LSTM
 
 :::: {.notes}
 
@@ -3840,17 +3795,20 @@ Notes that GRU has been gaining traction lately (where lately=2015!)
 
 Comparison (Lendave, 2021):
 
--   GRU has fewer parameters so uses less memory and executes faster
--   LSTM more accurate on larger datasets
+- GRU has fewer parameters so uses less memory and executes faster
+- LSTM more accurate on larger datasets
 
 ::::
 
-
 # Concluding remarks
 
-### Example applications in genomics {.smaller}
+## Example applications in genomics {.smaller}
+
+<!-- markdownlint-disable MD013 -->
 
 :::: { .twocolgrid style="grid-template-columns: 1fr 1.3fr; align-items: center;" }
+
+<!-- markdownlint-enable MD013 -->
 
 ::: {}
 
@@ -3866,7 +3824,7 @@ Prediction of transcriptor factor binding sites
 
 Recombination landscape prediction
 
-![](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/mbe/37/6/10.1093_molbev_msaa038/1/m_msaa038f1.jpeg?Expires=1682056940&Signature=xYVVC0r-NfiwbF6VFCYWlzZRXKjhy2Z79R1k69YOfgMxfnNunKVZOrgbINEsih4d2esZEZTXZLlaE5slTFergEmhepvDCxgnzBCZiEwn4EmymE31QZpoXoib4ROT~jHPrgYWVUgR6JB2sqqi8KFwCh352mnO3CgNGt0xZj18gQhaAmH3nbbV3ZejsSRBy1NF88ejSh3BXROuPEA7-EwNLUeqbqetpDR35zvZ71VU-jiYJZkx1z6QTH3zJRhcg4zpbcHq0kV4VQdh5ld6CZhDDQyisONbw3w5SENibVYTUMFZtDNgfowyBQHlfvoZveFfV-6LHAdMycv8vybvOJRdBg__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA){width=500}
+![](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/mbe/37/6/10.1093_molbev_msaa038/1/msaa038f1.jpeg?Expires=1718891256&Signature=oJV5e~0c-gqHftCPu7~HfcJjFFPnoFG82j0eyETNcDAsxqXV65yMDundznt9pQ9jqCCAL-HF8fuIE5kpctT6m62pz9Q-aoAmTw563TCqY5nxVaIEB11ikNI~l5qfekpTfmuGIjT~0a6b3dPnOPmXzC0Qn9Q-aZ8UppTYPx3nIKXl~lFcRTaIcwk9P~yiZt6uBdfkB9fIvTEDMVEIGrdbWSLpylW-C9qw7ZhagITK1WS0Vj57f~T5Eq3yXJGd~wRfYPwGOY0nUc7OPdFaDmwoaF~McbHpblu6hQjB2unEeP2c~VK5dA~GozQV2p1XyKL~OZWEFatoqQ3q463HvprICg__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA){width=500}
 
 [@adrion_PredictingLandscapeRecombination_2020]
 
@@ -3874,7 +3832,7 @@ Recombination landscape prediction
 
 ::::
 
-### Limitations of recurrent neural networks
+## Limitations of recurrent neural networks
 
 ::: { .incremental }
 
@@ -3886,12 +3844,13 @@ Recombination landscape prediction
 - Short memory
   - Don't scale to sequences > thousands of time steps
 
-
 :::
 
-### Attention is all you need {.smaller}
+## Attention is all you need {.smaller}
 
 [@vaswani_AttentionAllYou_2017]
+
+<!-- markdownlint-disable MD013 -->
 
 :::: {.element: style="font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter, monospace; font-size: 0.8em;"}
 
@@ -3916,13 +3875,15 @@ limited training data.
 
 ::::
 
+<!-- markdownlint-enable MD013 -->
 
-### Transformers
+## Transformers
 
 - process sequential input data (e.g., natural language)
 - process **entire** input at once
 - apply *attention* mechanism to provide positional context
 
+<!-- markdownlint-disable MD013 -->
 
 :::: {.element: style="font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter, monospace; font-size: 0.8em;" .fragment}
 
@@ -3935,11 +3896,9 @@ parallelization allows training on larger datasets
 
 ::::
 
+<!-- markdownlint-enable MD013 -->
 
-	
-### Summary
-
-::: { .incremental }
+## Summary
 
 1. Sequential data can be modelled with **RNNs**
 2. **Recurrence** to model sequences
@@ -3950,18 +3909,12 @@ parallelization allows training on larger datasets
    increasingly become the model of choice for many natural language
    processing (NLP) problems
 
-:::
-
-
 # Exercise
-###
-
-
+## Exercises
 #### 1. Analyse airline passengers with LSTM
 
 Modify the airline passenger model to use an LSTM and compare the
 results. Try out different parameters to improve test predictions.
-
 
 #### 2. Time-series forecasting with LSTM, discrete state space
 
@@ -3973,14 +3926,11 @@ Good example at (Koehrsen, 2018)
 
 ::::
 
-
-### Time-series forecasting with LSTM, discrete state space
-
+## Time-series forecasting with LSTM, discrete state space
 
 #### Objective
 
 Predict next character in sequence of strings
-
 
 #### Comments
 
@@ -3995,16 +3945,7 @@ example to illustrate how the modelling is done
 
 ::::
 
-
-
-### Bibliography {.smaller .unnumbered .unlisted}
+## Bibliography {.smaller .unnumbered .unlisted}
 
 ::: { #refs }
 :::
-
-
-<!--
-  Local Variables:
-  eval: (tree-sitter-mode 0)
-  End:
-  -->
