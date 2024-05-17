@@ -1,0 +1,23 @@
+name: nn_dl_python
+channels:
+  - conda-forge
+  - bioconda
+  - default
+dependencies:
+  - pandas
+  - python=3.11
+  - keras
+  - matplotlib
+  - numpy
+  - scikit-learn
+  - tensorflow >= 2.0.0
+  - r-base>=4.3
+  - r-codetools
+  - r-htmltools
+  - r-kableextra
+  - r-knitr
+  - r-reticulate
+  - r-revealjs
+  - r-rmarkdown
+  - r-tidyverse
+  - r-vctrs
