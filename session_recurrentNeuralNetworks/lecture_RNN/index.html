@@ -432,6 +432,7 @@
 </nav>
 </section>
 
+
 <section>
 <section id="recap" class="title-slide slide level1 center">
 <h1>Recap</h1>
@@ -454,14 +455,19 @@
 <div>
 <h4 id="architecture">Architecture</h4>
 <p>A single neuron has <span class="math inline">\(n\)</span> <em>inputs</em> <span class="math inline">\(x_i\)</span> and an <em>output</em> <span class="math inline">\(y\)</span>. To each input is associated a <em>weight</em> <span class="math inline">\(w_i\)</span>.</p>
+<div class="fragment">
+<!-- -->
 <h4 id="activity-rule">Activity rule</h4>
 <p>The <strong>activity rule</strong> is given by two steps:</p>
+</div>
+<div class="hidden">
 <p><span class="math display">\[a = \sum_{i} w_ix_i, \quad i=0,...,n\]</span></p>
 <p><span class="math display">\[\begin{array}{ccc}
 \mathrm{activation} &amp; &amp; \mathrm{activity}\\
 a &amp; \rightarrow &amp; y(a)
 \end{array}\]</span></p>
 <p><span class="citation" data-cites="mackay_InformationTheoryInference_2003">(<a href="#/bibliography" role="doc-biblioref" onclick="">MacKay, 2003</a>)</span></p>
+</div>
 </div>
 </div>
 <aside class="notes">
@@ -503,12 +509,16 @@ a &amp; \rightarrow &amp; y(a)
 <p>A single neuron has <span class="math inline">\(n\)</span> <em>inputs</em> <span class="math inline">\(x_i\)</span> and an <em>output</em> <span class="math inline">\(y\)</span>. To each input is associated a <em>weight</em> <span class="math inline">\(w_i\)</span>.</p>
 <h4 id="activity-rule-1">Activity rule</h4>
 <p>The <strong>activity rule</strong> is given by two steps:</p>
+<div class="fragment">
 <p><span class="math display">\[a = \sum_{i} w_ix_i, \quad i=0,...,n\]</span></p>
+</div>
+<div class="fragment">
 <p><span class="math display">\[\begin{array}{ccc}
 \mathrm{activation} &amp; &amp; \mathrm{activity}\\
 a &amp; \rightarrow &amp; y(a)
 \end{array}\]</span></p>
 <p><span class="citation" data-cites="mackay_InformationTheoryInference_2003">(<a href="#/bibliography" role="doc-biblioref" onclick="">MacKay, 2003</a>)</span></p>
+</div>
 </div>
 </div>
 <aside class="notes">
@@ -602,12 +612,13 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-rnn-recap-perceptron-multiout-1.svg" width="1152" height="500"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-recap-perceptron-multiout-1.svg" width="960" height="500"></p>
 </figure>
 </div>
 </div>
 </div>
 <aside class="notes">
+<p>Segue: typically want multiple layers between input and output</p>
 <p>Show multi-valued (vector) output and hidden layer.</p>
 <p>Make mental image: from now on inputs are <strong>vectors</strong></p>
 <style type="text/css">
@@ -628,7 +639,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-rnn-recap-perceptron-multiout-simple-1.svg" width="1152" height="300"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-recap-perceptron-multiout-simple-1.svg" width="960" height="300"></p>
 </figure>
 </div>
 </div>
@@ -653,13 +664,14 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-rnn-recap-perceptron-multiout-simple-rotated-1.svg" width="1152" height="400"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-recap-perceptron-multiout-simple-rotated-1.svg" width="960" height="400"></p>
 </figure>
 </div>
 </div>
 </div>
 <aside class="notes">
 <p>Condense hidden layers to a box.</p>
+<p>For the purpose of further discussion, will be treating input left-to-right, whereby it is convenient to rotate the illustration.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -683,13 +695,14 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-rnn-motivation-time-series-1.svg" width="1152" height="400"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-motivation-time-series-1.svg" width="960" height="400"></p>
 </figure>
 </div>
 </div>
 </div>
 <aside class="notes">
-<p>incremental figure showing time series (e.g.&nbsp;sinus) that highlights</p>
+<p>With only one image, no idea if ball is moving or direction.</p>
+<p>Incremental figure showing time series (e.g.&nbsp;sinus) that highlights</p>
 <ul>
 <li>dependency on previous time point</li>
 <li>(weaker) dependency on more distant time points</li>
@@ -712,7 +725,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-rnn-motivation-time-series-1-1.svg" width="1152" height="400"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-motivation-time-series-1-1.svg" width="960" height="400"></p>
 </figure>
 </div>
 </div>
@@ -741,7 +754,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-rnn-motivation-time-series-2-1.svg" width="1152" height="400"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-motivation-time-series-2-1.svg" width="960" height="400"></p>
 </figure>
 </div>
 </div>
@@ -770,7 +783,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-rnn-motivation-time-series-3-1.svg" width="1152" height="400"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-motivation-time-series-3-1.svg" width="960" height="400"></p>
 </figure>
 </div>
 </div>
@@ -810,7 +823,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/rnn-example-language-translation-1.svg" width="1152" height="300"></p>
+<p><img data-src="index_files/figure-revealjs/rnn-example-language-translation-1.svg" width="960" height="300"></p>
 </figure>
 </div>
 </div>
@@ -855,7 +868,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/sequential-models-one-to-one-1.svg" width="1152" height="100"></p>
+<p><img data-src="index_files/figure-revealjs/sequential-models-one-to-one-1.svg" width="960" height="100"></p>
 </figure>
 </div>
 </div>
@@ -867,7 +880,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/sequential-models-many-to-one-1.svg" width="1152" height="100"></p>
+<p><img data-src="index_files/figure-revealjs/sequential-models-many-to-one-1.svg" width="960" height="100"></p>
 </figure>
 </div>
 </div>
@@ -879,7 +892,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/sequential-models-one-to-many-1.svg" width="1152" height="100"></p>
+<p><img data-src="index_files/figure-revealjs/sequential-models-one-to-many-1.svg" width="960" height="100"></p>
 </figure>
 </div>
 </div>
@@ -891,7 +904,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/sequential-models-many-to-many-1.svg" width="1152" height="100"></p>
+<p><img data-src="index_files/figure-revealjs/sequential-models-many-to-many-1.svg" width="960" height="100"></p>
 </figure>
 </div>
 </div>
@@ -934,8 +947,8 @@ a &amp; \rightarrow &amp; y(a)
 <p>Models:</p>
 <ul>
 <li><strong>one to one:</strong> Vanilla processing without RNN, from fixed input to fixed output e.g.&nbsp;image classification (aka vanilla neural network)</li>
+<li><strong>many to one:</strong> sequence input, e.g.&nbsp;sentiment analysis (classify sequence as happy/sad/…) - convert text input into a mood</li>
 <li><strong>one to many:</strong> sequence output, e.g.&nbsp;image captioning</li>
-<li><strong>many to one:</strong> sequence input, e.g.&nbsp;sentiment analysis (classify sequence as happy/sad/…)</li>
 <li><strong>many to many:</strong> sequence input and sequence output, e.g.&nbsp;machine translation</li>
 </ul>
 <p>Data:</p>
@@ -962,13 +975,13 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-rnn-folded-only-1.svg" width="1152" height="400"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-folded-only-1.svg" width="960" height="400"></p>
 </figure>
 </div>
 </div>
 </div>
 <aside class="notes">
-<p>We will now look at the essentials of RNNs. As the figure implies, the output of the network</p>
+<p>We will now look at the essentials of RNNs. As the figure implies, the output of the network depends on an input and the value of the recurrent network</p>
 <p><span class="citation" data-cites="alexanderamini_MITS191Recurrent_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Alexander Amini, 2021</a>)</span> point out inputs <span class="math inline">\(x_i\)</span> represent <strong>one</strong> time point</p>
 <p>input, output, green box: contains vectors of data, arrows represent operations/function <span class="citation" data-cites="karpathyandrej_UnreasonableEffectivenessRecurrent_2015">(<a href="#/bibliography" role="doc-biblioref" onclick="">Karpathy, Andrej, 2015</a>)</span></p>
 <p>Key feature: the recurrence (green) can be applied as many times as we want, i.e.&nbsp;no constraint on input size</p>
@@ -1002,7 +1015,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/ffn-xt-1-1.svg" width="1152" height="250"></p>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-1-1.svg" width="960" height="250"></p>
 </figure>
 </div>
 </div>
@@ -1028,7 +1041,7 @@ a &amp; \rightarrow &amp; y(a)
 </div>
 <aside class="notes">
 <p>Rotated FFN: take a moment to recap the ffn. Input <span class="math inline">\(X_t \in
-\mathbb{R}^{m}\)</span> is mapped to output <span class="math inline">\(\widehat{Y}_t \in \mathbb{R}^n\)</span> via the network (<span class="math inline">\(f(\cdot)\)</span></p>
+\mathbb{R}^{m}\)</span> is mapped to output <span class="math inline">\(\widehat{Y}_t \in \mathbb{R}^n\)</span> via the network (<span class="math inline">\(f(\cdot)\)</span>)</p>
 <p>Now assume we have several time steps, starting at e.g.&nbsp;time 0. Also we predict the outputs individually.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -1052,7 +1065,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/ffn-xt-2-1.svg" width="1152" height="250"></p>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-2-1.svg" width="960" height="250"></p>
 </figure>
 </div>
 </div>
@@ -1100,7 +1113,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/ffn-xt-3-1.svg" width="1152" height="250"></p>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-3-1.svg" width="960" height="250"></p>
 </figure>
 </div>
 </div>
@@ -1123,7 +1136,7 @@ a &amp; \rightarrow &amp; y(a)
 <div>
 <p>Assume multiple time points.</p>
 <ul>
-<li class="fragment">Dependency of inputs not modelled such that ambiguous sequences cannot be distinguished:</li>
+<li class="fragment">Dependency of inputs not modelled <span class="math inline">\(\Rightarrow\)</span> ambiguous sequences cannot be distinguished:</li>
 </ul>
 <div class="fragment">
 <p>“dog bites man” vs “man bites dog”</p>
@@ -1157,7 +1170,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/ffn-xt-4-1.svg" width="1152" height="250"></p>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-4-1.svg" width="960" height="250"></p>
 </figure>
 </div>
 </div>
@@ -1180,7 +1193,7 @@ a &amp; \rightarrow &amp; y(a)
 <div>
 <p>Assume multiple time points.</p>
 <ul>
-<li>Time points are modelled <strong>individually</strong> ( <span class="math inline">\(\hat{Y}_t = f(X_t)\)</span> )</li>
+<li>Time points are modelled <strong>individually</strong> (<span class="math inline">\(\hat{Y}_t = f(X_t)\)</span>)</li>
 </ul>
 </div>
 </div>
@@ -1209,7 +1222,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/ffn-xt-5-1.svg" width="1152" height="250"></p>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-5-1.svg" width="960" height="250"></p>
 </figure>
 </div>
 </div>
@@ -1232,8 +1245,9 @@ a &amp; \rightarrow &amp; y(a)
 <div>
 <p>Assume multiple time points.</p>
 <ul>
-<li>Time points are modelled <strong>individually</strong> ( <span class="math inline">\(\hat{Y}_t = f(X_t)\)</span> )</li>
-<li>Also want dependency on <strong>previous</strong> inputs ( <span class="math inline">\(\hat{Y}_t = f(..., X_1, X_0)\)</span> )</li>
+<li>Time points are modelled <strong>individually</strong> (<span class="math inline">\(\hat{Y}_t = f(X_t)\)</span>)</li>
+<li>However: also want dependency on <strong>previous</strong> inputs (<span class="math inline">\(\hat{Y}_t =
+f(..., X_1, X_0)\)</span>)</li>
 </ul>
 </div>
 </div>
@@ -1262,7 +1276,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/ffn-xt-arr-1-1.svg" width="1152" height="250"></p>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-arr-1-1.svg" width="960" height="250"></p>
 </figure>
 </div>
 </div>
@@ -1310,7 +1324,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/ffn-xt-arr-2-1.svg" width="1152" height="250"></p>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-arr-2-1.svg" width="960" height="250"></p>
 </figure>
 </div>
 </div>
@@ -1345,7 +1359,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/ffn-xt-arr-3-1.svg" width="1152" height="250"></p>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-arr-3-1.svg" width="960" height="250"></p>
 </figure>
 </div>
 </div>
@@ -1380,7 +1394,7 @@ a &amp; \rightarrow &amp; y(a)
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/ffn-xt-arr-4-1.svg" width="1152" height="250"></p>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-arr-4-1.svg" width="960" height="250"></p>
 </figure>
 </div>
 </div>
@@ -1407,6 +1421,7 @@ a &amp; \rightarrow &amp; y(a)
 <p><span class="math display">\[
 \hat{Y}_t = f(X_t, h_{t-1})
 \]</span></p>
+<p><span class="math inline">\(h_t\)</span> is a summary of the inputs we’ve seen sofar.</p>
 </div>
 </div>
 </div>
@@ -1491,6 +1506,19 @@ h_t = f_\mathbf{W}(x_t, h_{t-1})
 </div>
 </div>
 </div>
+<aside class="notes">
+<p>Flesh out the previous illustration, emphasizing that the hidden layer is recurrent (could otherwise be just dense layers). Also add subscript to <span class="math inline">\(f\)</span> to highlight its dependence on network weights.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="recurrent-neural-networks---pseudocode" class="slide level2">
 <h2>Recurrent Neural Networks - pseudocode</h2>
@@ -1509,7 +1537,7 @@ h_t = f_\mathbf{W}(x_t, h_{t-1})
 </div>
 </div>
 <div>
-<div style="font-size: 0.9em">
+<div style="font-size: 0.7em">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="kw">class</span> RNN:</span>
 <span id="cb1-2"><a href=""></a>  <span class="co"># ...</span></span>
@@ -1535,46 +1563,107 @@ h_t = f_\mathbf{W}(x_t, h_{t-1})
 <aside class="notes">
 <p>Pseudocode examples, my example:</p>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>NameError: name 'input_data' is not defined</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>TypeError: can't multiply sequence by non-int of type 'list'</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="kw">class</span> RNN:</span>
+<span id="cb2-2"><a href=""></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb2-3"><a href=""></a>        <span class="co"># Initialize weights and cell state</span></span>
+<span id="cb2-4"><a href=""></a>        <span class="va">self</span>._h <span class="op">=</span> [...]</span>
+<span id="cb2-5"><a href=""></a>        <span class="va">self</span>._Whh <span class="op">=</span> [...]</span>
+<span id="cb2-6"><a href=""></a>        <span class="va">self</span>._Wxh <span class="op">=</span> [...]</span>
+<span id="cb2-7"><a href=""></a>        <span class="va">self</span>._Why <span class="op">=</span> [...]</span>
+<span id="cb2-8"><a href=""></a></span>
+<span id="cb2-9"><a href=""></a>    <span class="kw">def</span> update_cell_state(<span class="va">self</span>, x):</span>
+<span id="cb2-10"><a href=""></a>        <span class="co"># function is some function that updates cell state</span></span>
+<span id="cb2-11"><a href=""></a>        <span class="va">self</span>._h <span class="op">=</span> function(<span class="va">self</span>._h <span class="op">*</span> <span class="va">self</span>._Whh <span class="op">+</span> x <span class="op">*</span> <span class="va">self</span>.Wxh)</span>
+<span id="cb2-12"><a href=""></a></span>
+<span id="cb2-13"><a href=""></a>    <span class="kw">def</span> predict(<span class="va">self</span>):</span>
+<span id="cb2-14"><a href=""></a>        <span class="cf">return</span> <span class="va">self</span>._h <span class="op">*</span> <span class="va">self</span>._Why</span>
+<span id="cb2-15"><a href=""></a></span>
+<span id="cb2-16"><a href=""></a>    <span class="kw">def</span> update_weights(<span class="va">self</span>, y):</span>
+<span id="cb2-17"><a href=""></a>        <span class="co"># Calculate error via some loss function</span></span>
+<span id="cb2-18"><a href=""></a>        error <span class="op">=</span> loss(<span class="va">self</span>.predict() <span class="op">-</span> y)</span>
+<span id="cb2-19"><a href=""></a>        <span class="co"># update weights via back propagation...</span></span>
+<span id="cb2-20"><a href=""></a></span>
+<span id="cb2-21"><a href=""></a>rnn <span class="op">=</span> RNN()</span>
+<span id="cb2-22"><a href=""></a></span>
+<span id="cb2-23"><a href=""></a><span class="cf">for</span> x, y <span class="kw">in</span> input_data:</span>
+<span id="cb2-24"><a href=""></a>    rnn.update_cell_state(x)</span>
+<span id="cb2-25"><a href=""></a>    rnn.update_weights(y)</span>
+<span id="cb2-26"><a href=""></a></span>
+<span id="cb2-27"><a href=""></a><span class="co"># Retrieve next prediction</span></span>
+<span id="cb2-28"><a href=""></a>yhat <span class="op">=</span> rnn.predict()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><span class="citation" data-cites="karpathyandrej_UnreasonableEffectivenessRecurrent_2015">(<a href="#/bibliography" role="doc-biblioref" onclick="">Karpathy, Andrej, 2015</a>)</span></p>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>AttributeError: 'RNN' object has no attribute 'step'</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a>rnn <span class="op">=</span> RNN()</span>
+<span id="cb3-2"><a href=""></a>y <span class="op">=</span> rnn.step(x) <span class="co"># x is an input vector, y is the RNN's output vector</span></span>
+<span id="cb3-3"><a href=""></a></span>
+<span id="cb3-4"><a href=""></a><span class="kw">class</span> RNN:</span>
+<span id="cb3-5"><a href=""></a>  <span class="co"># ...</span></span>
+<span id="cb3-6"><a href=""></a>  <span class="co"># Description of forward pass</span></span>
+<span id="cb3-7"><a href=""></a>  <span class="kw">def</span> step(<span class="va">self</span>, x):</span>
+<span id="cb3-8"><a href=""></a>    <span class="co"># update the hidden state</span></span>
+<span id="cb3-9"><a href=""></a>    <span class="va">self</span>.h <span class="op">=</span> np.tanh(np.dot(<span class="va">self</span>.W_hh, <span class="va">self</span>.h) <span class="op">+</span> np.dot(<span class="va">self</span>.W_xh, x))</span>
+<span id="cb3-10"><a href=""></a>    <span class="co"># compute the output vector</span></span>
+<span id="cb3-11"><a href=""></a>    y <span class="op">=</span> np.dot(<span class="va">self</span>.W_hy, <span class="va">self</span>.h)</span>
+<span id="cb3-12"><a href=""></a>    <span class="cf">return</span> y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>A two-layer network would look as follows:</p>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>AttributeError: 'RNN' object has no attribute 'step'</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>AttributeError: 'RNN' object has no attribute 'step'</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a>y1 <span class="op">=</span> rnn.step(x)</span>
+<span id="cb4-2"><a href=""></a>y2 <span class="op">=</span> rnn.step(y1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Keras version (<a href="https://keras.io/api/layers/recurrent_layers/rnn/#rnn-class" class="uri">https://keras.io/api/layers/recurrent_layers/rnn/#rnn-class</a>):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="kw">class</span> MinimalRNNCell(keras.layers.Layer):</span>
+<span id="cb5-2"><a href=""></a></span>
+<span id="cb5-3"><a href=""></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, units, <span class="op">**</span>kwargs):</span>
+<span id="cb5-4"><a href=""></a>        <span class="va">self</span>.units <span class="op">=</span> units</span>
+<span id="cb5-5"><a href=""></a>        <span class="va">self</span>.state_size <span class="op">=</span> units</span>
+<span id="cb5-6"><a href=""></a>        <span class="bu">super</span>(MinimalRNNCell, <span class="va">self</span>).<span class="fu">__init__</span>(<span class="op">**</span>kwargs)</span>
+<span id="cb5-7"><a href=""></a></span>
+<span id="cb5-8"><a href=""></a>    <span class="kw">def</span> build(<span class="va">self</span>, input_shape):</span>
+<span id="cb5-9"><a href=""></a>        <span class="va">self</span>.kernel <span class="op">=</span> <span class="va">self</span>.add_weight(shape<span class="op">=</span>(input_shape[<span class="op">-</span><span class="dv">1</span>], <span class="va">self</span>.units),</span>
+<span id="cb5-10"><a href=""></a>                                      initializer<span class="op">=</span><span class="st">'uniform'</span>,</span>
+<span id="cb5-11"><a href=""></a>                                      name<span class="op">=</span><span class="st">'kernel'</span>)</span>
+<span id="cb5-12"><a href=""></a>        <span class="va">self</span>.recurrent_kernel <span class="op">=</span> <span class="va">self</span>.add_weight(</span>
+<span id="cb5-13"><a href=""></a>            shape<span class="op">=</span>(<span class="va">self</span>.units, <span class="va">self</span>.units),</span>
+<span id="cb5-14"><a href=""></a>            initializer<span class="op">=</span><span class="st">'uniform'</span>,</span>
+<span id="cb5-15"><a href=""></a>            name<span class="op">=</span><span class="st">'recurrent_kernel'</span>)</span>
+<span id="cb5-16"><a href=""></a>        <span class="va">self</span>.built <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb5-17"><a href=""></a></span>
+<span id="cb5-18"><a href=""></a>    <span class="kw">def</span> call(<span class="va">self</span>, inputs, states):</span>
+<span id="cb5-19"><a href=""></a>        prev_output <span class="op">=</span> states[<span class="dv">0</span>]</span>
+<span id="cb5-20"><a href=""></a>        h <span class="op">=</span> backend.dot(inputs, <span class="va">self</span>.kernel)</span>
+<span id="cb5-21"><a href=""></a>        output <span class="op">=</span> h <span class="op">+</span> backend.dot(prev_output, <span class="va">self</span>.recurrent_kernel)</span>
+<span id="cb5-22"><a href=""></a>        <span class="cf">return</span> output, [output]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Also (Phi, 2020b)</p>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>NameError: name 'FeedForwardNN' is not defined</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>TypeError: 'builtin_function_or_method' object is not iterable</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>NameError: name 'ff' is not defined</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href=""></a>rnn <span class="op">=</span> RNN()</span>
+<span id="cb6-2"><a href=""></a>ff <span class="op">=</span> FeedForwardNN()</span>
+<span id="cb6-3"><a href=""></a>hidden_state <span class="op">=</span> [<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>]</span>
+<span id="cb6-4"><a href=""></a></span>
+<span id="cb6-5"><a href=""></a><span class="cf">for</span> word <span class="kw">in</span> <span class="bu">input</span>:</span>
+<span id="cb6-6"><a href=""></a>    output, hidden_state <span class="op">=</span> rnn(word, hidden_state)</span>
+<span id="cb6-7"><a href=""></a></span>
+<span id="cb6-8"><a href=""></a>prediction <span class="op">=</span> ff(output)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Also (Phi, 2020a) :</p>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>NameError: name 'inputs' is not defined</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a><span class="kw">def</span> LSTMCell(prev_ct, prev_ht, <span class="bu">input</span>):</span>
+<span id="cb7-2"><a href=""></a>    combine <span class="op">=</span> prev_ct <span class="op">+</span> <span class="bu">input</span></span>
+<span id="cb7-3"><a href=""></a>    candidate <span class="op">=</span> candidate_layer(combine)</span>
+<span id="cb7-4"><a href=""></a>    it <span class="op">=</span> input_layer(combine)</span>
+<span id="cb7-5"><a href=""></a>    Ct <span class="op">=</span> prev_ct <span class="op">*</span> ft <span class="op">+</span> candidate <span class="op">*</span> it</span>
+<span id="cb7-6"><a href=""></a>    ot <span class="op">=</span> output_layer(combine)</span>
+<span id="cb7-7"><a href=""></a>    ht <span class="op">=</span> ot <span class="op">*</span> tanh(Ct)</span>
+<span id="cb7-8"><a href=""></a>    <span class="cf">return</span> ht, Ct</span>
+<span id="cb7-9"><a href=""></a></span>
+<span id="cb7-10"><a href=""></a>ct <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>]</span>
+<span id="cb7-11"><a href=""></a>ht <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>]</span>
+<span id="cb7-12"><a href=""></a></span>
+<span id="cb7-13"><a href=""></a><span class="cf">for</span> <span class="bu">input</span> <span class="kw">in</span> inputs:</span>
+<span id="cb7-14"><a href=""></a>    ct, ht <span class="op">=</span> LSTMCell(ct, ht, <span class="bu">input</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -1629,6 +1718,19 @@ X_t
 </div>
 </div>
 </div>
+<aside class="notes">
+<p>Explicitly state the network weights and how they relate to the different inputs.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="vanilla-rnns-1" class="slide level2">
 <h2>Vanilla RNNs</h2>
@@ -1637,7 +1739,7 @@ X_t
 
 <!-- markdownlint-enable MD013 -->
 <img data-src="index_files/figure-revealjs/tikz-vanilla-rnn-unfolded-weights-1-1.svg" width="1200" class="r-stretch"><aside class="notes">
-<p>From MIT lecture: use the folded version and incrementally reveal the equation</p>
+<p>From MIT lecture: use the unfolded version and incrementally reveal the equation</p>
 <p><span class="math display">\[
 h_t = f_W(x_t, h_{t-1})
 \]</span></p>
@@ -1661,7 +1763,7 @@ h_t = f_W(x_t, h_{t-1})
 
 <!-- markdownlint-enable MD013 -->
 <img data-src="index_files/figure-revealjs/tikz-vanilla-rnn-unfolded-weights-2-1.svg" width="1200" class="r-stretch"><aside class="notes">
-<p>From MIT lecture: use the folded version and incrementally reveal the equation</p>
+<p>From MIT lecture: use the unfolded version and incrementally reveal the equation</p>
 <p><span class="math display">\[
 h_t = f_W(x_t, h_{t-1})
 \]</span></p>
@@ -1685,7 +1787,7 @@ h_t = f_W(x_t, h_{t-1})
 
 <!-- markdownlint-enable MD013 -->
 <img data-src="index_files/figure-revealjs/tikz-vanilla-rnn-unfolded-weights-3-1.svg" width="1200" class="r-stretch"><aside class="notes">
-<p>From MIT lecture: use the folded version and incrementally reveal the equation</p>
+<p>From MIT lecture: use the unfolded version and incrementally reveal the equation</p>
 <p><span class="math display">\[
 h_t = f_W(x_t, h_{t-1})
 \]</span></p>
@@ -1712,7 +1814,7 @@ h_t = f_W(x_t, h_{t-1})
 <p>Note: <span class="math inline">\(\mathbf{W_{xh}}\)</span>, <span class="math inline">\(\mathbf{W_{hh}}\)</span>, and <span class="math inline">\(\mathbf{W_{hy}}\)</span> are shared across all cells!</p>
 </div>
 <aside class="notes">
-<p>From MIT lecture: use the folded version and incrementally reveal the equation</p>
+<p>From MIT lecture: use the unfolded version and incrementally reveal the equation</p>
 <p><span class="math display">\[
 h_t = f_W(x_t, h_{t-1})
 \]</span></p>
@@ -1732,6 +1834,7 @@ h_t = f_W(x_t, h_{t-1})
 </section>
 <section id="desired-features-of-rnn" class="slide level2">
 <h2>Desired features of RNN</h2>
+<p>Shared weights (parameters) are a fundamental characteristic that among other things address:</p>
 <div class="fragment">
 <!-- -->
 <h4 id="variable-sequence-lengths">1. Variable sequence lengths</h4>
@@ -1746,14 +1849,8 @@ h_t = f_W(x_t, h_{t-1})
 </div>
 <div class="fragment">
 <!-- -->
-<h4 id="preserve-order">3. Preserve order</h4>
+<h4 id="preservation-of-order">3. Preservation of order</h4>
 <p>“dog bites man” != “man bites dog”</p>
-<p><br></p>
-</div>
-<div class="fragment">
-<!-- -->
-<h4 id="share-parameters">4. Share parameters</h4>
-<p>Adresses points 2 and 3.</p>
 <p><br></p>
 </div>
 <aside class="notes">
@@ -1764,6 +1861,14 @@ h_t = f_W(x_t, h_{t-1})
 <blockquote>
 <p>architectur that learns to <em>encode</em> a variable-length sequence into a fixed-length vector representation and to <em>decode</em> a given fixed-length representation back into a variable-length sequence</p>
 </blockquote>
+<p>Sharing parameters:</p>
+<ol type="1">
+<li>consistency among time steps (generalizable)</li>
+<li>handles variable-length sequences (since same weights can be applied arbitrary number of times)</li>
+<li>captures temporal dynamics (short-term: immediate incorporation of previous steps, long-term: gradient can propagate across many time steps)</li>
+<li>efficient resource utilization</li>
+<li>sequence order interpretation (encoded within hidden states)</li>
+</ol>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1828,15 +1933,17 @@ h_t = f_W(x_t, h_{t-1})
 </div>
 <div class="fragment" style="font-size: 0.8em;">
 <p>Partition time series into training and test data sets at an e.g.&nbsp;2:1 ratio:</p>
+<div style="font-size: 0.7em;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href=""></a><span class="im">import</span> rnnutils</span>
-<span id="cb11-2"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb11-3"><a href=""></a>df <span class="op">=</span> rnnutils.airlines()</span>
-<span id="cb11-4"><a href=""></a>data <span class="op">=</span> np.array(</span>
-<span id="cb11-5"><a href=""></a>    df[<span class="st">'passengers'</span>].values</span>
-<span id="cb11-6"><a href=""></a>    .astype(<span class="st">'float32'</span>)</span>
-<span id="cb11-7"><a href=""></a>).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb11-8"><a href=""></a>train, test, scaler <span class="op">=</span> rnnutils.make_train_test(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a><span class="im">import</span> rnnutils</span>
+<span id="cb8-2"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb8-3"><a href=""></a>df <span class="op">=</span> rnnutils.airlines()</span>
+<span id="cb8-4"><a href=""></a>data <span class="op">=</span> np.array(</span>
+<span id="cb8-5"><a href=""></a>    df[<span class="st">'passengers'</span>].values</span>
+<span id="cb8-6"><a href=""></a>    .astype(<span class="st">'float32'</span>)</span>
+<span id="cb8-7"><a href=""></a>).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb8-8"><a href=""></a>train, test, scaler <span class="op">=</span> rnnutils.make_train_test(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -1848,23 +1955,23 @@ h_t = f_W(x_t, h_{t-1})
 <!-- markdownlint-enable MD013 -->
 <img data-src="index_files/figure-revealjs/tikz-prepare-airline-data-for-keras-1.svg" width="500" class="r-stretch"><div class="fragment" style="font-size: 0.8em;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href=""></a>time_steps <span class="op">=</span> <span class="dv">12</span></span>
-<span id="cb12-2"><a href=""></a>trainX, trainY, trainX_indices, trainY_indices <span class="op">=</span> rnnutils.make_xy(train, time_steps)</span>
-<span id="cb12-3"><a href=""></a>testX, testY, testX_indices, testY_indices <span class="op">=</span> rnnutils.make_xy(test, time_steps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href=""></a>time_steps <span class="op">=</span> <span class="dv">12</span></span>
+<span id="cb9-2"><a href=""></a>trainX, trainY, trainX_indices, trainY_indices <span class="op">=</span> rnnutils.make_xy(train, time_steps)</span>
+<span id="cb9-3"><a href=""></a>testX, testY, testX_indices, testY_indices <span class="op">=</span> rnnutils.make_xy(test, time_steps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section>
 <section id="example-create-vanilla-rnn-model" class="slide level2 smaller">
 <h2>Example: create vanilla RNN model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href=""></a><span class="im">from</span> keras.models <span class="im">import</span> Sequential</span>
-<span id="cb13-2"><a href=""></a><span class="im">from</span> keras.layers <span class="im">import</span> Dense, SimpleRNN</span>
-<span id="cb13-3"><a href=""></a>model <span class="op">=</span> Sequential()</span>
-<span id="cb13-4"><a href=""></a>model.add(SimpleRNN(units<span class="op">=</span><span class="dv">3</span>, input_shape<span class="op">=</span>(time_steps, <span class="dv">1</span>),</span>
-<span id="cb13-5"><a href=""></a>                    activation<span class="op">=</span><span class="st">"tanh"</span>))</span>
-<span id="cb13-6"><a href=""></a>model.add(Dense(units<span class="op">=</span><span class="dv">1</span>, activation<span class="op">=</span><span class="st">"tanh"</span>))</span>
-<span id="cb13-7"><a href=""></a>model.<span class="bu">compile</span>(loss<span class="op">=</span><span class="st">'mean_squared_error'</span>, optimizer<span class="op">=</span><span class="st">'adam'</span>)</span>
-<span id="cb13-8"><a href=""></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href=""></a><span class="im">from</span> keras.models <span class="im">import</span> Sequential</span>
+<span id="cb10-2"><a href=""></a><span class="im">from</span> keras.layers <span class="im">import</span> Dense, SimpleRNN</span>
+<span id="cb10-3"><a href=""></a>model <span class="op">=</span> Sequential()</span>
+<span id="cb10-4"><a href=""></a>model.add(SimpleRNN(units<span class="op">=</span><span class="dv">3</span>, input_shape<span class="op">=</span>(time_steps, <span class="dv">1</span>),</span>
+<span id="cb10-5"><a href=""></a>                    activation<span class="op">=</span><span class="st">"tanh"</span>))</span>
+<span id="cb10-6"><a href=""></a>model.add(Dense(units<span class="op">=</span><span class="dv">1</span>, activation<span class="op">=</span><span class="st">"tanh"</span>))</span>
+<span id="cb10-7"><a href=""></a>model.<span class="bu">compile</span>(loss<span class="op">=</span><span class="st">'mean_squared_error'</span>, optimizer<span class="op">=</span><span class="st">'adam'</span>)</span>
+<span id="cb10-8"><a href=""></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Model: "sequential"
 _________________________________________________________________
@@ -1914,9 +2021,9 @@ _________________________________________________________________</code></pre>
 <h2>Example: fit the model and evaluate</h2>
 <div style="font-size: 1.0em">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href=""></a>history <span class="op">=</span> model.fit(trainX, trainY, epochs<span class="op">=</span><span class="dv">20</span>, batch_size<span class="op">=</span><span class="dv">1</span>, verbose<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb16-2"><a href=""></a>Ytrainpred <span class="op">=</span> model.predict(trainX)</span>
-<span id="cb16-3"><a href=""></a>Ytestpred <span class="op">=</span> model.predict(testX)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href=""></a>history <span class="op">=</span> model.fit(trainX, trainY, epochs<span class="op">=</span><span class="dv">20</span>, batch_size<span class="op">=</span><span class="dv">1</span>, verbose<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb13-2"><a href=""></a>Ytrainpred <span class="op">=</span> model.predict(trainX)</span>
+<span id="cb13-3"><a href=""></a>Ytestpred <span class="op">=</span> model.predict(testX)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <!-- markdownlint-disable MD013 -->
@@ -1924,16 +2031,16 @@ _________________________________________________________________</code></pre>
 <!-- markdownlint-enable MD013 -->
 <div style="font-size: 1.0em">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href=""></a>rnnutils.plot_history(history)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href=""></a>rnnutils.plot_history(history)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><img data-src="airline-training-history.png"></p>
 </div>
 <div style="font-size: 1.0em">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href=""></a>data <span class="op">=</span> {<span class="st">'train'</span>: (model.predict(trainX), train, trainY_indices),</span>
-<span id="cb18-2"><a href=""></a>        <span class="st">'test'</span>: (model.predict(testX), test, testY_indices)}</span>
-<span id="cb18-3"><a href=""></a>rnnutils.plot_pred(data, scaler<span class="op">=</span>scaler, ticks<span class="op">=</span><span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">144</span>, <span class="dv">20</span>),</span>
-<span id="cb18-4"><a href=""></a>                   labels<span class="op">=</span>df.year[<span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">144</span>, <span class="dv">20</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href=""></a>data <span class="op">=</span> {<span class="st">'train'</span>: (model.predict(trainX), train, trainY_indices),</span>
+<span id="cb15-2"><a href=""></a>        <span class="st">'test'</span>: (model.predict(testX), test, testY_indices)}</span>
+<span id="cb15-3"><a href=""></a>rnnutils.plot_pred(data, scaler<span class="op">=</span>scaler, ticks<span class="op">=</span><span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">144</span>, <span class="dv">20</span>),</span>
+<span id="cb15-4"><a href=""></a>                   labels<span class="op">=</span>df.year[<span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">144</span>, <span class="dv">20</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><img data-src="airline-prediction-prepared.png"></p>
 </div>
@@ -1966,7 +2073,7 @@ _________________________________________________________________</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-rnn-model-topology-writ-out-1-1.svg" width="1152" height="300"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-model-topology-writ-out-1-1.svg" width="960" height="300"></p>
 </figure>
 </div>
 </div>
@@ -2017,7 +2124,7 @@ _________________________________________________________________</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-rnn-model-topology-writ-out-2-1.svg" width="1152" height="300"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-model-topology-writ-out-2-1.svg" width="960" height="300"></p>
 </figure>
 </div>
 </div>
@@ -2082,7 +2189,7 @@ _________________________________________________________________</code></pre>
 </section>
 <section id="exercise-1" class="slide level2">
 <h2>Exercise</h2>
-<p>See if you can improve the airline passenger model. Some things to try:</p>
+<p>Using the <code>SimpleRNN</code> (Vanilla RNN) class, see if you can improve the airline passenger model. Some things to try:</p>
 <ul>
 <li>change the number of units</li>
 <li>change time_steps</li>
@@ -2104,7 +2211,7 @@ _________________________________________________________________</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-ffn-1-1.svg" width="1152"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-ffn-1-1.svg" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2138,7 +2245,7 @@ _________________________________________________________________</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-ffn-2-1.svg" width="1152"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-ffn-2-1.svg" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2175,7 +2282,7 @@ _________________________________________________________________</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-ffn-3-1.svg" width="1152"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-ffn-3-1.svg" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2213,7 +2320,7 @@ _________________________________________________________________</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-ffn-4-1.svg" width="1152"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-ffn-4-1.svg" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2334,7 +2441,7 @@ _________________________________________________________________</code></pre>
 <p>Errors are propagated backwards in time from <span class="math inline">\(t=t\)</span> to <span class="math inline">\(t=0\)</span>.</p>
 </div><div class="column" style="width:50%;">
 <div class="fragment center">
-<p>Problem: calculating gradient may depend on large powers of <span class="math inline">\(\mathbf{W_{hh}}^{\mathsf{T}}\)</span> (e.g.&nbsp;<span class="math inline">\(\delta\mathcal{L} / \delta h_0
+<p>Problem: calculating gradient may depend on large powers of <span class="math inline">\(\mathbf{W_{hh}}^{\mathsf{T}}\)</span> (e.g., <span class="math inline">\(\delta\mathcal{L} / \delta h_0
 \sim f((\mathbf{W_{hh}}^{\mathsf{T}})^t)\)</span></p>
 </div>
 </div>
@@ -2393,7 +2500,7 @@ _________________________________________________________________</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-clouds-are-in-the-sky-1.svg" width="1152" height="150"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-clouds-are-in-the-sky-1.svg" width="960" height="150"></p>
 </figure>
 </div>
 </div>
@@ -2408,7 +2515,7 @@ _________________________________________________________________</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-I-speak-fluent-english-1.svg" width="1152" height="150"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-I-speak-fluent-english-1.svg" width="960" height="150"></p>
 </figure>
 </div>
 </div>
@@ -2446,7 +2553,7 @@ _________________________________________________________________</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-vanishing-gradient-trick-1-1.svg" width="1152" height="400"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-vanishing-gradient-trick-1-1.svg" width="960" height="400"></p>
 </figure>
 </div>
 </div>
@@ -2465,7 +2572,7 @@ _________________________________________________________________</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-vanishing-gradient-trick-2-1.svg" width="1152" height="400"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-vanishing-gradient-trick-2-1.svg" width="960" height="400"></p>
 </figure>
 </div>
 </div>
@@ -2492,13 +2599,13 @@ _________________________________________________________________</code></pre>
 <div class="column" style="width:50%;">
 <h4 id="more-complex-cells-using-gating">3. More complex cells using “gating”</h4>
 <p>For example LSTM. Idea is to control what information is retained within each RNN unit.</p>
-<p>Make use regular multiplication (x) and addition (+).</p>
+<p>Make use of regular multiplication (x) and addition (+) to combine signals.</p>
 </div><div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-vanishing-gradient-trick-3-1.svg" width="1152" height="400"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-vanishing-gradient-trick-3-1.svg" width="960" height="400"></p>
 </figure>
 </div>
 </div>
@@ -2657,7 +2764,7 @@ _________________________________________________________________</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-cellstateflow-1.svg" width="1152" height="250"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-cellstateflow-1.svg" width="960" height="250"></p>
 </figure>
 </div>
 </div>
@@ -2676,7 +2783,7 @@ _________________________________________________________________</code></pre>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-lstmgate-1.svg" width="1152" height="250"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-lstmgate-1.svg" width="960" height="250"></p>
 </figure>
 </div>
 </div>
@@ -2732,7 +2839,7 @@ forget gate
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-lstm-forget-gate-only-1.svg" width="1152"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-lstm-forget-gate-only-1.svg" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2747,7 +2854,7 @@ input gate
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-lstm-input-gate-only-1.svg" width="1152"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-lstm-input-gate-only-1.svg" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2762,7 +2869,7 @@ output gate
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="index_files/figure-revealjs/tikz-lstm-output-gate-only-1.svg" width="1152"></p>
+<p><img data-src="index_files/figure-revealjs/tikz-lstm-output-gate-only-1.svg" width="960"></p>
 </figure>
 </div>
 </div>
@@ -3035,8 +3142,8 @@ h_t = o_t * \mathsf{tanh}(c_t)
 </div>
 <!-- markdownlint-disable MD013 -->
 <p><span class="math display">\[
-x_t \in \mathbb{R}^{n\times d}, h_{t-1} \in \mathbb{n \times h},
-i_t \in \mathbb{R}^{n\times h}, f_t \in \mathbb{R}^{n\times h}, o_t \in \mathbb{R}^{n\times h},
+x_t \in \mathbb{R}^{n\times d}, h_{t-1} \in \mathbb{R}^{n \times h},
+i_t \in \mathbb{R}^{n\times h}, f_t \in \mathbb{R}^{n\times h}, o_t \in \mathbb{R}^{n\times h}, \\ c_t \in \mathbb{R}^{n\times h}, b_i,b_f,b_c \in \mathbb{R}^{1\times h}
 \]</span></p>
 <p>and</p>
 <p><span class="math display">\[
@@ -3152,47 +3259,9 @@ W_f \in \mathbb{R}^{n \times (h+d)}, W_i \in \mathbb{R}^{n \times (h+d)}, W_o \i
 <h1>Exercise</h1>
 
 </section>
-<section id="exercises" class="slide level2">
-<h2>Exercises</h2>
-<h4 id="analyse-airline-passengers-with-lstm">1. Analyse airline passengers with LSTM</h4>
+<section id="analyse-airline-passengers-with-lstm" class="slide level2">
+<h2>Analyse airline passengers with LSTM</h2>
 <p>Modify the airline passenger model to use an LSTM and compare the results. Try out different parameters to improve test predictions.</p>
-<h4 id="time-series-forecasting-with-lstm-discrete-state-space">2. Time-series forecasting with LSTM, discrete state space</h4>
-<p>LSTM with Variable Length Input Sequences to One Character Output</p>
-<aside class="notes">
-<p>Good example at (Koehrsen, 2018)</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="time-series-forecasting-with-lstm-discrete-state-space-1" class="slide level2">
-<h2>Time-series forecasting with LSTM, discrete state space</h2>
-<h4 id="objective">Objective</h4>
-<p>Predict next character in sequence of strings</p>
-<h4 id="comments">Comments</h4>
-<ul>
-<li>you could use several LSTM layers, in which all but the last layer should return sequences (set <code>return_sequences=True</code>) <span class="citation" data-cites="brownlee_stacked_2017">(<a href="#/bibliography" role="doc-biblioref" onclick="">Brownlee, 2017</a>)</span></li>
-</ul>
-<aside class="notes">
-<p>Use <span class="citation" data-cites="karpathyandrej_UnreasonableEffectivenessRecurrent_2015">(<a href="#/bibliography" role="doc-biblioref" onclick="">Karpathy, Andrej, 2015</a>)</span> hello example to illustrate how the modelling is done</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 </section>
 <section id="bibliography" class="slide level2 smaller unnumbered unlisted scrollable">
 <h2>Bibliography</h2>
@@ -3202,9 +3271,6 @@ Adrion, J. R., Galloway, J. G., &amp; Kern, A. D. (2020). Predicting the <span>L
 </div>
 <div id="ref-alexanderamini_MITS191Recurrent_2021" class="csl-entry" role="listitem">
 Alexander Amini. (2021). <em><span>MIT</span> 6.<span>S191</span>: <span>Recurrent Neural Networks</span></em>. <a href="https://www.youtube.com/watch?v=qjrad0V0uJE">https://www.youtube.com/watch?v=qjrad0V0uJE</a>
-</div>
-<div id="ref-brownlee_stacked_2017" class="csl-entry" role="listitem">
-Brownlee, J. (2017). Stacked <span>Long</span> <span>Short</span>-<span>Term</span> <span>Memory</span> <span>Networks</span>. In <em>Machine Learning Mastery</em>. <a href="https://machinelearningmastery.com/stacked-long-short-term-memory-networks/">https://machinelearningmastery.com/stacked-long-short-term-memory-networks/</a>
 </div>
 <div id="ref-cho_learning_2014" class="csl-entry" role="listitem">
 Cho, K., Merrienboer, B. van, Gulcehre, C., Bahdanau, D., Bougares, F., Schwenk, H., &amp; Bengio, Y. (2014). Learning <span>Phrase</span> <span>Representations</span> using <span>RNN</span> <span>Encoder</span>-<span>Decoder</span> for <span>Statistical</span> <span>Machine</span> <span>Translation</span>. <em>arXiv:1406.1078 [Cs, Stat]</em>. <a href="http://arxiv.org/abs/1406.1078">http://arxiv.org/abs/1406.1078</a>

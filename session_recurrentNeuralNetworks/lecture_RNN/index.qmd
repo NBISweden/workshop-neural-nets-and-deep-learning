@@ -6,7 +6,7 @@ date: "23 May, 2024"
 institute: NBIS
 ---
 
-## Setup  {visibility="hidden" .unnumbered .unlisted}
+# Setup  {visibility="hidden" .unnumbered .unlisted}
 
 ```{r  knitr-setup }
 #| echo: false
@@ -68,14 +68,24 @@ knitr::knit_hooks$set(inline = function(x) {
 
 :::: {}
 
+:::{}
+
 #### Architecture
 
 A single neuron has $n$ *inputs* $x_i$ and an *output* $y$. To each
 input is associated a *weight* $w_i$.
 
+:::
+
+::: {.fragment}
+
 #### Activity rule
 
 The **activity rule** is given by two steps:
+
+:::
+
+:::{.hidden}
 
 $$a = \sum_{i} w_ix_i, \quad i=0,...,n$$
 
@@ -86,6 +96,8 @@ a & \rightarrow & y(a)
 
 [@mackay_InformationTheoryInference_2003]
 
+:::
+
 ::::
 
 ::::::::
@@ -94,8 +106,8 @@ a & \rightarrow & y(a)
 
 Beware of notation here. Points to make:
 
--   $w_0=1$ -> bias
--   activation -> activity can be separated (next slide)
+- $w_0=1$ -> bias
+- activation -> activity can be separated (next slide)
 
 Alternative view of bias: an additional weight $w_0$ with input
 permanently set to 1 (MacKay, 2003, p. 471)
@@ -134,7 +146,13 @@ input is associated a *weight* $w_i$.
 
 The **activity rule** is given by two steps:
 
+::: {.fragment}
+
 $$a = \sum_{i} w_ix_i, \quad i=0,...,n$$
+
+:::
+
+::: {.fragment}
 
 $$\begin{array}{ccc}
 \mathrm{activation} & & \mathrm{activity}\\
@@ -142,6 +160,9 @@ a & \rightarrow & y(a)
 \end{array}$$
 
 [@mackay_InformationTheoryInference_2003]
+
+:::
+
 ::::
 
 ::::::::
@@ -150,8 +171,8 @@ a & \rightarrow & y(a)
 
 Beware of notation here. Points to make:
 
--   $w_0=1$ -> bias
--   activation -> activity can be separated (next slide)
+- $w_0=1$ -> bias
+- activation -> activity can be separated (next slide)
 
 Alternative view of bias: an additional weight $w_0$ with input
 permanently set to 1 [@mackay_InformationTheoryInference_2003, p. 471]
@@ -214,7 +235,7 @@ Follow MIT notation: g() is the non-linear activation (function)
 <!-- markdownlint-disable MD013 -->
 
 ```{r }
-#| label:   tikz-rnn-recap-perceptron-simplified
+#| label: tikz-rnn-recap-perceptron-simplified
 #| engine: tikz
 #| fig-width: 10
 \begin{tikzpicture}[node distance=4*\basenodesep, >=latex]
@@ -281,6 +302,8 @@ indicate what **value** is passed along
 
 :::: {.notes}
 
+Segue: typically want multiple layers between input and output
+
 Show multi-valued (vector) output and hidden layer.
 
 Make mental image: from now on inputs are **vectors**
@@ -289,7 +312,7 @@ Make mental image: from now on inputs are **vectors**
 
 ## Simplified illustration
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label: tikz-rnn-recap-perceptron-multiout-simple
 #| out-height: 300px
 \begin{tikzpicture}
@@ -313,7 +336,7 @@ Condense hidden layers to a box.
 
 ## Simplified illustration
 
-```{r,  fig.ext="svg", engine='tikz' }
+```{r,   engine='tikz' }
 #| label: tikz-rnn-recap-perceptron-multiout-simple-rotated
 #| out-height: 400px
 \begin{tikzpicture}
@@ -333,12 +356,15 @@ Condense hidden layers to a box.
 
 Condense hidden layers to a box.
 
+For the purpose of further discussion, will be treating input
+left-to-right, whereby it is convenient to rotate the illustration.
+
 ::::
 
 # Sequential models
 ## Motivation
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label: tikz-rnn-motivation-time-series
 #| out-height: 400px
 \begin{tikzpicture}
@@ -350,16 +376,18 @@ Condense hidden layers to a box.
 
 ::: {.notes}
 
-incremental figure showing time series (e.g. sinus) that highlights
+With only one image, no idea if ball is moving or direction.
 
--   dependency on previous time point
--   (weaker) dependency on more distant time points
+Incremental figure showing time series (e.g. sinus) that highlights
+
+- dependency on previous time point
+- (weaker) dependency on more distant time points
 
 :::
 
 ## Motivation
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:  tikz-rnn-motivation-time-series-1
 #| out-height: 400px
 \begin{tikzpicture}
@@ -373,14 +401,14 @@ incremental figure showing time series (e.g. sinus) that highlights
 
 incremental figure showing time series (e.g. sinus) that highlights
 
--   dependency on previous time point
--   (weaker) dependency on more distant time points
+- dependency on previous time point
+- (weaker) dependency on more distant time points
 
 :::
 
 ## Motivation
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label: tikz-rnn-motivation-time-series-2
 #| out-height: 400px
 \begin{tikzpicture}
@@ -401,7 +429,7 @@ incremental figure showing time series (e.g. sinus) that highlights
 
 ## Motivation
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label: tikz-rnn-motivation-time-series-3
 #| out-height: 400px
 \begin{tikzpicture}[>=latex]
@@ -445,7 +473,7 @@ Language translation
 
 <!-- markdownlint-disable MD013 -->
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   rnn-example-language-translation
 #| out-height: 300px
 \begin{tikzpicture}[node distance=2cm, >=latex]
@@ -491,7 +519,8 @@ Genomics
 
 :::: {.notes}
 
-Word prediction according to [@karpathyandrej_UnreasonableEffectivenessRecurrent_2015]:
+Word prediction according to
+[@karpathyandrej_UnreasonableEffectivenessRecurrent_2015]:
 
 > model the probability distribution of the next character in the
 > sequence given a sequence of previous characters.
@@ -506,7 +535,7 @@ Word prediction according to [@karpathyandrej_UnreasonableEffectivenessRecurrent
 
 one to one
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label: sequential-models-one-to-one
 #| out-height: 100px
 \begin{tikzpicture}
@@ -522,7 +551,7 @@ one to one
 
 many to one
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label: sequential-models-many-to-one
 #| out-height: 100px
 \begin{tikzpicture}
@@ -542,7 +571,7 @@ many to one
 
 one to many
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   sequential-models-one-to-many
 #| out-height: 100px
 \begin{tikzpicture}
@@ -562,7 +591,7 @@ one to many
 
 many to many
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   sequential-models-many-to-many
 #| out-height: 100px
 \begin{tikzpicture}
@@ -649,23 +678,23 @@ Models:
 
 - **one to one:** Vanilla processing without RNN, from fixed input to
   fixed output e.g. image classification (aka vanilla neural network)
-- **one to many:** sequence output, e.g. image captioning
 - **many to one:** sequence input, e.g. sentiment analysis (classify
-  sequence as happy/sad/&#x2026;)
+  sequence as happy/sad/&#x2026;) - convert text input into a mood
+- **one to many:** sequence output, e.g. image captioning
 - **many to many:** sequence input and sequence output, e.g. machine
   translation
 
 Data:
 
--   (Xiao et al., 2017)
+- (Xiao et al., 2017)
 
--   <https://cocodataset.org/#captions-2015>
+- <https://cocodataset.org/#captions-2015>
 
 ::::
 
 # Recurrent Neural Networks (RNNs)
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label: tikz-rnn-folded-only
 #| out-height: 400px
 \begin{tikzpicture}[thick]
@@ -677,13 +706,15 @@ Data:
 :::: {.notes}
 
 We will now look at the essentials of RNNs. As the figure implies, the
-output of the network
+output of the network depends on an input and the value of the
+recurrent network
 
 [@alexanderamini_MITS191Recurrent_2021] point out inputs $x_i$
 represent **one** time point
 
 input, output, green box: contains vectors of data, arrows represent
-operations/function [@karpathyandrej_UnreasonableEffectivenessRecurrent_2015]
+operations/function
+[@karpathyandrej_UnreasonableEffectivenessRecurrent_2015]
 
 Key feature: the recurrence (green) can be applied as many times as we
 want, i.e. no constraint on input size
@@ -711,7 +742,7 @@ and information only flows forward (i.e. no memory)
 
 :::: {}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:  ffn-xt-1
 #| out-height: 250px
 \begin{tikzpicture}
@@ -724,7 +755,7 @@ and information only flows forward (i.e. no memory)
 
 :::: {.fragment data-fragment-index="2" style="border-left: 2px black solid;"}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   ffn-x0-xt-1
 #| out-height: 250px
 #| out-width: 100%
@@ -754,7 +785,7 @@ Assume multiple time points.
 
 Rotated FFN: take a moment to recap the ffn. Input $X_t \in
 \mathbb{R}^{m}$ is mapped to output $\widehat{Y}_t \in \mathbb{R}^n$ via
-the network ($f(\cdot)$
+the network ($f(\cdot)$)
 
 Now assume we have several time steps, starting at e.g. time 0. Also
 we predict the outputs individually.
@@ -771,7 +802,7 @@ we predict the outputs individually.
 
 :::: {}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   ffn-xt-2
 #| out-height: 250px
 \begin{tikzpicture}
@@ -784,7 +815,7 @@ we predict the outputs individually.
 
 :::: { style="border-left: 2px black solid;"}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   ffn-x0-xt-2
 #| out-height: 250px
 #| out-width: 100%
@@ -827,7 +858,7 @@ Add another time step&#x2026;
 
 :::: {}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   ffn-xt-3
 #| out-height: 250px
 \begin{tikzpicture}
@@ -840,7 +871,7 @@ Add another time step&#x2026;
 
 :::: { style="border-left: 2px black solid; "}
 
-```{r  , fig.ext="svg", engine='tikz' }
+```{r  ,  engine='tikz' }
 #| label: ffn-x0-xt-3
 #| out-height: 250px
 #| out-width: 100%
@@ -866,8 +897,8 @@ Add another time step&#x2026;
 
 Assume multiple time points.
 
-> - Dependency of inputs not modelled such that ambiguous sequences
->   cannot be distinguished:
+> - Dependency of inputs not modelled $\Rightarrow$ ambiguous
+>   sequences cannot be distinguished:
 
 :::: fragment
 
@@ -902,7 +933,7 @@ Emphasize fact that any prediction is based only on the current input
 
 :::: {}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   ffn-xt-4
 #| out-height: 250px
 \begin{tikzpicture}
@@ -915,7 +946,7 @@ Emphasize fact that any prediction is based only on the current input
 
 :::: {style="border-left: 2px black solid; "}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   ffn-x0-xt-4
 #| out-height: 250px
 #| out-width: 100%
@@ -941,7 +972,7 @@ Emphasize fact that any prediction is based only on the current input
 
 Assume multiple time points.
 
--   Time points are modelled **individually** ( $\hat{Y}_t = f(X_t)$ )
+- Time points are modelled **individually** ($\hat{Y}_t = f(X_t)$)
 
 ::::
 
@@ -967,7 +998,7 @@ state via a hidden (latent) variable
 
 :::: {}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:  ffn-xt-5
 #| out-height: 250px
 \begin{tikzpicture}
@@ -980,7 +1011,7 @@ state via a hidden (latent) variable
 
 :::: {style="border-left: 2px black solid; "}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   ffn-x0-xt-5
 #| out-height: 250px
 #| out-width: 100%
@@ -1006,8 +1037,9 @@ state via a hidden (latent) variable
 
 Assume multiple time points.
 
--   Time points are modelled **individually** ( $\hat{Y}_t = f(X_t)$ )
--   Also want dependency on **previous** inputs ( $\hat{Y}_t = f(..., X_1, X_0)$ )
+- Time points are modelled **individually** ($\hat{Y}_t = f(X_t)$)
+- However: also want dependency on **previous** inputs ($\hat{Y}_t =
+  f(..., X_1, X_0)$)
 
 ::::
 
@@ -1033,7 +1065,7 @@ state via a hidden (latent) variable
 
 :::: {}
 
-```{r  , fig.ext="svg", engine='tikz' }
+```{r  ,  engine='tikz' }
 #| label: ffn-xt-arr-1
 #| out-height: 250px
 \begin{tikzpicture}
@@ -1046,7 +1078,7 @@ state via a hidden (latent) variable
 
 :::: {style="border-left: 2px black solid; "}
 
-```{r  , fig.ext="svg", engine='tikz' }
+```{r  ,  engine='tikz' }
 #| label: ffn-x0-xt-arr-1
 #| out-height: 250px
 #| out-width: 100%
@@ -1091,7 +1123,7 @@ state (a hidden state) and pass this information on to the next
 
 :::: {}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:  ffn-xt-arr-2
 #| out-height: 250px
 
@@ -1105,7 +1137,7 @@ state (a hidden state) and pass this information on to the next
 
 :::: {style="border-left: 2px black solid; "}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   ffn-x0-xt-arr-2
 #| out-height: 250px
 #| out-width: 100%
@@ -1146,7 +1178,7 @@ state (a hidden state) and pass this information on to the next
 
 :::: {}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   ffn-xt-arr-3
 #| out-height: 250px
 \begin{tikzpicture}
@@ -1159,7 +1191,7 @@ state (a hidden state) and pass this information on to the next
 
 :::: {style="border-left: 2px black solid; "}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   ffn-x0-xt-arr-3
 #| out-height: 250px
 #| out-width: 100%
@@ -1200,7 +1232,7 @@ state (a hidden state) and pass this information on to the next
 
 :::: {}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   ffn-xt-arr-4
 #| out-height: 250px
 \begin{tikzpicture}
@@ -1213,7 +1245,7 @@ state (a hidden state) and pass this information on to the next
 
 :::: {style="border-left: 2px white solid; "}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   ffn-x0-xt-arr-4
 #| out-height: 250px
 #| out-width: 100%
@@ -1254,6 +1286,8 @@ step:
 $$
 \hat{Y}_t = f(X_t, h_{t-1})
 $$
+
+$h_t$ is a summary of the inputs we've seen sofar.
 
 ::::::
 
@@ -1330,7 +1364,7 @@ cf (, Haykin, 2010, p. 203):
 
 :::: {}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-rnn-folded-hidden-eq-1
 #| out-width: 300px
 \begin{tikzpicture}[thick]
@@ -1366,6 +1400,14 @@ steps!
 
 :::::::::::::::::::
 
+::: {.notes}
+
+Flesh out the previous illustration, emphasizing that the hidden layer
+is recurrent (could otherwise be just dense layers). Also add
+subscript to $f$ to highlight its dependence on network weights.
+
+:::
+
 ## Recurrent Neural Networks - pseudocode
 
 <!-- markdownlint-disable MD013 -->
@@ -1376,7 +1418,7 @@ steps!
 
 :::: {}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-rnn-folded-hidden-eq-2
 #| out-width: 300px
 \begin{tikzpicture}[thick]
@@ -1389,7 +1431,7 @@ steps!
 
 :::: {}
 
-:::: {style="font-size: 0.9em"}
+:::: {style="font-size: 0.7em"}
 
 ```{python}
 #| label: rnn-simple-pseudocode
@@ -1426,8 +1468,8 @@ prediction = ff(output)
 Pseudocode examples, my example:
 
 ```{python}
-
-
+#| echo: true
+#| eval: false
 class RNN:
     def __init__(self):
         # Initialize weights and cell state
@@ -1461,6 +1503,8 @@ yhat = rnn.predict()
 [@karpathyandrej_UnreasonableEffectivenessRecurrent_2015]
 
 ```{python}
+#| echo: true
+#| eval: false
 rnn = RNN()
 y = rnn.step(x) # x is an input vector, y is the RNN's output vector
 
@@ -1479,6 +1523,8 @@ class RNN:
 A two-layer network would look as follows:
 
 ```{python}
+#| echo: true
+#| eval: false
 y1 = rnn.step(x)
 y2 = rnn.step(y1)
 ```
@@ -1486,6 +1532,8 @@ y2 = rnn.step(y1)
 Keras version (<https://keras.io/api/layers/recurrent_layers/rnn/#rnn-class>):
 
 ```{python}
+#| echo: true
+#| eval: false
 class MinimalRNNCell(keras.layers.Layer):
 
     def __init__(self, units, **kwargs):
@@ -1513,6 +1561,8 @@ class MinimalRNNCell(keras.layers.Layer):
 Also (Phi, 2020b)
 
 ```{python}
+#| echo: true
+#| eval: false
 rnn = RNN()
 ff = FeedForwardNN()
 hidden_state = [0.0, 0.0, 0.0, 0.0]
@@ -1526,6 +1576,8 @@ prediction = ff(output)
 Also (Phi, 2020a) :
 
 ```{python}
+#| echo: true
+#| eval: false
 def LSTMCell(prev_ct, prev_ht, input):
     combine = prev_ct + input
     candidate = candidate_layer(combine)
@@ -1550,7 +1602,7 @@ for input in inputs:
 
 :::: {}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-vanilla-rnn-folded-hidden-eq-1
 #| out-width: 300px
 \begin{tikzpicture}[thick]
@@ -1596,13 +1648,20 @@ $$
 
 :::::::::::::::::::
 
+::: {.notes}
+
+Explicitly state the network weights and how they relate to the
+different inputs.
+
+:::
+
 ## Vanilla RNNs
 
 [@olah_christopher_understanding_nodate]
 
 <!-- markdownlint-disable MD013 -->
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-vanilla-rnn-unfolded-weights-1
 #| out-width: 1200px
 \begin{tikzpicture}
@@ -1619,7 +1678,8 @@ $$
 
 :::: {.notes}
 
-From MIT lecture: use the folded version and incrementally reveal the equation
+From MIT lecture: use the unfolded version and incrementally reveal
+the equation
 
 $$
 h_t = f_W(x_t, h_{t-1})
@@ -1635,7 +1695,7 @@ Add pseudocode to exemplify
 
 <!-- markdownlint-disable MD013 -->
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label: tikz-vanilla-rnn-unfolded-weights-2
 #| out-width: 1200px
 \begin{tikzpicture}
@@ -1655,7 +1715,7 @@ Add pseudocode to exemplify
 
 :::: {.notes}
 
-From MIT lecture: use the folded version and incrementally reveal the equation
+From MIT lecture: use the unfolded version and incrementally reveal the equation
 
 $$
 h_t = f_W(x_t, h_{t-1})
@@ -1671,7 +1731,7 @@ Add pseudocode to exemplify
 
 <!-- markdownlint-disable MD013 -->
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-vanilla-rnn-unfolded-weights-3
 #| out-width: 1200px
 \begin{tikzpicture}
@@ -1694,7 +1754,7 @@ Add pseudocode to exemplify
 
 :::: {.notes}
 
-From MIT lecture: use the folded version and incrementally reveal the equation
+From MIT lecture: use the unfolded version and incrementally reveal the equation
 
 $$
 h_t = f_W(x_t, h_{t-1})
@@ -1711,7 +1771,7 @@ Add pseudocode to exemplify
 
 <!-- markdownlint-disable MD013 -->
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-vanilla-rnn-unfolded-weights-4
 #| out-width: 1200px
 \begin{tikzpicture}
@@ -1744,7 +1804,7 @@ shared across all cells!
 
 :::: {.notes}
 
-From MIT lecture: use the folded version and incrementally reveal the
+From MIT lecture: use the unfolded version and incrementally reveal the
 equation
 
 $$
@@ -1758,6 +1818,9 @@ Add pseudocode to exemplify
 ::::
 
 ## Desired features of RNN
+
+Shared weights (parameters) are a fundamental characteristic that
+among other things address:
 
 <div class="fragment">
 
@@ -1779,17 +1842,8 @@ Not all inputs are of equal length
 
 <div class="fragment">
 
-#### 3. Preserve order
+#### 3. Preservation of order
 "dog bites man" != "man bites dog"
-
-<br/>
-</div>
-
-<div class="fragment">
-
-#### 4. Share parameters
-
-Adresses points 2 and 3.
 
 <br/>
 </div>
@@ -1803,6 +1857,17 @@ From (Cho et al., 2014):
 > architectur that learns to *encode* a variable-length sequence into a
 > fixed-length vector representation and to *decode* a given
 > fixed-length representation back into a variable-length sequence
+
+Sharing parameters:
+
+1. consistency among time steps (generalizable)
+2. handles variable-length sequences (since same weights can be
+   applied arbitrary number of times)
+3. captures temporal dynamics (short-term: immediate incorporation of
+   previous steps, long-term: gradient can propagate across many time
+   steps)
+4. efficient resource utilization
+5. sequence order interpretation (encoded within hidden states)
 
 ::::
 
@@ -1859,6 +1924,8 @@ Herzen article on darts:
 Partition time series into training and test data sets at an e.g. 2:1
 ratio:
 
+:::{style="font-size: 0.7em;"}
+
 ```{python }
 #| label: box-jenkins-airline-partition-data
 #| echo: true
@@ -1876,13 +1943,15 @@ train, test, scaler = rnnutils.make_train_test(data)
 
 :::
 
+:::
+
 :::::::
 
 ## Example: prepare data for keras
 
 <!-- markdownlint-disable MD013 -->
 
-```{r , fig.ext="svg", engine='tikz' }
+```{r ,  engine='tikz' }
 #| label:  tikz-prepare-airline-data-for-keras
 #| cache: false
 #| out-width: 500px
@@ -2296,15 +2365,14 @@ Ask for input\_shape: what is timesteps? (=4) What is features? (=4)
 
 ## Exercise
 
-See if you can improve the airline passenger model. Some things to
-try:
+Using the `SimpleRNN` (Vanilla RNN) class, see if you can improve the
+airline passenger model. Some things to try:
 
 - change the number of units
 - change time\_steps
 - change the number of epochs
 
 # Training
-
 ## Recap: backpropagation algorithm in ffns
 
 [@alexanderamini_MITS191Recurrent_2021]
@@ -2315,7 +2383,7 @@ try:
 
 :::: {}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-backpropagation-ffn-1
 \begin{tikzpicture}[rotate=90, transform shape]
   \useasboundingbox (-\basenodesep, -6.5*\basenodesep) rectangle (5*\basenodesep, 3*\basenodesep);
@@ -2357,7 +2425,7 @@ general and applies also to ffns.
 
 :::: {}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-backpropagation-ffn-2
 \begin{tikzpicture}[rotate=90, transform shape]
   \useasboundingbox (-\basenodesep, -6.5*\basenodesep) rectangle (5*\basenodesep, 3*\basenodesep);
@@ -2406,7 +2474,7 @@ general and applies also to ffns.
 
 <!-- markdownlint-disable MD013 -->
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-backpropagation-ffn-3
 \begin{tikzpicture}[rotate=90, transform shape]
   \useasboundingbox (-\basenodesep, -6.5*\basenodesep) rectangle (5*\basenodesep, 3*\basenodesep);  \tikzset{
@@ -2457,7 +2525,7 @@ general and applies also to ffns.
 
 :::: {}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-backpropagation-ffn-4
 \begin{tikzpicture}[rotate=90, transform shape]
   \useasboundingbox (-\basenodesep, -6.5*\basenodesep) rectangle (5*\basenodesep, 3*\basenodesep);
@@ -2505,7 +2573,7 @@ general and applies also to ffns.
 
 [@alexanderamini_MITS191Recurrent_2021]
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-1
 #| out-height: 400px
 #| out-width: 100%
@@ -2538,7 +2606,7 @@ general and applies also to ffns.
 
 <!-- markdownlint-disable MD013 -->
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-2
 #| out-height: 400px
 #| out-width: 100%
@@ -2583,7 +2651,7 @@ general and applies also to ffns.
 
 <!-- markdownlint-disable MD013 -->
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-3
 #| out-height: 400px
 #| out-width: 100%
@@ -2637,7 +2705,7 @@ general and applies also to ffns.
 
 <!-- markdownlint-disable MD013 -->
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-4
 #| out-height: 400px
 #| out-width: 100%
@@ -2704,7 +2772,7 @@ general and applies also to ffns.
 
 <!-- markdownlint-disable MD013 -->
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-5
 #| out-height: 400px
 #| out-width: 100%
@@ -2783,7 +2851,7 @@ general and applies also to ffns.
 
 <!-- markdownlint-disable MD013 -->
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:  tikz-backpropagation-unfolded-6
 #| out-height: 400px
 #| out-width: 100%
@@ -2874,7 +2942,7 @@ Errors are propagated backwards in time from $t=t$ to $t=0$.
 :::: {.fragment .center}
 
 Problem: calculating gradient may depend on large powers of
-$\mathbf{W_{hh}}^{\mathsf{T}}$ (e.g. $\delta\mathcal{L} / \delta h_0
+$\mathbf{W_{hh}}^{\mathsf{T}}$ (e.g., $\delta\mathcal{L} / \delta h_0
 \sim f((\mathbf{W_{hh}}^{\mathsf{T}})^t)$
 
 ::::
@@ -2961,7 +3029,7 @@ RNN suffer short term memory
 
 :::: {.fragment .center .compact}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label: tikz-clouds-are-in-the-sky
 #| out-height: 150px
 \begin{tikzpicture}
@@ -2992,7 +3060,7 @@ class="underline">\_</span>"
 
 :::: {.fragment .center .compact}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-I-speak-fluent-english
 #| out-height: 150px
 \begin{tikzpicture}
@@ -3150,7 +3218,8 @@ Prevents weights from shrinking too much
 For example LSTM. Idea is to control what information is retained
 within each RNN unit.
 
-Make use regular multiplication (x) and addition (+).
+Make use of regular multiplication (x) and addition (+) to combine
+signals.
 
 :::
 
@@ -3179,7 +3248,6 @@ subtracted. Sigmoid is in (0, 1).
 ::::
 
 # LSTMs and GRUs
-
 ## Motivation behind LSTMs and GRUs
 
 ::::::::::::::::::: {.twocolgrid .compact}
@@ -3188,7 +3256,7 @@ subtracted. Sigmoid is in (0, 1).
 
 LSTM
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-lstm
 #| fig-width: 5
 #| out-width: 350px
@@ -3203,7 +3271,7 @@ LSTM
 
 GRU
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:  tikz-gru
 #| fig-width: 5
 #| out-width: 350px
@@ -3220,7 +3288,7 @@ GRU
 
 <!-- markdownlint-disable MD013 -->
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-gru-lstm-legend
 #| fig-width: 5
 #| out-width: 600px
@@ -3368,7 +3436,7 @@ Intuition:
 
 :::: {.compact}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-cellstateflow
 #| out-height: 250px
 \begin{tikzpicture}
@@ -3396,7 +3464,7 @@ Information flows in the cell state from $c_{t-1}$ to $c_t$.
 
 ::: {.fragment}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:  tikz-lstmgate
 #| out-height: 250px
 \begin{tikzpicture}
@@ -3461,7 +3529,7 @@ providing longer memory, enabled by
 
 <h5>forget gate</h5>
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-lstm-forget-gate-only
 \begin{tikzpicture}
   \pic[\rnntikzbasekey/highlight=forgetgate, \rnntikzbasekey/add labels=true] {lstm};
@@ -3476,7 +3544,7 @@ providing longer memory, enabled by
 
 <h5>input gate</h5>
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-lstm-input-gate-only
 \begin{tikzpicture}
   \pic[\rnntikzbasekey/.cd, add labels=true, highlight=inputgate] {lstm};
@@ -3491,7 +3559,7 @@ providing longer memory, enabled by
 
 <h5>output gate</h5>
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-lstm-output-gate-only
 \begin{tikzpicture}
   \pic[\rnntikzbasekey/highlight=outputgate, \rnntikzbasekey/add labels=true] {lstm};
@@ -3516,7 +3584,7 @@ state $c_{t-1}$, where 0 means "reset entry", 1 "keep it"
 
 ::: {  }
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-lstm-forget-gate
 #| fig-width: 5
 \begin{tikzpicture}
@@ -3554,7 +3622,7 @@ $$
 
 ::: { .compact }
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-lstm-candidatecellstate-input
 #| fig-width: 5
 \begin{tikzpicture}
@@ -3584,7 +3652,7 @@ Two steps to adding new information:
 
 ::: {.compact}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:    tikz-lstm-candidatecellstate-input-1
 #| fig-width: 5
 \begin{tikzpicture}
@@ -3624,7 +3692,7 @@ $$
 
 ::: { .compact  }
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-lstm-update-cell-state
 #| fig-width: 5
 \begin{tikzpicture}
@@ -3663,7 +3731,7 @@ $$
 
 ::: {.compact}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-lstm-output-gate
 #| fig-width: 5
 \begin{tikzpicture}
@@ -3703,7 +3771,7 @@ $$
 
 ## LSTM: putting it together
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label: tikz-lstm-intuition
 #| fig-width: 5
 \begin{tikzpicture}
@@ -3733,7 +3801,7 @@ From (, Zhang et al., 2021, p. 9.2.1.3):
 
 :::: {}
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:   tikz-lstm-2
 #| fig-width: 5
 \begin{tikzpicture}
@@ -3761,8 +3829,8 @@ $$
 <!-- markdownlint-disable MD013 -->
 
 $$
-x_t \in \mathbb{R}^{n\times d}, h_{t-1} \in \mathbb{n \times h},
-i_t \in \mathbb{R}^{n\times h}, f_t \in \mathbb{R}^{n\times h}, o_t \in \mathbb{R}^{n\times h},
+x_t \in \mathbb{R}^{n\times d}, h_{t-1} \in \mathbb{R}^{n \times h},
+i_t \in \mathbb{R}^{n\times h}, f_t \in \mathbb{R}^{n\times h}, o_t \in \mathbb{R}^{n\times h}, \\ c_t \in \mathbb{R}^{n\times h}, b_i,b_f,b_c \in \mathbb{R}^{1\times h}
 $$
 
 and
@@ -3775,7 +3843,7 @@ $$
 
 ## GRU
 
-```{r, fig.ext="svg", engine='tikz' }
+```{r,  engine='tikz' }
 #| label:  tikz-big-gru
 #| fig-width: 6
 \begin{tikzpicture}
@@ -3910,40 +3978,10 @@ parallelization allows training on larger datasets
    processing (NLP) problems
 
 # Exercise
-## Exercises
-#### 1. Analyse airline passengers with LSTM
+## Analyse airline passengers with LSTM
 
 Modify the airline passenger model to use an LSTM and compare the
 results. Try out different parameters to improve test predictions.
-
-#### 2. Time-series forecasting with LSTM, discrete state space
-
-LSTM with Variable Length Input Sequences to One Character Output
-
-:::: {.notes}
-
-Good example at (Koehrsen, 2018)
-
-::::
-
-## Time-series forecasting with LSTM, discrete state space
-
-#### Objective
-
-Predict next character in sequence of strings
-
-#### Comments
-
--   you could use several LSTM layers, in which all but the last
-    layer should return sequences (set `return_sequences=True`)
-    [@brownlee_stacked_2017]
-
-:::: {.notes}
-
-Use [@karpathyandrej_UnreasonableEffectivenessRecurrent_2015] hello
-example to illustrate how the modelling is done
-
-::::
 
 ## Bibliography {.smaller .unnumbered .unlisted}
 

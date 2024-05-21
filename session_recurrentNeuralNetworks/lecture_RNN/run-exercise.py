@@ -21,6 +21,8 @@ def download_airline_passengers(fn, site):
 
 def airlines():  # noqa: R0914
     """Run airlines exercise"""
+    if os.path.exists("airline-history-prepared.png"):
+        return
     rnnutils.plt.figure(figsize=(10, 6))
     with open("airline-model.pkl", "rb") as f:
         pdata = pickle.load(f)

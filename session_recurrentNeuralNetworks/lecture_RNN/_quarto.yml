@@ -19,8 +19,6 @@ format:
     footer: Recurrent neural networks
     smaller: false
     highlight-style: gruvbox
-    fig-width: 12
-    fig-height: 10
     fig-align: center
     text-align: center
     width: 1050
@@ -50,4 +48,4 @@ bibliography: references.bib
 nocite: |
   @hochreiter_long_1997
 extensions:
-  path: /home/peru/dev/nbis/nbis-course-quarto
+  path: nbis-course-quarto
