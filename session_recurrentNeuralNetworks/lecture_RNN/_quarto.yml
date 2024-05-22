@@ -1,0 +1,51 @@
+project:
+  render:
+    - index.qmd
+  pre-render:
+    - run-exercise.py both
+filters:
+  - code-visibility
+from: markdown+emoji
+format:
+  nbis-course-revealjs:
+    theme:
+      - custom.scss
+    toc: true
+    toc-depth: 1
+    slide-level: 2
+    slide-number: true
+    preview-links: true
+    chalkboard: false
+    footer: Recurrent neural networks
+    smaller: false
+    highlight-style: gruvbox
+    fig-align: center
+    text-align: center
+    width: 1050
+    height: 700
+    margin: 0.1
+    navigation-mode: vertical
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/apa.csl
+execute:
+  echo: false
+  warning: false
+  cache: true
+  include: true
+  autodep: true
+  eval: true
+  error: true
+  freeze: auto
+knitr:
+  opts_chunk:
+    code-fold: false
+    tidy: true
+    comment-char: "#>"
+    fig-format: svg
+    engine.opts:
+      dvisvgm.opts: --font-format=woff
+      template: tikzfig.tex
+bibliography: references.bib
+nocite: |
+  @hochreiter_long_1997
+extensions:
+  path: nbis-course-quarto

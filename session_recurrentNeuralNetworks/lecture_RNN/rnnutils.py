@@ -1,20 +1,19 @@
+"""Utility functions for RNNs"""
+
+# pylint: disable=unused-variable, invalid-name, too-many-locals
+import math
 import os
 import sys
-import math
+
+import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from keras.models import Sequential
-from keras.layers import Dense, SimpleRNN, LSTM, GRU
-from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
-from sklearn.utils import shuffle
-import matplotlib.pyplot as plt
-import matplotlib
+from sklearn.preprocessing import MinMaxScaler
 
-font = {
-    'size'   : 12
-}
-matplotlib.rc('font', **font)
+font = {"size": 12}
+matplotlib.rc("font", **font)
 
 
 def make_train_test(data, train_fraction=0.67, rescale=True):
@@ -63,13 +62,12 @@ def make_xy(data, window_size=1, step_size=1):
     return X, Y, np.array(X_indices), Y_indices
 
 
-def plot_pred(data, scaler=None, rmse=True, plotmarkers=False, **kw):
+def plot_pred(data, scaler=None, rmse=True, plotmarkers=False, show=True, **kw):
     """Plot prediction and original data"""
     ticks = kw.pop("ticks", None)
     labels = kw.pop("labels", None)
     fig, ax = plt.subplots(**kw)
     legend = []
-    rmsedata = {}
     markers = ["*", "x", "o"]
     colors = ["black", "steelblue", "darkred", "green"]
     x = []
@@ -95,51 +93,64 @@ def plot_pred(data, scaler=None, rmse=True, plotmarkers=False, **kw):
         x.extend(X)
         y.extend(Y)
     legend.append("Data")
-    ax.plot(x, y, '-', color=colors.pop())
+    ax.plot(x, y, "-", color=colors.pop())
     ax.set_title("Model prediction")
     if ticks is not None and labels is not None:
         ax.set_xticks(ticks, labels=labels)
     ax.legend(legend)
-    plt.show()
+    if show:
+        plt.show()
 
 
 def plot_loss_acc(history):
+    """Plot loss and accuracy of history"""
     try:
-        plt.plot(history.history['accuracy'])
-        plt.plot(history.history['val_accuracy'])
-    except:
-        plt.plot(history.history['acc'])
-        plt.plot(history.history['val_acc'])
+        plt.plot(history.history["accuracy"])
+        plt.plot(history.history["val_accuracy"])
+    except KeyError:
+        plt.plot(history.history["acc"])
+        plt.plot(history.history["val_acc"])
 
-    plt.plot(history.history['loss'])
-    plt.plot(history.history['val_loss'])
-    plt.title('model accuracy')
-    plt.ylabel('accuracy')
-    plt.xlabel('epoch')
-    plt.legend(['train acc', 'val acc', 'train loss', 'val loss'], loc='upper left')
+    plt.plot(history.history["loss"])
+    plt.plot(history.history["val_loss"])
+    plt.title("model accuracy")
+    plt.ylabel("accuracy")
+    plt.xlabel("epoch")
+    plt.legend(["train acc", "val acc", "train loss", "val loss"], loc="upper left")
     plt.show()
+
 
 def plot_history(history, show=True, xlim=None, ylim=None, **kw):
     """Plot history - plot training and/or test accuracy or loss values"""
     datalabels = ["Training", "Validation"]
-    metrics_labels = {'loss': "loss", 'acc': "accuracy", 'accuracy': "accuracy",
-                      'mse': 'mse', 'recall': 'recall'}
+    metrics_labels = {
+        "loss": "loss",
+        "acc": "accuracy",
+        "accuracy": "accuracy",
+        "mse": "mse",
+        "recall": "recall",
+    }
     if not isinstance(history, dict):
         history = history.history
     hkeys = history.keys()
     h = np.array([history[k] for k in hkeys])
-    labels = ["{} {}".format(x, y) for x, y in zip([datalabels[u.startswith("val_")] for u in hkeys],
-                                                   [metrics_labels[v.replace("val_", "")] for v in hkeys])]
+    labels = [
+        f"{x} {y}"
+        for x, y in zip(
+            [datalabels[u.startswith("val_")] for u in hkeys],
+            [metrics_labels[v.replace("val_", "")] for v in hkeys],
+        )
+    ]
     fig, ax = plt.subplots(**kw)
     ax.plot(np.array(range(0, h.shape[1])), h.T)
-    ax.set_title('Model metrics')
-    ax.set_ylabel('Metric')
-    ax.set_xlabel('Epoch')
+    ax.set_title("Model metrics")
+    ax.set_ylabel("Metric")
+    ax.set_xlabel("Epoch")
     if xlim is not None:
         ax.set_xlim(xlim)
     if ylim is not None:
         ax.set_ylim(ylim)
-    ax.legend([l for l in labels], loc='upper left')
+    ax.legend(list(labels), loc="upper left")
     if show:
         plt.show()
 
@@ -147,12 +158,13 @@ def plot_history(history, show=True, xlim=None, ylim=None, **kw):
 def airlines():
     """Load and reformat airlines data set"""
     fn = "airline-passengers.csv"
+    url = "https://raw.githubusercontent.com/jbrownlee/Datasets/master/{fn}"
     if not os.path.exists(fn):
-        print(f"Download airline passenger data: 'wget https://raw.githubusercontent.com/jbrownlee/Datasets/master/{fn} --no-check-certificate'")
+        print(f"Download airline passenger data: 'wget {url} --no-check-certificate'")
         sys.exit(1)
     df = pd.read_csv(fn)
-    df = df.rename(columns={'Month': 'time','Passengers': 'passengers'})
-    df['time'] = pd.to_datetime(df['time'], format='%Y-%m')
-    df['year'] = pd.DatetimeIndex(df['time']).year
-    df['month'] = pd.DatetimeIndex(df['time']).month
+    df = df.rename(columns={"Month": "time", "Passengers": "passengers"})
+    df["time"] = pd.to_datetime(df["time"], format="%Y-%m")
+    df["year"] = pd.DatetimeIndex(df["time"]).year  # pylint: disable=E1101
+    df["month"] = pd.DatetimeIndex(df["time"]).month  # pylint: disable=E1101
     return df

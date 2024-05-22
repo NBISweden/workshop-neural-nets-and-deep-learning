@@ -1,0 +1,64 @@
+default_language_version:
+  node: 17.9.1
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: debug-statements
+      - id: mixed-line-ending
+      - id: check-case-conflict
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        name: "isort (python)"
+        args: ["--profile", "black", "--force-single-line"]
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.15.2
+    hooks:
+      - id: pyupgrade
+        args: [--py3-plus, --py37-plus]
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      - id: black
+        language_version: python3
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: "v0.4.4"
+    hooks:
+      - id: ruff
+        args:
+          [
+          "--ignore=F821",
+          ]
+  - repo: https://github.com/asottile/blacken-docs
+    rev: 1.16.0
+    hooks:
+      - id: blacken-docs
+        additional_dependencies: [black==22.12.0]
+        language_version: python3
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]
+        args:
+          [
+          "-rn", # Only display messages
+          "-sn", # Don't display the score
+          "--disable=fixme,too-many-arguments",
+          ]
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.13.0
+    hooks:
+      - id: markdownlint-cli2
+        files: \.(md|qmd)$
+        types: [file]
+        exclude: LICENSE.md

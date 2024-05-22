@@ -1,0 +1,4 @@
+To compile/view lecture, install dependencies in
+../environment-dev.yaml and run
+
+quarto preview --port 8888 index.qmd

@@ -1,0 +1,3754 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="index_files/libs/clipboard/clipboard.min.js"></script>
+<script src="index_files/libs/quarto-html/tabby.min.js"></script>
+<script src="index_files/libs/quarto-html/popper.min.js"></script>
+<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-99.9.9">
+
+  <meta name="author" content="Per Unneberg">
+  <meta name="dcterms.date" content="2024-05-23">
+  <title>Recurrent neural networks</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="index_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="index_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #3c3836;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #3c3836; } /* Normal */
+    code span.al { color: #282828; background-color: #cc241d; font-weight: bold; } /* Alert */
+    code span.an { color: #98971a; } /* Annotation */
+    code span.at { color: #d79921; } /* Attribute */
+    code span.bn { color: #f67400; } /* BaseN */
+    code span.bu { color: #d65d0e; } /* BuiltIn */
+    code span.cf { color: #cc241d; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #b16286; } /* Char */
+    code span.cn { color: #b16286; font-weight: bold; } /* Constant */
+    code span.co { color: #928374; } /* Comment */
+    code span.cv { color: #928374; } /* CommentVar */
+    code span.do { color: #98971a; } /* Documentation */
+    code span.dt { color: #d79921; } /* DataType */
+    code span.dv { color: #f67400; } /* DecVal */
+    code span.er { color: #cc241d; text-decoration: underline; } /* Error */
+    code span.ex { color: #689d6a; font-weight: bold; } /* Extension */
+    code span.fl { color: #f67400; } /* Float */
+    code span.fu { color: #689d6a; } /* Function */
+    code span.im { color: #689d6a; } /* Import */
+    code span.in { color: #282828; background-color: #83a598; } /* Information */
+    code span.kw { color: #3c3836; font-weight: bold; } /* Keyword */
+    code span.op { color: #3c3836; } /* Operator */
+    code span.ot { color: #689d6a; } /* Other */
+    code span.pp { color: #d65d0e; } /* Preprocessor */
+    code span.re { color: #928374; background-color: #f9f5d7; } /* RegionMarker */
+    code span.sc { color: #b16286; } /* SpecialChar */
+    code span.ss { color: #98971a; } /* SpecialString */
+    code span.st { color: #98971a; } /* String */
+    code span.va { color: #458588; } /* Variable */
+    code span.vs { color: #98971a; } /* VerbatimString */
+    code span.wa { color: #282828; background-color: #fabd2f; } /* Warning */
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto.css">
+  <link href="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="index_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="index_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="index_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+
+  .callout {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    border-radius: .25rem;
+  }
+
+  .callout.callout-style-simple {
+    padding: 0em 0.5em;
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+    display: flex;
+  }
+
+  .callout.callout-style-default {
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+  }
+
+  .callout .callout-body-container {
+    flex-grow: 1;
+  }
+
+  .callout.callout-style-simple .callout-body {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-style-default .callout-body {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-titled.callout-style-simple .callout-body {
+    margin-top: 0.2em;
+  }
+
+  .callout:not(.callout-titled) .callout-body {
+      display: flex;
+  }
+
+  .callout:not(.no-icon).callout-titled.callout-style-simple .callout-content {
+    padding-left: 1.6em;
+  }
+
+  .callout.callout-titled .callout-header {
+    padding-top: 0.2em;
+    margin-bottom: -0.2em;
+  }
+
+  .callout.callout-titled .callout-title  p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
+  .callout.callout-titled.callout-style-simple .callout-content  p {
+    margin-top: 0;
+  }
+
+  .callout.callout-titled.callout-style-default .callout-content  p {
+    margin-top: 0.7em;
+  }
+
+  .callout.callout-style-simple div.callout-title {
+    border-bottom: none;
+    font-size: .9rem;
+    font-weight: 600;
+    opacity: 75%;
+  }
+
+  .callout.callout-style-default  div.callout-title {
+    border-bottom: none;
+    font-weight: 600;
+    opacity: 85%;
+    font-size: 0.9rem;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-default div.callout-content {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-simple .callout-icon::before {
+    height: 1rem;
+    width: 1rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+  }
+
+  .callout.callout-style-default .callout-icon::before {
+    height: 0.9rem;
+    width: 0.9rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 0.9rem 0.9rem;
+  }
+
+  .callout-title {
+    display: flex
+  }
+
+  .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  .callout.no-icon::before {
+    display: none !important;
+  }
+
+  .callout.callout-titled .callout-body > .callout-content > :last-child {
+    padding-bottom: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .callout.callout-titled .callout-icon::before {
+    margin-top: .5rem;
+    padding-right: .5rem;
+  }
+
+  .callout:not(.callout-titled) .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  /* Callout Types */
+
+  div.callout-note {
+    border-left-color: #4582ec !important;
+  }
+
+  div.callout-note .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEU0lEQVRYCcVXTWhcVRQ+586kSUMMxkyaElstCto2SIhitS5Ek8xUKV2poatCcVHtUlFQk8mbaaziwpWgglJwVaquitBOfhQXFlqlzSJpFSpIYyXNjBNiTCck7x2/8/LeNDOZxDuEkgOXe++553zfefee+/OYLOXFk3+1LLrRdiO81yNqZ6K9cG0P3MeFaMIQjXssE8Z1JzLO9ls20MBZX7oG8w9GxB0goaPrW5aNMp1yOZIa7Wv6o2ykpLtmAPs/vrG14Z+6d4jpbSKuhdcSyq9wGMPXjonwmESXrriLzFGOdDBLB8Y6MNYBu0dRokSygMA/mrun8MGFN3behm6VVAwg4WR3i6FvYK1T7MHo9BK7ydH+1uurECoouk5MPRyVSBrBHMYwVobG2aOXM07sWrn5qgB60rc6mcwIDJtQrnrEr44kmy+UO9r0u9O5/YbkS9juQckLed3DyW2XV/qWBBB3ptvI8EUY3I9p/67OW+g967TNr3Sotn3IuVlfMLVnsBwH4fsnebJvyGm5GeIUA3jljERmrv49SizPYuq+z7c2H/jlGC+Ghhupn/hcapqmcudB9jwJ/3jvnvu6vu5lVzF1fXyZuZZ7U8nRmVzytvT+H3kilYvH09mLWrQdwFSsFEsxFVs5fK7A0g8gMZjbif4ACpKbjv7gNGaD8bUrlk8x+KRflttr22JEMRUbTUwwDQScyzPgedQHZT0xnx7ujw2jfVfExwYHwOsDTjLdJ2ebmeQIlJ7neo41s/DrsL3kl+W2lWvAga0tR3zueGr6GL78M3ifH0rGXrBC2aAR8uYcIA5gwV8zIE8onoh8u0Fca/ciF7j1uOzEnqcIm59sEXoGc0+z6+H45V1CvAvHcD7THztu669cnp+L0okAeIc6zjbM/24LgGM1gZk7jnRu1aQWoU9sfUOuhrmtaPIO3YY1KLLWZaEO5TKUbMY5zx8W9UJ6elpLwKXbsaZ4EFl7B4bMtDv0iRipKoDQT2sNQI9b1utXFdYisi+wzZ/ri/1m7QfDgEuvgUUEIJPq3DhX/5DWNqIXDOweC2wvIR90Oq3lDpdMIgD2r0dXvGdsEW5H6x6HLRJYU7C69VefO1x8Gde1ZFSJLfWS1jbCnhtOPxmpfv2LXOA2Xk2tvnwKKPFuZ/oRmwBwqRQDcKNeVQkYcOjtWVBuM/JuYw5b6isojIkYxyYAFn5K7ZBF10fea52y8QltAg6jnMqNHFBmGkQ1j+U43HMi2xMar1Nv0zGsf1s8nUsmUtPOOrbFIR8bHFDMB5zL13Gmr/kGlCkUzedTzzmzsaJXhYawnA3UmARpiYj5ooJZiUoxFRtK3X6pgNPv+IZVPcnwbOl6f+aBaO1CNvPW9n9LmCp01nuSaTRF2YxHqZ8DYQT6WsXT+RD6eUztwYLZ8rM+rcPxamv1VQzFUkzFXvkiVrySGQgJNvXHJAxiU3/NwiC03rSf05VBaPtu/Z7/B8Yn/w7eguloAAAAAElFTkSuQmCC');
+  }
+
+  div.callout-note.callout-style-default .callout-title {
+    background-color: #dae6fb
+  }
+
+  div.callout-important {
+    border-left-color: #d9534f !important;
+  }
+
+  div.callout-important .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEKklEQVRYCcVXTWhcVRS+575MJym48A+hSRFr00ySRQhURRfd2HYjk2SSTokuBCkU2o0LoSKKraKIBTcuFCoidGFD08nkBzdREbpQ1EDNIv8qSGMFUboImMSZd4/f9zJv8ibJMC8xJQfO3HPPPef7zrvvvnvviIkpC9nsw0UttFunbUhpFzFtarSd6WJkStVMw5xyVqYTvkwfzuf/5FgtkVoB0729j1rjXwThS7Vio+Mo6DNnvLfahoZ+i/o32lULuJ3NNiz7q6+pyAUkJaFF6JwaM2lUJlV0MlnQn5aTRbEu0SEqHUa0A4AdiGuB1kFXRfVyg5d87+Dg4DL6m2TLAub60ilj7A1Ec4odSAc8X95sHh7+ZRPCFo6Fnp7HfU/fBng/hi10CjCnWnJjsxvDNxWw0NfV6Rv5GgP3I3jGWXumdTD/3cbEOP2ZbOZp69yniG3FQ9z1jD7bnBu9Fc2tKGC2q+uAJOQHBDRiZX1x36o7fWBs7J9ownbtO+n0/qWkvW7UPIfc37WgT6ZGR++EOJyeQDSb9UB+DZ1G6DdLDzyS+b/kBCYGsYgJbSQHuThGKRcw5xdeQf8YdNHsc6ePXrlSYMBuSIAFTGAtQo+VuALo4BX83N190NWZWbynBjhOHsmNfFWLeL6v+ynsA58zDvvAC8j5PkbOcXCMg2PZFk3q8MjI7WAG/Dp9AwP7jdGBOOQkAvlFUB+irtm16I1Zw9YBcpGTGXYmk3kQIC/Cds55l+iMI3jqhjAuaoe+am2Jw5GT3Nbz3CkE12NavmzN5+erJW7046n/CH1RO/RVa8lBLozXk9uqykkGAyRXLWlLv5jyp4RFsG5vGVzpDLnIjTWgnRy2Rr+tDKvRc7Y8AyZq10jj8DqXdnIRNtFZb+t/ZRtXcDiVnzpqx8mPcDWxgARUqx0W1QB9MeUZiNrV4qP+Ehc+BpNgATsTX8ozYKL2NtFYAHc84fG7ndxUPr+AR/iQSns7uSUufAymwDOb2+NjK27lEFocm/EE2WpyIy/Hi66MWuMKJn8RvxIcj87IM5Vh9663ziW36kR0HNenXuxmfaD8JC7tfKbrhFr7LiZCrMjrzTeGx+PmkosrkNzW94ObzwocJ7A1HokLolY+AvkTiD/q1H0cN48c5EL8Crkttsa/AXQVDmutfyku0E7jShx49XqV3MFK8IryDhYVbj7Sj2P2eBxwcXoe8T8idsKKPRcnZw1b+slFTubwUwhktrfnAt7J++jwQtLZcm3sr9LQrjRzz6cfMv9aLvgmnAGvpoaGLxM4mAEaLV7iAzQ3oU0IvD5x9ix3yF2RAAuYAOO2f7PEFWCXZ4C9Pb2UsgDeVnFSpbFK7/IWu7TPTvBqzbGdCHOJQSxiEjt6IyZmxQyEJHv6xyQsYk//moVFsN2zP6fRImjfq7/n/wFDguUQFNEwugAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-important.callout-style-default .callout-title {
+    background-color: #f7dddc
+  }
+
+  div.callout-warning {
+    border-left-color: #f0ad4e !important;
+  }
+
+  div.callout-warning .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAETklEQVRYCeVWW2gcVRg+58yaTUnizqbipZeX4uWhBEniBaoUX1Ioze52t7sRq6APio9V9MEaoWlVsFasRq0gltaAPuxms8lu0gcviE/FFOstVbSIxgcv6SU7EZqmdc7v9+9mJtNks51NTUH84ed889/PP+cmxP+d5FIbMJmNbpREu4WUkiTtCicKny0l1pIKmBzovF2S+hIJHX8iEu3hZJ5lNZGqyRrGSIQpq15AzF28jgpeY6yk6GVdrfFqdrD6Iw+QlB8g0YS2g7dyQmXM/IDhBhT0UCiRf59lfqmmDvzRt6kByV/m4JjtzuaujMUM2c5Z2d6JdKrRb3K2q6mA+oYVz8JnDdKPmmNthzkAk/lN63sYPgevrguc72aZX/L9C6x09GYyxBgCX4NlvyGUHOKELlm5rXeR1kchuChJt4SSwyddZRXgvwMGvYo4QSlk3/zkHD8UHxwVJA6zjZZqP8v8kK8OWLnIZtLyCAJagYC4rTGW/9Pqj92N/c+LUaAj27movwbi19tk/whRCIE7Q9vyI6yvRpftAKVTdUjOW40X3h5OXsKCdmFcx0xlLJoSuQngnrJe7Kcjm4OMq9FlC7CMmScQANuNvjfP3PjGXDBaUQmbp296S5L4DrpbrHN1T87ZVEZVCzg1FF0Ft+dKrlLukI+/c9ENo+TvlTDbYFvuKPtQ9+l052rXrgKoWkDAFnvh0wTOmYn8R5f4k/jN/fZiCM1tQx9jQQ4ANhqG4hiL0qIFTGViG9DKB7GYzgubnpofgYRwO+DFjh0Zin2m4b/97EDkXkc+f6xYAPX0KK2I/7fUQuwzuwo/L3AkcjugPNixC8cHf0FyPjWlItmLxWw4Ou9YsQCr5fijMGoD/zpdRy95HRysyXA74MWOnscpO4j2y3HAVisw85hX5+AFBRSHt4ShfLFkIMXTqyKFc46xdzQM6XbAi702a7sy04J0+feReMFKp5q9esYLCqAZYw/k14E/xcLLsFElaornTuJB0svMuJINy8xkIYuL+xPAlWRceH6+HX7THJ0djLUom46zREu7tTkxwmf/FdOZ/sh6Q8qvEAiHpm4PJ4a/doJe0gH1t+aHRgCzOvBvJedEK5OFE5jpm4AGP2a8Dxe3gGJ/pAutug9Gp6he92CsSsWBaEcxGx0FHytmIpuqGkOpldqNYQK8cSoXvd+xLxXADw0kf6UkJNFtdo5MOgaLjiQOQHcn+A6h5NuL2s0qsC2LOM75PcF3yr5STuBSAcGG+meA14K/CI21HcS4LBT6tv0QAh8Dr5l93AhZzG5ZJ4VxAqdZUEl9z7WJ4aN+svMvwHHL21UKTd1mqvChH7/Za5xzXBBKrUcB0TQ+Ulgkfbi/H/YT5EptrGzsEK7tR1B7ln9BBwckYfMiuSqklSznIuoIIOM42MQO+QnduCoFCI0bpkzjCjddHPN/F+2Yu+sd9bKNpVwHhbS3LluK/0zgfwD0xYI5dXuzlQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-warning.callout-style-default .callout-title {
+    background-color: #fcefdc
+  }
+
+  div.callout-tip {
+    border-left-color: #02b875 !important;
+  }
+
+  div.callout-tip .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAADr0lEQVRYCe1XTWgTQRj9ZjZV8a9SPIkKgj8I1bMHsUWrqYLVg4Ue6v9BwZOxSYsIerFao7UiUryIqJcqgtpimhbBXoSCVxUFe9CTiogUrUp2Pt+3aUI2u5vdNh4dmMzOzHvvezuz8xNFM0mjnbXaNu1MvFWRXkXEyE6aYOYJpdW4IXuA4r0fo8qqSMDBU0v1HJUgVieAXxzCsdE/YJTdFcVIZQNMyhruOMJKXYFoLfIfIvVIMWdsrd+Rpd86ZmyzzjJmLStqRn0v8lzkb4rVIXvnpScOJuAn2ACC65FkPzEdEy4TPWRLJ2h7z4cArXzzaOdKlbOvKKX25Wl00jSnrwVxAg3o4dRxhO13RBSdNvH0xSARv3adTXbBdTf64IWO2vH0LT+cv4GR1DJt+DUItaQogeBX/chhbTBxEiZ6gftlDNXTrvT7co4ub5A6gp9HIcHvzTa46OS5fBeP87Qm0fQkr4FsYgVQ7Qg+ZayaDg9jhg1GkWj8RG6lkeSacrrHgDaxdoBiZPg+NXV/KifMuB6//JmYH4CntVEHy/keA6x4h4CU5oFy8GzrBS18cLJMXcljAKB6INjWsRcuZBWVaS3GDrqB7rdapVIeA+isQ57Eev9eCqzqOa81CY05VLd6SamW2wA2H3SiTbnbSxmzfp7WtKZkqy4mdyAlGx7ennghYf8voqp9cLSgKdqNfa6RdRsAAkPwRuJZNbpByn+RrJi1RXTwdi8RQF6ymDwGMAtZ6TVE+4uoKh+MYkcLsT0Hk8eAienbiGdjJHZTpmNjlbFJNKDVAp2fJlYju6IreQxQ08UJDNYdoLSl6AadO+fFuCQqVMB1NJwPm69T04Wv5WhfcWyfXQB+wXRs1pt+nCknRa0LVzSA/2B+a9+zQJadb7IyyV24YAxKp2Jqs3emZTuNnKxsah+uabKbMk7CbTgJx/zIgQYErIeTKRQ9yD9wxVof5YolPHqaWo7TD6tJlh7jQnK5z2n3+fGdggIOx2kaa2YI9QWarc5Ce1ipNWMKeSG4DysFF52KBmTNMmn5HqCFkwy34rDg05gDwgH3bBi+sgFhN/e8QvRn8kbamCOhgrZ9GJhFDgfcMHzFb6BAtjKpFhzTjwv1KCVuxHvCbsSiEz4CANnj84cwHdFXAbAOJ4LTSAawGWFn5tDhLMYz6nWeU2wJfIhmIJBefcd/A5FWQWGgrWzyORZ3Q6HuV+Jf0Bj+BTX69fm1zWgK7By1YTXchFDORywnfQ7GpzOo6S+qECrsx2ifVQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-tip.callout-style-default .callout-title {
+    background-color: #ccf1e3
+  }
+
+  div.callout-caution {
+    border-left-color: #fd7e14 !important;
+  }
+
+  div.callout-caution .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAACV0lEQVRYCdVWzWoUQRCuqp2ICBLJXgITZL1EfQDBW/bkzUMUD7klD+ATSHBEfAIfQO+iXsWDxJsHL96EHAwhgzlkg8nBg25XWb0zIb0zs9muYYWkoKeru+vn664fBqElyZNuyh167NXJ8Ut8McjbmEraKHkd7uAnAFku+VWdb3reSmRV8PKSLfZ0Gjn3a6Xlcq9YGb6tADjn+lUfTXtVmaZ1KwBIvFI11rRXlWlatwIAAv2asaa9mlB9wwygiDX26qaw1yYPzFXg2N1GgG0FMF8Oj+VIx7E/03lHx8UhvYyNZLN7BwSPgekXXLribw7w5/c8EF+DBK5idvDVYtEEwMeYefjjLAdEyQ3M9nfOkgnPTEkYU+sxMq0BxNR6jExrAI31H1rzvLEfRIdgcv1XEdj6QTQAS2wtstEALLG1yEZ3QhH6oDX7ExBSFEkFINXH98NTrme5IOaaA7kIfiu2L8A3qhH9zRbukdCqdsA98TdElyeMe5BI8Rs2xHRIsoTSSVFfCFCWGPn9XHb4cdobRIWABNf0add9jakDjQJpJ1bTXOJXnnRXHRf+dNL1ZV1MBRCXhMbaHqGI1JkKIL7+i8uffuP6wVQAzO7+qVEbF6NbS0LJureYcWXUUhH66nLR5rYmva+2tjRFtojkM2aD76HEGAD3tPtKM309FJg5j/K682ywcWJ3PASCcycH/22u+Bh7Aa0ehM2Fu4z0SAE81HF9RkB21c5bEn4Dzw+/qNOyXr3DCTQDMBOdhi4nAgiFDGCinIa2owCEChUwD8qzd03PG+qdW/4fDzjUMcE1ZpIAAAAASUVORK5CYII=');
+  }
+
+  div.callout-caution.callout-style-default .callout-title {
+    background-color: #ffe5d0
+  }
+
+  </style>
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none;
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". ";
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto;
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0;
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-image="_extensions/percyfal/nbis-course/logo.svg" data-background-position="top left" data-background-size="500px" class="center">
+  <h1 class="title">Recurrent neural networks</h1>
+  <h4 class="author">Per Unneberg</h4>
+  <h4 class="institute">NBIS</h4>
+  <h4 class="date">2024-05-23</h4>
+</section><section id="TOC">
+<nav role="doc-toc">
+<h2 id="toc-title">Table of contents</h2>
+<ul>
+<li><a href="#/recap" id="/toc-recap">Recap</a></li>
+<li><a href="#/sequential-models" id="/toc-sequential-models">Sequential models</a></li>
+<li><a href="#/recurrent-neural-networks-rnns" id="/toc-recurrent-neural-networks-rnns">Recurrent Neural Networks (RNNs)</a></li>
+<li><a href="#/exercise" id="/toc-exercise">Exercise</a></li>
+<li><a href="#/training" id="/toc-training">Training</a></li>
+<li><a href="#/lstms-and-grus" id="/toc-lstms-and-grus">LSTMs and GRUs</a></li>
+<li><a href="#/concluding-remarks" id="/toc-concluding-remarks">Concluding remarks</a></li>
+<li><a href="#/exercise-2" id="/toc-exercise-2">Exercise</a></li>
+</ul>
+</nav>
+</section>
+
+
+<section>
+<section id="recap" class="title-slide slide level1 center">
+<h1>Recap</h1>
+
+</section>
+<section id="perceptron-single-neuron" class="slide level2">
+<h2>Perceptron (single neuron)</h2>
+<div class="twocolgrid" style="grid-template-columns: 0.5fr 1fr;">
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-recap-perceptron-simple-1.svg" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+<h4 id="architecture">Architecture</h4>
+<p>A single neuron has <span class="math inline">\(n\)</span> <em>inputs</em> <span class="math inline">\(x_i\)</span> and an <em>output</em> <span class="math inline">\(y\)</span>. To each input is associated a <em>weight</em> <span class="math inline">\(w_i\)</span>.</p>
+<div class="fragment">
+<!-- -->
+<h4 id="activity-rule">Activity rule</h4>
+<p>The <strong>activity rule</strong> is given by two steps:</p>
+</div>
+<div class="hidden">
+<p><span class="math display">\[a = \sum_{i} w_ix_i, \quad i=0,...,n\]</span></p>
+<p><span class="math display">\[\begin{array}{ccc}
+\mathrm{activation} &amp; &amp; \mathrm{activity}\\
+a &amp; \rightarrow &amp; y(a)
+\end{array}\]</span></p>
+<p><span class="citation" data-cites="mackay_InformationTheoryInference_2003">(<a href="#/bibliography" role="doc-biblioref" onclick="">MacKay, 2003</a>)</span></p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Beware of notation here. Points to make:</p>
+<ul>
+<li><span class="math inline">\(w_0=1\)</span> -&gt; bias</li>
+<li>activation -&gt; activity can be separated (next slide)</li>
+</ul>
+<p>Alternative view of bias: an additional weight <span class="math inline">\(w_0\)</span> with input permanently set to 1 (MacKay, 2003, p.&nbsp;471)</p>
+<p>(Alexander Amini, 2021, p.&nbsp;5:43) point out inputs <span class="math inline">\(x_i\)</span> represent <strong>one</strong> time point</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="perceptron-single-neuron-1" class="slide level2">
+<h2>Perceptron (single neuron)</h2>
+<div class="twocolgrid" style="grid-template-columns: 0.5fr 1fr;">
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-recap-perceptron-activity-1.svg" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+<h4 id="architecture-1">Architecture</h4>
+<p>A single neuron has <span class="math inline">\(n\)</span> <em>inputs</em> <span class="math inline">\(x_i\)</span> and an <em>output</em> <span class="math inline">\(y\)</span>. To each input is associated a <em>weight</em> <span class="math inline">\(w_i\)</span>.</p>
+<h4 id="activity-rule-1">Activity rule</h4>
+<p>The <strong>activity rule</strong> is given by two steps:</p>
+<div class="fragment">
+<p><span class="math display">\[a = \sum_{i} w_ix_i, \quad i=0,...,n\]</span></p>
+</div>
+<div class="fragment">
+<p><span class="math display">\[\begin{array}{ccc}
+\mathrm{activation} &amp; &amp; \mathrm{activity}\\
+a &amp; \rightarrow &amp; y(a)
+\end{array}\]</span></p>
+<p><span class="citation" data-cites="mackay_InformationTheoryInference_2003">(<a href="#/bibliography" role="doc-biblioref" onclick="">MacKay, 2003</a>)</span></p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Beware of notation here. Points to make:</p>
+<ul>
+<li><span class="math inline">\(w_0=1\)</span> -&gt; bias</li>
+<li>activation -&gt; activity can be separated (next slide)</li>
+</ul>
+<p>Alternative view of bias: an additional weight <span class="math inline">\(w_0\)</span> with input permanently set to 1 <span class="citation" data-cites="mackay_InformationTheoryInference_2003">(<a href="#/bibliography" role="doc-biblioref" onclick="">MacKay, 2003, p. 471</a>)</span></p>
+<p><span class="citation" data-cites="alexanderamini_MITS191Recurrent_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Alexander Amini, 2021</a>)</span> point out inputs <span class="math inline">\(x_i\)</span> represent <strong>one</strong> time point</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="perceptron-single-neuron-2" class="slide level2">
+<h2>Perceptron (single neuron)</h2>
+<div class="twocolgrid" style="grid-template-columns: 0.5fr 1fr;">
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-recap-perceptron-vectorized-1.svg" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="compact">
+<p><span class="math display">\[a = w_0 + \sum_{i} w_ix_i, \quad i=1,...,n\]</span></p>
+<p><span class="math display">\[y = y(a) = g\left( w_0 + \sum_{i=1}^{n} w_ix_i \right)\]</span></p>
+<div class="fragment">
+<p>or in vector notation</p>
+<p><span class="math display">\[y = g\left(w_0 + \mathbf{X^T} \mathbf{W} \right)\]</span></p>
+<p>where:</p>
+<p><span class="math display">\[\quad\mathbf{X}=
+\begin{bmatrix}x_1\\ \vdots \\ x_n\end{bmatrix},
+\quad \mathbf{W}=\begin{bmatrix}w_1\\ \vdots \\ w_n\end{bmatrix}\]</span></p>
+</div>
+<p><span class="citation" data-cites="alexanderamini_MITS191Recurrent_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Alexander Amini, 2021</a>)</span></p>
+</div>
+</div>
+<aside class="notes">
+<p>Follow MIT notation: g() is the non-linear activation (function)</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="simplified-illustration-and-notation" class="slide level2">
+<h2>Simplified illustration and notation</h2>
+<!-- markdownlint-disable MD013 -->
+
+<!-- markdownlint-enable MD013 -->
+<img data-src="index_files/figure-revealjs/tikz-rnn-recap-perceptron-simplified-1.svg" width="960" class="r-stretch"><h4 id="architecture-2">Architecture</h4>
+<p>Vectorized versions: input <span class="math inline">\(\boldsymbol{x}\)</span>, weights <span class="math inline">\(\boldsymbol{w}\)</span>, output <span class="math inline">\(\boldsymbol{y}\)</span></p>
+<h4 id="activity-rule-2">Activity rule</h4>
+<p><span class="math display">\[a = \boldsymbol{wx}\]</span></p>
+<aside class="notes">
+<p>Weights are depicted as attached to first arrow, then the labels indicate what <strong>value</strong> is passed along</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="feed-forward-network" class="slide level2">
+<h2>Feed forward network</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-recap-perceptron-multiout-1.svg" width="960" height="500"></p>
+</figure>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Segue: typically want multiple layers between input and output</p>
+<p>Show multi-valued (vector) output and hidden layer.</p>
+<p>Make mental image: from now on inputs are <strong>vectors</strong></p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="simplified-illustration" class="slide level2">
+<h2>Simplified illustration</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-recap-perceptron-multiout-simple-1.svg" width="960" height="300"></p>
+</figure>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Condense hidden layers to a box.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="simplified-illustration-1" class="slide level2">
+<h2>Simplified illustration</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-recap-perceptron-multiout-simple-rotated-1.svg" width="960" height="400"></p>
+</figure>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Condense hidden layers to a box.</p>
+<p>For the purpose of further discussion, will be treating input left-to-right, whereby it is convenient to rotate the illustration.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sequential-models" class="title-slide slide level1 center">
+<h1>Sequential models</h1>
+
+</section>
+<section id="motivation" class="slide level2">
+<h2>Motivation</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-motivation-time-series-1.svg" width="960" height="400"></p>
+</figure>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>With only one image, no idea if ball is moving or direction.</p>
+<p>Incremental figure showing time series (e.g.&nbsp;sinus) that highlights</p>
+<ul>
+<li>dependency on previous time point</li>
+<li>(weaker) dependency on more distant time points</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="motivation-1" class="slide level2">
+<h2>Motivation</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-motivation-time-series-1-1.svg" width="960" height="400"></p>
+</figure>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>incremental figure showing time series (e.g.&nbsp;sinus) that highlights</p>
+<ul>
+<li>dependency on previous time point</li>
+<li>(weaker) dependency on more distant time points</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="motivation-2" class="slide level2">
+<h2>Motivation</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-motivation-time-series-2-1.svg" width="960" height="400"></p>
+</figure>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>incremental figure showing time series (e.g.&nbsp;sinus) that highlights</p>
+<ul>
+<li>dependency on previous time point</li>
+<li>(weaker) dependency on more distant time points</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="motivation-3" class="slide level2">
+<h2>Motivation</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-motivation-time-series-3-1.svg" width="960" height="400"></p>
+</figure>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>incremental figure showing time series (e.g.&nbsp;sinus) that highlights</p>
+<ul>
+<li>dependency on previous time point</li>
+<li>(weaker) dependency on more distant time points</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sequences-around-us" class="slide level2">
+<h2>Sequences around us</h2>
+<!-- markdownlint-disable MD013 -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 2fr; grid-row-gap: 0px;">
+<!-- markdownlint-enable MD013 -->
+<div class="compact">
+<p>Word prediction</p>
+<p><img data-src="grf/whattimeisit.png" width="350"></p>
+</div>
+<div class="compact">
+<p>Language translation</p>
+<div>
+<!-- markdownlint-disable MD013 -->
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/rnn-example-language-translation-1.svg" width="960" height="300"></p>
+</figure>
+</div>
+</div>
+</div>
+<!-- markdownlint-enable MD013 -->
+</div>
+</div>
+<div class="compact" style="transform: translate(0, -60px);">
+<p>Time series</p>
+<p><img data-src="https://github.com/unit8co/darts/raw/master/static/images/example.png" width="350"></p>
+<p><span class="citation" data-cites="herzen2021darts">(<a href="#/bibliography" role="doc-biblioref" onclick="">Herzen et al., 2021</a>)</span></p>
+</div>
+<div class="compact" style="transform: translate(0, -60px);">
+<p>Genomics</p>
+<p><img data-src="https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41598-018-33321-1/MediaObjects/41598_2018_33321_Fig5_HTML.png?as=webp" width="200"></p>
+<p><span class="citation" data-cites="shen_recurrent_2018">(<a href="#/bibliography" role="doc-biblioref" onclick="">Shen et al., 2018</a>)</span></p>
+</div>
+</div>
+<aside class="notes">
+<p>Word prediction according to <span class="citation" data-cites="karpathyandrej_UnreasonableEffectivenessRecurrent_2015">(<a href="#/bibliography" role="doc-biblioref" onclick="">Karpathy, Andrej, 2015</a>)</span>:</p>
+<blockquote>
+<p>model the probability distribution of the next character in the sequence given a sequence of previous characters.</p>
+</blockquote>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="types-of-models" class="slide level2 smaller">
+<h2>Types of models</h2>
+<div class="fourcolgrid">
+<div>
+<p>one to one</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/sequential-models-one-to-one-1.svg" width="960" height="100"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment item2" data-fragment-index="2">
+<p>many to one</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/sequential-models-many-to-one-1.svg" width="960" height="100"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment" data-fragment-index="3">
+<p>one to many</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/sequential-models-one-to-many-1.svg" width="960" height="100"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment" data-fragment-index="4">
+<p>many to many</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/sequential-models-many-to-many-1.svg" width="960" height="100"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+<p>Image classification</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/fashion-mnist-image-classification-1.svg"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment" data-fragment-index="2">
+<p>Sentiment analysis</p>
+<p><img data-src="https://d1sjtleuqoc1be.cloudfront.net/wp-content/uploads/2019/04/25112909/shutterstock_1073953772.jpg" height="100"></p>
+</div>
+<div class="fragment" data-fragment-index="3">
+<p>Image captioning</p>
+<p><img data-src="https://cocodataset.org/images/captions-splash.jpg" height="150"></p>
+</div>
+<div class="fragment" data-fragment-index="4">
+<p>Machine translation</p>
+<p><img data-src="https://img.icons8.com/plasticine/344/google-translate-new-logo.png" height="100"></p>
+</div>
+</div>
+<p><span class="citation" data-cites="karpathyandrej_UnreasonableEffectivenessRecurrent_2015">(<a href="#/bibliography" role="doc-biblioref" onclick="">Karpathy, Andrej, 2015</a>)</span></p>
+<aside class="notes">
+<p>Important point here: each input/output/hidden are <strong>vectors</strong></p>
+<p><span class="citation" data-cites="karpathyandrej_UnreasonableEffectivenessRecurrent_2015">(<a href="#/bibliography" role="doc-biblioref" onclick="">Karpathy, Andrej, 2015</a>)</span></p>
+<p>Issues with Vanilla NNs and CNNs:</p>
+<ul>
+<li>dependency on <strong>fixed</strong> size input</li>
+<li>fixed amount of computational steps</li>
+</ul>
+<p>Models:</p>
+<ul>
+<li><strong>one to one:</strong> Vanilla processing without RNN, from fixed input to fixed output e.g.&nbsp;image classification (aka vanilla neural network)</li>
+<li><strong>many to one:</strong> sequence input, e.g.&nbsp;sentiment analysis (classify sequence as happy/sad/…) - convert text input into a mood</li>
+<li><strong>one to many:</strong> sequence output, e.g.&nbsp;image captioning</li>
+<li><strong>many to many:</strong> sequence input and sequence output, e.g.&nbsp;machine translation</li>
+</ul>
+<p>Data:</p>
+<ul>
+<li><p>(Xiao et al., 2017)</p></li>
+<li><p><a href="https://cocodataset.org/#captions-2015" class="uri">https://cocodataset.org/#captions-2015</a></p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="recurrent-neural-networks-rnns" class="title-slide slide level1 center">
+<h1>Recurrent Neural Networks (RNNs)</h1>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-folded-only-1.svg" width="960" height="400"></p>
+</figure>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>We will now look at the essentials of RNNs. As the figure implies, the output of the network depends on an input and the value of the recurrent network</p>
+<p><span class="citation" data-cites="alexanderamini_MITS191Recurrent_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Alexander Amini, 2021</a>)</span> point out inputs <span class="math inline">\(x_i\)</span> represent <strong>one</strong> time point</p>
+<p>input, output, green box: contains vectors of data, arrows represent operations/function <span class="citation" data-cites="karpathyandrej_UnreasonableEffectivenessRecurrent_2015">(<a href="#/bibliography" role="doc-biblioref" onclick="">Karpathy, Andrej, 2015</a>)</span></p>
+<p>Key feature: the recurrence (green) can be applied as many times as we want, i.e.&nbsp;no constraint on input size</p>
+<p>Why recurrent networks? <a href="https://www.simplilearn.com/tutorials/deep-learning-tutorial/rnn" class="uri">https://www.simplilearn.com/tutorials/deep-learning-tutorial/rnn</a></p>
+<p>FFNs</p>
+<ul>
+<li>Cannot handle sequential data</li>
+<li>Considers only the current input</li>
+<li>Cannot memorize previous inputs</li>
+</ul>
+<p>and information only flows forward (i.e.&nbsp;no memory)</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="feed-forward-network-implementation-to-sequential-data" class="slide level2">
+<h2>Feed forward network implementation to sequential data</h2>
+<!-- markdownlint-disable MD013 -->
+<div class="compact twocolgrid" style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;">
+<!-- markdownlint-enable MD013 -->
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-1-1.svg" width="960" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment" data-fragment-index="2" style="border-left: 2px black solid;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-x0-xt-1-1.svg" style="width:100.0%" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+
+</div>
+<div class="element fragment" data-fragment-index="1">
+<p>Assume multiple time points.</p>
+</div>
+</div>
+<aside class="notes">
+<p>Rotated FFN: take a moment to recap the ffn. Input <span class="math inline">\(X_t \in
+\mathbb{R}^{m}\)</span> is mapped to output <span class="math inline">\(\widehat{Y}_t \in \mathbb{R}^n\)</span> via the network (<span class="math inline">\(f(\cdot)\)</span>)</p>
+<p>Now assume we have several time steps, starting at e.g.&nbsp;time 0. Also we predict the outputs individually.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="feed-forward-network-implementation-to-sequential-data-1" class="slide level2">
+<h2>Feed forward network implementation to sequential data</h2>
+<!-- markdownlint-disable MD013 -->
+<div class="compact twocolgrid" style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;">
+<!-- markdownlint-enable MD013 -->
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-2-1.svg" width="960" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div style="border-left: 2px black solid;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-x0-xt-2-1.svg" style="width:100.0%" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+
+</div>
+<div>
+<p>Assume multiple time points.</p>
+</div>
+</div>
+<aside class="notes">
+<p>Add another time step…</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="feed-forward-network-implementation-to-sequential-data-2" class="slide level2">
+<h2>Feed forward network implementation to sequential data</h2>
+<!-- markdownlint-disable MD013 -->
+<div class="compact twocolgrid" style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;">
+<!-- markdownlint-enable MD013 -->
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-3-1.svg" width="960" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div style="border-left: 2px black solid; ">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-x0-xt-3-1.svg" style="width:100.0%" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+
+</div>
+<div>
+<p>Assume multiple time points.</p>
+<ul>
+<li class="fragment">Dependency of inputs not modelled <span class="math inline">\(\Rightarrow\)</span> ambiguous sequences cannot be distinguished:</li>
+</ul>
+<div class="fragment">
+<p>“dog bites man” vs “man bites dog”</p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Use an ambiguous example to point out that ffns can’t distinguish order of words; we explicitly want to model sequential dependencies</p>
+<p>Example: “the boat is in the water” vs “the water is in the boat”</p>
+<p>Alt example: “man bites dog” vs “dog bites man” (, Zhang et al., 2021, p.&nbsp;8.1)</p>
+<p>Emphasize fact that any prediction is based only on the current input</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="feed-forward-network-implementation-to-sequential-data-3" class="slide level2">
+<h2>Feed forward network implementation to sequential data</h2>
+<!-- markdownlint-disable MD013 -->
+<div class="compact twocolgrid" style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;">
+<!-- markdownlint-enable MD013  -->
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-4-1.svg" width="960" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div style="border-left: 2px black solid; ">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-x0-xt-4-1.svg" style="width:100.0%" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+
+</div>
+<div>
+<p>Assume multiple time points.</p>
+<ul>
+<li>Time points are modelled <strong>individually</strong> (<span class="math inline">\(\hat{Y}_t = f(X_t)\)</span>)</li>
+</ul>
+</div>
+</div>
+<aside class="notes">
+<p>Emphasize fact that any prediction is based only on the current input</p>
+<p>Also: the dependency on many previous variables motivates the introduction of a latent variable model that depends on the previous state via a hidden (latent) variable</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="feed-forward-network-implementation-to-sequential-data-4" class="slide level2">
+<h2>Feed forward network implementation to sequential data</h2>
+<!-- markdownlint-disable MD013 -->
+<div class="compact twocolgrid" style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;">
+<!-- markdownlint-enable MD013 -->
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-5-1.svg" width="960" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div style="border-left: 2px black solid; ">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-x0-xt-5-1.svg" style="width:100.0%" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+
+</div>
+<div>
+<p>Assume multiple time points.</p>
+<ul>
+<li>Time points are modelled <strong>individually</strong> (<span class="math inline">\(\hat{Y}_t = f(X_t)\)</span>)</li>
+<li>However: also want dependency on <strong>previous</strong> inputs (<span class="math inline">\(\hat{Y}_t =
+f(..., X_1, X_0)\)</span>)</li>
+</ul>
+</div>
+</div>
+<aside class="notes">
+<p>Emphasize fact that any prediction is based only on the current input</p>
+<p>Also: the dependency on many previous variables motivates the introduction of a latent variable model that depends on the previous state via a hidden (latent) variable</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="adding-recurrence-relations" class="slide level2">
+<h2>Adding recurrence relations</h2>
+<!-- markdownlint-disable MD013 -->
+<div class="compact twocolgrid" style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;">
+<!-- markdownlint-enable MD013 -->
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-arr-1-1.svg" width="960" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div style="border-left: 2px black solid; ">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-x0-xt-arr-1-1.svg" style="width:100.0%" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+
+</div>
+<div>
+
+</div>
+</div>
+<aside class="notes">
+<p>We want to model dependencies over time. Solution is to model the cell state (a hidden state) and pass this information on to the next</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="adding-recurrence-relations-1" class="slide level2">
+<h2>Adding recurrence relations</h2>
+<!-- markdownlint-disable MD013 -->
+<div class="compact twocolgrid" style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;">
+<!-- markdownlint-enable MD013 -->
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-arr-2-1.svg" width="960" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div style="border-left: 2px black solid; ">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-x0-xt-arr-2-1.svg" style="width:100.0%" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+
+</div>
+<div>
+
+</div>
+</div>
+</section>
+<section id="adding-recurrence-relations-2" class="slide level2">
+<h2>Adding recurrence relations</h2>
+<!-- markdownlint-disable MD013 -->
+<div class="compact twocolgrid" style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;">
+<!-- markdownlint-enable MD013 -->
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-arr-3-1.svg" width="960" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div style="border-left: 2px black solid; ">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-x0-xt-arr-3-1.svg" style="width:100.0%" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+
+</div>
+<div>
+
+</div>
+</div>
+</section>
+<section id="adding-recurrence-relations-3" class="slide level2">
+<h2>Adding recurrence relations</h2>
+<!-- markdownlint-disable MD013 -->
+<div class="compact twocolgrid" style="grid-template-columns: 250px auto; grid-template-rows: 300px auto;">
+<!-- markdownlint-enable MD013 -->
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-xt-arr-4-1.svg" width="960" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div style="border-left: 2px white solid; ">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/ffn-x0-xt-arr-4-1.svg" style="width:100.0%" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+<p>Folded representation</p>
+</div>
+<div>
+<p>Unfolded representation</p>
+<div class="fragment">
+<p>Add a <em>hidden state</em> <span class="math inline">\(h\)</span> that introduces a dependency on the previous step:</p>
+<p><span class="math display">\[
+\hat{Y}_t = f(X_t, h_{t-1})
+\]</span></p>
+<p><span class="math inline">\(h_t\)</span> is a summary of the inputs we’ve seen sofar.</p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p><span class="math inline">\(h_t\)</span> is a summary of the inputs we’ve seen sofar</p>
+<p>(Zhang et al., 2021, Chapter 8.4):</p>
+<blockquote>
+<p>If we want to incorporate the possible effect of words earlier than time step t−(n−1) on xt, we need to increase n.&nbsp;However, the number of model parameters would also increase exponentially with it, as we need to store |V|n numbers for a vocabulary set V. Hence, rather than modeling P(xt∣xt−1,…,xt−n+1) it is preferable to use a latent variable model:</p>
+<p>P(xt∣xt−1,…,x1) ~ P(xt∣ht−1),</p>
+</blockquote>
+<p>IOW, with ht the recurrence becomes a latent variable model.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="sequential-memory-of-rnns" class="slide level2">
+<h2>Sequential memory of RNNs</h2>
+<p>RNNs have what one could call “sequential memory” <span class="citation" data-cites="phi_illustrated_2020_RNN">(<a href="#/bibliography" role="doc-biblioref" onclick="">Phi, 2020</a>)</span></p>
+<h3 id="alphabet">Alphabet</h3>
+<p>Exercise: say alphabet in your head</p>
+<p><span style="font-size: 1.5em; text-align: center; font-family: DejaVu Sans Mono;">A B C … X Y Z</span></p>
+<div class="fragment">
+<p>Modification: start from e.g.&nbsp;letter F</p>
+<p>May take time to get started, but from there on it’s easy</p>
+</div>
+<div class="fragment">
+<p>Now read the alphabet in reverse:</p>
+<p><span style="font-size: 1.5em; text-align: center; font-family: DejaVu Sans Mono;">Z Y X … C B A</span></p>
+</div>
+<div class="fragment">
+<p>Memory access is <em>associative</em> and <em>context-dependent</em></p>
+</div>
+<aside class="notes">
+<p>Provide the alphabet example from <span class="citation" data-cites="phi_illustrated_2020_RNN">(<a href="#/bibliography" role="doc-biblioref" onclick="">Phi, 2020</a>)</span></p>
+<p>cf (, Haykin, 2010, p.&nbsp;203):</p>
+<blockquote>
+<p>For a neural network to be dynamic, it must be given <em>short-term memory</em> in one form or the other</p>
+</blockquote>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="recurrent-neural-networks" class="slide level2">
+<h2>Recurrent Neural Networks</h2>
+<div class="twocolgrid" style="grid-template-columns: 300px auto;">
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-folded-hidden-eq-1-1.svg" width="300"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+<div class="fragment center">
+<p>Add recurrence relation where current hidden cell state <span class="math inline">\(h_t\)</span> depends on input <span class="math inline">\(x_t\)</span> and previous hidden state <span class="math inline">\(h_{t-1}\)</span> via a function <span class="math inline">\(f_W\)</span> that defines the network parameters (weights):</p>
+<p><span class="math display">\[
+h_t = f_\mathbf{W}(x_t, h_{t-1})
+\]</span></p>
+</div>
+<div class="fragment center">
+<p>Note that the same function and weights are used across all time steps!</p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Flesh out the previous illustration, emphasizing that the hidden layer is recurrent (could otherwise be just dense layers). Also add subscript to <span class="math inline">\(f\)</span> to highlight its dependence on network weights.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="recurrent-neural-networks---pseudocode" class="slide level2">
+<h2>Recurrent Neural Networks - pseudocode</h2>
+<!-- markdownlint-disable MD013 -->
+<div class="twocolgrid" style="grid-template-columns: 300px auto; grid-column-gap: 20px;">
+<!-- markdownlint-enable MD013 -->
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-folded-hidden-eq-2-1.svg" width="300"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+<div style="font-size: 0.7em">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="kw">class</span> RNN:</span>
+<span id="cb1-2"><a href=""></a>  <span class="co"># ...</span></span>
+<span id="cb1-3"><a href=""></a>  <span class="co"># Description of forward pass</span></span>
+<span id="cb1-4"><a href=""></a>  <span class="kw">def</span> step(<span class="va">self</span>, x):</span>
+<span id="cb1-5"><a href=""></a>    <span class="co"># update the hidden state</span></span>
+<span id="cb1-6"><a href=""></a>    <span class="va">self</span>.h <span class="op">=</span> np.tanh(np.dot(<span class="va">self</span>.W_hh, <span class="va">self</span>.h) <span class="op">+</span> np.dot(<span class="va">self</span>.W_xh, x))</span>
+<span id="cb1-7"><a href=""></a>    <span class="co"># compute the output vector</span></span>
+<span id="cb1-8"><a href=""></a>    y <span class="op">=</span> np.dot(<span class="va">self</span>.W_hy, <span class="va">self</span>.h)</span>
+<span id="cb1-9"><a href=""></a>    <span class="cf">return</span> y</span>
+<span id="cb1-10"><a href=""></a></span>
+<span id="cb1-11"><a href=""></a>rnn <span class="op">=</span> RNN()</span>
+<span id="cb1-12"><a href=""></a>ff <span class="op">=</span> FeedForwardNN()</span>
+<span id="cb1-13"><a href=""></a></span>
+<span id="cb1-14"><a href=""></a><span class="cf">for</span> word <span class="kw">in</span> <span class="bu">input</span>:</span>
+<span id="cb1-15"><a href=""></a>    output <span class="op">=</span> rnn.step(word)</span>
+<span id="cb1-16"><a href=""></a></span>
+<span id="cb1-17"><a href=""></a>prediction <span class="op">=</span> ff(output)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Pseudocode examples, my example:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="kw">class</span> RNN:</span>
+<span id="cb2-2"><a href=""></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb2-3"><a href=""></a>        <span class="co"># Initialize weights and cell state</span></span>
+<span id="cb2-4"><a href=""></a>        <span class="va">self</span>._h <span class="op">=</span> [...]</span>
+<span id="cb2-5"><a href=""></a>        <span class="va">self</span>._Whh <span class="op">=</span> [...]</span>
+<span id="cb2-6"><a href=""></a>        <span class="va">self</span>._Wxh <span class="op">=</span> [...]</span>
+<span id="cb2-7"><a href=""></a>        <span class="va">self</span>._Why <span class="op">=</span> [...]</span>
+<span id="cb2-8"><a href=""></a></span>
+<span id="cb2-9"><a href=""></a>    <span class="kw">def</span> update_cell_state(<span class="va">self</span>, x):</span>
+<span id="cb2-10"><a href=""></a>        <span class="co"># function is some function that updates cell state</span></span>
+<span id="cb2-11"><a href=""></a>        <span class="va">self</span>._h <span class="op">=</span> function(<span class="va">self</span>._h <span class="op">*</span> <span class="va">self</span>._Whh <span class="op">+</span> x <span class="op">*</span> <span class="va">self</span>.Wxh)</span>
+<span id="cb2-12"><a href=""></a></span>
+<span id="cb2-13"><a href=""></a>    <span class="kw">def</span> predict(<span class="va">self</span>):</span>
+<span id="cb2-14"><a href=""></a>        <span class="cf">return</span> <span class="va">self</span>._h <span class="op">*</span> <span class="va">self</span>._Why</span>
+<span id="cb2-15"><a href=""></a></span>
+<span id="cb2-16"><a href=""></a>    <span class="kw">def</span> update_weights(<span class="va">self</span>, y):</span>
+<span id="cb2-17"><a href=""></a>        <span class="co"># Calculate error via some loss function</span></span>
+<span id="cb2-18"><a href=""></a>        error <span class="op">=</span> loss(<span class="va">self</span>.predict() <span class="op">-</span> y)</span>
+<span id="cb2-19"><a href=""></a>        <span class="co"># update weights via back propagation...</span></span>
+<span id="cb2-20"><a href=""></a></span>
+<span id="cb2-21"><a href=""></a>rnn <span class="op">=</span> RNN()</span>
+<span id="cb2-22"><a href=""></a></span>
+<span id="cb2-23"><a href=""></a><span class="cf">for</span> x, y <span class="kw">in</span> input_data:</span>
+<span id="cb2-24"><a href=""></a>    rnn.update_cell_state(x)</span>
+<span id="cb2-25"><a href=""></a>    rnn.update_weights(y)</span>
+<span id="cb2-26"><a href=""></a></span>
+<span id="cb2-27"><a href=""></a><span class="co"># Retrieve next prediction</span></span>
+<span id="cb2-28"><a href=""></a>yhat <span class="op">=</span> rnn.predict()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><span class="citation" data-cites="karpathyandrej_UnreasonableEffectivenessRecurrent_2015">(<a href="#/bibliography" role="doc-biblioref" onclick="">Karpathy, Andrej, 2015</a>)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a>rnn <span class="op">=</span> RNN()</span>
+<span id="cb3-2"><a href=""></a>y <span class="op">=</span> rnn.step(x) <span class="co"># x is an input vector, y is the RNN's output vector</span></span>
+<span id="cb3-3"><a href=""></a></span>
+<span id="cb3-4"><a href=""></a><span class="kw">class</span> RNN:</span>
+<span id="cb3-5"><a href=""></a>  <span class="co"># ...</span></span>
+<span id="cb3-6"><a href=""></a>  <span class="co"># Description of forward pass</span></span>
+<span id="cb3-7"><a href=""></a>  <span class="kw">def</span> step(<span class="va">self</span>, x):</span>
+<span id="cb3-8"><a href=""></a>    <span class="co"># update the hidden state</span></span>
+<span id="cb3-9"><a href=""></a>    <span class="va">self</span>.h <span class="op">=</span> np.tanh(np.dot(<span class="va">self</span>.W_hh, <span class="va">self</span>.h) <span class="op">+</span> np.dot(<span class="va">self</span>.W_xh, x))</span>
+<span id="cb3-10"><a href=""></a>    <span class="co"># compute the output vector</span></span>
+<span id="cb3-11"><a href=""></a>    y <span class="op">=</span> np.dot(<span class="va">self</span>.W_hy, <span class="va">self</span>.h)</span>
+<span id="cb3-12"><a href=""></a>    <span class="cf">return</span> y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>A two-layer network would look as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a>y1 <span class="op">=</span> rnn.step(x)</span>
+<span id="cb4-2"><a href=""></a>y2 <span class="op">=</span> rnn.step(y1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Keras version (<a href="https://keras.io/api/layers/recurrent_layers/rnn/#rnn-class" class="uri">https://keras.io/api/layers/recurrent_layers/rnn/#rnn-class</a>):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="kw">class</span> MinimalRNNCell(keras.layers.Layer):</span>
+<span id="cb5-2"><a href=""></a></span>
+<span id="cb5-3"><a href=""></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, units, <span class="op">**</span>kwargs):</span>
+<span id="cb5-4"><a href=""></a>        <span class="va">self</span>.units <span class="op">=</span> units</span>
+<span id="cb5-5"><a href=""></a>        <span class="va">self</span>.state_size <span class="op">=</span> units</span>
+<span id="cb5-6"><a href=""></a>        <span class="bu">super</span>(MinimalRNNCell, <span class="va">self</span>).<span class="fu">__init__</span>(<span class="op">**</span>kwargs)</span>
+<span id="cb5-7"><a href=""></a></span>
+<span id="cb5-8"><a href=""></a>    <span class="kw">def</span> build(<span class="va">self</span>, input_shape):</span>
+<span id="cb5-9"><a href=""></a>        <span class="va">self</span>.kernel <span class="op">=</span> <span class="va">self</span>.add_weight(shape<span class="op">=</span>(input_shape[<span class="op">-</span><span class="dv">1</span>], <span class="va">self</span>.units),</span>
+<span id="cb5-10"><a href=""></a>                                      initializer<span class="op">=</span><span class="st">'uniform'</span>,</span>
+<span id="cb5-11"><a href=""></a>                                      name<span class="op">=</span><span class="st">'kernel'</span>)</span>
+<span id="cb5-12"><a href=""></a>        <span class="va">self</span>.recurrent_kernel <span class="op">=</span> <span class="va">self</span>.add_weight(</span>
+<span id="cb5-13"><a href=""></a>            shape<span class="op">=</span>(<span class="va">self</span>.units, <span class="va">self</span>.units),</span>
+<span id="cb5-14"><a href=""></a>            initializer<span class="op">=</span><span class="st">'uniform'</span>,</span>
+<span id="cb5-15"><a href=""></a>            name<span class="op">=</span><span class="st">'recurrent_kernel'</span>)</span>
+<span id="cb5-16"><a href=""></a>        <span class="va">self</span>.built <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb5-17"><a href=""></a></span>
+<span id="cb5-18"><a href=""></a>    <span class="kw">def</span> call(<span class="va">self</span>, inputs, states):</span>
+<span id="cb5-19"><a href=""></a>        prev_output <span class="op">=</span> states[<span class="dv">0</span>]</span>
+<span id="cb5-20"><a href=""></a>        h <span class="op">=</span> backend.dot(inputs, <span class="va">self</span>.kernel)</span>
+<span id="cb5-21"><a href=""></a>        output <span class="op">=</span> h <span class="op">+</span> backend.dot(prev_output, <span class="va">self</span>.recurrent_kernel)</span>
+<span id="cb5-22"><a href=""></a>        <span class="cf">return</span> output, [output]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Also (Phi, 2020b)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href=""></a>rnn <span class="op">=</span> RNN()</span>
+<span id="cb6-2"><a href=""></a>ff <span class="op">=</span> FeedForwardNN()</span>
+<span id="cb6-3"><a href=""></a>hidden_state <span class="op">=</span> [<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>]</span>
+<span id="cb6-4"><a href=""></a></span>
+<span id="cb6-5"><a href=""></a><span class="cf">for</span> word <span class="kw">in</span> <span class="bu">input</span>:</span>
+<span id="cb6-6"><a href=""></a>    output, hidden_state <span class="op">=</span> rnn(word, hidden_state)</span>
+<span id="cb6-7"><a href=""></a></span>
+<span id="cb6-8"><a href=""></a>prediction <span class="op">=</span> ff(output)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Also (Phi, 2020a) :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a><span class="kw">def</span> LSTMCell(prev_ct, prev_ht, <span class="bu">input</span>):</span>
+<span id="cb7-2"><a href=""></a>    combine <span class="op">=</span> prev_ct <span class="op">+</span> <span class="bu">input</span></span>
+<span id="cb7-3"><a href=""></a>    candidate <span class="op">=</span> candidate_layer(combine)</span>
+<span id="cb7-4"><a href=""></a>    it <span class="op">=</span> input_layer(combine)</span>
+<span id="cb7-5"><a href=""></a>    Ct <span class="op">=</span> prev_ct <span class="op">*</span> ft <span class="op">+</span> candidate <span class="op">*</span> it</span>
+<span id="cb7-6"><a href=""></a>    ot <span class="op">=</span> output_layer(combine)</span>
+<span id="cb7-7"><a href=""></a>    ht <span class="op">=</span> ot <span class="op">*</span> tanh(Ct)</span>
+<span id="cb7-8"><a href=""></a>    <span class="cf">return</span> ht, Ct</span>
+<span id="cb7-9"><a href=""></a></span>
+<span id="cb7-10"><a href=""></a>ct <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>]</span>
+<span id="cb7-11"><a href=""></a>ht <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>]</span>
+<span id="cb7-12"><a href=""></a></span>
+<span id="cb7-13"><a href=""></a><span class="cf">for</span> <span class="bu">input</span> <span class="kw">in</span> inputs:</span>
+<span id="cb7-14"><a href=""></a>    ct, ht <span class="op">=</span> LSTMCell(ct, ht, <span class="bu">input</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="vanilla-rnns" class="slide level2">
+<h2>Vanilla RNNs</h2>
+<div class="twocolgrid" style="grid-template-columns: 400px auto;">
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-vanilla-rnn-folded-hidden-eq-1-1.svg" width="300"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+<div class="fragment center" data-fragment-index="3">
+<h3 style="color: red;">
+Output vector
+</h3>
+<p><span class="math display">\[
+\hat{Y}_t = \mathbf{W_{hy}^T}h_t
+\]</span></p>
+</div>
+<div class="fragment center" data-fragment-index="2">
+<h3 style="color: green;">
+Update hidden state
+</h3>
+<p><span class="math display">\[
+h_t = \mathsf{tanh}(\mathbf{W_{xh}^T}X_t + \mathbf{W_{hh}^T}h_{t-1})
+\]</span></p>
+</div>
+<div class="fragment center" data-fragment-index="1">
+<h3 style="color: blue;">
+Input vector
+</h3>
+<p><span class="math display">\[
+X_t
+\]</span></p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Explicitly state the network weights and how they relate to the different inputs.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="vanilla-rnns-1" class="slide level2">
+<h2>Vanilla RNNs</h2>
+<p><span class="citation" data-cites="olah_christopher_understanding_nodate">(<a href="#/bibliography" role="doc-biblioref" onclick="">Olah, 2015</a>)</span></p>
+<!-- markdownlint-disable MD013 -->
+
+<!-- markdownlint-enable MD013 -->
+<img data-src="index_files/figure-revealjs/tikz-vanilla-rnn-unfolded-weights-1-1.svg" width="1200" class="r-stretch"><aside class="notes">
+<p>From MIT lecture: use the unfolded version and incrementally reveal the equation</p>
+<p><span class="math display">\[
+h_t = f_W(x_t, h_{t-1})
+\]</span></p>
+<p>and point out that f, W are <strong>shared</strong> across all units</p>
+<p>Add pseudocode to exemplify</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="vanilla-rnns-2" class="slide level2">
+<h2>Vanilla RNNs</h2>
+<!-- markdownlint-disable MD013 -->
+
+<!-- markdownlint-enable MD013 -->
+<img data-src="index_files/figure-revealjs/tikz-vanilla-rnn-unfolded-weights-2-1.svg" width="1200" class="r-stretch"><aside class="notes">
+<p>From MIT lecture: use the unfolded version and incrementally reveal the equation</p>
+<p><span class="math display">\[
+h_t = f_W(x_t, h_{t-1})
+\]</span></p>
+<p>and point out that f, W are <strong>shared</strong> across all units</p>
+<p>Add pseudocode to exemplify</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="vanilla-rnns-3" class="slide level2">
+<h2>Vanilla RNNs</h2>
+<!-- markdownlint-disable MD013 -->
+
+<!-- markdownlint-enable MD013 -->
+<img data-src="index_files/figure-revealjs/tikz-vanilla-rnn-unfolded-weights-3-1.svg" width="1200" class="r-stretch"><aside class="notes">
+<p>From MIT lecture: use the unfolded version and incrementally reveal the equation</p>
+<p><span class="math display">\[
+h_t = f_W(x_t, h_{t-1})
+\]</span></p>
+<p>and point out that f, W are <strong>shared</strong> across all units (Lendave, 2021)</p>
+<p>Add pseudocode to exemplify</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="vanilla-rnns-4" class="slide level2">
+<h2>Vanilla RNNs</h2>
+<!-- markdownlint-disable MD013 -->
+
+<!-- markdownlint-enable MD013 -->
+<img data-src="index_files/figure-revealjs/tikz-vanilla-rnn-unfolded-weights-4-1.svg" width="1200" class="r-stretch"><div class="fragment center">
+<p>Note: <span class="math inline">\(\mathbf{W_{xh}}\)</span>, <span class="math inline">\(\mathbf{W_{hh}}\)</span>, and <span class="math inline">\(\mathbf{W_{hy}}\)</span> are shared across all cells!</p>
+</div>
+<aside class="notes">
+<p>From MIT lecture: use the unfolded version and incrementally reveal the equation</p>
+<p><span class="math display">\[
+h_t = f_W(x_t, h_{t-1})
+\]</span></p>
+<p>and point out that f, W are <strong>shared</strong> across all units</p>
+<p>Add pseudocode to exemplify</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="desired-features-of-rnn" class="slide level2">
+<h2>Desired features of RNN</h2>
+<p>Shared weights (parameters) are a fundamental characteristic that among other things address:</p>
+<div class="fragment">
+<!-- -->
+<h4 id="variable-sequence-lengths">1. Variable sequence lengths</h4>
+<p>Not all inputs are of equal length</p>
+<p><br></p>
+</div>
+<div class="fragment">
+<!-- -->
+<h4 id="long-term-memory">2. Long-term memory</h4>
+<p>“I grew up in England, and … I speak fluent English”</p>
+<p><br></p>
+</div>
+<div class="fragment">
+<!-- -->
+<h4 id="preservation-of-order">3. Preservation of order</h4>
+<p>“dog bites man” != “man bites dog”</p>
+<p><br></p>
+</div>
+<aside class="notes">
+<ul>
+<li>variable sequence lengths</li>
+</ul>
+<p>From (Cho et al., 2014):</p>
+<blockquote>
+<p>architectur that learns to <em>encode</em> a variable-length sequence into a fixed-length vector representation and to <em>decode</em> a given fixed-length representation back into a variable-length sequence</p>
+</blockquote>
+<p>Sharing parameters:</p>
+<ol type="1">
+<li>consistency among time steps (generalizable)</li>
+<li>handles variable-length sequences (since same weights can be applied arbitrary number of times)</li>
+<li>captures temporal dynamics (short-term: immediate incorporation of previous steps, long-term: gradient can propagate across many time steps)</li>
+<li>efficient resource utilization</li>
+<li>sequence order interpretation (encoded within hidden states)</li>
+</ol>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="exercise" class="title-slide slide level1 center">
+<h1>Exercise</h1>
+
+</section>
+<section id="example-box-jenkins-airline-passenger-data-set" class="slide level2">
+<h2>Example: Box &amp; Jenkins airline passenger data set</h2>
+<div class="twocolgrid" style="grid-template-columns: 60% auto;">
+<div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="airline.png"></p>
+<figcaption>Airline data</figcaption>
+</figure>
+</div>
+<p><span class="citation" data-cites="onnen_temporal_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Onnen, 2021</a>)</span></p>
+</div>
+<div>
+
+</div>
+</div>
+<aside class="notes">
+<p>(Onnen, 2021)</p>
+<p>See also <a href="https://machinelearningmastery.com/understanding-simple-recurrent-neural-networks-in-keras/" class="uri">https://machinelearningmastery.com/understanding-simple-recurrent-neural-networks-in-keras/</a> for rnn example on sunspots</p>
+<p>Important: need to explicitly show how data is partitioned as this can be difficult to understand</p>
+<p><a href="https://machinelearningmastery.com/how-to-develop-lstm-models-for-time-series-forecasting/" class="uri">https://machinelearningmastery.com/how-to-develop-lstm-models-for-time-series-forecasting/</a></p>
+<p>Herzen article on darts: <a href="https://medium.com/unit8-machine-learning-publication/training-forecasting-models-on-multiple-time-series-with-darts-dc4be70b1844" class="uri">https://medium.com/unit8-machine-learning-publication/training-forecasting-models-on-multiple-time-series-with-darts-dc4be70b1844</a></p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="example-generate-test-and-training-data" class="slide level2">
+<h2>Example: generate test and training data</h2>
+<div class="twocolgrid" style="grid-template-columns: 60% auto;">
+<div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="airline-train-test.png"></p>
+<figcaption>Airline train test data</figcaption>
+</figure>
+</div>
+</div>
+<div class="fragment" style="font-size: 0.8em;">
+<p>Partition time series into training and test data sets at an e.g.&nbsp;2:1 ratio:</p>
+<div style="font-size: 0.7em;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a><span class="im">import</span> rnnutils</span>
+<span id="cb8-2"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb8-3"><a href=""></a>df <span class="op">=</span> rnnutils.airlines()</span>
+<span id="cb8-4"><a href=""></a>data <span class="op">=</span> np.array(</span>
+<span id="cb8-5"><a href=""></a>    df[<span class="st">'passengers'</span>].values</span>
+<span id="cb8-6"><a href=""></a>    .astype(<span class="st">'float32'</span>)</span>
+<span id="cb8-7"><a href=""></a>).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb8-8"><a href=""></a>train, test, scaler <span class="op">=</span> rnnutils.make_train_test(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="example-prepare-data-for-keras" class="slide level2">
+<h2>Example: prepare data for keras</h2>
+<!-- markdownlint-disable MD013 -->
+
+<!-- markdownlint-enable MD013 -->
+<img data-src="index_files/figure-revealjs/tikz-prepare-airline-data-for-keras-1.svg" width="500" class="r-stretch"><div class="fragment" style="font-size: 0.8em;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href=""></a>time_steps <span class="op">=</span> <span class="dv">12</span></span>
+<span id="cb9-2"><a href=""></a>trainX, trainY, trainX_indices, trainY_indices <span class="op">=</span> rnnutils.make_xy(train, time_steps)</span>
+<span id="cb9-3"><a href=""></a>testX, testY, testX_indices, testY_indices <span class="op">=</span> rnnutils.make_xy(test, time_steps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="example-create-vanilla-rnn-model" class="slide level2 smaller">
+<h2>Example: create vanilla RNN model</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href=""></a><span class="im">from</span> keras.models <span class="im">import</span> Sequential</span>
+<span id="cb10-2"><a href=""></a><span class="im">from</span> keras.layers <span class="im">import</span> Dense, SimpleRNN</span>
+<span id="cb10-3"><a href=""></a>model <span class="op">=</span> Sequential()</span>
+<span id="cb10-4"><a href=""></a>model.add(SimpleRNN(units<span class="op">=</span><span class="dv">3</span>, input_shape<span class="op">=</span>(time_steps, <span class="dv">1</span>),</span>
+<span id="cb10-5"><a href=""></a>                    activation<span class="op">=</span><span class="st">"tanh"</span>))</span>
+<span id="cb10-6"><a href=""></a>model.add(Dense(units<span class="op">=</span><span class="dv">1</span>, activation<span class="op">=</span><span class="st">"tanh"</span>))</span>
+<span id="cb10-7"><a href=""></a>model.<span class="bu">compile</span>(loss<span class="op">=</span><span class="st">'mean_squared_error'</span>, optimizer<span class="op">=</span><span class="st">'adam'</span>)</span>
+<span id="cb10-8"><a href=""></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #
+=================================================================
+ simple_rnn (SimpleRNN)      (None, 3)                 15
+
+ dense (Dense)               (None, 1)                 4
+
+=================================================================
+Total params: 19 (76.00 Byte)
+Trainable params: 19 (76.00 Byte)
+Non-trainable params: 0 (0.00 Byte)
+_________________________________________________________________</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>On RNN layers and time steps (<a href="https://keras.io/guides/working_with_rnns/" class="uri">https://keras.io/guides/working_with_rnns/</a>):</p>
+<ul>
+<li>the units correspond to the output size (yhat)</li>
+<li>an RNN layer processes batches of input sequences</li>
+<li>an RNN layer loops RNN cells that process one input at a time (e.g. one word, one time point)</li>
+</ul>
+<p>Also from the source code (LSTMCell):</p>
+<blockquote>
+<p>This class processes one step within the whole time sequence input, whereas `tf.keras.layer.LSTM` processes the whole sequence.</p>
+</blockquote>
+<p>The number of LSTMCells is defined by the units parameter, e.g.:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>NameError: name 'tf' is not defined</code></pre>
+</div>
+</div>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="example-fit-the-model-and-evaluate" class="slide level2 smaller">
+<h2>Example: fit the model and evaluate</h2>
+<div style="font-size: 1.0em">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href=""></a>history <span class="op">=</span> model.fit(trainX, trainY, epochs<span class="op">=</span><span class="dv">20</span>, batch_size<span class="op">=</span><span class="dv">1</span>, verbose<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb13-2"><a href=""></a>Ytrainpred <span class="op">=</span> model.predict(trainX)</span>
+<span id="cb13-3"><a href=""></a>Ytestpred <span class="op">=</span> model.predict(testX)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<!-- markdownlint-disable MD013 -->
+<div style="display: grid; grid-template-columns: 50% 50%; grid-column-gap: 10px; grid-row-gap: 0px">
+<!-- markdownlint-enable MD013 -->
+<div style="font-size: 1.0em">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href=""></a>rnnutils.plot_history(history)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img data-src="airline-training-history.png"></p>
+</div>
+<div style="font-size: 1.0em">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href=""></a>data <span class="op">=</span> {<span class="st">'train'</span>: (model.predict(trainX), train, trainY_indices),</span>
+<span id="cb15-2"><a href=""></a>        <span class="st">'test'</span>: (model.predict(testX), test, testY_indices)}</span>
+<span id="cb15-3"><a href=""></a>rnnutils.plot_pred(data, scaler<span class="op">=</span>scaler, ticks<span class="op">=</span><span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">144</span>, <span class="dv">20</span>),</span>
+<span id="cb15-4"><a href=""></a>                   labels<span class="op">=</span>df.year[<span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">144</span>, <span class="dv">20</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img data-src="airline-prediction-prepared.png"></p>
+</div>
+</div>
+</section>
+<section id="example-model-topology-writ-out" class="slide level2">
+<h2>Example: model topology writ out</h2>
+<div style="font-size: .75em; text-align: center;">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #
+=================================================================
+ simple_rnn (SimpleRNN)      (None, 3)                 15
+
+ dense (Dense)               (None, 1)                 4
+
+=================================================================
+Total params: 19 (76.00 Byte)
+Trainable params: 19 (76.00 Byte)
+Non-trainable params: 0 (0.00 Byte)
+_________________________________________________________________</code></pre>
+</div>
+</div>
+</div>
+<div class="twocolgrid" style="grid-template-columns: 2fr 1fr;">
+<div class="compact">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-model-topology-writ-out-1-1.svg" width="960" height="300"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+
+</div>
+</div>
+<aside class="notes">
+<p>(Verma, 2021)</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="example-model-topology-writ-out-1" class="slide level2">
+<h2>Example: model topology writ out</h2>
+<div style="font-size: .75em; text-align: center;">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #
+=================================================================
+ simple_rnn (SimpleRNN)      (None, 3)                 15
+
+ dense (Dense)               (None, 1)                 4
+
+=================================================================
+Total params: 19 (76.00 Byte)
+Trainable params: 19 (76.00 Byte)
+Non-trainable params: 0 (0.00 Byte)
+_________________________________________________________________</code></pre>
+</div>
+</div>
+</div>
+<div class="twocolgrid" style="grid-template-columns: 2fr 1fr;">
+<div class="compact">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-rnn-model-topology-writ-out-2-1.svg" width="960" height="300"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+<div class="fragment">
+<p>NB! In keras, RNN input is a 3D tensor with shape <code>[batch, timesteps, feature]</code></p>
+<p><span class="citation" data-cites="verma_understanding_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Verma, 2021</a>)</span></p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>(Verma, 2021)</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="an-rnn-in-numbers" class="slide level2 smaller">
+<h2>An RNN in numbers</h2>
+<p><span class="citation" data-cites="karpathyandrej_UnreasonableEffectivenessRecurrent_2015">(<a href="#/bibliography" role="doc-biblioref" onclick="">Karpathy, Andrej, 2015</a>)</span></p>
+
+<img data-src="index_files/figure-revealjs/tikz-karpathy-rnn-example-numbers-1.svg" style="width:70.0%" class="r-stretch"><p>Example network trained on “hello” showing <em>activations</em> in forward pass given input “hell”. The outputs contain confidences in outputs (vocabulary={h, e, l, o}). We want blue numbers high, red numbers low. P(e) is in context of “h”, P(l) in context of “he” and so on.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="fragment center">
+<p>What is the topology of the network?</p>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment center">
+<p>4 input units (features), 4 time steps, 3 hidden units, 4 output units</p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>NB! This is what it could look like after a forward pass! During training, we <strong>want</strong> to increase confidence for blue characters. Also, for output 2 and more the output depends on all preceding <strong>hidden</strong> states + the input.</p>
+<p>Mention: e is conditional on h</p>
+<p>l is conditional on input e + hidden state based on h. Quoting Karpathy:</p>
+<blockquote>
+<p>This training sequence is in fact a source of 4 separate training examples: 1. The probability of “e” should be likely given the context of “h”, 2. “l” should be likely in the context of “he”, 3. “l” should also be likely given the context of “hel”, and finally 4. “o” should be likely given the context of “hell”.</p>
+</blockquote>
+<p>Ask for input_shape: what is timesteps? (=4) What is features? (=4)</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="exercise-1" class="slide level2">
+<h2>Exercise</h2>
+<p>Using the <code>SimpleRNN</code> (Vanilla RNN) class, see if you can improve the airline passenger model. Some things to try:</p>
+<ul>
+<li>change the number of units</li>
+<li>change time_steps</li>
+<li>change the number of epochs</li>
+</ul>
+</section></section>
+<section>
+<section id="training" class="title-slide slide level1 center">
+<h1>Training</h1>
+
+</section>
+<section id="recap-backpropagation-algorithm-in-ffns" class="slide level2">
+<h2>Recap: backpropagation algorithm in ffns</h2>
+<p><span class="citation" data-cites="alexanderamini_MITS191Recurrent_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Alexander Amini, 2021</a>)</span></p>
+<p><br></p>
+<div class="twocolgrid" style="grid-template-columns: 50% auto;">
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-ffn-1-1.svg" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+
+</div>
+</div>
+<aside class="notes">
+<p>Revise basic steps of training with incremental figure. Base on RNN since that is what we are looking at but point out that this review is general and applies also to ffns.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="recap-backpropagation-algorithm-in-ffns-1" class="slide level2">
+<h2>Recap: backpropagation algorithm in ffns</h2>
+<p><span class="citation" data-cites="alexanderamini_MITS191Recurrent_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Alexander Amini, 2021</a>)</span></p>
+<p><br></p>
+<div class="twocolgrid" style="grid-template-columns: 50% auto;">
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-ffn-2-1.svg" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+<ol type="1">
+<li>perform forward pass and generate prediction</li>
+</ol>
+</div>
+</div>
+<aside class="notes">
+<p>Revise basic steps of training with incremental figure. Base on RNN since that is what we are looking at but point out that this review is general and applies also to ffns.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="recap-backpropagation-algorithm-in-ffns-2" class="slide level2">
+<h2>Recap: backpropagation algorithm in ffns</h2>
+<p><span class="citation" data-cites="alexanderamini_MITS191Recurrent_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Alexander Amini, 2021</a>)</span></p>
+<p><br></p>
+<div class="twocolgrid" style="grid-template-columns: 50% auto;">
+<div>
+<!-- markdownlint-disable MD013 -->
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-ffn-3-1.svg" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<!-- markdownlint-enable MD013 -->
+</div>
+<div>
+<ol type="1">
+<li>perform forward pass and generate prediction</li>
+<li>calculate prediction error <span class="math inline">\(\epsilon_i\)</span> wrt (known) output: <span class="math inline">\(\epsilon_i = \mathcal{L}(\hat{y}_i, y_i)\)</span>, loss function <span class="math inline">\(\mathcal{L}\)</span></li>
+</ol>
+</div>
+</div>
+<aside class="notes">
+<p>Revise basic steps of training with incremental figure. Base on RNN since that is what we are looking at but point out that this review is general and applies also to ffns.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="recap-backpropagation-algorithm-in-ffns-3" class="slide level2">
+<h2>Recap: backpropagation algorithm in ffns</h2>
+<p><span class="citation" data-cites="alexanderamini_MITS191Recurrent_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Alexander Amini, 2021</a>)</span></p>
+<p><br></p>
+<div class="twocolgrid" style="grid-template-columns: 50% auto;">
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-ffn-4-1.svg" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+<ol type="1">
+<li>perform forward pass and generate prediction</li>
+<li>calculate prediction error <span class="math inline">\(\epsilon_i\)</span> wrt (known) output: <span class="math inline">\(\epsilon_i = \mathcal{L}(\hat{y}_i, y_i)\)</span>, loss function <span class="math inline">\(\mathcal{L}\)</span></li>
+<li>back propagate errors and update weights to minimize loss</li>
+</ol>
+</div>
+</div>
+<aside class="notes">
+<p>Revise basic steps of training with incremental figure. Base on RNN since that is what we are looking at but point out that this review is general and applies also to ffns.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="backpropagation-through-time-bptt" class="slide level2">
+<h2>Backpropagation through time (BPTT)</h2>
+<p><span class="citation" data-cites="alexanderamini_MITS191Recurrent_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Alexander Amini, 2021</a>)</span></p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-unfolded-1-1.svg" style="width:100.0%" height="400"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="backpropagation-through-time-bptt-1" class="slide level2">
+<h2>Backpropagation through time (BPTT)</h2>
+<p><span class="citation" data-cites="alexanderamini_MITS191Recurrent_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Alexander Amini, 2021</a>)</span></p>
+<!-- markdownlint-disable MD013 -->
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-unfolded-2-1.svg" style="width:100.0%" height="400"></p>
+</figure>
+</div>
+</div>
+</div>
+<!-- markdownlint-enable MD013 -->
+</section>
+<section id="backpropagation-through-time-bptt-2" class="slide level2">
+<h2>Backpropagation through time (BPTT)</h2>
+<p><span class="citation" data-cites="alexanderamini_MITS191Recurrent_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Alexander Amini, 2021</a>)</span></p>
+<!-- markdownlint-disable MD013 -->
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-unfolded-3-1.svg" style="width:100.0%" height="400"></p>
+</figure>
+</div>
+</div>
+</div>
+<!-- markdownlint-enable MD013 -->
+</section>
+<section id="backpropagation-through-time-bptt-3" class="slide level2">
+<h2>Backpropagation through time (BPTT)</h2>
+<p><span class="citation" data-cites="alexanderamini_MITS191Recurrent_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Alexander Amini, 2021</a>)</span></p>
+<!-- markdownlint-disable MD013 -->
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-unfolded-4-1.svg" style="width:100.0%" height="400"></p>
+</figure>
+</div>
+</div>
+</div>
+<!-- markdownlint-enable MD013 -->
+</section>
+<section id="backpropagation-through-time-bptt-4" class="slide level2">
+<h2>Backpropagation through time (BPTT)</h2>
+<p><span class="citation" data-cites="alexanderamini_MITS191Recurrent_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Alexander Amini, 2021</a>)</span></p>
+<!-- markdownlint-disable MD013 -->
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-unfolded-5-1.svg" style="width:100.0%" height="400"></p>
+</figure>
+</div>
+</div>
+</div>
+<!-- markdownlint-enable MD013 -->
+</section>
+<section id="backpropagation-through-time-bptt-5" class="slide level2">
+<h2>Backpropagation through time (BPTT)</h2>
+<p><span class="citation" data-cites="alexanderamini_MITS191Recurrent_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Alexander Amini, 2021</a>)</span></p>
+<!-- markdownlint-disable MD013 -->
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-backpropagation-unfolded-6-1.svg" style="width:100.0%" height="400"></p>
+</figure>
+</div>
+</div>
+</div>
+<!-- markdownlint-enable MD013 -->
+<div style="transform: translate(0, -30px);">
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Errors are propagated backwards in time from <span class="math inline">\(t=t\)</span> to <span class="math inline">\(t=0\)</span>.</p>
+</div><div class="column" style="width:50%;">
+<div class="fragment center">
+<p>Problem: calculating gradient may depend on large powers of <span class="math inline">\(\mathbf{W_{hh}}^{\mathsf{T}}\)</span> (e.g., <span class="math inline">\(\delta\mathcal{L} / \delta h_0
+\sim f((\mathbf{W_{hh}}^{\mathsf{T}})^t)\)</span></p>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Wording: gradient <span class="math inline">\((dL/dh_0) ~ f((W_hh^T)^t)\)</span>, i.e.&nbsp;gradient may depend on large powers of <span class="math inline">\(W^T_hh\)</span>. So gradient is <span class="math inline">\(\propto a^t\)</span>, so if</p>
+<p>(a &gt; 1: exploding gradients; just mention here)</p>
+<p>a &lt; 1: vanishing gradients</p>
+<p>This is problematic since the <strong>size</strong> of weight adjustments depend on size of gradient</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-effect-of-vanishing-gradients-on-long-term-memory" class="slide level2">
+<h2>The effect of vanishing gradients on long-term memory</h2>
+<!-- markdownlint-disable MD013 -->
+<div style="display: grid; grid-template-columns: 30% auto; grid-column-gap: 0px; font-size: 0.7em; align: center;">
+<!-- markdownlint-enable MD013 -->
+<div>
+<div class="fragment center">
+<p>In layer <span class="math inline">\(i\)</span> gradient size ~ <span class="math inline">\((\mathbf{W_{hh}}^{\mathsf{T}})^{t-i}\)</span></p>
+</div>
+<div class="fragment center">
+<p><span class="math inline">\(\downarrow\)</span></p>
+<p>Weight adjustments depend on size of gradient</p>
+</div>
+<div class="fragment center">
+<p><span class="math inline">\(\downarrow\)</span></p>
+<p>Early layers tend to “see” small gradients and do very little updating</p>
+</div>
+<div class="fragment center">
+<p><span class="math inline">\(\downarrow\)</span></p>
+<p>Bias parameters to learn recent events</p>
+</div>
+<div class="fragment center">
+<p><span class="math inline">\(\downarrow\)</span></p>
+<p>RNN suffer short term memory</p>
+</div>
+</div>
+<div>
+<div class="fragment center compact">
+<p><span class="citation" data-cites="olah_christopher_understanding_nodate">(<a href="#/bibliography" role="doc-biblioref" onclick="">Olah, 2015</a>)</span></p>
+<p>“The clouds are in the <u>_</u>”</p>
+</div>
+<div class="fragment center compact">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-clouds-are-in-the-sky-1.svg" width="960" height="150"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><br></p>
+</div>
+<div class="fragment center compact">
+<p>“I grew up in England … I speak fluent <u>_</u>”</p>
+</div>
+<div class="fragment center compact">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-I-speak-fluent-english-1.svg" width="960" height="150"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>(Thomas, 2018)</p>
+<p>The bigger the gradient, the bigger the adjustment and <strong>vice versa</strong>. Gradients are calculated wrt to effects of gradients in previous layer. If those adjustments were small, gradients will be small, which in time leads to exponentially declining values. Early layers fail to do any learning.</p>
+<p>In flowchart: <strong>given</strong> that W is smaller than one, the gradients tend to vanish and be negligible for early layers</p>
+<p>Examples: highlight the context dependency of the prediction. Sky is easy to infer, but in the second example, if the intervening paragraph is long, we need context from much farther back.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="solutions-to-vanishing-gradient" class="slide level2">
+<h2>Solutions to vanishing gradient</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h4 id="activation-function">1. Activation function</h4>
+<p>ReLU (or leaky ReLU) instead of sigmoid or tanh.</p>
+<p>Prevents small gradient: for <span class="math inline">\(\mathbb{x&gt;0}\)</span>, gradient positive constant</p>
+</div><div class="column" style="width:50%;">
+<p>Derivatives of <span class="math inline">\(\sigma\)</span>, <span class="math inline">\(\mathsf{tanh}\)</span> and <span class="math inline">\(\mathsf{ReLU}\)</span> activation functions.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-vanishing-gradient-trick-1-1.svg" width="960" height="400"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="solutions-to-vanishing-gradient-1" class="slide level2">
+<h2>Solutions to vanishing gradient</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h4 id="weight-initialization">2. Weight initialization</h4>
+<p>Set bias=0, weights to identity matrix</p>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-vanishing-gradient-trick-2-1.svg" width="960" height="400"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Prevents weights from shrinking too much</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="solutions-to-vanishing-gradient-2" class="slide level2">
+<h2>Solutions to vanishing gradient</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h4 id="more-complex-cells-using-gating">3. More complex cells using “gating”</h4>
+<p>For example LSTM. Idea is to control what information is retained within each RNN unit.</p>
+<p>Make use of regular multiplication (x) and addition (+) to combine signals.</p>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-vanishing-gradient-trick-3-1.svg" width="960" height="400"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Note that ReLUs not used in LSTMs / GRU as ReLU is non-negative (however, see https://machinelearningmastery.com/rectified-linear-activation-function-for-deep-learning-neural-networks/). The tanh activation is needed so that values can be added <strong>and</strong> subtracted. Sigmoid is in (0, 1).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="lstms-and-grus" class="title-slide slide level1 center">
+<h1>LSTMs and GRUs</h1>
+
+</section>
+<section id="motivation-behind-lstms-and-grus" class="slide level2">
+<h2>Motivation behind LSTMs and GRUs</h2>
+<div class="twocolgrid compact">
+<div class="compact">
+<p>LSTM</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-lstm-1.svg" width="350"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="compact">
+<p>GRU</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-gru-1.svg" width="350"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="compact">
+<!-- markdownlint-disable MD013 -->
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-gru-lstm-legend-1.svg" width="600"></p>
+</figure>
+</div>
+</div>
+</div>
+<!-- markdownlint-enable MD013 -->
+<p>Long Short Term Memory (LSTM) (Hochreiter &amp; Schmidhuber, 1997) and Gated Recurrent Unit (GRU) (Cho et al., 2014) architectures were proposed to solve the vanishing gradient problem.</p>
+</div>
+<aside class="notes">
+<p>Based on (Phi, 2020a)</p>
+<ul>
+<li>solution to short-term memory</li>
+<li>gates <strong>regulate</strong> the flow of information, concentrating on the important parts</li>
+</ul>
+<p>In contrast to RNN, LSTM has <em>four</em> neural network layers that interact via the gates</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="intuition" class="slide level2">
+<h2>Intuition</h2>
+<!-- markdownlint-disable MD013 -->
+<div class="element:" style="font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter, monospace; font-size: 0.8em;">
+<p>In this paper, we propose a novel neural network model called RNN Encoder-Decoder that consists of two recurrent neural networks (RNN). One RNN encodes a sequence of symbols into a fixed-length vector representation, and the other decodes the representation into another sequence of symbols. The encoder and decoder of the proposed model are jointly trained to maximize the conditional probability of a target sequence given a source sequence. The performance of a statistical machine translation system is empirically found to improve by using the conditional probabilities of phrase pairs computed by the RNN Encoder-Decoder as an additional feature in the existing log-linear model. Qualitatively, we show that the proposed model learns a semantically and syntactically meaningful representation of linguistic phrases.</p>
+</div>
+<!-- markdownlint-enable MD013 -->
+<div class="element:" style="font-size: 0.6em;">
+<p>Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation (Cho et al., 2014)</p>
+</div>
+<aside class="notes">
+<p>(Phi, 2020a)</p>
+<p>Example: provide long text (e.g.&nbsp;customer) review and point out what we most likely will remember the following day. Intuition on LSTM/GRU: focus on relevant information.</p>
+<p>Intuition:</p>
+<ul>
+<li>solution to vanishing gradient problem</li>
+<li>gates regulate flow of information, focusing on the important parts</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="intuition-1" class="slide level2">
+<h2>Intuition</h2>
+<!-- markdownlint-disable MD013 -->
+<div class="element:" style="font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter, monospace; font-size: 0.8em;">
+<p>In this paper, we propose a <strong>novel neural network</strong> model called <strong>RNN</strong> <strong>Encoder-Decoder</strong> that consists of <strong>two recurrent neural networks</strong> (RNN). One RNN <strong>encodes</strong> a <strong>sequence of symbols</strong> into a fixed-length vector representation, and the other <strong>decodes the representation</strong> into another sequence of symbols. The encoder and decoder of the proposed model are <strong>jointly trained</strong> to maximize the conditional probability of a target sequence given a source sequence. The performance of a <strong>statistical</strong> <strong>machine translation system</strong> is empirically found to improve by using the conditional probabilities of phrase pairs computed by the RNN Encoder-Decoder as an additional feature in the existing log-linear model. Qualitatively, we show that the proposed model learns a <strong>semantically and syntactically meaningful representation</strong> of linguistic phrases.</p>
+</div>
+<!-- markdownlint-enable MD013 -->
+<div class="element:" style="font-size: 0.6em;">
+<p>Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation (Cho et al., 2014)</p>
+</div>
+<p><br></p>
+<div class="fragment center">
+<p>Remember the important parts, pay less attention to (forget) the rest.</p>
+</div>
+<aside class="notes">
+<p>(Phi, 2020a)</p>
+<p>Example: provide long text (e.g.&nbsp;customer) review and point out what we most likely will remember the following day. Intuition on LSTM/GRU: focus on relevant information.</p>
+<p>Intuition:</p>
+<ul>
+<li>solution to vanishing gradient problem</li>
+<li>gates regulate flow of information, focusing on the important parts</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="lstm-cell-state-flow-and-gating" class="slide level2">
+<h2>LSTM: Cell state flow and gating</h2>
+<div class="twocolgrid">
+<div class="compact">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-cellstateflow-1.svg" width="960" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment compact">
+<p>LSTM adds <em>cell state</em> that in effect provides the long-term memory</p>
+</div>
+<div class="fragment compact">
+<p>Information flows in the cell state from <span class="math inline">\(c_{t-1}\)</span> to <span class="math inline">\(c_t\)</span>.</p>
+</div>
+</div>
+<div class="compact">
+<p><span class="citation" data-cites="olah_christopher_understanding_nodate">(<a href="#/bibliography" role="doc-biblioref" onclick="">Olah, 2015</a>)</span></p>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-lstmgate-1.svg" width="960" height="250"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Gates affect the amount of information let through. The sigmoid layer outputs anything from 0 (nothing) to 1 (everything).</p>
+</div>
+</div>
+</div>
+<div class="fragment compact">
+<p><span class="citation" data-cites="cho_learning_2014">(<a href="#/bibliography" role="doc-biblioref" onclick="">Cho et al., 2014</a>)</span></p>
+<blockquote>
+<p>In our preliminary experiments, we found that it is crucial to use this new unit with gating units. We were not able to get meaningful result with an oft-used tanh unit without any gating.</p>
+</blockquote>
+</div>
+<aside class="notes">
+<p>(Olah, 2015)</p>
+<p>NB: Olah’s example revolves around a language model where we try to predict the next output</p>
+<p>(, Cho et al., 2014, p.&nbsp;1726) on the hidden unit:</p>
+<blockquote>
+<p>In our preliminary experiments, we found that it is crucial to use this new unit with gating units. We were not able to get meaningful result with an oft-used tanh unit without any gating.</p>
+</blockquote>
+<p>Difference between cell and hidden state (<a href="https://datascience.stackexchange.com/questions/82808/difference-between-lstm-cell-state-and-hidden-state" class="uri">https://datascience.stackexchange.com/questions/82808/difference-between-lstm-cell-state-and-hidden-state</a>):</p>
+<ul>
+<li>Cell state: Long term memory of the model, only part of LSTM models</li>
+<li>Hidden state: Working memory, part of LSTM and RNN models</li>
+</ul>
+<p>for RNN, <em>every</em> previous state is considered in calculation of backpropagation</p>
+<p>LSTM: introduce cell state, in addition to hidden state, simply providing longer memory, enabled by</p>
+<ul>
+<li>the storage of useful beliefs from new inputs</li>
+<li>the loading of beliefs into the working memory (i.e.&nbsp;cell state) that are immediately useful.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="forget-input-and-output-gates" class="slide level2">
+<h2>Forget, input, and output gates</h2>
+<div class="threecolgrid">
+<div class="compact">
+<h5>
+forget gate
+</h5>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-lstm-forget-gate-only-1.svg" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Purpose:</strong> reset content of cell state</p>
+</div>
+<div class="compact">
+<h5>
+input gate
+</h5>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-lstm-input-gate-only-1.svg" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Purpose:</strong> decide when to read data into cell state</p>
+</div>
+<div class="compact">
+<h5>
+output gate
+</h5>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-lstm-output-gate-only-1.svg" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Purpose:</strong> read entries from cell state</p>
+</div>
+</div>
+<p>Sigmoid squishes vector <span class="math inline">\([\boldsymbol{h_{t-1}}, \boldsymbol{x_t}]\)</span> (previous hidden state + input) to <span class="math inline">\((0, 1)\)</span> for each value in cell state <span class="math inline">\(c_{t-1}\)</span>, where 0 means “reset entry”, 1 “keep it”</p>
+<aside class="notes">
+
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-forget-gate" class="slide level2 compact">
+<h2>The forget gate</h2>
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-lstm-forget-gate-1.svg" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p><strong>Purpose</strong>: decide what information to keep or throw away</p>
+<p>Sigmoid squishes vector <span class="math inline">\([\boldsymbol{h_{t-1}}, \boldsymbol{x_t}]\)</span> (previous hidden state + input) to <span class="math inline">\((0, 1)\)</span> for each value in cell state <span class="math inline">\(c_{t-1}\)</span>, where 0 means “forget entry”, 1 “keep it”</p>
+<div class="fragment">
+<p><span class="math display">\[
+f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)
+\]</span></p>
+</div>
+<aside class="notes">
+<blockquote>
+<p>Let’s go back to our example of a language model trying to predict the next word based on all the previous ones. In such a problem, the cell state might include the gender of the present subject, so that the correct pronouns can be used. When we see a new subject, we want to forget the gender of the old subject.</p>
+</blockquote>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="add-new-information---the-input-gate" class="slide level2">
+<h2>Add new information - the input gate</h2>
+<div class="compact">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-lstm-candidatecellstate-input-1.svg" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="compact">
+<p>Two steps to adding new information:</p>
+<ol type="1">
+<li>sigmoid layer decides which values to update</li>
+</ol>
+</div>
+<aside class="notes">
+<blockquote>
+<p>In the example of our language model, we’d want to add the gender of the new subject to the cell state, to replace the old one we’re forgetting.</p>
+</blockquote>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="add-new-information---get-candidate-values" class="slide level2">
+<h2>Add new information - get candidate values</h2>
+<div class="compact">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-lstm-candidatecellstate-input-1-1.svg" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="compact">
+<p>Two steps to adding new information:</p>
+<ol type="1">
+<li>sigmoid layer decides which values to update</li>
+<li>tanh layer creates vector of new candidate values <span class="math inline">\(\tilde{c}_t\)</span></li>
+</ol>
+<div class="fragment" style="transform: translate(0, -20px);">
+<p><span class="math display">\[
+i_t = \sigma (W_i \cdot [h_{t-1}, x_t] + b_i)\\
+\tilde{c}_t = \mathsf{tanh}(W_c \cdot [h_{t-1}, x_t] + b_c)
+\]</span></p>
+</div>
+</div>
+<aside class="notes">
+<blockquote>
+<p>In the example of our language model, we’d want to add the gender of the new subject to the cell state, to replace the old one we’re forgetting.</p>
+</blockquote>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="updating-the-cell-state" class="slide level2">
+<h2>Updating the cell state</h2>
+<div class="compact">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-lstm-update-cell-state-1.svg" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="compact">
+<ol type="1">
+<li>multiply old cell state by <span class="math inline">\(f_t\)</span> to forget what was decided to forget</li>
+<li>add new candidate values scaled by how much we want to update them <span class="math inline">\(i_t * \tilde{c}_t\)</span></li>
+</ol>
+<div class="fragment">
+<p><span class="math display">\[
+c_t = f_t * c_{t-1} + i_t * \tilde{c}_t
+\]</span></p>
+</div>
+</div>
+<aside class="notes">
+<blockquote>
+<p>In the case of the language model, this is where we’d actually drop the information about the old subject’s gender and add the new information, as we decided in the previous steps.</p>
+</blockquote>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="cell-output" class="slide level2">
+<h2>Cell output</h2>
+<div class="compact">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-lstm-output-gate-1.svg" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="compact">
+<p>Output is filtered version of cell state.</p>
+<ol type="1">
+<li>sigmoid output gate decides what parts of cell state to output</li>
+<li>push cell state through tanh and multiply by sigmoid output</li>
+</ol>
+<div class="fragment" style="transform: translate(0, -20px);">
+<p><span class="math display">\[
+o_t = \sigma(W_o [h_{t-1}, x_t] + b_o)\\
+h_t = o_t * \mathsf{tanh}(c_t)
+\]</span></p>
+</div>
+</div>
+<aside class="notes">
+<blockquote>
+<p>For the language model example, since it just saw a subject, it might want to output information relevant to a verb, in case that’s what is coming next. For example, it might output whether the subject is singular or plural, so that we know what form a verb should be conjugated into if that’s what follows next.</p>
+</blockquote>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="lstm-putting-it-together" class="slide level2">
+<h2>LSTM: putting it together</h2>
+
+<img data-src="index_files/figure-revealjs/tikz-lstm-intuition-1.svg" width="480" class="r-stretch"></section>
+<section id="intuition-2" class="slide level2">
+<h2>Intuition</h2>
+<ul>
+<li>if forget ~ 1, input ~ 0, <span class="math inline">\(c_{t-1}\)</span> will be saved to next time step (input irrelevant for cell state)</li>
+<li>if forget ~ 0, input ~ 1, pay attention to the current input</li>
+</ul>
+<aside class="notes">
+<p>From (, Zhang et al., 2021, p.&nbsp;9.2.1.3):</p>
+<ul>
+<li>if forget ~ 1, input ~ 0, C<sub>t-1</sub> will be saved over time</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="lstm-putting-it-together-1" class="slide level2">
+<h2>LSTM: putting it together</h2>
+<p><span class="citation" data-cites="zhang2021dive">(<a href="#/bibliography" role="doc-biblioref" onclick="">Zhang et al., 2021</a>)</span></p>
+<div class="twocolgrid">
+<div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/tikz-lstm-2-1.svg" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div>
+<p><span class="math display">\[
+f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)\\
+i_t = \sigma (W_i \cdot [h_{t-1}, x_t] + b_i)\\
+\tilde{c}_t = \mathsf{tanh}(W_c \cdot [h_{t-1}, x_t] + b_c)\\
+c_t = f_t * c_{t-1} + i_t * \tilde{c}_t\\
+o_t = \sigma(W_o [h_{t-1}, x_t] + b_o)\\
+h_t = o_t * \mathsf{tanh}(c_t)
+\]</span></p>
+</div>
+</div>
+<!-- markdownlint-disable MD013 -->
+<p><span class="math display">\[
+x_t \in \mathbb{R}^{n\times d}, h_{t-1} \in \mathbb{R}^{n \times h},
+i_t \in \mathbb{R}^{n\times h}, f_t \in \mathbb{R}^{n\times h}, o_t \in \mathbb{R}^{n\times h}, \\ c_t \in \mathbb{R}^{n\times h}, b_i,b_f,b_c \in \mathbb{R}^{1\times h}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+W_f \in \mathbb{R}^{n \times (h+d)}, W_i \in \mathbb{R}^{n \times (h+d)}, W_o \in \mathbb{R}^{n \times (h+d)}, W_c \in \mathbb{R}^{n \times (h+d)}
+\]</span></p>
+<!-- markdownlint-enable MD013 -->
+</section>
+<section id="gru" class="slide level2">
+<h2>GRU</h2>
+
+<img data-src="index_files/figure-revealjs/tikz-big-gru-1.svg" width="576" class="r-stretch"><ul>
+<li>forget and input states combined to single <em>update</em> gate</li>
+<li>merge cell and hidden state</li>
+<li>simpler model than LSTM</li>
+</ul>
+<aside class="notes">
+<p>(Olah, 2015)</p>
+<p>Notes that GRU has been gaining traction lately (where lately=2015!)</p>
+<p>Comparison (Lendave, 2021):</p>
+<ul>
+<li>GRU has fewer parameters so uses less memory and executes faster</li>
+<li>LSTM more accurate on larger datasets</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="concluding-remarks" class="title-slide slide level1 center">
+<h1>Concluding remarks</h1>
+
+</section>
+<section id="example-applications-in-genomics" class="slide level2 smaller">
+<h2>Example applications in genomics</h2>
+<!-- markdownlint-disable MD013 -->
+<div class="twocolgrid" style="grid-template-columns: 1fr 1.3fr; align-items: center;">
+<!-- markdownlint-enable MD013 -->
+<div>
+<p>Prediction of transcriptor factor binding sites</p>
+<p><img data-src="https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41598-018-33321-1/MediaObjects/41598_2018_33321_Fig5_HTML.png?as=webp" width="350"></p>
+<p><span class="citation" data-cites="shen_recurrent_2018">(<a href="#/bibliography" role="doc-biblioref" onclick="">Shen et al., 2018</a>)</span></p>
+</div>
+<div>
+<p>Recombination landscape prediction</p>
+<p><img data-src="https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/mbe/37/6/10.1093_molbev_msaa038/1/msaa038f1.jpeg?Expires=1718891256&amp;Signature=oJV5e~0c-gqHftCPu7~HfcJjFFPnoFG82j0eyETNcDAsxqXV65yMDundznt9pQ9jqCCAL-HF8fuIE5kpctT6m62pz9Q-aoAmTw563TCqY5nxVaIEB11ikNI~l5qfekpTfmuGIjT~0a6b3dPnOPmXzC0Qn9Q-aZ8UppTYPx3nIKXl~lFcRTaIcwk9P~yiZt6uBdfkB9fIvTEDMVEIGrdbWSLpylW-C9qw7ZhagITK1WS0Vj57f~T5Eq3yXJGd~wRfYPwGOY0nUc7OPdFaDmwoaF~McbHpblu6hQjB2unEeP2c~VK5dA~GozQV2p1XyKL~OZWEFatoqQ3q463HvprICg__&amp;Key-Pair-Id=APKAIE5G5CRDK6RD3PGA" width="500"></p>
+<p><span class="citation" data-cites="adrion_PredictingLandscapeRecombination_2020">(<a href="#/bibliography" role="doc-biblioref" onclick="">Adrion et al., 2020</a>)</span></p>
+</div>
+</div>
+</section>
+<section id="limitations-of-recurrent-neural-networks" class="slide level2">
+<h2>Limitations of recurrent neural networks</h2>
+<div>
+<ul>
+<li class="fragment">Encoding bottleneck
+<ul>
+<li class="fragment">How to represent (embed) and compress data?</li>
+</ul></li>
+<li class="fragment">Slow and difficult to parallelize
+<ul>
+<li class="fragment">Slow convergence</li>
+<li class="fragment">Sequential nature not well adapted for parallelization</li>
+</ul></li>
+<li class="fragment">Short memory
+<ul>
+<li class="fragment">Don’t scale to sequences &gt; thousands of time steps</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="attention-is-all-you-need" class="slide level2 smaller">
+<h2>Attention is all you need</h2>
+<p><span class="citation" data-cites="vaswani_AttentionAllYou_2017">(<a href="#/bibliography" role="doc-biblioref" onclick="">Vaswani et al., 2017</a>)</span></p>
+<!-- markdownlint-disable MD013 -->
+<div class="element:" style="font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter, monospace; font-size: 0.8em;">
+<p>The <strong>dominant sequence transduction models</strong> are based on complex <strong>recurrent</strong> or <strong>convolutional neural networks</strong> in an <strong>encoder-decoder configuration</strong>. The best performing models also connect the encoder and decoder through an <strong>attention mechanism</strong>. We propose a new simple network architecture, the <strong>Transformer, based solely on attention mechanisms</strong>, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be <strong>superior in quality</strong> while being more parallelizable and requiring <strong>significantly less time to train</strong>. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the <strong>Transformer generalizes well to other tasks</strong> by applying it successfully to English constituency parsing both with large and limited training data.</p>
+</div>
+<!-- markdownlint-enable MD013 -->
+</section>
+<section id="transformers" class="slide level2">
+<h2>Transformers</h2>
+<ul>
+<li>process sequential input data (e.g., natural language)</li>
+<li>process <strong>entire</strong> input at once</li>
+<li>apply <em>attention</em> mechanism to provide positional context</li>
+</ul>
+<!-- markdownlint-disable MD013 -->
+<div class="element: fragment" style="font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter, monospace; font-size: 0.8em;">
+<p>Transformers were introduced in 2017 by a team at Google Brain and are increasingly the model of choice for NLP problems, replacing RNN models such as long short-term memory (LSTM). The additional training parallelization allows training on larger datasets</p>
+<p><span class="citation" data-cites="_TransformerMachineLearning_2023">(<a href="#/bibliography" role="doc-biblioref" onclick=""><span>“Transformer (Machine Learning Model),”</span> 2023</a>)</span></p>
+</div>
+<!-- markdownlint-enable MD013 -->
+</section>
+<section id="summary" class="slide level2">
+<h2>Summary</h2>
+<ol type="1">
+<li>Sequential data can be modelled with <strong>RNNs</strong></li>
+<li><strong>Recurrence</strong> to model sequences</li>
+<li>Training with <strong>back-propagation through time</strong></li>
+<li>Gated units (<strong>LSTM</strong>, <strong>GRU</strong>) partially solve the vanishing gradient problem</li>
+<li><strong>Transformers</strong> model sequences <strong>without</strong> recurrence and have increasingly become the model of choice for many natural language processing (NLP) problems</li>
+</ol>
+</section></section>
+<section>
+<section id="exercise-2" class="title-slide slide level1 center">
+<h1>Exercise</h1>
+
+</section>
+<section id="analyse-airline-passengers-with-lstm" class="slide level2">
+<h2>Analyse airline passengers with LSTM</h2>
+<p>Modify the airline passenger model to use an LSTM and compare the results. Try out different parameters to improve test predictions.</p>
+</section>
+<section id="language-models" class="slide level2">
+<h2>Language models</h2>
+<h3 id="write-like-jane-austen">Write like Jane Austen</h3>
+<p>Make a language model based on a text corpus consisting of all Jane Austen’s books.</p>
+<h3 id="promoter-prediction">Promoter prediction</h3>
+<p>Make a model to predict promoter regions in DNA sequences.</p>
+</section>
+<section id="bibliography" class="slide level2 smaller unnumbered unlisted scrollable">
+<h2>Bibliography</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-adrion_PredictingLandscapeRecombination_2020" class="csl-entry" role="listitem">
+Adrion, J. R., Galloway, J. G., &amp; Kern, A. D. (2020). Predicting the <span>Landscape</span> of <span>Recombination Using Deep Learning</span>. <em>Molecular Biology and Evolution</em>, <em>37</em>(6), 1790–1808. <a href="https://doi.org/10.1093/molbev/msaa038">https://doi.org/10.1093/molbev/msaa038</a>
+</div>
+<div id="ref-alexanderamini_MITS191Recurrent_2021" class="csl-entry" role="listitem">
+Alexander Amini. (2021). <em><span>MIT</span> 6.<span>S191</span>: <span>Recurrent Neural Networks</span></em>. <a href="https://www.youtube.com/watch?v=qjrad0V0uJE">https://www.youtube.com/watch?v=qjrad0V0uJE</a>
+</div>
+<div id="ref-cho_learning_2014" class="csl-entry" role="listitem">
+Cho, K., Merrienboer, B. van, Gulcehre, C., Bahdanau, D., Bougares, F., Schwenk, H., &amp; Bengio, Y. (2014). Learning <span>Phrase</span> <span>Representations</span> using <span>RNN</span> <span>Encoder</span>-<span>Decoder</span> for <span>Statistical</span> <span>Machine</span> <span>Translation</span>. <em>arXiv:1406.1078 [Cs, Stat]</em>. <a href="http://arxiv.org/abs/1406.1078">http://arxiv.org/abs/1406.1078</a>
+</div>
+<div id="ref-herzen2021darts" class="csl-entry" role="listitem">
+Herzen, J., Lässig, F., Piazzetta, S. G., Neuer, T., Tafti, L., Raille, G., Pottelbergh, T. V., Pasieka, M., Skrodzki, A., Huguenin, N., Dumonal, M., Kościsz, J., Bader, D., Gusset, F., Benheddi, M., Williamson, C., Kosinski, M., Petrik, M., &amp; Grosch, G. (2021). <em>Darts: User-friendly modern machine learning for time series</em>. <a href="https://arxiv.org/abs/2110.03224">https://arxiv.org/abs/2110.03224</a>
+</div>
+<div id="ref-hochreiter_long_1997" class="csl-entry" role="listitem">
+Hochreiter, S., &amp; Schmidhuber, J. (1997). Long <span>Short</span>-<span>Term</span> <span>Memory</span>. <em>Neural Computation</em>, <em>9</em>(8), 1735–1780. <a href="https://doi.org/10.1162/neco.1997.9.8.1735">https://doi.org/10.1162/neco.1997.9.8.1735</a>
+</div>
+<div id="ref-karpathyandrej_UnreasonableEffectivenessRecurrent_2015" class="csl-entry" role="listitem">
+Karpathy, Andrej. (2015). <em>The <span>Unreasonable Effectiveness</span> of <span>Recurrent Neural Networks</span></em>. <a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/">https://karpathy.github.io/2015/05/21/rnn-effectiveness/</a>
+</div>
+<div id="ref-mackay_InformationTheoryInference_2003" class="csl-entry" role="listitem">
+MacKay, D. J. C. (2003). <em>Information <span>Theory</span>, <span>Inference</span> and <span>Learning Algorithms</span></em> (Illustrated edition). <span>Cambridge University Press</span>.
+</div>
+<div id="ref-olah_christopher_understanding_nodate" class="csl-entry" role="listitem">
+Olah, C. (2015). <em>Understanding <span>LSTM</span> <span>Networks</span> – colah’s blog</em>. <a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/">http://colah.github.io/posts/2015-08-Understanding-LSTMs/</a>
+</div>
+<div id="ref-onnen_temporal_2021" class="csl-entry" role="listitem">
+Onnen, H. (2021). Temporal <span>Loops</span>: <span>Intro</span> to <span>Recurrent</span> <span>Neural</span> <span>Networks</span> for <span>Time</span> <span>Series</span> <span>Forecasting</span> in <span>Python</span>. In <em>Medium</em>. <a href="https://towardsdatascience.com/temporal-loops-intro-to-recurrent-neural-networks-for-time-series-forecasting-in-python-b0398963dc1f">https://towardsdatascience.com/temporal-loops-intro-to-recurrent-neural-networks-for-time-series-forecasting-in-python-b0398963dc1f</a>
+</div>
+<div id="ref-phi_illustrated_2020_RNN" class="csl-entry" role="listitem">
+Phi, M. (2020). Illustrated <span>Guide</span> to <span>Recurrent</span> <span>Neural</span> <span>Networks</span>. In <em>Medium</em>. <a href="https://towardsdatascience.com/illustrated-guide-to-recurrent-neural-networks-79e5eb8049c9">https://towardsdatascience.com/illustrated-guide-to-recurrent-neural-networks-79e5eb8049c9</a>
+</div>
+<div id="ref-shen_recurrent_2018" class="csl-entry" role="listitem">
+Shen, Z., Bao, W., &amp; Huang, D.-S. (2018). Recurrent <span>Neural</span> <span>Network</span> for <span>Predicting</span> <span>Transcription</span> <span>Factor</span> <span>Binding</span> <span>Sites</span>. <em>Scientific Reports</em>, <em>8</em>(1), 15270. <a href="https://doi.org/10.1038/s41598-018-33321-1">https://doi.org/10.1038/s41598-018-33321-1</a>
+</div>
+<div id="ref-_TransformerMachineLearning_2023" class="csl-entry" role="listitem">
+Transformer (machine learning model). (2023). <em>Wikipedia</em>. <a href="https://en.wikipedia.org/w/index.php?title=Transformer_(machine_learning_model)&amp;oldid=1144198335">https://en.wikipedia.org/w/index.php?title=Transformer_(machine_learning_model)&amp;oldid=1144198335</a>
+</div>
+<div id="ref-vaswani_AttentionAllYou_2017" class="csl-entry" role="listitem">
+Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, L., &amp; Polosukhin, I. (2017). <em>Attention <span>Is All You Need</span></em> (arXiv:1706.03762). <span>arXiv</span>. <a href="https://doi.org/10.48550/arXiv.1706.03762">https://doi.org/10.48550/arXiv.1706.03762</a>
+</div>
+<div id="ref-verma_understanding_2021" class="csl-entry" role="listitem">
+Verma, S. (2021). Understanding <span>Input</span> and <span>Output</span> shapes in <span>LSTM</span> <span></span> <span>Keras</span>. In <em>Medium</em>. <a href="https://shiva-verma.medium.com/understanding-input-and-output-shape-in-lstm-keras-c501ee95c65e">https://shiva-verma.medium.com/understanding-input-and-output-shape-in-lstm-keras-c501ee95c65e</a>
+</div>
+<div id="ref-zhang2021dive" class="csl-entry" role="listitem">
+Zhang, A., Lipton, Z. C., Li, M., &amp; Smola, A. J. (2021). Dive into deep learning. <em>arXiv Preprint arXiv:2106.11342</em>.
+</div>
+</div>
+<div class="quarto-auto-generated-content">
+<div class="footer footer-default">
+<p>Recurrent neural networks</p>
+</div>
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="index_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="index_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="index_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="index_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="index_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+
+
+  <script src="index_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="index_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="index_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="index_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'h.v',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: true,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {
+            return true;
+          }
+        }
+        return false;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button', {
+        text: function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+      });
+      clipboard.on('success', function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button,
+            { trigger: "manual",
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      });
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+        const config = {
+          allowHTML: true,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start',
+        };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config);
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+
+
+</body></html>
