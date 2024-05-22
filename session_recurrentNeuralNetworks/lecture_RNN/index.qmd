@@ -3983,6 +3983,17 @@ parallelization allows training on larger datasets
 Modify the airline passenger model to use an LSTM and compare the
 results. Try out different parameters to improve test predictions.
 
+## Language models
+
+### Write like Jane Austen
+
+Make a language model based on a text corpus consisting of all Jane
+Austen's books.
+
+### Promoter prediction
+
+Make a model to predict promoter regions in DNA sequences.
+
 ## Bibliography {.smaller .unnumbered .unlisted}
 
 ::: { #refs }
