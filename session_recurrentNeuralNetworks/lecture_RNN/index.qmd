@@ -2361,6 +2361,7 @@ Karpathy:
 > “o” should be likely given the context of “hell”.
 
 Ask for input\_shape: what is timesteps? (=4) What is features? (=4)
+
 ::::
 
 ## Exercise

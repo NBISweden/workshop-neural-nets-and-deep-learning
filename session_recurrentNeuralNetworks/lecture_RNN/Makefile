@@ -1,4 +1,4 @@
-all: index.html
+all: index.html slides.pdf lecture_rnn.zip
 
 %.html: %.qmd
 	quarto render $<
@@ -11,6 +11,8 @@ slides.pdf: screenshots/slides_1_1280x720.png
 	args=`for i in $$(seq 1 $$SLIDES); do echo screenshots/slides_$${i}_1280x720.png; done`; \
 	convert $$args slides.pdf
 
+lecture_rnn.zip: index.html
+	zip -r lecture_rnn.zip index.html index_files index_cache airline*.png
 
 clean:
 	rm -rf index_cache
