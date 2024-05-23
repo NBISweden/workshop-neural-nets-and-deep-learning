@@ -1969,7 +1969,7 @@ h_t = f_W(x_t, h_{t-1})
 <span id="cb10-3"><a href=""></a>model <span class="op">=</span> Sequential()</span>
 <span id="cb10-4"><a href=""></a>model.add(SimpleRNN(units<span class="op">=</span><span class="dv">3</span>, input_shape<span class="op">=</span>(time_steps, <span class="dv">1</span>),</span>
 <span id="cb10-5"><a href=""></a>                    activation<span class="op">=</span><span class="st">"tanh"</span>))</span>
-<span id="cb10-6"><a href=""></a>model.add(Dense(units<span class="op">=</span><span class="dv">1</span>, activation<span class="op">=</span><span class="st">"tanh"</span>))</span>
+<span id="cb10-6"><a href=""></a>model.add(Dense(units<span class="op">=</span><span class="dv">1</span>))</span>
 <span id="cb10-7"><a href=""></a>model.<span class="bu">compile</span>(loss<span class="op">=</span><span class="st">'mean_squared_error'</span>, optimizer<span class="op">=</span><span class="st">'adam'</span>)</span>
 <span id="cb10-8"><a href=""></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -2045,6 +2045,19 @@ _________________________________________________________________</code></pre>
 <p><img data-src="airline-prediction-prepared.png"></p>
 </div>
 </div>
+<aside class="notes">
+<p>Poor fit due to low number of epochs!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="example-model-topology-writ-out" class="slide level2">
 <h2>Example: model topology writ out</h2>
@@ -2084,7 +2097,8 @@ _________________________________________________________________</code></pre>
 </div>
 </div>
 <aside class="notes">
-<p>(Verma, 2021)</p>
+<p><span class="citation" data-cites="verma_understanding_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Verma, 2021</a>)</span></p>
+<p>Explicitly show units of the hidden layer for the RNN. This is for one time step.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -2138,7 +2152,8 @@ _________________________________________________________________</code></pre>
 </div>
 </div>
 <aside class="notes">
-<p>(Verma, 2021)</p>
+<p><span class="citation" data-cites="verma_understanding_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Verma, 2021</a>)</span></p>
+<p>Explicitly show units of the hidden layer for the RNN. Here unravel all steps. The connecting arrows are somewhat misleading; they connect all neurons of one layer to the next, not from 1 to X_t if t&gt;2.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;

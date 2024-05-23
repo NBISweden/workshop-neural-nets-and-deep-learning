@@ -1995,7 +1995,7 @@ time_steps = 12 #| hide_line
 model = Sequential()
 model.add(SimpleRNN(units=3, input_shape=(time_steps, 1),
                     activation="tanh"))
-model.add(Dense(units=1, activation="tanh"))
+model.add(Dense(units=1))
 model.compile(loss='mean_squared_error', optimizer='adam')
 model.summary()
 ```
@@ -2075,6 +2075,12 @@ rnnutils.plot_pred(data, scaler=scaler, ticks=range(0, 144, 20),
 
 :::::::::::::::::::
 
+::: {.notes}
+
+Poor fit due to low number of epochs!
+
+:::
+
 ## Example: model topology writ out
 
 :::: {style="font-size: .75em; text-align: center;"}
@@ -2130,7 +2136,10 @@ model.summary()
 
 :::: {.notes}
 
-(Verma, 2021)
+[@verma_understanding_2021]
+
+Explicitly show units of the hidden layer for the RNN. This is for one
+time step.
 
 ::::
 
@@ -2233,7 +2242,8 @@ model.summary()
 
 :::: {.fragment }
 
-NB! In keras, RNN input is a 3D tensor with shape `[batch, timesteps, feature]`
+NB! In keras, RNN input is a 3D tensor with shape `[batch, timesteps,
+feature]`
 
 [@verma_understanding_2021]
 
@@ -2245,7 +2255,11 @@ NB! In keras, RNN input is a 3D tensor with shape `[batch, timesteps, feature]`
 
 :::: {.notes}
 
-(Verma, 2021)
+[@verma_understanding_2021]
+
+Explicitly show units of the hidden layer for the RNN. Here unravel
+all steps. The connecting arrows are somewhat misleading; they connect
+all neurons of one layer to the next, not from 1 to X_t if t>2.
 
 ::::
 

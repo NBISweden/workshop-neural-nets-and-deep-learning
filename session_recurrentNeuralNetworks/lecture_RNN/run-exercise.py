@@ -62,7 +62,7 @@ def airlines():  # noqa: R0914
     # Define model
     model = Sequential()
     model.add(SimpleRNN(units=3, input_shape=(time_steps, 1), activation="tanh"))
-    model.add(Dense(units=1, activation="tanh"))
+    model.add(Dense(units=1))
     model.compile(loss="mean_squared_error", optimizer="adam")
 
     # Fit model
